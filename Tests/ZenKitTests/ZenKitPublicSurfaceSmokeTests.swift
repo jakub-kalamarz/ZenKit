@@ -713,4 +713,30 @@ struct ZenKitPublicSurfaceSmokeTests {
         #expect(palette.ctrRole == .ctr)
         #expect(palette.positionRole == .position)
     }
+
+    @Test
+    func zenListScreenHostsNativeListContent() {
+        let view = NavigationStack {
+            ZenListScreen(
+                navigationTitle: "Settings",
+                onRefresh: {},
+                toolbarLeading: {
+                    ZenButton("Back", variant: .ghost, size: .sm) {}
+                },
+                toolbarTrailing: {
+                    ZenButton("Edit", variant: .secondary, size: .sm) {}
+                }
+            ) {
+                Section("Workspace") {
+                    ZenNavigationRow(
+                        title: "Members",
+                        subtitle: "Manage access",
+                        leadingIconAsset: "UsersThree"
+                    )
+                }
+            }
+        }
+
+        _ = view
+    }
 }
