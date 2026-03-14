@@ -365,7 +365,7 @@ private extension View {
             navigationTitle(title.text)
             #else
             navigationTitle(title.text)
-                .navigationBarTitleDisplayMode(displayMode.swiftUIValue)
+                .navigationBarTitleDisplayMode(displayMode.zenListScreenSwiftUIValue)
             #endif
         } else {
             self
@@ -400,6 +400,21 @@ private func zenListScreenToolbarItem<Content: View>(
     }
     #endif
 }
+
+#if !os(macOS)
+private extension ZenNavigationBarTitleDisplayMode {
+    var zenListScreenSwiftUIValue: NavigationBarItem.TitleDisplayMode {
+        switch self {
+        case .automatic:
+            return .automatic
+        case .inline:
+            return .inline
+        case .large:
+            return .large
+        }
+    }
+}
+#endif
 
 #Preview {
     NavigationStack {
