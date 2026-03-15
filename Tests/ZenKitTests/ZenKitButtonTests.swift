@@ -1,7 +1,22 @@
 import Testing
 @testable import ZenKit
+import CoreGraphics
 
 struct ZenKitButtonTests {
+    @Test
+    func controlGroupLayoutResolvesAdaptiveThresholds() {
+        #expect(ZenControlGroupLayout.horizontal.resolvedLayout(forWidth: 200) == .horizontal)
+        #expect(ZenControlGroupLayout.vertical.resolvedLayout(forWidth: 200) == .vertical)
+        #expect(ZenControlGroupLayout.adaptive.resolvedLayout(forWidth: 420) == .horizontal)
+        #expect(ZenControlGroupLayout.adaptive.resolvedLayout(forWidth: 260) == .vertical)
+    }
+
+    @Test
+    func controlGroupLayoutUsesExpectedDefaultSpacingAndBreakpoint() {
+        #expect(ZenControlGroupLayoutMetrics.defaultSpacing == ZenSpacing.small)
+        #expect(ZenControlGroupLayoutMetrics.adaptiveBreakpoint == 320)
+    }
+
     @Test
     func defaultButtonSizeMatchesAccessibleMobileMetrics() {
         let spec = ZenButtonSize.default.textFontSpec(theme: .default)

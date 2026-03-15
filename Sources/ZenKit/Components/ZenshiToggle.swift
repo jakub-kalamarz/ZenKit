@@ -1,6 +1,8 @@
 import SwiftUI
 
 public struct ZenToggle: View {
+    @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
+
     private let title: String
     private let subtitle: String?
     @Binding private var isOn: Bool
@@ -13,6 +15,7 @@ public struct ZenToggle: View {
 
     public var body: some View {
         let theme = ZenTheme.current
+        let cornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
 
         Toggle(isOn: $isOn) {
             VStack(alignment: .leading, spacing: 4) {
@@ -32,10 +35,10 @@ public struct ZenToggle: View {
         .padding(.horizontal, ZenSpacing.medium)
         .background(Color.zenSurface)
         .overlay(
-            RoundedRectangle(cornerRadius: theme.resolvedCornerRadius(for: ZenRadius.small))
+            RoundedRectangle(cornerRadius: cornerRadius)
                 .strokeBorder(Color.zenBorder, lineWidth: 1)
         )
-        .clipShape(RoundedRectangle(cornerRadius: theme.resolvedCornerRadius(for: ZenRadius.small)))
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
     }
 }
 

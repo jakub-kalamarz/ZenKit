@@ -198,6 +198,7 @@ extension ZenToastHost {
 }
 
 private struct ZenToastCard: View {
+    @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
     let toast: ZenToastItem
     let edge: ZenToastHostEdge
     let depth: Int
@@ -211,7 +212,7 @@ private struct ZenToastCard: View {
 
     var body: some View {
         let theme = ZenTheme.current
-        let cardCornerRadius = theme.resolvedCornerRadius(for: ZenRadius.medium)
+        let cardCornerRadius = theme.resolvedCornerRadius(for: .nestedContainer, parentRadius: parentCornerRadius)
 
         VStack(alignment: .leading, spacing: ZenSpacing.small) {
             HStack(alignment: .center, spacing: ZenSpacing.small) {
@@ -275,6 +276,7 @@ private struct ZenToastCard: View {
                 .strokeBorder(borderColor, lineWidth: 1)
         )
         .clipShape(RoundedRectangle(cornerRadius: cardCornerRadius))
+        .zenContainerCornerRadius(cardCornerRadius)
         .shadow(color: Color.black.opacity(depth == 0 ? 0.14 : 0.08), radius: 16, x: 0, y: 8)
         .scaleEffect(completionPulse ? 1.02 : 1)
         .offset(dragOffset)

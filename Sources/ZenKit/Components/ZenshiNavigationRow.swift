@@ -6,6 +6,8 @@ public enum ZenNavigationAccessory {
 }
 
 public struct ZenNavigationRow: View {
+    @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
+
     private let title: String
     private let subtitle: String?
     private let leadingIconAsset: String?
@@ -25,6 +27,7 @@ public struct ZenNavigationRow: View {
 
     public var body: some View {
         let theme = ZenTheme.current
+        let cornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
 
         HStack(spacing: ZenSpacing.small) {
             if let leadingIconAsset {
@@ -59,10 +62,10 @@ public struct ZenNavigationRow: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.zenSurface)
         .overlay(
-            RoundedRectangle(cornerRadius: theme.resolvedCornerRadius(for: ZenRadius.small))
+            RoundedRectangle(cornerRadius: cornerRadius)
                 .strokeBorder(Color.zenBorder, lineWidth: 1)
         )
-        .clipShape(RoundedRectangle(cornerRadius: theme.resolvedCornerRadius(for: ZenRadius.small)))
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
     }
 }
 

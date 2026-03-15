@@ -136,6 +136,18 @@ struct ZenKitPublicSurfaceSmokeTests {
     }
 
     @Test
+    func zenControlGroupComposesWithButtons() {
+        let view = ZenControlGroup(layout: .adaptive) {
+            ZenButton("Edit") {}
+            ZenButton("Duplicate", variant: .secondary) {}
+        } label: {
+            Text("Actions")
+        }
+
+        _ = view
+    }
+
+    @Test
     func zenSpinnerSupportsSharedLoadingContexts() {
         let view = VStack(spacing: ZenSpacing.small) {
             ZenSpinner()

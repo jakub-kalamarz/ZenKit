@@ -195,6 +195,25 @@ struct ZenKitThemeTests {
     }
 
     @Test
+    func nestedCornerRolesFallBackToStandaloneValuesWithoutParentContext() {
+        let theme = ZenTheme(cornerStyle: .rounded)
+
+        #expect(theme.resolvedCornerRadius(for: .container) == theme.resolvedCornerRadius)
+        #expect(theme.resolvedCornerRadius(for: .nestedContainer) == theme.resolvedCornerRadius)
+        #expect(theme.resolvedCornerRadius(for: .control) == ZenRadius.small)
+        #expect(theme.resolvedCornerRadius(for: .nestedControl) == ZenRadius.small)
+    }
+
+    @Test
+    func nestedCornerRolesShrinkFromParentRadiusWithClamping() {
+        let theme = ZenTheme(cornerStyle: .rounded)
+
+        #expect(theme.resolvedCornerRadius(for: .nestedContainer, parentRadius: ZenRadius.large) == 20)
+        #expect(theme.resolvedCornerRadius(for: .nestedControl, parentRadius: 12) == 8)
+        #expect(theme.resolvedCornerRadius(for: .nestedControl, parentRadius: 3) == 0)
+    }
+
+    @Test
     func colorComponentsParseHexStrings() {
         let primary = ZenColorComponents.rgb(37.0 / 255.0, 99.0 / 255.0, 235.0 / 255.0)
         let accent = ZenColorComponents.rgb(96.0 / 255.0, 165.0 / 255.0, 250.0 / 255.0)

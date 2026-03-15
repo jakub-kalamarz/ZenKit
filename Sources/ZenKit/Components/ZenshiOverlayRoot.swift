@@ -131,6 +131,7 @@ public struct ZenOverlayRoot<Content: View>: View {
 
 private struct ZenRootConfirmationDialogPresentation: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
     let state: ZenOverlayPresenter.ConfirmationDialogState
     let isPresented: Bool
     let dismiss: () -> Void
@@ -138,6 +139,10 @@ private struct ZenRootConfirmationDialogPresentation: View {
     @State private var isShellVisible = false
 
     var body: some View {
+        let cornerRadius = parentCornerRadius.map {
+            min(ZenTheme.current.resolvedCornerRadius(for: ZenRadius.large), ZenTheme.current.resolvedCornerRadius(for: .nestedContainer, parentRadius: $0))
+        } ?? ZenTheme.current.resolvedCornerRadius(for: ZenRadius.large)
+
         VStack(spacing: 0) {
             VStack(spacing: ZenSpacing.small) {
                 Text(state.title)
@@ -202,12 +207,13 @@ private struct ZenRootConfirmationDialogPresentation: View {
         }
         .frame(maxWidth: 360)
         .background(Color.zenSurface)
-        .clipShape(RoundedRectangle(cornerRadius: ZenTheme.current.resolvedCornerRadius(for: ZenRadius.large), style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: ZenTheme.current.resolvedCornerRadius(for: ZenRadius.large), style: .continuous)
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                 .stroke(Color.zenBorder.opacity(0.9), lineWidth: 1)
         )
         .shadow(color: Color.black.opacity(0.14), radius: 24, x: 0, y: 16)
+        .zenContainerCornerRadius(cornerRadius)
         .opacity(isShellVisible ? 1 : 0)
         .scaleEffect(shellScale)
         .offset(y: shellOffsetY)

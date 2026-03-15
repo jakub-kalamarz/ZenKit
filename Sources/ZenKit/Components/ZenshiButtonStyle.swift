@@ -94,6 +94,7 @@ struct ZenButtonResolvedStyle {
 
 struct ZenSemanticButtonStyle: ButtonStyle {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
 
     let variant: ZenButtonVariant
     let size: ZenButtonSize
@@ -104,25 +105,26 @@ struct ZenSemanticButtonStyle: ButtonStyle {
         let theme = ZenTheme.current
         let metrics = theme.resolvedMetrics
         let palette = ZenButtonResolvedStyle(variant: variant)
+        let cornerRadius = size.cornerRadius(theme: theme, parentRadius: parentCornerRadius)
 
         buttonContent(configuration: configuration, palette: palette)
-        .font(size.font)
-        .foregroundStyle(palette.foregroundColor)
-        .frame(
-            minWidth: size.isIconOnly ? size.minHeight(metrics: metrics) : nil,
-            maxWidth: fullWidth ? .infinity : nil,
-            minHeight: size.minHeight(metrics: metrics)
-        )
-        .padding(.horizontal, size.horizontalPadding)
-        .padding(.vertical, size.verticalPadding)
-        .background(background(for: palette, isPressed: configuration.isPressed))
-        .overlay(border(for: palette))
-        .clipShape(RoundedRectangle(cornerRadius: size.cornerRadius(theme: theme), style: .continuous))
-        .contentShape(RoundedRectangle(cornerRadius: size.cornerRadius(theme: theme), style: .continuous))
-        .opacity(opacity(for: configuration))
-        .scaleEffect(configuration.isPressed && !isLoading ? 0.985 : 1)
-        .animation(loadingAnimation, value: isLoading)
-        .animation(.easeOut(duration: 0.16), value: configuration.isPressed)
+            .font(size.font)
+            .foregroundStyle(palette.foregroundColor)
+            .frame(
+                minWidth: size.isIconOnly ? size.minHeight(metrics: metrics) : nil,
+                maxWidth: fullWidth ? .infinity : nil,
+                minHeight: size.minHeight(metrics: metrics)
+            )
+            .padding(.horizontal, size.horizontalPadding)
+            .padding(.vertical, size.verticalPadding)
+            .background(background(for: palette, isPressed: configuration.isPressed, cornerRadius: cornerRadius))
+            .overlay(border(for: palette, cornerRadius: cornerRadius))
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+            .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+            .opacity(opacity(for: configuration))
+            .scaleEffect(configuration.isPressed && !isLoading ? 0.985 : 1)
+            .animation(loadingAnimation, value: isLoading)
+            .animation(.easeOut(duration: 0.16), value: configuration.isPressed)
     }
 
     @ViewBuilder
@@ -184,13 +186,17 @@ struct ZenSemanticButtonStyle: ButtonStyle {
         return .scale(scale: 0.94).combined(with: .opacity)
     }
 
-    private func background(for palette: ZenButtonResolvedStyle, isPressed: Bool) -> some View {
-        RoundedRectangle(cornerRadius: size.cornerRadius(theme: .current), style: .continuous)
+    private func background(
+        for palette: ZenButtonResolvedStyle,
+        isPressed: Bool,
+        cornerRadius: CGFloat
+    ) -> some View {
+        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
             .fill(isPressed && !isLoading ? palette.pressedBackgroundColor : palette.backgroundColor)
     }
 
-    private func border(for palette: ZenButtonResolvedStyle) -> some View {
-        RoundedRectangle(cornerRadius: size.cornerRadius(theme: .current), style: .continuous)
+    private func border(for palette: ZenButtonResolvedStyle, cornerRadius: CGFloat) -> some View {
+        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
             .strokeBorder(palette.borderColor, lineWidth: palette.borderWidth)
     }
 

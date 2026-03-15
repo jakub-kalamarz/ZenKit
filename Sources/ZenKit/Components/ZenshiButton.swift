@@ -124,20 +124,21 @@ public enum ZenButtonSize {
         }
     }
 
-    func cornerRadius(theme: ZenTheme) -> CGFloat {
+    func cornerRadius(theme: ZenTheme, parentRadius: CGFloat? = nil) -> CGFloat {
         guard theme.cornerStyle != .none else {
             return 0
         }
 
-        let defaultRadius = theme.resolvedCornerRadius
+        let controlCornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentRadius)
+        let expandedCornerRadius = parentRadius.map { min($0, controlCornerRadius + 2) } ?? (controlCornerRadius + 2)
 
         switch self {
         case .xs, .iconXs:
             return 8
         case .default, .sm, .icon, .iconSm:
-            return defaultRadius - 6
+            return controlCornerRadius
         case .lg, .iconLg:
-            return defaultRadius - 4
+            return expandedCornerRadius
         }
     }
 

@@ -1,6 +1,8 @@
 import SwiftUI
 
 public struct ZenInfoCard: View {
+    @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
+
     private let title: String
     private let value: String
     private let monospaced: Bool
@@ -13,6 +15,7 @@ public struct ZenInfoCard: View {
 
     public var body: some View {
         let theme = ZenTheme.current
+        let cornerRadius = theme.resolvedCornerRadius(for: .nestedContainer, parentRadius: parentCornerRadius)
 
         VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
             Text(title)
@@ -29,10 +32,10 @@ public struct ZenInfoCard: View {
                 .padding(.horizontal, 12)
                 .background(Color.zenSurfaceMuted)
                 .overlay(
-                    RoundedRectangle(cornerRadius: theme.resolvedCornerRadius(for: ZenRadius.small))
+                    RoundedRectangle(cornerRadius: cornerRadius)
                         .strokeBorder(Color.zenBorder, lineWidth: 1)
                 )
-                .clipShape(RoundedRectangle(cornerRadius: theme.resolvedCornerRadius(for: ZenRadius.small)))
+                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         }
     }
 }

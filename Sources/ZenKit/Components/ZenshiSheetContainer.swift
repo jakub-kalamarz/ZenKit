@@ -1,6 +1,8 @@
 import SwiftUI
 
 public struct ZenSheetContainer<Content: View, Footer: View>: View {
+    @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
+
     private let title: String
     private let subtitle: String?
     private let content: () -> Content
@@ -34,6 +36,9 @@ public struct ZenSheetContainer<Content: View, Footer: View>: View {
 
     public var body: some View {
         let theme = ZenTheme.current
+        let cornerRadius = parentCornerRadius.map {
+            min(theme.resolvedCornerRadius(for: ZenRadius.large), theme.resolvedCornerRadius(for: .nestedContainer, parentRadius: $0))
+        } ?? theme.resolvedCornerRadius(for: ZenRadius.large)
 
         VStack(alignment: .leading, spacing: ZenSpacing.medium) {
             VStack(alignment: .leading, spacing: 4) {
@@ -58,7 +63,8 @@ public struct ZenSheetContainer<Content: View, Footer: View>: View {
         .padding(ZenSpacing.large)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.zenSurface)
-        .clipShape(RoundedRectangle(cornerRadius: theme.resolvedCornerRadius(for: ZenRadius.large)))
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+        .zenContainerCornerRadius(cornerRadius)
     }
 }
 

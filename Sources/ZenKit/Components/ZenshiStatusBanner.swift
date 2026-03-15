@@ -7,6 +7,8 @@ public enum ZenBannerTone {
 }
 
 public struct ZenStatusBanner: View {
+    @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
+
     private let tone: ZenBannerTone
     private let message: String
 
@@ -17,6 +19,7 @@ public struct ZenStatusBanner: View {
 
     public var body: some View {
         let theme = ZenTheme.current
+        let cornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
 
         HStack(alignment: .center, spacing: ZenSpacing.small) {
             ZenIcon(systemName: iconSystemName, size: 15)
@@ -33,10 +36,10 @@ public struct ZenStatusBanner: View {
         .padding(.horizontal, 12)
         .background(backgroundColor)
         .overlay(
-            RoundedRectangle(cornerRadius: theme.resolvedCornerRadius(for: ZenRadius.small))
+            RoundedRectangle(cornerRadius: cornerRadius)
                 .strokeBorder(borderColor, lineWidth: 1)
         )
-        .clipShape(RoundedRectangle(cornerRadius: theme.resolvedCornerRadius(for: ZenRadius.small)))
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
     }
 
     private var iconSystemName: String {

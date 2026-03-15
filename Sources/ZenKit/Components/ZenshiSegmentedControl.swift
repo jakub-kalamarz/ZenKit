@@ -2,6 +2,7 @@ import SwiftUI
 
 public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
 
     private let title: String?
     @Binding private var selection: Value
@@ -27,8 +28,8 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
     public var body: some View {
         let theme = ZenTheme.current
         let metrics = theme.resolvedMetrics
-        let controlCornerRadius = theme.cornerStyle == .none ? 0 : max(ZenRadius.small, theme.resolvedCornerRadius - 4)
-        let segmentCornerRadius = theme.cornerStyle == .none ? 0 : max(8, controlCornerRadius - 4)
+        let controlCornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
+        let segmentCornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: controlCornerRadius)
 
         return VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
             if let title {
@@ -53,6 +54,7 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
                     .strokeBorder(Color.zenBorder, lineWidth: 1)
             )
             .clipShape(RoundedRectangle(cornerRadius: controlCornerRadius, style: .continuous))
+            .zenContainerCornerRadius(controlCornerRadius)
         }
     }
 

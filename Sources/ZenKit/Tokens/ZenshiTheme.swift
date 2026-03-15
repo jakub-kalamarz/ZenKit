@@ -18,6 +18,13 @@ public enum ZenCornerStyle: Sendable {
     case pronounced
 }
 
+public enum ZenCornerRole: Sendable {
+    case container
+    case nestedContainer
+    case control
+    case nestedControl
+}
+
 public enum ZenMotion: Sendable {
     case standard
     case reduced
@@ -151,6 +158,38 @@ public struct ZenTheme: Equatable, Sendable {
         }
 
         return radius
+    }
+
+    public func resolvedCornerRadius(for role: ZenCornerRole, parentRadius: CGFloat? = nil) -> CGFloat {
+        guard cornerStyle != .none else {
+            return 0
+        }
+
+        switch role {
+        case .container:
+            return resolvedCornerRadius
+        case .nestedContainer:
+            guard let parentRadius else {
+                return resolvedCornerRadius
+            }
+            return resolvedNestedCornerRadius(inside: parentRadius, inset: 4)
+        case .control:
+            return resolvedCornerRadius(for: ZenRadius.small)
+        case .nestedControl:
+            guard let parentRadius else {
+                return resolvedCornerRadius(for: .control)
+            }
+            return resolvedNestedCornerRadius(inside: parentRadius, inset: 4)
+        }
+    }
+
+    public func resolvedNestedCornerRadius(inside parentRadius: CGFloat, inset: CGFloat) -> CGFloat {
+        guard cornerStyle != .none else {
+            return 0
+        }
+
+        let nestedRadius = max(0, parentRadius - inset)
+        return min(parentRadius, nestedRadius)
     }
 
     public func resolvedFullyRoundedCornerRadius(for dimension: CGFloat) -> CGFloat {

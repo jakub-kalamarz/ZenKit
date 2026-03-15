@@ -13,6 +13,7 @@ public struct ZenMetricValue {
 }
 
 public struct ZenMetricStrip: View {
+    @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
     private let values: [ZenMetricValue]
 
     public init(values: [ZenMetricValue]) {
@@ -21,6 +22,7 @@ public struct ZenMetricStrip: View {
 
     public var body: some View {
         let theme = ZenTheme.current
+        let tileCornerRadius = theme.resolvedCornerRadius(for: .nestedContainer, parentRadius: parentCornerRadius)
 
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: ZenSpacing.small) {
             ForEach(Array(values.enumerated()), id: \.offset) { _, value in
@@ -39,7 +41,7 @@ public struct ZenMetricStrip: View {
                 .padding(.vertical, ZenSpacing.small)
                 .padding(.horizontal, 12)
                 .background(Color.zenSurfaceMuted)
-                .clipShape(RoundedRectangle(cornerRadius: theme.resolvedCornerRadius(for: ZenRadius.small)))
+                .clipShape(RoundedRectangle(cornerRadius: tileCornerRadius))
             }
         }
     }

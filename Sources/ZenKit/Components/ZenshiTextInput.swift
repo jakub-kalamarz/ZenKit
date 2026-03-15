@@ -13,6 +13,7 @@ public enum ZenControlState {
 }
 
 public struct ZenTextInput: View {
+    @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
     @Binding private var text: String
     @FocusState private var isFocused: Bool
 
@@ -49,6 +50,7 @@ public struct ZenTextInput: View {
 
     public var body: some View {
         let theme = ZenTheme.current
+        let cornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
 
         VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
             HStack(spacing: ZenSpacing.small) {
@@ -82,10 +84,10 @@ public struct ZenTextInput: View {
             )
             .background(Color.zenSurfaceMuted)
             .overlay(
-                RoundedRectangle(cornerRadius: theme.resolvedCornerRadius(for: ZenRadius.small))
+                RoundedRectangle(cornerRadius: cornerRadius)
                     .strokeBorder(borderColor, lineWidth: 1)
             )
-            .clipShape(RoundedRectangle(cornerRadius: theme.resolvedCornerRadius(for: ZenRadius.small)))
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
             .opacity(state == .disabled ? 0.6 : 1)
 
             if let message {

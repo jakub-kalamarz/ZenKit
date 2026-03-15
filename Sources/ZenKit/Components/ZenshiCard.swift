@@ -1,6 +1,8 @@
 import SwiftUI
 
 public struct ZenCard<Content: View, Footer: View>: View {
+    @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
+
     private let title: String?
     private let subtitle: String?
     private let content: () -> Content
@@ -34,6 +36,7 @@ public struct ZenCard<Content: View, Footer: View>: View {
 
     public var body: some View {
         let theme = ZenTheme.current
+        let cornerRadius = theme.resolvedCornerRadius(for: .nestedContainer, parentRadius: parentCornerRadius)
 
         VStack(alignment: .leading, spacing: ZenSpacing.medium) {
             if title != nil || subtitle != nil {
@@ -63,10 +66,11 @@ public struct ZenCard<Content: View, Footer: View>: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.zenSurface)
         .overlay(
-            RoundedRectangle(cornerRadius: theme.resolvedCornerRadius)
+            RoundedRectangle(cornerRadius: cornerRadius)
                 .strokeBorder(Color.zenBorder, lineWidth: 1)
         )
-        .clipShape(RoundedRectangle(cornerRadius: theme.resolvedCornerRadius))
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+        .zenContainerCornerRadius(cornerRadius)
     }
 }
 
