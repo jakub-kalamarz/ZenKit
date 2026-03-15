@@ -6,6 +6,7 @@ public struct ZenListScreen<ToolbarLeading: View, ToolbarPrincipal: View, Toolba
 
     private let navigationTitle: ZenScreenTitle?
     private let navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode
+    private let hidesSharedToolbarBackground: Bool
     private let backButton: ZenScreenBackButton?
     private let onRefresh: (@Sendable () async -> Void)?
     private let toolbarLeading: (() -> ToolbarLeading)?
@@ -16,6 +17,7 @@ public struct ZenListScreen<ToolbarLeading: View, ToolbarPrincipal: View, Toolba
     public init(
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
+        hidesSharedToolbarBackground: Bool = true,
         backButton: ZenScreenBackButton? = nil,
         onRefresh: (@Sendable () async -> Void)? = nil,
         @ViewBuilder toolbarLeading: @escaping () -> ToolbarLeading,
@@ -25,6 +27,7 @@ public struct ZenListScreen<ToolbarLeading: View, ToolbarPrincipal: View, Toolba
     ) {
         self.navigationTitle = navigationTitle
         self.navigationBarTitleDisplayMode = navigationBarTitleDisplayMode
+        self.hidesSharedToolbarBackground = hidesSharedToolbarBackground
         self.backButton = backButton
         self.onRefresh = onRefresh
         self.toolbarLeading = toolbarLeading
@@ -43,29 +46,38 @@ public struct ZenListScreen<ToolbarLeading: View, ToolbarPrincipal: View, Toolba
         .applyZenListScreenNavigationTitle(navigationTitle, displayMode: resolvedDisplayMode)
         .toolbar {
             if let customBackButton = resolvedCustomBackButton {
-                zenListScreenToolbarItem(placement: leadingToolbarPlacement) {
+                zenListScreenToolbarItem(
+                    placement: leadingToolbarPlacement,
+                    hidesSharedBackground: hidesSharedToolbarBackground
+                ) {
                     ZenListScreenBackButtonView(backButton: customBackButton)
                 }
             }
 
             if let toolbarLeading {
-                zenListScreenToolbarItem(placement: leadingToolbarPlacement) {
+                zenListScreenToolbarItem(
+                    placement: leadingToolbarPlacement,
+                    hidesSharedBackground: hidesSharedToolbarBackground
+                ) {
                     toolbarLeading()
                 }
             }
 
             if let toolbarPrincipal {
-                zenListScreenPrincipalToolbarItem {
+                zenListScreenPrincipalToolbarItem(hidesSharedBackground: hidesSharedToolbarBackground) {
                     toolbarPrincipal()
                 }
             } else if shouldUseInlineTitleToolbarItem, let navigationTitle {
-                zenListScreenPrincipalToolbarItem {
+                zenListScreenPrincipalToolbarItem(hidesSharedBackground: hidesSharedToolbarBackground) {
                     ZenListScreenInlineTitleView(title: navigationTitle)
                 }
             }
 
             if let toolbarTrailing {
-                zenListScreenToolbarItem(placement: trailingToolbarPlacement) {
+                zenListScreenToolbarItem(
+                    placement: trailingToolbarPlacement,
+                    hidesSharedBackground: hidesSharedToolbarBackground
+                ) {
                     toolbarTrailing()
                 }
             }
@@ -125,6 +137,7 @@ public extension ZenListScreen where ToolbarLeading == EmptyView, ToolbarPrincip
     init(
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
+        hidesSharedToolbarBackground: Bool = true,
         backButton: ZenScreenBackButton? = nil,
         onRefresh: (@Sendable () async -> Void)? = nil,
         @ViewBuilder content: @escaping () -> Content
@@ -132,6 +145,7 @@ public extension ZenListScreen where ToolbarLeading == EmptyView, ToolbarPrincip
         self.init(
             navigationTitle: navigationTitle,
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
+            hidesSharedToolbarBackground: hidesSharedToolbarBackground,
             backButton: backButton,
             onRefresh: onRefresh,
             toolbarLeading: { EmptyView() },
@@ -146,6 +160,7 @@ public extension ZenListScreen where ToolbarLeading == EmptyView, ToolbarPrincip
     init(
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
+        hidesSharedToolbarBackground: Bool = true,
         backButton: ZenScreenBackButton? = nil,
         onRefresh: (@Sendable () async -> Void)? = nil,
         @ViewBuilder toolbarTrailing: @escaping () -> ToolbarTrailing,
@@ -154,6 +169,7 @@ public extension ZenListScreen where ToolbarLeading == EmptyView, ToolbarPrincip
         self.init(
             navigationTitle: navigationTitle,
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
+            hidesSharedToolbarBackground: hidesSharedToolbarBackground,
             backButton: backButton,
             onRefresh: onRefresh,
             toolbarLeading: { EmptyView() },
@@ -168,6 +184,7 @@ public extension ZenListScreen where ToolbarLeading == EmptyView, ToolbarTrailin
     init(
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
+        hidesSharedToolbarBackground: Bool = true,
         backButton: ZenScreenBackButton? = nil,
         onRefresh: (@Sendable () async -> Void)? = nil,
         @ViewBuilder toolbarPrincipal: @escaping () -> ToolbarPrincipal,
@@ -176,6 +193,7 @@ public extension ZenListScreen where ToolbarLeading == EmptyView, ToolbarTrailin
         self.init(
             navigationTitle: navigationTitle,
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
+            hidesSharedToolbarBackground: hidesSharedToolbarBackground,
             backButton: backButton,
             onRefresh: onRefresh,
             toolbarLeading: { EmptyView() },
@@ -190,6 +208,7 @@ public extension ZenListScreen where ToolbarPrincipal == EmptyView {
     init(
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
+        hidesSharedToolbarBackground: Bool = true,
         backButton: ZenScreenBackButton? = nil,
         onRefresh: (@Sendable () async -> Void)? = nil,
         @ViewBuilder toolbarLeading: @escaping () -> ToolbarLeading,
@@ -199,6 +218,7 @@ public extension ZenListScreen where ToolbarPrincipal == EmptyView {
         self.init(
             navigationTitle: navigationTitle,
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
+            hidesSharedToolbarBackground: hidesSharedToolbarBackground,
             backButton: backButton,
             onRefresh: onRefresh,
             toolbarLeading: toolbarLeading,
@@ -214,6 +234,7 @@ public extension ZenListScreen where ToolbarLeading == EmptyView, ToolbarPrincip
     init(
         navigationTitle: String? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
+        hidesSharedToolbarBackground: Bool = true,
         backButton: ZenScreenBackButton? = nil,
         onRefresh: (@Sendable () async -> Void)? = nil,
         @ViewBuilder content: @escaping () -> Content
@@ -221,6 +242,7 @@ public extension ZenListScreen where ToolbarLeading == EmptyView, ToolbarPrincip
         self.init(
             navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
+            hidesSharedToolbarBackground: hidesSharedToolbarBackground,
             backButton: backButton,
             onRefresh: onRefresh,
             content: content
@@ -233,6 +255,7 @@ public extension ZenListScreen where ToolbarLeading == EmptyView, ToolbarPrincip
     init(
         navigationTitle: String? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
+        hidesSharedToolbarBackground: Bool = true,
         backButton: ZenScreenBackButton? = nil,
         onRefresh: (@Sendable () async -> Void)? = nil,
         @ViewBuilder toolbarTrailing: @escaping () -> ToolbarTrailing,
@@ -241,6 +264,7 @@ public extension ZenListScreen where ToolbarLeading == EmptyView, ToolbarPrincip
         self.init(
             navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
+            hidesSharedToolbarBackground: hidesSharedToolbarBackground,
             backButton: backButton,
             onRefresh: onRefresh,
             toolbarTrailing: toolbarTrailing,
@@ -254,6 +278,7 @@ public extension ZenListScreen where ToolbarLeading == EmptyView, ToolbarTrailin
     init(
         navigationTitle: String? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
+        hidesSharedToolbarBackground: Bool = true,
         backButton: ZenScreenBackButton? = nil,
         onRefresh: (@Sendable () async -> Void)? = nil,
         @ViewBuilder toolbarPrincipal: @escaping () -> ToolbarPrincipal,
@@ -262,6 +287,7 @@ public extension ZenListScreen where ToolbarLeading == EmptyView, ToolbarTrailin
         self.init(
             navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
+            hidesSharedToolbarBackground: hidesSharedToolbarBackground,
             backButton: backButton,
             onRefresh: onRefresh,
             toolbarPrincipal: toolbarPrincipal,
@@ -275,6 +301,7 @@ public extension ZenListScreen where ToolbarPrincipal == EmptyView {
     init(
         navigationTitle: String? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
+        hidesSharedToolbarBackground: Bool = true,
         backButton: ZenScreenBackButton? = nil,
         onRefresh: (@Sendable () async -> Void)? = nil,
         @ViewBuilder toolbarLeading: @escaping () -> ToolbarLeading,
@@ -284,6 +311,7 @@ public extension ZenListScreen where ToolbarPrincipal == EmptyView {
         self.init(
             navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
+            hidesSharedToolbarBackground: hidesSharedToolbarBackground,
             backButton: backButton,
             onRefresh: onRefresh,
             toolbarLeading: toolbarLeading,
@@ -374,17 +402,25 @@ private extension View {
 }
 
 @ToolbarContentBuilder
-private func zenListScreenPrincipalToolbarItem<Content: View>(@ViewBuilder content: () -> Content) -> some ToolbarContent {
-    zenListScreenToolbarItem(placement: .principal, content: content)
+private func zenListScreenPrincipalToolbarItem<Content: View>(
+    hidesSharedBackground: Bool,
+    @ViewBuilder content: () -> Content
+) -> some ToolbarContent {
+    zenListScreenToolbarItem(
+        placement: .principal,
+        hidesSharedBackground: hidesSharedBackground,
+        content: content
+    )
 }
 
 @ToolbarContentBuilder
 private func zenListScreenToolbarItem<Content: View>(
     placement: ToolbarItemPlacement,
+    hidesSharedBackground: Bool,
     @ViewBuilder content: () -> Content
 ) -> some ToolbarContent {
     #if os(iOS)
-    if #available(iOS 26.0, *) {
+    if #available(iOS 26.0, *), hidesSharedBackground {
         ToolbarItem(placement: placement) {
             content()
         }

@@ -440,6 +440,45 @@ struct ZenKitPublicSurfaceSmokeTests {
     }
 
     @Test
+    func zenScreensAllowOptingOutOfHiddenSharedToolbarBackground() {
+        let screen = NavigationStack {
+            ZenScreen(
+                navigationTitle: ZenScreenTitle("Dashboard"),
+                hidesSharedToolbarBackground: false,
+                header: {
+                    EmptyView()
+                },
+                toolbarTrailing: {
+                    ZenIcon(assetName: "UserCircle", size: 18)
+                }
+            ) {
+                ZenStatusBanner(message: "Ready")
+            }
+        }
+
+        let listScreen = NavigationStack {
+            ZenListScreen(
+                navigationTitle: "Settings",
+                hidesSharedToolbarBackground: false,
+                toolbarTrailing: {
+                    ZenButton("Edit", variant: .secondary, size: .sm) {}
+                }
+            ) {
+                Section("Workspace") {
+                    ZenNavigationRow(
+                        title: "Members",
+                        subtitle: "Manage access",
+                        leadingIconAsset: "UsersThree"
+                    )
+                }
+            }
+        }
+
+        _ = screen
+        _ = listScreen
+    }
+
+    @Test
     func zenScreenNavigationContextModifierPublishesDefaults() {
         let view = NavigationStack {
             ZenScreen(
