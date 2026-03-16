@@ -12,6 +12,12 @@ struct ZenKitPublicSurfaceSmokeTests {
         case archived = "Archived"
     }
 
+    private enum NotificationLanguage: String, CaseIterable {
+        case english = "English"
+        case polish = "Polish"
+        case german = "German"
+    }
+
     @Test
     func exportedComponentsComposeInSingleView() {
         let view = ZenScreen(header: {
@@ -269,6 +275,40 @@ struct ZenKitPublicSurfaceSmokeTests {
             }
 
             ZenSkeleton(width: 120, height: 16)
+        }
+
+        _ = view
+    }
+
+    @Test
+    func settingsPrimitivesComposeInsideZenCard() {
+        let view = ZenCard {
+            ZenCardHeader(
+                title: "Notifications",
+                subtitle: "Manage delivery settings",
+                leadingIconSystemName: "bell.badge.fill",
+                iconTint: .zenPrimary
+            )
+
+            ZenSettingGroup {
+                ZenSettingRow(
+                    title: "Access",
+                    subtitle: "System permission granted",
+                    leadingIconSystemName: "checkmark.circle.fill"
+                ) {
+                    Text("Enabled")
+                }
+
+                ZenPickerRow(
+                    title: "Language",
+                    subtitle: "Used for notifications",
+                    leadingIconSystemName: "globe",
+                    selection: .constant(NotificationLanguage.english),
+                    options: NotificationLanguage.allCases
+                ) { option in
+                    Text(option.rawValue)
+                }
+            }
         }
 
         _ = view
