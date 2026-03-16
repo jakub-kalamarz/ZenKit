@@ -10,18 +10,28 @@ public struct ZenNavigationRow: View {
 
     private let title: String
     private let subtitle: String?
-    private let leadingIconAsset: String?
+    private let leadingIconSource: ZenIconSource?
+    private let iconColor: Color?
     private let accessory: ZenNavigationAccessory
 
     public init(
         title: String,
         subtitle: String? = nil,
         leadingIconAsset: String? = nil,
+        leadingIconSystemName: String? = nil,
+        iconColor: Color? = nil,
         accessory: ZenNavigationAccessory = .chevron
     ) {
         self.title = title
         self.subtitle = subtitle
-        self.leadingIconAsset = leadingIconAsset
+        if let leadingIconSystemName {
+            self.leadingIconSource = .system(leadingIconSystemName)
+        } else if let leadingIconAsset {
+            self.leadingIconSource = .asset(leadingIconAsset)
+        } else {
+            self.leadingIconSource = nil
+        }
+        self.iconColor = iconColor
         self.accessory = accessory
     }
 
@@ -30,11 +40,19 @@ public struct ZenNavigationRow: View {
         let cornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
 
         HStack(spacing: ZenSpacing.small) {
-            if let leadingIconAsset {
-                ZenIcon(assetName: leadingIconAsset, size: 14)
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(Color.zenTextMuted)
-                    .frame(width: 20)
+            if let leadingIconSource {
+                if let iconColor {
+                    ZenIconBadge(source: leadingIconSource, color: iconColor)
+                } else {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: theme.resolvedCornerRadius(for: ZenRadius.small), style: .continuous)
+                            .fill(Color.zenSurfaceMuted)
+                            .frame(width: ZenIconBadge.defaultSize, height: ZenIconBadge.defaultSize)
+                        ZenIcon(source: leadingIconSource, size: 14)
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(Color.zenTextMuted)
+                    }
+                }
             }
 
             VStack(alignment: .leading, spacing: 4) {
@@ -74,13 +92,20 @@ public struct ZenNavigationRow: View {
         ZenNavigationRow(
             title: "Account",
             subtitle: "Profile, email, and devices",
-            leadingIconAsset: "UserCircle"
+            leadingIconSystemName: "person.circle.fill",
+            iconColor: .blue
         )
-
         ZenNavigationRow(
             title: "Notifications",
-            leadingIconAsset: "Bell",
+            leadingIconSystemName: "bell.fill",
+            iconColor: .red,
             accessory: .none
+        )
+        ZenNavigationRow(
+            title: "Security",
+            subtitle: "Password and two-factor",
+            leadingIconSystemName: "shield.fill",
+            iconColor: .green
         )
     }
     .padding()

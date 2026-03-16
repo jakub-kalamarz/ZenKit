@@ -1,0 +1,39 @@
+enum ShowcaseScreenID: String, Equatable {
+    // Foundations
+    case theme
+    // Inputs
+    case buttons
+    case textInput
+    case toggle
+    case segmentedControl
+    case pickerRow
+    case stepper
+    case searchBar
+    case tagInput
+    case datePicker
+    // Feedback
+    case spinner
+    case statusBanner
+    case skeleton
+    case emptyState
+    case alert
+    // Navigation
+    case navigationRow
+    case menu
+    case swipeRow
+    // Surfaces
+    case card
+    case field
+    case settings
+    case disclosure
+    case onboardingCard
+    // Data Display
+    case badge
+    case progressBar
+    case avatar
+    case metrics
+    case rating
+    case pageIndicator
+    case colorSwatch
+    case timeline
+}

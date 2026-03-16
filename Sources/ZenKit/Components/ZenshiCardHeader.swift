@@ -4,31 +4,24 @@ public struct ZenCardHeader: View {
     private let title: String
     private let subtitle: String?
     private let leadingIconSystemName: String?
-    private let iconTint: Color
+    private let iconColor: Color?
 
     public init(
         title: String,
         subtitle: String? = nil,
         leadingIconSystemName: String? = nil,
-        iconTint: Color = .zenTextMuted
+        iconColor: Color? = nil
     ) {
         self.title = title
         self.subtitle = subtitle
         self.leadingIconSystemName = leadingIconSystemName
-        self.iconTint = iconTint
+        self.iconColor = iconColor
     }
 
     public var body: some View {
         HStack(alignment: .top, spacing: ZenSpacing.small) {
-            if let leadingIconSystemName {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .fill(iconTint.opacity(0.14))
-                        .frame(width: 36, height: 36)
-
-                    ZenIcon(systemName: leadingIconSystemName, size: 16)
-                        .foregroundStyle(iconTint)
-                }
+            if let leadingIconSystemName, let iconColor {
+                ZenIconBadge(systemName: leadingIconSystemName, color: iconColor, size: 36)
             }
 
             VStack(alignment: .leading, spacing: 4) {
@@ -47,13 +40,28 @@ public struct ZenCardHeader: View {
 }
 
 #Preview {
-    ZenCard {
-        ZenCardHeader(
-            title: "Notifications",
-            subtitle: "Manage delivery settings",
-            leadingIconSystemName: "bell.badge.fill",
-            iconTint: .zenPrimary
-        )
+    VStack(spacing: ZenSpacing.medium) {
+        ZenCard {
+            ZenCardHeader(
+                title: "Notifications",
+                subtitle: "Manage delivery settings",
+                leadingIconSystemName: "bell.badge.fill",
+                iconColor: .red
+            )
+        }
+
+        ZenCard {
+            ZenCardHeader(
+                title: "Security",
+                subtitle: "Password and two-factor auth",
+                leadingIconSystemName: "shield.fill",
+                iconColor: .green
+            )
+        }
+
+        ZenCard {
+            ZenCardHeader(title: "Simple Card")
+        }
     }
     .padding()
     .background(Color.zenBackground)

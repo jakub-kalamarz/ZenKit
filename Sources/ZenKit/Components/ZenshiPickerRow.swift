@@ -4,6 +4,7 @@ public struct ZenPickerRow<Option: Hashable & Sendable, OptionLabel: View>: View
     private let title: String
     private let subtitle: String?
     private let leadingIconSystemName: String?
+    private let iconColor: Color?
     @Binding private var selection: Option
     private let options: [Option]
     private let optionLabel: (Option) -> OptionLabel
@@ -12,6 +13,7 @@ public struct ZenPickerRow<Option: Hashable & Sendable, OptionLabel: View>: View
         title: String,
         subtitle: String? = nil,
         leadingIconSystemName: String? = nil,
+        iconColor: Color? = nil,
         selection: Binding<Option>,
         options: [Option],
         @ViewBuilder optionLabel: @escaping (Option) -> OptionLabel
@@ -19,6 +21,7 @@ public struct ZenPickerRow<Option: Hashable & Sendable, OptionLabel: View>: View
         self.title = title
         self.subtitle = subtitle
         self.leadingIconSystemName = leadingIconSystemName
+        self.iconColor = iconColor
         _selection = selection
         self.options = options
         self.optionLabel = optionLabel
@@ -37,7 +40,8 @@ public struct ZenPickerRow<Option: Hashable & Sendable, OptionLabel: View>: View
             ZenSettingRow(
                 title: title,
                 subtitle: subtitle,
-                leadingIconSystemName: leadingIconSystemName
+                leadingIconSystemName: leadingIconSystemName,
+                iconColor: iconColor
             ) {
                 HStack(spacing: ZenSpacing.xSmall) {
                     optionLabel(selection)

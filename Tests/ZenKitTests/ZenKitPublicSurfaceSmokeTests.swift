@@ -315,6 +315,12 @@ struct ZenKitPublicSurfaceSmokeTests {
     }
 
     @Test
+    func navigationRowUsesSubtleLeadingIconBadgeStyling() {
+        #expect(ZenNavigationRow.leadingIconBadgeSize == 28)
+        #expect(ZenNavigationRow.leadingIconBadgeCornerRadius == 10)
+    }
+
+    @Test
     func catalogComponentsRenderTogether() {
         let view = ZenScreen(header: {
             ZenScreenHeader(title: "Catalog")

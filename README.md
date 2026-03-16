@@ -32,6 +32,13 @@ Reusable SwiftUI design system primitives extracted from the `zenshi` app.
 - Prefer SF Symbols for reusable package UI. Asset-backed icons remain available for app-specific integrations.
 - The package currently depends on `ZenAvatar`.
 
+## Local Development Workspace
+
+Use Tuist to generate a workspace that contains:
+- the `ZenKitShowcase` app
+- `ZenKitShowcaseTests`
+- the local `ZenKit` package as a dependency
+
 ## Suggested Extraction Steps
 
 1. Move `Packages/ZenKit` into a dedicated repository.

@@ -30,12 +30,19 @@ public enum ZenMotion: Sendable {
     case reduced
 }
 
+public enum ZenIconStyle: Sendable {
+    case simple
+    case gradient
+    case single
+}
+
 public struct ZenTheme: Equatable, Sendable {
     public static let `default` = ZenTheme()
 
     public let density: ZenDensity
     public let cornerStyle: ZenCornerStyle
     public let motion: ZenMotion
+    public let iconStyle: ZenIconStyle
     public let typography: ZenTypography
     public let accent: ZenDynamicColor?
     public let colors: ZenThemeColors?
@@ -44,6 +51,7 @@ public struct ZenTheme: Equatable, Sendable {
         density: ZenDensity = .comfortable,
         cornerStyle: ZenCornerStyle = .rounded,
         motion: ZenMotion = .standard,
+        iconStyle: ZenIconStyle = .simple,
         typography: ZenTypography = .default,
         accent: ZenDynamicColor? = nil,
         colors: ZenThemeColors? = nil
@@ -51,6 +59,7 @@ public struct ZenTheme: Equatable, Sendable {
         self.density = density
         self.cornerStyle = cornerStyle
         self.motion = motion
+        self.iconStyle = iconStyle
         self.typography = typography
         self.accent = accent
         self.colors = colors

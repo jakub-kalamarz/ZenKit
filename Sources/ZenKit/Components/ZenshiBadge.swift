@@ -6,7 +6,7 @@ public struct ZenBadge: View {
     private let isSelected: Bool
     private let action: (() -> Void)?
     private let onRemove: (() -> Void)?
-
+    
     public init(_ title: LocalizedStringKey, tone: ZenSemanticTone = .neutral) {
         self.title = title
         self.tone = tone
@@ -14,7 +14,7 @@ public struct ZenBadge: View {
         self.action = nil
         self.onRemove = nil
     }
-
+    
     public init(
         _ title: LocalizedStringKey,
         tone: ZenSemanticTone = .neutral,
@@ -27,7 +27,7 @@ public struct ZenBadge: View {
         self.action = action
         self.onRemove = nil
     }
-
+    
     public init(
         _ title: LocalizedStringKey,
         tone: ZenSemanticTone = .neutral,
@@ -39,7 +39,7 @@ public struct ZenBadge: View {
         self.action = nil
         self.onRemove = onRemove
     }
-
+    
     public init(
         _ title: LocalizedStringKey,
         tone: ZenSemanticTone = .neutral,
@@ -53,20 +53,20 @@ public struct ZenBadge: View {
         self.action = action
         self.onRemove = onRemove
     }
-
+    
     public var body: some View {
         let theme = ZenTheme.current
         let shape = RoundedRectangle(
             cornerRadius: theme.resolvedFullyRoundedCornerRadius(for: 34),
             style: .continuous
         )
-
+        
         HStack(spacing: 0) {
             mainContent
-
+            
             if let onRemove {
                 removeDivider
-
+                
                 Button(action: onRemove) {
                     ZenIcon(systemName: "xmark", size: 11)
                         .font(.system(size: 11, weight: .bold))
@@ -78,19 +78,20 @@ public struct ZenBadge: View {
                 .accessibilityLabel("Remove badge")
             }
         }
-            .background(backgroundColor)
-            .overlay(
-                shape.strokeBorder(borderColor, lineWidth: 1)
-            )
-            .clipShape(shape)
-            .contentShape(shape)
+        .padding(.horizontal, ZenSpacing.xSmall)
+        .background(backgroundColor)
+        .overlay(
+            shape.strokeBorder(borderColor, lineWidth: 1)
+        )
+        .clipShape(shape)
+        .contentShape(shape)
     }
-
+    
     private var foregroundColor: Color {
         if isSelected {
             return .zenPrimaryForeground
         }
-
+        
         switch tone {
         case .neutral:
             return .zenTextPrimary
@@ -102,14 +103,14 @@ public struct ZenBadge: View {
             return .zenCritical
         }
     }
-
+    
     private var backgroundColor: Color {
         if isSelected {
             return .zenPrimary
         }
-
+        
         let colors = ZenTheme.current.resolvedColors
-
+        
         switch tone {
         case .neutral:
             return .zenSurfaceMuted
@@ -121,14 +122,14 @@ public struct ZenBadge: View {
             return colors.criticalSubtle.color
         }
     }
-
+    
     private var borderColor: Color {
         if isSelected {
             return .zenPrimary
         }
-
+        
         let colors = ZenTheme.current.resolvedColors
-
+        
         switch tone {
         case .neutral:
             return .zenBorder
@@ -140,7 +141,7 @@ public struct ZenBadge: View {
             return colors.criticalBorder.color
         }
     }
-
+    
     @ViewBuilder
     private var mainContent: some View {
         if let action {
@@ -153,24 +154,25 @@ public struct ZenBadge: View {
             badgeLabel
         }
     }
-
+    
     private var badgeLabel: some View {
         HStack(spacing: 6) {
             if isSelected {
                 ZenIcon(systemName: "checkmark", size: 11)
                     .font(.system(size: 11, weight: .bold))
             }
-
+            
             Text(title)
                 .lineLimit(1)
         }
         .font(.zenCaption.weight(.semibold))
         .foregroundStyle(foregroundColor)
+        .fixedSize(horizontal: true, vertical: false)
         .padding(.leading, 12)
         .padding(.trailing, onRemove == nil ? 12 : 10)
         .padding(.vertical, 8)
     }
-
+    
     private var removeDivider: some View {
         Rectangle()
             .fill(foregroundColor.opacity(isSelected ? 0.2 : 0.14))
@@ -187,7 +189,7 @@ public struct ZenBadge: View {
             ZenBadge("Review", tone: .warning)
             ZenBadge("Failed", tone: .critical)
         }
-
+        
         HStack(spacing: ZenSpacing.small) {
             ZenBadge("Selected", isSelected: true) {}
             ZenBadge("Swift", onRemove: {})

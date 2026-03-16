@@ -6,6 +6,7 @@ public struct ZenSettingRow<Trailing: View>: View {
     private let title: String
     private let subtitle: String?
     private let leadingIconSystemName: String?
+    private let iconColor: Color?
     private let accessory: ZenNavigationAccessory
     private let trailing: () -> Trailing
 
@@ -13,12 +14,14 @@ public struct ZenSettingRow<Trailing: View>: View {
         title: String,
         subtitle: String? = nil,
         leadingIconSystemName: String? = nil,
+        iconColor: Color? = nil,
         accessory: ZenNavigationAccessory = .none,
         @ViewBuilder trailing: @escaping () -> Trailing
     ) {
         self.title = title
         self.subtitle = subtitle
         self.leadingIconSystemName = leadingIconSystemName
+        self.iconColor = iconColor
         self.accessory = accessory
         self.trailing = trailing
     }
@@ -29,9 +32,13 @@ public struct ZenSettingRow<Trailing: View>: View {
 
         HStack(spacing: ZenSpacing.small) {
             if let leadingIconSystemName {
-                ZenIcon(systemName: leadingIconSystemName, size: 16)
-                    .foregroundStyle(Color.zenTextMuted)
-                    .frame(width: 20, height: 20)
+                if let iconColor {
+                    ZenIconBadge(systemName: leadingIconSystemName, color: iconColor)
+                } else {
+                    ZenIcon(systemName: leadingIconSystemName, size: 16)
+                        .foregroundStyle(Color.zenTextMuted)
+                        .frame(width: 20, height: 20)
+                }
             }
 
             VStack(alignment: .leading, spacing: 4) {
@@ -74,12 +81,14 @@ public extension ZenSettingRow where Trailing == EmptyView {
         title: String,
         subtitle: String? = nil,
         leadingIconSystemName: String? = nil,
+        iconColor: Color? = nil,
         accessory: ZenNavigationAccessory = .none
     ) {
         self.init(
             title: title,
             subtitle: subtitle,
             leadingIconSystemName: leadingIconSystemName,
+            iconColor: iconColor,
             accessory: accessory
         ) {
             EmptyView()
