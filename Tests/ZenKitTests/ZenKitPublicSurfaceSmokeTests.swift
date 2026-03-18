@@ -854,9 +854,7 @@ struct ZenKitPublicSurfaceSmokeTests {
         let view = ZenTimeline {
             ZenTimelineItem(showsSeparator: false) {
                 ZenTimelineIndicator {
-                    Circle()
-                        .fill(Color.zenSuccess.opacity(0.2))
-                        .frame(width: ZenTimelineIndicator.defaultSize, height: ZenTimelineIndicator.defaultSize)
+                    ZenIcon(systemName: "plus.circle.fill", size: 12)
                 }
             } header: {
                 ZenTimelineHeader {
@@ -879,5 +877,15 @@ struct ZenKitPublicSurfaceSmokeTests {
     func timelinePrimitivesExposeExpectedLayoutMetrics() {
         #expect(ZenTimelineIndicator.defaultSize == 28)
         #expect(ZenTimelineSeparator.lineWidth == 1)
+    }
+
+    @Test
+    func timelinePrimitivesUsePrimaryAxisStylingByDefault() {
+        let indicatorStyle = ZenTimelineIndicatorResolvedStyle()
+        let separatorStyle = ZenTimelineSeparatorResolvedStyle()
+
+        #expect(indicatorStyle.backgroundRole == .textPrimary)
+        #expect(indicatorStyle.foregroundRole == .background)
+        #expect(separatorStyle.colorRole == .textPrimary)
     }
 }

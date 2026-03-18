@@ -40,11 +40,11 @@ public struct ZenTimelineItem: View {
         HStack(alignment: .top, spacing: ZenSpacing.small) {
             VStack(spacing: 0) {
                 indicator
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .frame(width: ZenTimelineIndicator.defaultSize, height: ZenTimelineIndicator.defaultSize)
 
                 if showsSeparator {
                     separator
-                        .padding(.top, 2)
                         .frame(maxHeight: .infinity)
                 }
             }
@@ -55,6 +55,7 @@ public struct ZenTimelineItem: View {
                 header
                 content
             }
+            .padding(.bottom, showsSeparator ? ZenSpacing.medium : 0)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -64,13 +65,9 @@ public struct ZenTimelineItem: View {
 #Preview {
     ZenTimeline {
         ZenTimelineItem {
-            ZStack {
-                Circle()
-                    .fill(Color.zenSuccess.opacity(0.15))
-
+            ZenTimelineIndicator {
                 ZenIcon(systemName: "plus.circle.fill", size: 12)
                     .font(.system(size: 12, weight: .medium))
-                    .foregroundStyle(Color.zenSuccess)
             }
         } header: {
             ZenTimelineHeader {
@@ -86,43 +83,45 @@ public struct ZenTimelineItem: View {
         }
 
         ZenTimelineItem {
-            ZStack {
-                Circle()
-                    .fill(Color.zenPrimary.opacity(0.15))
-
-                ZenIcon(systemName: "pencil", size: 12)
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundStyle(Color.zenPrimary)
+            ZenTimelineIndicator {
+                Text("2")
+                    .font(.zenLabel)
             }
         } header: {
             ZenTimelineHeader {
-                ZenTimelineTitle("Description updated")
-                ZenTimelineDate("10:34 AM")
+                ZenTimelineTitle("Implementation")
+                ZenTimelineDate("In Progress")
             }
         } content: {
             ZenTimelineContent {
-                Text("Added acceptance criteria and edge cases")
-                    .font(.zenCaption)
-                    .foregroundStyle(Color.zenTextMuted)
+                ZenCard {
+                    VStack(alignment: .leading, spacing: ZenSpacing.small) {
+                        ZenBadge("Build", tone: .warning)
+
+                        Text("Timeline primitives are wired into the package and showcased with richer nested content.")
+                            .font(.zenCaption)
+                            .foregroundStyle(Color.zenTextMuted)
+                    }
+                }
             }
         }
 
         ZenTimelineItem(showsSeparator: false) {
-            ZStack {
-                Circle()
-                    .fill(Color.zenWarning.opacity(0.15))
-
+            ZenTimelineIndicator {
                 ZenIcon(systemName: "person.badge.plus", size: 12)
                     .font(.system(size: 12, weight: .medium))
-                    .foregroundStyle(Color.zenWarning)
             }
         } header: {
             ZenTimelineHeader {
-                ZenTimelineTitle("Assigned to Sarah")
-                ZenTimelineDate("11:15 AM")
+                ZenTimelineTitle("Ready for QA")
+                ZenTimelineDate("Queued")
             }
         } content: {
-            ZenTimelineContent { EmptyView() }
+            ZenTimelineContent {
+                Text("Final item hides the separator for a clean terminal state.")
+                    .font(.zenCaption)
+                    .foregroundStyle(Color.zenTextMuted)
+            }
         }
     }
     .padding()

@@ -8,7 +8,7 @@ public struct ZenTimeline: View {
     }
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: ZenSpacing.medium) {
+        VStack(alignment: .leading, spacing: 0) {
             content
         }
     }
@@ -39,8 +39,16 @@ public struct ZenTimelineIndicator: View {
     }
 
     public var body: some View {
-        content
-            .frame(width: Self.defaultSize, height: Self.defaultSize)
+        let style = ZenTimelineIndicatorResolvedStyle()
+
+        return ZStack {
+            Circle()
+                .fill(style.backgroundColor)
+
+            content
+                .foregroundStyle(style.foregroundColor)
+        }
+        .frame(width: Self.defaultSize, height: Self.defaultSize)
     }
 }
 
@@ -50,10 +58,52 @@ public struct ZenTimelineSeparator: View {
     public init() {}
 
     public var body: some View {
+        let style = ZenTimelineSeparatorResolvedStyle()
+
         Rectangle()
-            .fill(Color.zenBorder)
+            .fill(style.color)
             .frame(width: Self.lineWidth)
             .frame(maxHeight: .infinity)
+    }
+}
+
+struct ZenTimelineIndicatorResolvedStyle {
+    let backgroundRole: ZenTimelineColorRole
+    let foregroundRole: ZenTimelineColorRole
+
+    var backgroundColor: Color { backgroundRole.color }
+    var foregroundColor: Color { foregroundRole.color }
+
+    init() {
+        backgroundRole = .textPrimary
+        foregroundRole = .background
+    }
+}
+
+struct ZenTimelineSeparatorResolvedStyle {
+    let colorRole: ZenTimelineColorRole
+
+    var color: Color { colorRole.color }
+
+    init() {
+        colorRole = .textPrimary
+    }
+}
+
+enum ZenTimelineColorRole {
+    case background
+    case primary
+    case textPrimary
+
+    var color: Color {
+        switch self {
+        case .background:
+            return .zenBackground
+        case .primary:
+            return .zenPrimary
+        case .textPrimary:
+            return .zenTextPrimary
+        }
     }
 }
 
