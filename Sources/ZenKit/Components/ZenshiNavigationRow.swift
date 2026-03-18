@@ -6,6 +6,9 @@ public enum ZenNavigationAccessory {
 }
 
 public struct ZenNavigationRow: View {
+    public static let leadingIconBadgeSize: CGFloat = ZenIconBadge.defaultSize
+    public static let leadingIconBadgeCornerRadius: CGFloat = 10
+
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
 
     private let title: String
@@ -19,6 +22,7 @@ public struct ZenNavigationRow: View {
         subtitle: String? = nil,
         leadingIconAsset: String? = nil,
         leadingIconSystemName: String? = nil,
+        iconTint: Color? = nil,
         iconColor: Color? = nil,
         accessory: ZenNavigationAccessory = .chevron
     ) {
@@ -31,7 +35,7 @@ public struct ZenNavigationRow: View {
         } else {
             self.leadingIconSource = nil
         }
-        self.iconColor = iconColor
+        self.iconColor = iconColor ?? iconTint
         self.accessory = accessory
     }
 
@@ -45,9 +49,9 @@ public struct ZenNavigationRow: View {
                     ZenIconBadge(source: leadingIconSource, color: iconColor)
                 } else {
                     ZStack {
-                        RoundedRectangle(cornerRadius: theme.resolvedCornerRadius(for: ZenRadius.small), style: .continuous)
+                        RoundedRectangle(cornerRadius: Self.leadingIconBadgeCornerRadius, style: .continuous)
                             .fill(Color.zenSurfaceMuted)
-                            .frame(width: ZenIconBadge.defaultSize, height: ZenIconBadge.defaultSize)
+                            .frame(width: Self.leadingIconBadgeSize, height: Self.leadingIconBadgeSize)
                         ZenIcon(source: leadingIconSource, size: 14)
                             .font(.system(size: 14, weight: .semibold))
                             .foregroundStyle(Color.zenTextMuted)
