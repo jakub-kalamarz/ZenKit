@@ -1,0 +1,578 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		41E85173D09B3FA024891DFA /* ZenKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7538835ABBAE0BF7F2FB6422 /* ZenKit */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A4F313633A68A6B3071917CE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A82E2254E72E5EE3FD3740C3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AC75BC29C19C99146C11D128;
+			remoteInfo = ZenKitShowcase;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		010C6CA47619BB0FDD46BAB8 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4DE6970B1D6890858179C5CD /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		845B528AB5112DAC05F4D2C3 /* ZenKit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ZenKit; path = .; sourceTree = "<group>"; };
+		8DF6A58CE9C56B07966D2A68 /* ZenKitShowcaseTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "ZenKitShowcaseTests-Info.plist"; sourceTree = "<group>"; };
+		C3EADD9F8DFCBDCB4566574F /* ZenKitShowcaseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZenKitShowcaseTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CF970335E19CBBE84D455A43 /* ZenKitShowcase-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "ZenKitShowcase-Info.plist"; sourceTree = "<group>"; };
+		E5786131813AE174D83C42F0 /* ZenKitShowcase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZenKitShowcase.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		534307EF09F5439EBBF1AFE1 /* Sources */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		5F69A83642CECE0187470E09 /* Tests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		A1D5B5E50B708E35AE249F11 /* Resources */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0A852AD4A20486B9E847FFEA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41E85173D09B3FA024891DFA /* ZenKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB673A007490733D0542388C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		129D30049F0AC3EB5B1C3555 /* InfoPlists */ = {
+			isa = PBXGroup;
+			children = (
+				CF970335E19CBBE84D455A43 /* ZenKitShowcase-Info.plist */,
+				8DF6A58CE9C56B07966D2A68 /* ZenKitShowcaseTests-Info.plist */,
+			);
+			path = InfoPlists;
+			sourceTree = "<group>";
+		};
+		54E0E49B4348C2E0C0159E6B = {
+			isa = PBXGroup;
+			children = (
+				5B8D429F4681F6FC198190B7 /* Products */,
+				D8E6A1E201320337C342DDBB /* Project */,
+				793700A7F6E2F256B072C2BE /* Packages */,
+			);
+			sourceTree = "<group>";
+		};
+		5B8D429F4681F6FC198190B7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E5786131813AE174D83C42F0 /* ZenKitShowcase.app */,
+				C3EADD9F8DFCBDCB4566574F /* ZenKitShowcaseTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6C931C7D191EC28871F98F01 /* Derived */ = {
+			isa = PBXGroup;
+			children = (
+				129D30049F0AC3EB5B1C3555 /* InfoPlists */,
+			);
+			path = Derived;
+			sourceTree = "<group>";
+		};
+		793700A7F6E2F256B072C2BE /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				845B528AB5112DAC05F4D2C3 /* ZenKit */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		A1E8C7EA6C3CC1718C3ED6AD /* ZenKitShowcase */ = {
+			isa = PBXGroup;
+			children = (
+				A1D5B5E50B708E35AE249F11 /* Resources */,
+				534307EF09F5439EBBF1AFE1 /* Sources */,
+				5F69A83642CECE0187470E09 /* Tests */,
+			);
+			path = ZenKitShowcase;
+			sourceTree = "<group>";
+		};
+		D8E6A1E201320337C342DDBB /* Project */ = {
+			isa = PBXGroup;
+			children = (
+				E06930365CD3580AA0051EB6 /* App */,
+				6C931C7D191EC28871F98F01 /* Derived */,
+			);
+			name = Project;
+			sourceTree = "<group>";
+		};
+		E06930365CD3580AA0051EB6 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				A1E8C7EA6C3CC1718C3ED6AD /* ZenKitShowcase */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8607C65564AD64659C269CD5 /* ZenKitShowcaseTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CDAB062CF73776DC008C4C1D /* Build configuration list for PBXNativeTarget "ZenKitShowcaseTests" */;
+			buildPhases = (
+				95F802A63C58F8BB10CD9D34 /* Sources */,
+				040F53C4EEEE20AEADEC0FCA /* Resources */,
+				CB673A007490733D0542388C /* Frameworks */,
+				010C6CA47619BB0FDD46BAB8 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CE60AC373D0A1B7A42DB8D86 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				5F69A83642CECE0187470E09 /* Tests */,
+			);
+			name = ZenKitShowcaseTests;
+			packageProductDependencies = (
+			);
+			productName = ZenKitShowcaseTests;
+			productReference = C3EADD9F8DFCBDCB4566574F /* ZenKitShowcaseTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		AC75BC29C19C99146C11D128 /* ZenKitShowcase */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 460ADB8AD9AC402E0BA5D71D /* Build configuration list for PBXNativeTarget "ZenKitShowcase" */;
+			buildPhases = (
+				D2ADFA35418B7EDF61A87D0C /* Sources */,
+				E167CD00F195FDD99FFA8498 /* Resources */,
+				0A852AD4A20486B9E847FFEA /* Frameworks */,
+				4DE6970B1D6890858179C5CD /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				534307EF09F5439EBBF1AFE1 /* Sources */,
+				A1D5B5E50B708E35AE249F11 /* Resources */,
+			);
+			name = ZenKitShowcase;
+			packageProductDependencies = (
+				7538835ABBAE0BF7F2FB6422 /* ZenKit */,
+			);
+			productName = ZenKitShowcase;
+			productReference = E5786131813AE174D83C42F0 /* ZenKitShowcase.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A82E2254E72E5EE3FD3740C3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				ORGANIZATIONNAME = zenshi;
+				TargetAttributes = {
+					8607C65564AD64659C269CD5 = {
+						TestTargetID = AC75BC29C19C99146C11D128;
+					};
+				};
+			};
+			buildConfigurationList = E1629745B32F4A8E81850B84 /* Build configuration list for PBXProject "ZenKit" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 54E0E49B4348C2E0C0159E6B;
+			packageReferences = (
+				B391E4517927762B938BD09D /* XCLocalSwiftPackageReference "." */,
+			);
+			productRefGroup = 5B8D429F4681F6FC198190B7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AC75BC29C19C99146C11D128 /* ZenKitShowcase */,
+				8607C65564AD64659C269CD5 /* ZenKitShowcaseTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		040F53C4EEEE20AEADEC0FCA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E167CD00F195FDD99FFA8498 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		95F802A63C58F8BB10CD9D34 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2ADFA35418B7EDF61A87D0C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CE60AC373D0A1B7A42DB8D86 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = ZenKitShowcase;
+			target = AC75BC29C19C99146C11D128 /* ZenKitShowcase */;
+			targetProxy = A4F313633A68A6B3071917CE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0B1E57180F2548B70F1F43BE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = "Derived/InfoPlists/ZenKitShowcaseTests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.zenshi.ZenKitShowcaseTests;
+				PRODUCT_NAME = ZenKitShowcaseTests;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+					"$(inherited)",
+					DEBUG,
+				);
+				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ZenKitShowcase.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ZenKitShowcase";
+				TEST_TARGET_NAME = ZenKitShowcase;
+			};
+			name = Debug;
+		};
+		667A4955643AD4921373E507 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		75351E47ABF8FAF0B8E063F4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "Derived/InfoPlists/ZenKitShowcase-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.zenshi.ZenKitShowcase;
+				PRODUCT_NAME = ZenKitShowcase;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		AF145820377281BEA43CC714 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "Derived/InfoPlists/ZenKitShowcase-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.zenshi.ZenKitShowcase;
+				PRODUCT_NAME = ZenKitShowcase;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+					"$(inherited)",
+					DEBUG,
+				);
+				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E752D73D3C38A69354DDC04B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = "Derived/InfoPlists/ZenKitShowcaseTests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.zenshi.ZenKitShowcaseTests;
+				PRODUCT_NAME = ZenKitShowcaseTests;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ZenKitShowcase.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ZenKitShowcase";
+				TEST_TARGET_NAME = ZenKitShowcase;
+			};
+			name = Release;
+		};
+		EF95FF90CA99F2E08C38D658 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		460ADB8AD9AC402E0BA5D71D /* Build configuration list for PBXNativeTarget "ZenKitShowcase" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AF145820377281BEA43CC714 /* Debug */,
+				75351E47ABF8FAF0B8E063F4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CDAB062CF73776DC008C4C1D /* Build configuration list for PBXNativeTarget "ZenKitShowcaseTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0B1E57180F2548B70F1F43BE /* Debug */,
+				E752D73D3C38A69354DDC04B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E1629745B32F4A8E81850B84 /* Build configuration list for PBXProject "ZenKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EF95FF90CA99F2E08C38D658 /* Debug */,
+				667A4955643AD4921373E507 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		B391E4517927762B938BD09D /* XCLocalSwiftPackageReference "." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = .;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		7538835ABBAE0BF7F2FB6422 /* ZenKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ZenKit;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = A82E2254E72E5EE3FD3740C3 /* Project object */;
+}

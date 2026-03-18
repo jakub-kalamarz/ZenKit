@@ -1,0 +1,15 @@
+{
+  "originHash" : "f010e447c85311a6d4a47118eb38400c3ccd7f271de70ac0e7689e77aa5cdb9c",
+  "pins" : [
+    {
+      "identity" : "zenavatar",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jakub-kalamarz/ZenAvatar.git",
+      "state" : {
+        "revision" : "fde9b264f5b98a2216382a59b9ce5dce6dc392f6",
+        "version" : "1.1.0"
+      }
+    }
+  ],
+  "version" : 3
+}

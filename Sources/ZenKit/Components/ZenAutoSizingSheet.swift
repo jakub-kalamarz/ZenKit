@@ -1,5 +1,7 @@
 import SwiftUI
 
+private let zenAutoSizingSheetDefaultHeight: CGFloat = 320
+
 public extension View {
     func zenAutoSizingSheet<SheetContent: View>(
         isPresented: Binding<Bool>,
@@ -22,12 +24,16 @@ private struct ZenAutoSizingSheetModifier<SheetContent: View>: ViewModifier {
     let onDismiss: (() -> Void)?
     let content: () -> SheetContent
 
-    @State private var measuredHeight: CGFloat = 320
+    @State private var presentationDetents: Set<PresentationDetent> = [.height(zenAutoSizingSheetDefaultHeight)]
+    @State private var selectedPresentationDetent: PresentationDetent = .height(zenAutoSizingSheetDefaultHeight)
+    @State private var detentCleanupToken = 0
 
     func body(content host: Content) -> some View {
         host.sheet(isPresented: $isPresented, onDismiss: onDismiss) {
             ZenAutoSizingSheetContent(
-                measuredHeight: $measuredHeight,
+                presentationDetents: $presentationDetents,
+                selectedPresentationDetent: $selectedPresentationDetent,
+                detentCleanupToken: $detentCleanupToken,
                 content: self.content
             )
         }
@@ -35,7 +41,9 @@ private struct ZenAutoSizingSheetModifier<SheetContent: View>: ViewModifier {
 }
 
 private struct ZenAutoSizingSheetContent<SheetContent: View>: View {
-    @Binding var measuredHeight: CGFloat
+    @Binding var presentationDetents: Set<PresentationDetent>
+    @Binding var selectedPresentationDetent: PresentationDetent
+    @Binding var detentCleanupToken: Int
 
     let content: () -> SheetContent
 
@@ -52,13 +60,24 @@ private struct ZenAutoSizingSheetContent<SheetContent: View>: View {
             )
             .onPreferenceChange(ZenAutoSizingSheetHeightPreferenceKey.self) { height in
                 let nextHeight = max(height, 1)
-                guard abs(nextHeight - measuredHeight) > 0.5 else { return }
+                let nextDetent = PresentationDetent.height(nextHeight)
+                guard nextDetent != selectedPresentationDetent else { return }
+
+                presentationDetents.insert(nextDetent)
 
                 withAnimation(.easeInOut(duration: 0.2)) {
-                    measuredHeight = nextHeight
+                    selectedPresentationDetent = nextDetent
+                }
+
+                detentCleanupToken += 1
+                let cleanupToken = detentCleanupToken
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    guard cleanupToken == detentCleanupToken else { return }
+                    presentationDetents = [selectedPresentationDetent]
                 }
             }
-            .presentationDetents([.height(measuredHeight)])
+            .presentationDetents(presentationDetents, selection: $selectedPresentationDetent)
     }
 }
 

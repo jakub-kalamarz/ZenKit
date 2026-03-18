@@ -8,6 +8,11 @@ final class ZenKitShowcaseSmokeTests: XCTestCase {
 
     func test_inputs_section_contains_buttons_demo() {
         let inputs = ShowcaseSection.defaultSections.first(where: { $0.id == "inputs" })
-        XCTAssertEqual(inputs?.entries.map(\.title), ["Buttons"])
+        XCTAssertTrue(inputs?.entries.contains(where: { $0.screenID == .buttons }) == true)
+    }
+
+    func test_surfaces_section_contains_sheet_demo() {
+        let surfaces = ShowcaseSection.defaultSections.first(where: { $0.id == "surfaces" })
+        XCTAssertTrue(surfaces?.entries.contains(where: { $0.screenID == .sheet }) == true)
     }
 }

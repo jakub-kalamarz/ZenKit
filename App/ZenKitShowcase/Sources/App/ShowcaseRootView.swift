@@ -68,6 +68,8 @@ struct ShowcaseRootView: View {
             SettingsShowcaseScreen()
         case .disclosure:
             DisclosureShowcaseScreen()
+        case .sheet:
+            SheetShowcaseScreen()
         case .onboardingCard:
             OnboardingCardShowcaseScreen()
         // Data Display
