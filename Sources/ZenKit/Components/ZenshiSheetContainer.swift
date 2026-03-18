@@ -68,30 +68,53 @@ public struct ZenSheetContainer<Content: View, Footer: View>: View {
     }
 }
 
-#Preview {
-    ZStack {
-        Color.zenBackground
-            .ignoresSafeArea()
+private struct ZenSheetContainerPreview: View {
+    @State private var isPresented: Bool
 
-        ZenSheetContainer(
-            title: "Share workspace",
-            subtitle: "Invite collaborators by email"
-        ) {
-            ZenFieldGroup {
-                ZenField(label: "Email", message: "We’ll send them an invite") {
-                    ZenTextInput(
-                        text: .constant("new-teammate@example.com"),
-                        prompt: "Email",
-                        leadingIconAsset: "Envelope"
-                    )
-                }
-            }
-        } footer: {
-            HStack(spacing: ZenSpacing.small) {
-                ZenButton("Cancel", variant: .secondary) {}
-                ZenButton("Send Invite", fullWidth: true) {}
+    init(isPresented: Bool = false) {
+        _isPresented = State(initialValue: isPresented)
+    }
+
+    var body: some View {
+        ZStack {
+            Color.zenBackground
+                .ignoresSafeArea()
+
+            ZenButton("Open sheet") {
+                isPresented = true
             }
         }
-        .padding()
+        .zenAutoSizingSheet(isPresented: $isPresented) {
+            ZenSheetContainer(
+                title: "Share workspace",
+                subtitle: "Invite collaborators by email"
+            ) {
+                ZenFieldGroup {
+                    ZenField(label: "Email", message: "We’ll send them an invite") {
+                        ZenTextInput(
+                            text: .constant("new-teammate@example.com"),
+                            prompt: "Email",
+                            leadingIconAsset: "Envelope"
+                        )
+                    }
+                }
+            } footer: {
+                HStack(spacing: ZenSpacing.small) {
+                    ZenButton("Cancel", variant: .secondary) {
+                        isPresented = false
+                    }
+                    ZenButton("Send Invite", fullWidth: true) {}
+                }
+            }
+            .padding()
+        }
     }
+}
+
+#Preview {
+    ZenSheetContainerPreview()
+}
+
+#Preview("Presented") {
+    ZenSheetContainerPreview(isPresented: true)
 }
