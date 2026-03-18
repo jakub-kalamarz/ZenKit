@@ -59,6 +59,7 @@ public struct ZenIconBadge: View {
     }
 }
 
+#if canImport(UIKit)
 #Preview {
     VStack(spacing: ZenSpacing.large) {
         ZenThemePreviewScope(theme: ZenTheme(iconStyle: .simple)) {
@@ -103,3 +104,4 @@ public struct ZenIconBadge: View {
     .padding()
     .background(Color.zenBackground)
 }
+#endif

@@ -10,12 +10,13 @@ public struct ZenCardHeader: View {
         title: String,
         subtitle: String? = nil,
         leadingIconSystemName: String? = nil,
+        iconTint: Color? = nil,
         iconColor: Color? = nil
     ) {
         self.title = title
         self.subtitle = subtitle
         self.leadingIconSystemName = leadingIconSystemName
-        self.iconColor = iconColor
+        self.iconColor = iconColor ?? iconTint
     }
 
     public var body: some View {

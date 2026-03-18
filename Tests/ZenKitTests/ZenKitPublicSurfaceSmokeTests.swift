@@ -836,4 +836,36 @@ struct ZenKitPublicSurfaceSmokeTests {
 
         _ = view
     }
+
+    @Test
+    func timelinePrimitivesComposeFromPublicSurface() {
+        let view = ZenTimeline {
+            ZenTimelineItem(showsSeparator: false) {
+                ZenTimelineIndicator {
+                    Circle()
+                        .fill(Color.zenSuccess.opacity(0.2))
+                        .frame(width: ZenTimelineIndicator.defaultSize, height: ZenTimelineIndicator.defaultSize)
+                }
+            } header: {
+                ZenTimelineHeader {
+                    ZenTimelineTitle("Task created")
+                    ZenTimelineDate("9:00 AM")
+                }
+            } separator: {
+                ZenTimelineSeparator()
+            } content: {
+                ZenTimelineContent {
+                    Text("Created by Alex Johnson")
+                }
+            }
+        }
+
+        _ = view
+    }
+
+    @Test
+    func timelinePrimitivesExposeExpectedLayoutMetrics() {
+        #expect(ZenTimelineIndicator.defaultSize == 28)
+        #expect(ZenTimelineSeparator.lineWidth == 1)
+    }
 }

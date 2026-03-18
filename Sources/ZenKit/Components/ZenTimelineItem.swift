@@ -1,117 +1,129 @@
 import SwiftUI
 
 public struct ZenTimelineItem: View {
-    private let iconSystemName: String
-    private let iconColor: Color
-    private let title: String
-    private let subtitle: String?
-    private let timestamp: String?
-    private let isLast: Bool
+    private let showsSeparator: Bool
+    private let indicator: AnyView
+    private let header: AnyView
+    private let separator: AnyView
+    private let content: AnyView
 
-    public init(
-        iconSystemName: String,
-        iconColor: Color = Color.zenTextMuted,
-        title: String,
-        subtitle: String? = nil,
-        timestamp: String? = nil,
-        isLast: Bool = false
+    public init<Indicator: View, Header: View, Content: View>(
+        showsSeparator: Bool = true,
+        @ViewBuilder indicator: () -> Indicator,
+        @ViewBuilder header: () -> Header,
+        @ViewBuilder content: () -> Content
     ) {
-        self.iconSystemName = iconSystemName
-        self.iconColor = iconColor
-        self.title = title
-        self.subtitle = subtitle
-        self.timestamp = timestamp
-        self.isLast = isLast
+        self.init(
+            showsSeparator: showsSeparator,
+            indicator: indicator,
+            header: header,
+            separator: { ZenTimelineSeparator() },
+            content: content
+        )
+    }
+
+    public init<Indicator: View, Header: View, Separator: View, Content: View>(
+        showsSeparator: Bool = true,
+        @ViewBuilder indicator: () -> Indicator,
+        @ViewBuilder header: () -> Header,
+        @ViewBuilder separator: () -> Separator,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.showsSeparator = showsSeparator
+        self.indicator = AnyView(indicator())
+        self.header = AnyView(header())
+        self.separator = AnyView(separator())
+        self.content = AnyView(content())
     }
 
     public var body: some View {
         HStack(alignment: .top, spacing: ZenSpacing.small) {
-            // Left column: dot + vertical line
             VStack(spacing: 0) {
-                ZStack {
-                    Circle()
-                        .fill(iconColor.opacity(0.15))
-                        .frame(width: 28, height: 28)
+                indicator
+                    .frame(width: ZenTimelineIndicator.defaultSize, height: ZenTimelineIndicator.defaultSize)
 
-                    ZenIcon(systemName: iconSystemName, size: 12)
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundStyle(iconColor)
-                }
-
-                if !isLast {
-                    Rectangle()
-                        .fill(Color.zenBorder)
-                        .frame(width: 1)
-                        .frame(maxHeight: .infinity)
+                if showsSeparator {
+                    separator
                         .padding(.top, 2)
+                        .frame(maxHeight: .infinity)
                 }
             }
+            .frame(width: ZenTimelineIndicator.defaultSize)
+            .frame(maxHeight: .infinity, alignment: .top)
 
-            // Right content
-            VStack(alignment: .leading, spacing: 4) {
-                HStack {
-                    Text(title)
-                        .font(.zenLabel)
-                        .foregroundStyle(Color.zenTextPrimary)
-
-                    Spacer()
-
-                    if let timestamp {
-                        Text(timestamp)
-                            .font(.zenCaption)
-                            .foregroundStyle(Color.zenTextMuted)
-                    }
-                }
-
-                if let subtitle {
-                    Text(subtitle)
-                        .font(.zenCaption)
-                        .foregroundStyle(Color.zenTextMuted)
-                }
-
-                if !isLast {
-                    Spacer()
-                        .frame(minHeight: ZenSpacing.medium)
-                }
+            VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
+                header
+                content
             }
-            .padding(.top, 4)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
 #Preview {
-    VStack(alignment: .leading, spacing: 0) {
-        ZenTimelineItem(
-            iconSystemName: "plus.circle.fill",
-            iconColor: Color.zenSuccess,
-            title: "Task created",
-            subtitle: "Created by Alex Johnson",
-            timestamp: "9:00 AM"
-        )
+    ZenTimeline {
+        ZenTimelineItem {
+            ZStack {
+                Circle()
+                    .fill(Color.zenSuccess.opacity(0.15))
 
-        ZenTimelineItem(
-            iconSystemName: "pencil",
-            iconColor: Color.zenPrimary,
-            title: "Description updated",
-            subtitle: "Added acceptance criteria and edge cases",
-            timestamp: "10:34 AM"
-        )
+                ZenIcon(systemName: "plus.circle.fill", size: 12)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(Color.zenSuccess)
+            }
+        } header: {
+            ZenTimelineHeader {
+                ZenTimelineTitle("Task created")
+                ZenTimelineDate("9:00 AM")
+            }
+        } content: {
+            ZenTimelineContent {
+                Text("Created by Alex Johnson")
+                    .font(.zenCaption)
+                    .foregroundStyle(Color.zenTextMuted)
+            }
+        }
 
-        ZenTimelineItem(
-            iconSystemName: "person.badge.plus",
-            iconColor: Color.zenWarning,
-            title: "Assigned to Sarah",
-            timestamp: "11:15 AM"
-        )
+        ZenTimelineItem {
+            ZStack {
+                Circle()
+                    .fill(Color.zenPrimary.opacity(0.15))
 
-        ZenTimelineItem(
-            iconSystemName: "checkmark.circle.fill",
-            iconColor: Color.zenSuccess,
-            title: "Marked as complete",
-            subtitle: "Closed by Sarah Chen",
-            timestamp: "2:52 PM",
-            isLast: true
-        )
+                ZenIcon(systemName: "pencil", size: 12)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(Color.zenPrimary)
+            }
+        } header: {
+            ZenTimelineHeader {
+                ZenTimelineTitle("Description updated")
+                ZenTimelineDate("10:34 AM")
+            }
+        } content: {
+            ZenTimelineContent {
+                Text("Added acceptance criteria and edge cases")
+                    .font(.zenCaption)
+                    .foregroundStyle(Color.zenTextMuted)
+            }
+        }
+
+        ZenTimelineItem(showsSeparator: false) {
+            ZStack {
+                Circle()
+                    .fill(Color.zenWarning.opacity(0.15))
+
+                ZenIcon(systemName: "person.badge.plus", size: 12)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(Color.zenWarning)
+            }
+        } header: {
+            ZenTimelineHeader {
+                ZenTimelineTitle("Assigned to Sarah")
+                ZenTimelineDate("11:15 AM")
+            }
+        } content: {
+            ZenTimelineContent { EmptyView() }
+        }
     }
     .padding()
     .background(Color.zenBackground)
