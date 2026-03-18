@@ -1,67 +1,74 @@
 import SwiftUI
 
-public struct ZenTimeline<Content: View>: View {
-    private let content: Content
+public struct ZenTimeline: View {
+    private let content: AnyView
 
-    public init(@ViewBuilder content: () -> Content) {
-        self.content = content()
+    public init<Content: View>(@ViewBuilder content: () -> Content) {
+        self.content = AnyView(content())
     }
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: ZenSpacing.medium) {
             content
         }
     }
 }
 
-public struct ZenTimelineHeader<Content: View>: View {
-    private let content: Content
+public struct ZenTimelineHeader: View {
+    private let content: AnyView
 
-    public init(@ViewBuilder content: () -> Content) {
-        self.content = content()
+    public init<Content: View>(@ViewBuilder content: () -> Content) {
+        self.content = AnyView(content())
     }
 
     public var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: ZenSpacing.small) {
             content
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
-public struct ZenTimelineIndicator<Content: View>: View {
-    private let content: Content
+public struct ZenTimelineIndicator: View {
+    public static let defaultSize: CGFloat = 28
 
-    public init(@ViewBuilder content: () -> Content) {
-        self.content = content()
+    private let content: AnyView
+
+    public init<Content: View>(@ViewBuilder content: () -> Content) {
+        self.content = AnyView(content())
     }
 
     public var body: some View {
         content
+            .frame(width: Self.defaultSize, height: Self.defaultSize)
     }
 }
 
 public struct ZenTimelineSeparator: View {
+    public static let lineWidth: CGFloat = 1
+
     public init() {}
 
     public var body: some View {
         Rectangle()
             .fill(Color.zenBorder)
-            .frame(width: 1)
+            .frame(width: Self.lineWidth)
             .frame(maxHeight: .infinity)
     }
 }
 
-public struct ZenTimelineContent<Content: View>: View {
-    private let content: Content
+public struct ZenTimelineContent: View {
+    private let content: AnyView
 
-    public init(@ViewBuilder content: () -> Content) {
-        self.content = content()
+    public init<Content: View>(@ViewBuilder content: () -> Content) {
+        self.content = AnyView(content())
     }
 
     public var body: some View {
         VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
             content
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -76,6 +83,7 @@ public struct ZenTimelineTitle: View {
         Text(title)
             .font(.zenLabel)
             .foregroundStyle(Color.zenTextPrimary)
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
