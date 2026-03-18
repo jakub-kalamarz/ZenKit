@@ -77,7 +77,7 @@ struct TimelineShowcaseScreen: View {
                         title: "Verification",
                         state: "Queued",
                         summary: "Run package tests and the iOS showcase build before release.",
-                        badge: ("QA", .default),
+                        badge: ("QA", .neutral),
                         showsSeparator: false
                     )
                 }
@@ -115,7 +115,7 @@ struct TimelineShowcaseScreen: View {
         title: String,
         state: String,
         summary: String,
-        badge: (label: String, tone: ZenBadgeTone),
+        badge: (label: LocalizedStringKey, tone: ZenSemanticTone),
         showsSeparator: Bool = true
     ) -> some View {
         ZenTimelineItem(showsSeparator: showsSeparator) {
