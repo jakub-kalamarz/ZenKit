@@ -1,12 +1,11 @@
 import SwiftUI
 
 public struct ZenTimelineItem: View {
-    private let iconSystemName: String
-    private let iconColor: Color
-    private let title: String
-    private let subtitle: String?
-    private let timestamp: String?
-    private let isLast: Bool
+    private let content: AnyView
+
+    public init<Content: View>(@ViewBuilder content: () -> Content) {
+        self.content = AnyView(content())
+    }
 
     public init(
         iconSystemName: String,
@@ -16,17 +15,31 @@ public struct ZenTimelineItem: View {
         timestamp: String? = nil,
         isLast: Bool = false
     ) {
-        self.iconSystemName = iconSystemName
-        self.iconColor = iconColor
-        self.title = title
-        self.subtitle = subtitle
-        self.timestamp = timestamp
-        self.isLast = isLast
+        self.content = AnyView(LegacyTimelineItem(
+            iconSystemName: iconSystemName,
+            iconColor: iconColor,
+            title: title,
+            subtitle: subtitle,
+            timestamp: timestamp,
+            isLast: isLast
+        ))
     }
 
     public var body: some View {
+        content
+    }
+}
+
+private struct LegacyTimelineItem: View {
+    let iconSystemName: String
+    let iconColor: Color
+    let title: String
+    let subtitle: String?
+    let timestamp: String?
+    let isLast: Bool
+
+    var body: some View {
         HStack(alignment: .top, spacing: ZenSpacing.small) {
-            // Left column: dot + vertical line
             VStack(spacing: 0) {
                 ZStack {
                     Circle()
@@ -47,7 +60,6 @@ public struct ZenTimelineItem: View {
                 }
             }
 
-            // Right content
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
                     Text(title)

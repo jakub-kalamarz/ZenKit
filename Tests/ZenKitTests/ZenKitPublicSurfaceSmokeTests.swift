@@ -836,4 +836,30 @@ struct ZenKitPublicSurfaceSmokeTests {
 
         _ = view
     }
+
+    @Test
+    func timelinePrimitivesComposeFromPublicSurface() {
+        let view = ZenTimeline {
+            ZenTimelineItem {
+                ZenTimelineHeader {
+                    ZenTimelineTitle("Task created")
+                    ZenTimelineDate("9:00 AM")
+                }
+
+                ZenTimelineIndicator {
+                    Circle()
+                        .fill(Color.zenSuccess.opacity(0.2))
+                        .frame(width: 28, height: 28)
+                }
+
+                ZenTimelineSeparator()
+
+                ZenTimelineContent {
+                    Text("Created by Alex Johnson")
+                }
+            }
+        }
+
+        _ = view
+    }
 }
