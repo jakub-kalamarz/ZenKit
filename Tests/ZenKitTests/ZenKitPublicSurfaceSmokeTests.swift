@@ -278,20 +278,20 @@ struct ZenKitPublicSurfaceSmokeTests {
             ZenBadge("Swift", onRemove: {})
             ZenBadge("Design", tone: .warning, isSelected: true, action: {}, onRemove: {})
 
-            ZenListSection {
+            ZenSection {
                 ZenNavigationRow(
                     title: "Members",
                     subtitle: "Manage access",
                     leadingIconAsset: "UsersThree"
                 )
             } header: {
-                ZenListSectionHeader {
+                ZenSectionHeader {
                     Text("Workspace")
                 } subtitle: {
                     Text("Shared settings")
                 }
             } footer: {
-                ZenListSectionFooter {
+                ZenSectionFooter {
                     Text("Admins can update access.")
                 }
             }
@@ -350,12 +350,12 @@ struct ZenKitPublicSurfaceSmokeTests {
             VStack(spacing: ZenSpacing.small) {
                 ZenBadge("Beta")
                 ZenSkeleton(height: 14)
-                ZenListSection {
+                ZenSection {
                     ZenField(label: "Email") {
                         ZenTextInput(text: .constant(""), prompt: "Email")
                     }
                 } header: {
-                    ZenListSectionHeader {
+                    ZenSectionHeader {
                         Text("Inputs")
                     }
                 }

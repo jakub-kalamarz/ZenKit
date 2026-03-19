@@ -51,6 +51,7 @@ struct ShowcaseSection: Identifiable, Equatable {
             title: "Surfaces",
             entries: [
                 .init(id: "card", title: "Card", screenID: .card),
+                .init(id: "section", title: "Section", screenID: .section),
                 .init(id: "field", title: "Field", screenID: .field),
                 .init(id: "settings", title: "Settings", screenID: .settings),
                 .init(id: "disclosure", title: "Disclosure", screenID: .disclosure),

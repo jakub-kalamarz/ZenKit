@@ -62,6 +62,8 @@ struct ShowcaseRootView: View {
         // Surfaces
         case .card:
             CardShowcaseScreen()
+        case .section:
+            SectionShowcaseScreen()
         case .field:
             FieldShowcaseScreen()
         case .settings:
@@ -91,4 +93,5 @@ struct ShowcaseRootView: View {
             TimelineShowcaseScreen()
         }
     }
+
 }

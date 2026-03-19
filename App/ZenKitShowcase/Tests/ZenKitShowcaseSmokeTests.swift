@@ -15,4 +15,9 @@ final class ZenKitShowcaseSmokeTests: XCTestCase {
         let surfaces = ShowcaseSection.defaultSections.first(where: { $0.id == "surfaces" })
         XCTAssertTrue(surfaces?.entries.contains(where: { $0.screenID == .sheet }) == true)
     }
+
+    func test_surfaces_section_contains_section_demo() {
+        let surfaces = ShowcaseSection.defaultSections.first(where: { $0.id == "surfaces" })
+        XCTAssertTrue(surfaces?.entries.contains(where: { $0.screenID == .section }) == true)
+    }
 }

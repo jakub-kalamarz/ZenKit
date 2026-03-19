@@ -23,6 +23,7 @@ enum ShowcaseScreenID: String, Equatable {
     case swipeRow
     // Surfaces
     case card
+    case section
     case field
     case settings
     case disclosure
