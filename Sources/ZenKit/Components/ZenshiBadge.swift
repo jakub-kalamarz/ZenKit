@@ -1,5 +1,17 @@
 import SwiftUI
 
+enum ZenBadgeStyleMetrics {
+    static let height: CGFloat = 28
+    static let cornerRadius: CGFloat = 8
+    static let horizontalPadding: CGFloat = 10
+    static let verticalPadding: CGFloat = 6
+    static let labelSpacing: CGFloat = 4
+    static let removeButtonWidth: CGFloat = 24
+    static let removeDividerVerticalInset: CGFloat = 5
+    static let iconSize: CGFloat = 10
+    static let removeIconSize: CGFloat = 10
+}
+
 public struct ZenBadge: View {
     private let title: LocalizedStringKey
     private let tone: ZenSemanticTone
@@ -55,9 +67,8 @@ public struct ZenBadge: View {
     }
     
     public var body: some View {
-        let theme = ZenTheme.current
         let shape = RoundedRectangle(
-            cornerRadius: theme.resolvedFullyRoundedCornerRadius(for: 34),
+            cornerRadius: ZenBadgeStyleMetrics.cornerRadius,
             style: .continuous
         )
         
@@ -68,9 +79,12 @@ public struct ZenBadge: View {
                 removeDivider
                 
                 Button(action: onRemove) {
-                    ZenIcon(systemName: "xmark", size: 11)
-                        .font(.system(size: 11, weight: .bold))
-                        .frame(width: 30, height: 34)
+                    ZenIcon(systemName: "xmark", size: ZenBadgeStyleMetrics.removeIconSize)
+                        .font(.system(size: ZenBadgeStyleMetrics.removeIconSize, weight: .bold))
+                        .frame(
+                            width: ZenBadgeStyleMetrics.removeButtonWidth,
+                            height: ZenBadgeStyleMetrics.height
+                        )
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
@@ -78,7 +92,6 @@ public struct ZenBadge: View {
                 .accessibilityLabel("Remove badge")
             }
         }
-        .padding(.horizontal, ZenSpacing.xSmall)
         .background(backgroundColor)
         .overlay(
             shape.strokeBorder(borderColor, lineWidth: 1)
@@ -156,10 +169,10 @@ public struct ZenBadge: View {
     }
     
     private var badgeLabel: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: ZenBadgeStyleMetrics.labelSpacing) {
             if isSelected {
-                ZenIcon(systemName: "checkmark", size: 11)
-                    .font(.system(size: 11, weight: .bold))
+                ZenIcon(systemName: "checkmark", size: ZenBadgeStyleMetrics.iconSize)
+                    .font(.system(size: ZenBadgeStyleMetrics.iconSize, weight: .bold))
             }
             
             Text(title)
@@ -168,16 +181,17 @@ public struct ZenBadge: View {
         .font(.zenCaption.weight(.semibold))
         .foregroundStyle(foregroundColor)
         .fixedSize(horizontal: true, vertical: false)
-        .padding(.leading, 12)
-        .padding(.trailing, onRemove == nil ? 12 : 10)
-        .padding(.vertical, 8)
+        .padding(.leading, ZenBadgeStyleMetrics.horizontalPadding)
+        .padding(.trailing, onRemove == nil ? ZenBadgeStyleMetrics.horizontalPadding : 8)
+        .padding(.vertical, ZenBadgeStyleMetrics.verticalPadding)
+        .frame(minHeight: ZenBadgeStyleMetrics.height)
     }
     
     private var removeDivider: some View {
         Rectangle()
             .fill(foregroundColor.opacity(isSelected ? 0.2 : 0.14))
             .frame(width: 1)
-            .padding(.vertical, 7)
+            .padding(.vertical, ZenBadgeStyleMetrics.removeDividerVerticalInset)
     }
 }
 

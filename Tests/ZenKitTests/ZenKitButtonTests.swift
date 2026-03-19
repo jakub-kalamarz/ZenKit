@@ -18,6 +18,21 @@ struct ZenKitButtonTests {
     }
 
     @Test
+    func badgeVisualMetricsMatchCompactStyle() {
+        #expect(ZenBadgeStyleMetrics.cornerRadius == 8)
+        #expect(ZenBadgeStyleMetrics.horizontalPadding == 10)
+        #expect(ZenBadgeStyleMetrics.verticalPadding == 6)
+        #expect(ZenBadgeStyleMetrics.labelSpacing == 4)
+        #expect(ZenBadgeStyleMetrics.removeButtonWidth == 24)
+    }
+
+    @Test
+    func badgeVisualMetricsSupportCompactRemoveAffordance() {
+        #expect(ZenBadgeStyleMetrics.removeDividerVerticalInset == 5)
+        #expect(ZenBadgeStyleMetrics.removeIconSize == 10)
+    }
+
+    @Test
     func defaultButtonSizeMatchesAccessibleMobileMetrics() {
         let spec = ZenButtonSize.default.textFontSpec(theme: .default)
 
