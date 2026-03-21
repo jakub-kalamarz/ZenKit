@@ -79,6 +79,29 @@ struct ZenKitDashboardComponentTests {
     }
 
     @Test
+    func metricStripSupportsPerMetricIcons() {
+        let values = [
+            ZenMetricValue(label: "Clicks", value: "694", tint: .zenAccent, iconSource: .asset("CursorClick")),
+            ZenMetricValue(label: "CTR", value: "4%", iconSource: .system("percent")),
+        ]
+
+        let view = ZenMetricStrip(values: values)
+
+        #expect(values[0].iconSource == .asset("CursorClick"))
+        #expect(values[1].iconSource == .system("percent"))
+        _ = view
+    }
+
+    @Test
+    func metricStripUsesSubtleIconBadgeLayoutMetrics() {
+        #expect(ZenMetricStrip.iconBadgeSize == 24)
+        #expect(ZenMetricStrip.iconBadgeIconSize == 12)
+        #expect(ZenMetricStrip.iconBadgeCornerRadius == 10)
+        #expect(ZenMetricStrip.contentSpacing == 12)
+        #expect(ZenMetricStrip.textSpacing == 2)
+    }
+
+    @Test
     func trendChartAcceptsPrimaryOnlySeriesWithoutCompareValues() {
         let points = [
             ZenTrendPoint(date: baseDate, clicks: 10, impressions: 100, ctr: 10, position: 4),

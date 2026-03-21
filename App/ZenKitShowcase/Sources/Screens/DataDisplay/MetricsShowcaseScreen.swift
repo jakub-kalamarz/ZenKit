@@ -6,10 +6,10 @@ struct MetricsShowcaseScreen: View {
         ShowcaseScreen(title: "Metrics") {
             ZenCard(title: "Metric Strip", subtitle: "2-column grid of key metrics") {
                 ZenMetricStrip(values: [
-                    ZenMetricValue(label: "Clicks", value: "694", tint: .zenAccent),
-                    ZenMetricValue(label: "Impressions", value: "17.8K", tint: .zenSuccess),
-                    ZenMetricValue(label: "CTR", value: "4%"),
-                    ZenMetricValue(label: "Position", value: "16", tint: .zenWarning)
+                    ZenMetricValue(label: "Clicks", value: "694", tint: .zenAccent, iconSource: .asset("CursorClick")),
+                    ZenMetricValue(label: "Impressions", value: "17.8K", tint: .zenSuccess, iconSource: .asset("ChartBar")),
+                    ZenMetricValue(label: "CTR", value: "4%", iconSource: .system("percent")),
+                    ZenMetricValue(label: "Position", value: "16", tint: .zenWarning, iconSource: .asset("TrendUp"))
                 ])
             }
 
