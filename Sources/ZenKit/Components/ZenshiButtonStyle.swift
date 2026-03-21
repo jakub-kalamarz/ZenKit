@@ -17,6 +17,8 @@ struct ZenButtonResolvedStyle {
     let backgroundColor: Color
     let pressedBackgroundColor: Color
     let pressedBackgroundToken: ZenDynamicColor?
+    let foregroundLight: ZenColorComponents
+    let foregroundDark: ZenColorComponents
     let foregroundColor: Color
     let borderColor: Color
     let borderWidth: CGFloat
@@ -32,7 +34,9 @@ struct ZenButtonResolvedStyle {
             backgroundColor = .zenPrimary
             pressedBackgroundColor = colors.primaryPressed.color
             pressedBackgroundToken = colors.primaryPressed
-            foregroundColor = .zenPrimaryForeground
+            foregroundLight = colors.primary.light.accessibleForeground
+            foregroundDark = colors.primary.dark.accessibleForeground
+            foregroundColor = ZenDynamicColor(light: foregroundLight, dark: foregroundDark).color
             borderColor = .clear
             borderWidth = 0
             backgroundStyle = .filled
@@ -42,7 +46,9 @@ struct ZenButtonResolvedStyle {
             backgroundColor = .zenSurface
             pressedBackgroundColor = .zenSurfaceMuted
             pressedBackgroundToken = nil
-            foregroundColor = .zenTextPrimary
+            foregroundLight = colors.surface.light.accessibleForeground
+            foregroundDark = colors.surface.dark.accessibleForeground
+            foregroundColor = ZenDynamicColor(light: foregroundLight, dark: foregroundDark).color
             borderColor = .zenBorder
             borderWidth = 1
             backgroundStyle = .filled
@@ -52,7 +58,9 @@ struct ZenButtonResolvedStyle {
             backgroundColor = .zenSurfaceMuted
             pressedBackgroundColor = .zenBorder.opacity(0.45)
             pressedBackgroundToken = nil
-            foregroundColor = .zenTextPrimary
+            foregroundLight = colors.surfaceMuted.light.accessibleForeground
+            foregroundDark = colors.surfaceMuted.dark.accessibleForeground
+            foregroundColor = ZenDynamicColor(light: foregroundLight, dark: foregroundDark).color
             borderColor = .zenBorder.opacity(0.8)
             borderWidth = 1
             backgroundStyle = .muted
@@ -62,7 +70,9 @@ struct ZenButtonResolvedStyle {
             backgroundColor = .clear
             pressedBackgroundColor = .zenSurfaceMuted.opacity(0.9)
             pressedBackgroundToken = nil
-            foregroundColor = .zenTextPrimary
+            foregroundLight = colors.textPrimary.light
+            foregroundDark = colors.textPrimary.dark
+            foregroundColor = ZenDynamicColor(light: foregroundLight, dark: foregroundDark).color
             borderColor = .clear
             borderWidth = 0
             backgroundStyle = .transparent
@@ -72,7 +82,9 @@ struct ZenButtonResolvedStyle {
             backgroundColor = .zenCritical
             pressedBackgroundColor = colors.criticalPressed.color
             pressedBackgroundToken = colors.criticalPressed
-            foregroundColor = .white
+            foregroundLight = colors.critical.light.accessibleForeground
+            foregroundDark = colors.critical.dark.accessibleForeground
+            foregroundColor = ZenDynamicColor(light: foregroundLight, dark: foregroundDark).color
             borderColor = .clear
             borderWidth = 0
             backgroundStyle = .filled
@@ -82,7 +94,9 @@ struct ZenButtonResolvedStyle {
             backgroundColor = .clear
             pressedBackgroundColor = .clear
             pressedBackgroundToken = nil
-            foregroundColor = .zenAccent
+            foregroundLight = colors.accent.light
+            foregroundDark = colors.accent.dark
+            foregroundColor = ZenDynamicColor(light: foregroundLight, dark: foregroundDark).color
             borderColor = .clear
             borderWidth = 0
             backgroundStyle = .transparent

@@ -3,6 +3,31 @@ import Testing
 import CoreGraphics
 
 struct ZenKitButtonTests {
+    private let contrastThemeColors = ZenThemeColors(
+        background: .init(light: .rgb(0.97, 0.97, 0.99), dark: .rgb(0.08, 0.09, 0.11)),
+        surface: .init(light: .rgb(0.96, 0.96, 0.98), dark: .rgb(0.12, 0.13, 0.16)),
+        surfaceMuted: .init(light: .rgb(0.88, 0.89, 0.92), dark: .rgb(0.17, 0.18, 0.21)),
+        border: .init(light: .rgb(0.78, 0.8, 0.85), dark: .rgb(0.28, 0.29, 0.33)),
+        textPrimary: .init(light: .rgb(0.1, 0.45, 0.9), dark: .rgb(0.95, 0.8, 0.2)),
+        textMuted: .init(light: .rgb(0.4, 0.45, 0.52), dark: .rgb(0.58, 0.63, 0.7)),
+        accent: .init(light: .rgb(0.32, 0.18, 0.82), dark: .rgb(0.6, 0.5, 0.95)),
+        primary: .init(light: .rgb(0.95, 0.82, 0.22), dark: .rgb(0.22, 0.72, 0.95)),
+        primaryPressed: .init(light: .rgb(0.85, 0.72, 0.16), dark: .rgb(0.17, 0.58, 0.79)),
+        primarySubtle: .init(light: .rgb(0.99, 0.95, 0.75), dark: .rgb(0.11, 0.18, 0.25)),
+        primaryForeground: .init(light: .rgb(0, 0, 0), dark: .rgb(0, 0, 0)),
+        focusRing: .init(light: .rgb(0.92, 0.88, 0.4), dark: .rgb(0.35, 0.75, 0.95)),
+        success: .init(light: .rgb(0.1, 0.7, 0.3), dark: .rgb(0.2, 0.82, 0.4)),
+        successSubtle: .init(light: .rgb(0.88, 0.96, 0.9), dark: .rgb(0.1, 0.2, 0.12)),
+        successBorder: .init(light: .rgb(0.68, 0.86, 0.72), dark: .rgb(0.2, 0.38, 0.24)),
+        warning: .init(light: .rgb(0.96, 0.55, 0.08), dark: .rgb(0.98, 0.72, 0.24)),
+        warningSubtle: .init(light: .rgb(1, 0.94, 0.86), dark: .rgb(0.24, 0.18, 0.09)),
+        warningBorder: .init(light: .rgb(0.94, 0.76, 0.58), dark: .rgb(0.42, 0.3, 0.14)),
+        critical: .init(light: .rgb(0.98, 0.78, 0.8), dark: .rgb(0.92, 0.34, 0.4)),
+        criticalPressed: .init(light: .rgb(0.9, 0.68, 0.71), dark: .rgb(0.78, 0.24, 0.3)),
+        criticalSubtle: .init(light: .rgb(1, 0.91, 0.92), dark: .rgb(0.22, 0.08, 0.1)),
+        criticalBorder: .init(light: .rgb(0.94, 0.68, 0.72), dark: .rgb(0.4, 0.17, 0.2))
+    )
+
     @Test
     func controlGroupLayoutResolvesAdaptiveThresholds() {
         #expect(ZenControlGroupLayout.horizontal.resolvedLayout(forWidth: 200) == .horizontal)
@@ -97,5 +122,45 @@ struct ZenKitButtonTests {
         #expect(leading.placement == .leading)
         #expect(trailing.assetName == "ArrowRight")
         #expect(trailing.placement == .trailing)
+    }
+
+    @Test
+    func filledButtonVariantsUseForegroundDerivedFromBackgroundTokens() {
+        let originalTheme = ZenTheme.current
+        defer { ZenTheme.apply(originalTheme) }
+
+        ZenTheme.apply(ZenTheme(colors: contrastThemeColors))
+
+        let colors = ZenTheme.current.resolvedColors
+        let buttonVariants: [(ZenButtonVariant, ZenDynamicColor)] = [
+            (.default, colors.primary),
+            (.outline, colors.surface),
+            (.secondary, colors.surfaceMuted),
+            (.destructive, colors.critical),
+        ]
+
+        for (variant, background) in buttonVariants {
+            let style = ZenButtonResolvedStyle(variant: variant)
+
+            #expect(style.foregroundLight == background.light.accessibleForeground)
+            #expect(style.foregroundDark == background.dark.accessibleForeground)
+        }
+    }
+
+    @Test
+    func transparentButtonVariantsKeepSemanticForegrounds() {
+        let originalTheme = ZenTheme.current
+        defer { ZenTheme.apply(originalTheme) }
+
+        ZenTheme.apply(ZenTheme(colors: contrastThemeColors))
+
+        let colors = ZenTheme.current.resolvedColors
+        let ghostStyle = ZenButtonResolvedStyle(variant: .ghost)
+        let linkStyle = ZenButtonResolvedStyle(variant: .link)
+
+        #expect(ghostStyle.foregroundLight == colors.textPrimary.light)
+        #expect(ghostStyle.foregroundDark == colors.textPrimary.dark)
+        #expect(linkStyle.foregroundLight == colors.accent.light)
+        #expect(linkStyle.foregroundDark == colors.accent.dark)
     }
 }

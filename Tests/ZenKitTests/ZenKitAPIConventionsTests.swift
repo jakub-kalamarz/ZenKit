@@ -109,6 +109,39 @@ struct ZenKitAPIConventionsTests {
     }
 
     @Test
+    func nativeThemeTokensUseExpectedFallbackValuesAndAccentMixing() {
+        let colors = ZenNativeThemeTokens.defaultResolvedColors
+        let accent = ZenDynamicColor(
+            light: .rgb(0.10, 0.60, 0.90),
+            dark: .rgb(0.20, 0.70, 0.95)
+        )
+        let applied = colors.applying(accent: accent)
+
+        #if canImport(UIKit)
+        #expect(colors.surface.light == ZenColorComponents(platformColor: UIColor.secondarySystemGroupedBackground.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))))
+        #expect(colors.surface.dark == ZenColorComponents(platformColor: UIColor.secondarySystemGroupedBackground.resolvedColor(with: UITraitCollection(userInterfaceStyle: .dark))))
+        #expect(colors.accent.light == ZenColorComponents(platformColor: UIColor.systemBlue.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))))
+        #expect(colors.accent.dark == ZenColorComponents(platformColor: UIColor.systemBlue.resolvedColor(with: UITraitCollection(userInterfaceStyle: .dark))))
+        #expect(colors.surfaceMuted.light != colors.background.light)
+        #expect(colors.surfaceMuted.dark != colors.background.dark)
+        #else
+        #expect(colors.surfaceMuted.light == .rgb(0.910, 0.910, 0.925))
+        #expect(colors.surfaceMuted.dark == .rgb(0.125, 0.125, 0.133))
+        #expect(colors.border.light == .rgb(0.898, 0.898, 0.918))
+        #expect(colors.border.dark == .rgb(0.227, 0.227, 0.243))
+        #expect(colors.textMuted.light == .rgb(0.541, 0.541, 0.557))
+        #expect(colors.textMuted.dark == .rgb(0.597, 0.597, 0.624))
+        #endif
+
+        #expect(applied.primaryPressed.light == accent.light.mixed(with: .rgb(0, 0, 0), amount: 0.16))
+        #expect(applied.primaryPressed.dark == accent.dark.mixed(with: .rgb(0, 0, 0), amount: 0.22))
+        #expect(applied.primarySubtle.light == accent.light.mixed(with: .rgb(1, 1, 1), amount: 0.88))
+        #expect(applied.primarySubtle.dark == accent.dark.mixed(with: .rgb(0, 0, 0), amount: 0.70))
+        #expect(applied.focusRing.light == accent.light.mixed(with: .rgb(1, 1, 1), amount: 0.22))
+        #expect(applied.focusRing.dark == accent.dark.mixed(with: .rgb(1, 1, 1), amount: 0.12))
+    }
+
+    @Test
     func themeSourceDefinesSingleBuiltInStyle() throws {
         let sourceURL = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent()
@@ -159,6 +192,25 @@ struct ZenKitAPIConventionsTests {
             selectableBadge
             removableBadge
             fullBadge
+        }
+
+        _ = view
+    }
+
+    @Test
+    func sectionPrimitivesExposeComposableBuilderAPI() {
+        let view = ZenSection {
+            Text("Row")
+        } header: {
+            ZenSectionHeader {
+                Text("Title")
+            } subtitle: {
+                Text("Subtitle")
+            }
+        } footer: {
+            ZenSectionFooter {
+                Text("Footnote")
+            }
         }
 
         _ = view
