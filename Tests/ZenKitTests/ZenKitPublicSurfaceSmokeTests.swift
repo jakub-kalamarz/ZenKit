@@ -172,6 +172,40 @@ struct ZenKitPublicSurfaceSmokeTests {
     }
 
     @Test
+    func zenOnboardingComposesModelAndBuilderVariants() {
+        struct DemoPage: Identifiable, Equatable {
+            let id: String
+            let title: String
+        }
+
+        let pages = [
+            DemoPage(id: "welcome", title: "Welcome"),
+            DemoPage(id: "focus", title: "Focus"),
+        ]
+
+        let modelDriven = ZenOnboarding(
+            pages: pages,
+            selection: .constant("welcome"),
+            backgroundStyle: .animatedMesh(),
+            transitionStyle: .default
+        ) { page in
+            Text(page.title)
+        }
+
+        let builderDriven = ZenOnboarding(selection: .constant("welcome")) {
+            ZenOnboardingStep(id: "welcome") {
+                Text("Welcome")
+            }
+            ZenOnboardingStep(id: "focus") {
+                Text("Focus")
+            }
+        }
+
+        _ = modelDriven
+        _ = builderDriven
+    }
+
+    @Test
     func zenControlGroupComposesWithButtons() {
         let view = ZenControlGroup(layout: .adaptive) {
             ZenButton("Edit") {}
