@@ -33,6 +33,8 @@ struct ShowcaseRootView: View {
             SegmentedControlShowcaseScreen()
         case .pickerRow:
             PickerRowShowcaseScreen()
+        case .multiSelect:
+            MultiSelectShowcaseScreen()
         case .stepper:
             StepperShowcaseScreen()
         case .searchBar:

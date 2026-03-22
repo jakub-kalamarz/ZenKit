@@ -142,6 +142,36 @@ struct ZenKitPublicSurfaceSmokeTests {
     }
 
     @Test
+    func zenMultiSelectComposesImmediateAndDeferredModes() {
+        enum Column: String, CaseIterable, Hashable {
+            case name = "Name"
+            case owner = "Owner"
+            case status = "Status"
+        }
+
+        let view = VStack {
+            ZenMultiSelect(
+                title: "Columns",
+                selection: .constant([.name, .status]),
+                options: Column.allCases
+            ) { option in
+                Text(option.rawValue)
+            }
+
+            ZenMultiSelect(
+                title: "Filters",
+                selection: .constant([.owner]),
+                options: Column.allCases,
+                mode: .deferred
+            ) { option in
+                Text(option.rawValue)
+            }
+        }
+
+        _ = view
+    }
+
+    @Test
     func zenControlGroupComposesWithButtons() {
         let view = ZenControlGroup(layout: .adaptive) {
             ZenButton("Edit") {}

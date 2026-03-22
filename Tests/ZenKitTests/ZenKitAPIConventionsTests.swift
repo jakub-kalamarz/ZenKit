@@ -198,6 +198,47 @@ struct ZenKitAPIConventionsTests {
     }
 
     @Test
+    func multiSelectPrimitiveExposesComposableBuilderAPI() {
+        enum Filter: String, CaseIterable, Hashable, Sendable {
+            case today = "Today"
+            case overdue = "Overdue"
+        }
+
+        let view = ZenMultiSelect(
+            title: "Filters",
+            selection: .constant([.today]),
+            options: Filter.allCases,
+            mode: .immediate
+        ) { option in
+            Text(option.rawValue)
+        } summaryLabel: { selected in
+            Text("\(selected.count) selected")
+        }
+
+        _ = view
+    }
+
+    @Test
+    func multiSelectSummaryUsesOptionOrderAndOverflowCount() {
+        enum Column: String, CaseIterable, Hashable, Sendable {
+            case name = "Name"
+            case owner = "Owner"
+            case status = "Status"
+            case updated = "Updated"
+        }
+
+        let summary = ZenMultiSelectSummary.make(
+            options: Column.allCases,
+            selection: [.updated, .name, .status],
+            optionTitle: \.rawValue
+        )
+
+        #expect(summary.labels == ["Name", "Status"])
+        #expect(summary.overflowCount == 1)
+        #expect(summary.displayText == "Name, Status +1")
+    }
+
+    @Test
     func sectionPrimitivesExposeComposableBuilderAPI() {
         let view = ZenSection {
             Text("Row")
