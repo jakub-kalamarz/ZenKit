@@ -94,8 +94,8 @@ struct ZenKitDashboardComponentTests {
 
     @Test
     func metricStripUsesSubtleIconBadgeLayoutMetrics() {
-        #expect(ZenMetricStrip.iconBadgeSize == 24)
-        #expect(ZenMetricStrip.iconBadgeIconSize == 12)
+        #expect(ZenMetricStrip.iconBadgeSize == 40)
+        #expect(ZenMetricStrip.iconBadgeIconSize == 24)
         #expect(ZenMetricStrip.iconBadgeCornerRadius == 10)
         #expect(ZenMetricStrip.contentSpacing == 12)
         #expect(ZenMetricStrip.textSpacing == 2)

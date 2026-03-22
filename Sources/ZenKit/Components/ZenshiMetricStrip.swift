@@ -15,8 +15,8 @@ public struct ZenMetricValue {
 }
 
 public struct ZenMetricStrip: View {
-    public static let iconBadgeSize: CGFloat = 24
-    public static let iconBadgeIconSize: CGFloat = 12
+    public static let iconBadgeSize: CGFloat = 40
+    public static let iconBadgeIconSize: CGFloat = 24
     public static let iconBadgeCornerRadius: CGFloat = 10
     public static let contentSpacing: CGFloat = 12
     public static let textSpacing: CGFloat = 2
