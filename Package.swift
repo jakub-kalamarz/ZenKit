@@ -11,10 +11,10 @@ let package = Package(
         .library(
             name: "ZenKit",
             targets: ["ZenKit"]
-        ),
+        )
     ],
     dependencies: [
-        .package(url: "https://github.com/jakub-kalamarz/ZenAvatar.git", from: "1.1.0")
+        .package(url: "https://github.com/jakub-kalamarz/ZenAvatar.git", from: "2.0.0")
     ],
     targets: [
         .target(

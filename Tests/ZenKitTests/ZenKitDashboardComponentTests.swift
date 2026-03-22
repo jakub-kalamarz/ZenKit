@@ -102,6 +102,27 @@ struct ZenKitDashboardComponentTests {
     }
 
     @Test
+    func metricStripSupportsConfigurableStyleAndLayout() {
+        let gridStrip = ZenMetricStrip(
+            values: [
+                ZenMetricValue(label: "Clicks", value: "694", tint: .zenAccent, iconSource: .asset("CursorClick"))
+            ]
+        )
+        let compactRowStrip = ZenMetricStrip(
+            values: [
+                ZenMetricValue(label: "CTR", value: "4%", iconSource: .system("percent"))
+            ],
+            style: .compact,
+            layout: .row
+        )
+
+        #expect(gridStrip.style == .default)
+        #expect(gridStrip.layout == .grid(columns: 2))
+        #expect(compactRowStrip.style == .compact)
+        #expect(compactRowStrip.layout == .row)
+    }
+
+    @Test
     func trendChartAcceptsPrimaryOnlySeriesWithoutCompareValues() {
         let points = [
             ZenTrendPoint(date: baseDate, clicks: 10, impressions: 100, ctr: 10, position: 4),

@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/jakub-kalamarz/ZenAvatar.git",
       "state" : {
-        "revision" : "fde9b264f5b98a2216382a59b9ce5dce6dc392f6",
-        "version" : "1.1.0"
+        "revision" : "a12c5e4de4371c7e9cdf8a30308d49b965c66896",
+        "version" : "2.0.0"
       }
     }
   ],

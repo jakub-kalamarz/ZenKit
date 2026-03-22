@@ -14,6 +14,16 @@ public struct ZenMetricValue {
     }
 }
 
+public enum ZenMetricStripStyle: Equatable {
+    case `default`
+    case compact
+}
+
+public enum ZenMetricStripLayout: Equatable {
+    case grid(columns: Int)
+    case row
+}
+
 public struct ZenMetricStrip: View {
     public static let iconBadgeSize: CGFloat = 40
     public static let iconBadgeIconSize: CGFloat = 24
@@ -23,36 +33,72 @@ public struct ZenMetricStrip: View {
 
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
     private let values: [ZenMetricValue]
+    public let style: ZenMetricStripStyle
+    public let layout: ZenMetricStripLayout
     
-    public init(values: [ZenMetricValue]) {
+    public init(
+        values: [ZenMetricValue],
+        style: ZenMetricStripStyle = .default,
+        layout: ZenMetricStripLayout = .grid(columns: 2)
+    ) {
         self.values = values
+        self.style = style
+        self.layout = layout
     }
     
     public var body: some View {
         let theme = ZenTheme.current
         let tileCornerRadius = theme.resolvedCornerRadius(for: .nestedContainer, parentRadius: parentCornerRadius)
-        
-        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: ZenSpacing.small) {
-            ForEach(Array(values.enumerated()), id: \.offset) { _, value in
-                metricTile(for: value)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical, ZenSpacing.small)
-                .padding(.horizontal, 12)
-                .background(Color.zenSurfaceMuted)
-                .clipShape(RoundedRectangle(cornerRadius: tileCornerRadius))
+
+        Group {
+            switch layout {
+            case let .grid(columns):
+                LazyVGrid(
+                    columns: Array(repeating: GridItem(.flexible()), count: max(columns, 1)),
+                    spacing: ZenSpacing.small
+                ) {
+                    metricTiles(tileCornerRadius: tileCornerRadius)
+                }
+            case .row:
+                HStack(spacing: ZenSpacing.small) {
+                    metricTiles(tileCornerRadius: tileCornerRadius)
+                }
             }
         }
     }
 
     @ViewBuilder
     private func metricTile(for value: ZenMetricValue) -> some View {
-        if let iconSource = value.iconSource {
-            HStack(alignment: .top, spacing: Self.contentSpacing) {
-                iconBadge(for: iconSource, tint: value.tint)
+        switch style {
+        case .default:
+            if let iconSource = value.iconSource {
+                HStack(alignment: .top, spacing: Self.contentSpacing) {
+                    iconBadge(for: iconSource, tint: value.tint)
+                    metricText(for: value)
+                }
+            } else {
                 metricText(for: value)
             }
-        } else {
-            metricText(for: value)
+        case .compact:
+            HStack(alignment: .center, spacing: Self.contentSpacing) {
+                if let iconSource = value.iconSource {
+                    iconBadge(for: iconSource, tint: value.tint)
+                }
+
+                compactMetricValue(for: value)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func metricTiles(tileCornerRadius: CGFloat) -> some View {
+        ForEach(Array(values.enumerated()), id: \.offset) { _, value in
+            metricTile(for: value)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, ZenSpacing.small)
+                .padding(.horizontal, 12)
+                .background(Color.zenSurfaceMuted)
+                .clipShape(RoundedRectangle(cornerRadius: tileCornerRadius))
         }
     }
 
@@ -81,6 +127,15 @@ public struct ZenMetricStrip: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
         }
+    }
+
+    private func compactMetricValue(for value: ZenMetricValue) -> some View {
+        Text(value.value)
+            .font(.zenTitle.weight(.semibold))
+            .monospacedDigit()
+            .foregroundStyle(value.tint ?? Color.zenTextPrimary)
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
     }
 }
 
