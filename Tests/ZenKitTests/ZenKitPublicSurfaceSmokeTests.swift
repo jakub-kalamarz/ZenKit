@@ -206,6 +206,60 @@ struct ZenKitPublicSurfaceSmokeTests {
     }
 
     @Test
+    func zenOnboardingUsesExternalSelectionBinding() {
+        struct DemoPage: Identifiable, Equatable {
+            let id: String
+            let title: String
+        }
+
+        let pages = [
+            DemoPage(id: "welcome", title: "Welcome"),
+            DemoPage(id: "focus", title: "Focus"),
+            DemoPage(id: "sync", title: "Sync"),
+        ]
+
+        var currentSelection = "focus"
+        let selection = Binding(
+            get: { currentSelection },
+            set: { currentSelection = $0 }
+        )
+
+        let modelDriven = ZenOnboarding(
+            pages: pages,
+            selection: selection,
+            backgroundStyle: .animatedMesh(),
+            transitionStyle: .default
+        ) { page in
+            Text(page.title)
+        }
+
+        let builderDriven = ZenOnboarding(selection: selection) {
+            ZenOnboardingStep(id: "welcome") {
+                Text("Welcome")
+            }
+            ZenOnboardingStep(id: "focus") {
+                Text("Focus")
+            }
+            ZenOnboardingStep(id: "sync") {
+                Text("Sync")
+            }
+        }
+
+        #expect(modelDriven.resolvedSelectedIndex == 1)
+        #expect(modelDriven.resolvedSelectedStepID == "focus")
+        #expect(builderDriven.resolvedSelectedIndex == 1)
+        #expect(builderDriven.resolvedSelectedStepID == "focus")
+
+        selection.wrappedValue = "sync"
+
+        #expect(currentSelection == "sync")
+        #expect(modelDriven.resolvedSelectedIndex == 2)
+        #expect(modelDriven.resolvedSelectedStepID == "sync")
+        #expect(builderDriven.resolvedSelectedIndex == 2)
+        #expect(builderDriven.resolvedSelectedStepID == "sync")
+    }
+
+    @Test
     func zenControlGroupComposesWithButtons() {
         let view = ZenControlGroup(layout: .adaptive) {
             ZenButton("Edit") {}
