@@ -260,6 +260,17 @@ struct ZenKitPublicSurfaceSmokeTests {
     }
 
     @Test
+    func zenOnboardingStylePresetsCompose() {
+        let subtle = ZenOnboardingBackgroundStyle.animatedMesh()
+        let expressiveBackground = ZenOnboardingBackgroundStyle.animatedMesh(intensity: .expressive)
+        let expressiveTransition = ZenOnboardingTransitionStyle.expressive
+
+        _ = subtle
+        _ = expressiveBackground
+        _ = expressiveTransition
+    }
+
+    @Test
     func zenControlGroupComposesWithButtons() {
         let view = ZenControlGroup(layout: .adaptive) {
             ZenButton("Edit") {}

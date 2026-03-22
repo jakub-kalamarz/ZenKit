@@ -1,20 +1,5 @@
 import SwiftUI
 
-public struct ZenOnboardingBackgroundStyle: Sendable {
-    public static func animatedMesh() -> Self {
-        Self()
-    }
-
-    private init() {}
-}
-
-public struct ZenOnboardingTransitionStyle: Sendable {
-    public static let `default` = Self()
-    public static let expressive = Self()
-
-    private init() {}
-}
-
 public struct ZenOnboarding<Page, Content>: View where Page: Identifiable, Content: View {
     @Binding private var selection: Page.ID
     private let backgroundStyle: ZenOnboardingBackgroundStyle
