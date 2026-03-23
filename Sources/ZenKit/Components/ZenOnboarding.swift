@@ -107,18 +107,7 @@ public struct ZenOnboarding<Page, Content>: View where Page: Identifiable, Conte
     }
 
     private var backgroundLayer: some View {
-        LinearGradient(
-            colors: [
-                Color.zenBackground,
-                Color.zenSurface.opacity(0.92)
-            ],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
-        .overlay {
-            RoundedRectangle(cornerRadius: 0, style: .continuous)
-                .strokeBorder(Color.zenBorder.opacity(0.25), lineWidth: 1)
-        }
+        ZenOnboardingBackgroundView(pageIndex: resolvedSelectedIndex, style: backgroundStyle)
     }
 
     private var pageIndicatorBinding: Binding<Int> {

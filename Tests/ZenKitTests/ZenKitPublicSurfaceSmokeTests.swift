@@ -271,6 +271,16 @@ struct ZenKitPublicSurfaceSmokeTests {
     }
 
     @Test
+    func zenOnboardingBackgroundComposesAnimatedMeshStyle() {
+        let view = ZenOnboardingBackgroundView(
+            pageIndex: 0,
+            style: .animatedMesh()
+        )
+
+        _ = view
+    }
+
+    @Test
     func zenControlGroupComposesWithButtons() {
         let view = ZenControlGroup(layout: .adaptive) {
             ZenButton("Edit") {}
