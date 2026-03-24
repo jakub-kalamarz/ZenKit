@@ -74,10 +74,6 @@ struct ShowcaseRootView: View {
             DisclosureShowcaseScreen()
         case .sheet:
             SheetShowcaseScreen()
-        case .onboardingCard:
-            OnboardingCardShowcaseScreen()
-        case .onboarding:
-            OnboardingShowcaseScreen()
         // Data Display
         case .badge:
             BadgeShowcaseScreen()

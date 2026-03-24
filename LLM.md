@@ -4,6 +4,18 @@
 
 This repository exposes reusable SwiftUI primitives for ZenKit plus a showcase app. When implementing new UI surfaces, prefer composable primitives over string-heavy convenience APIs.
 
+## Directory Structure
+
+`Sources/ZenKit/Components/` is organized by category:
+
+- **DataDisplay/**: Components that present data (Avatar, Badge, ProgressBar, Metrics, etc.)
+- **Feedback/**: Components that provide feedback (Alerts, Loading, Skeleton, etc.)
+- **Inputs/**: Form controls and interactive elements (Buttons, Text Inputs, Pickers, etc.)
+- **Layout/**: Foundational layout components (ZenScreen, ListScreen, Sections, etc.)
+- **Navigation/**: Components for app navigation (Menus, Rows, etc.)
+- **Surfaces/**: Containers and structural elements (Cards, Sheets, Settings, etc.)
+- **System/**: Infrastructure components (Overlays, Toasts, etc.)
+
 ## Section Guidance
 
 - Use `ZenSection` for sectioned layout primitives.
