@@ -4,11 +4,13 @@ public extension View {
     /// Prezentuje arkusz (sheet), który automatycznie dostosowuje swoją wysokość do zawartości.
     func zenAutoSizingSheet<Content: View>(
         isPresented: Binding<Bool>,
+        backgroundColor: Color = Color.zenBackground,
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping () -> Content
     ) -> some View {
         self.modifier(ZenAutoSizingSheetModifier(
             isPresented: isPresented,
+            backgroundColor: backgroundColor,
             onDismiss: onDismiss,
             sheetContent: content
         ))
@@ -17,6 +19,7 @@ public extension View {
 
 private struct ZenAutoSizingSheetModifier<SheetContent: View>: ViewModifier {
     @Binding var isPresented: Bool
+    let backgroundColor: Color
     let onDismiss: (() -> Void)?
     let sheetContent: () -> SheetContent
     
@@ -28,6 +31,9 @@ private struct ZenAutoSizingSheetModifier<SheetContent: View>: ViewModifier {
         host.sheet(isPresented: $isPresented, onDismiss: onDismiss) {
             #if os(iOS)
             ZStack(alignment: .top) {
+                backgroundColor
+                    .ignoresSafeArea()
+                
                 sheetContent()
                     .zenReadSize { size in
                         updateDetents(newHeight: size.height)
@@ -39,6 +45,7 @@ private struct ZenAutoSizingSheetModifier<SheetContent: View>: ViewModifier {
             .presentationDragIndicator(.visible)
             #else
             sheetContent()
+                .background(backgroundColor)
             #endif
         }
     }
