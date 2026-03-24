@@ -77,12 +77,13 @@ public struct ZenOnboarding<Page, Content>: View where Page: Identifiable, Conte
 
     public var body: some View {
         let transitionConfiguration = self.transitionConfiguration
+        let layoutConfiguration = self.layoutConfiguration
 
         ZStack {
             backgroundLayer
 
-            VStack(spacing: ZenSpacing.large) {
-                Spacer(minLength: ZenSpacing.large)
+            VStack(spacing: 0) {
+                Spacer(minLength: layoutConfiguration.topPadding)
 
                 selectedContent
                     .id(resolvedSelectedStepID)
@@ -90,19 +91,21 @@ public struct ZenOnboarding<Page, Content>: View where Page: Identifiable, Conte
                     .animation(transitionConfiguration.animation, value: resolvedSelectedStepID)
                     .frame(maxWidth: .infinity, alignment: .center)
 
-                Spacer(minLength: ZenSpacing.large)
-
-                if resolvedPageCount > 1 {
+                Spacer(minLength: layoutConfiguration.bottomPadding)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.horizontal, layoutConfiguration.horizontalPadding)
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                if layoutConfiguration.showPageIndicator {
                     ZenPageIndicator(
                         pageCount: resolvedPageCount,
                         currentPage: pageIndicatorBinding
                     )
-                    .padding(.bottom, ZenSpacing.medium)
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, layoutConfiguration.horizontalPadding)
+                    .padding(.bottom, layoutConfiguration.footerPadding)
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(.horizontal, ZenSpacing.medium)
-            .padding(.vertical, ZenSpacing.large)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .ignoresSafeArea()
@@ -114,6 +117,10 @@ public struct ZenOnboarding<Page, Content>: View where Page: Identifiable, Conte
 
     internal var resolvedPageCount: Int {
         modelPages?.count ?? builderSteps?.count ?? 0
+    }
+
+    internal var layoutConfiguration: ZenOnboardingLayoutConfiguration {
+        ZenOnboardingLayoutConfiguration(pageCount: resolvedPageCount)
     }
 
     internal var resolvedSelectedIndex: Int {
@@ -175,5 +182,21 @@ public struct ZenOnboarding<Page, Content>: View where Page: Identifiable, Conte
         }
 
         return nil
+    }
+}
+
+internal struct ZenOnboardingLayoutConfiguration: Equatable, Sendable {
+    let horizontalPadding: CGFloat
+    let topPadding: CGFloat
+    let bottomPadding: CGFloat
+    let footerPadding: CGFloat
+    let showPageIndicator: Bool
+
+    init(pageCount: Int) {
+        self.horizontalPadding = ZenSpacing.large
+        self.topPadding = ZenSpacing.xLarge
+        self.bottomPadding = ZenSpacing.large
+        self.footerPadding = ZenSpacing.medium
+        self.showPageIndicator = pageCount > 1
     }
 }

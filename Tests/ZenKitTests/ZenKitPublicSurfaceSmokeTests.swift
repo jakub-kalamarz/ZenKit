@@ -330,6 +330,35 @@ struct ZenKitPublicSurfaceSmokeTests {
     }
 
     @Test
+    func zenOnboardingSupportsMultiPageFlow() {
+        struct DemoPage: Identifiable, Equatable {
+            let id: String
+            let title: String
+        }
+
+        let pages = [
+            DemoPage(id: "welcome", title: "Welcome"),
+            DemoPage(id: "focus", title: "Focus"),
+            DemoPage(id: "sync", title: "Sync"),
+        ]
+
+        let view = ZenOnboarding(
+            pages: pages,
+            selection: .constant("focus"),
+            backgroundStyle: .animatedMesh(),
+            transitionStyle: .default
+        ) { page in
+            Text(page.title)
+        }
+
+        #expect(view.resolvedPageCount == 3)
+        #expect(view.resolvedSelectedIndex == 1)
+        #expect(view.resolvedSelectedStepID == "focus")
+
+        _ = view
+    }
+
+    @Test
     func zenControlGroupComposesWithButtons() {
         let view = ZenControlGroup(layout: .adaptive) {
             ZenButton("Edit") {}
