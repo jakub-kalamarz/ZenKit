@@ -62,9 +62,6 @@ public struct ZenSheetContainer<Content: View, Footer: View>: View {
         }
         .padding(ZenSpacing.large)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.zenSurface)
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-        .zenContainerCornerRadius(cornerRadius)
     }
 }
 

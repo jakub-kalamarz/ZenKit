@@ -1,90 +1,64 @@
 import SwiftUI
 
-private let zenAutoSizingSheetDefaultHeight: CGFloat = 320
-
 public extension View {
-    func zenAutoSizingSheet<SheetContent: View>(
+    /// Prezentuje arkusz (sheet), który automatycznie dostosowuje swoją wysokość do zawartości.
+    func zenAutoSizingSheet<Content: View>(
         isPresented: Binding<Bool>,
         onDismiss: (() -> Void)? = nil,
-        @ViewBuilder content: @escaping () -> SheetContent
+        @ViewBuilder content: @escaping () -> Content
     ) -> some View {
-        modifier(
-            ZenAutoSizingSheetModifier(
-                isPresented: isPresented,
-                onDismiss: onDismiss,
-                content: content
-            )
-        )
+        self.modifier(ZenAutoSizingSheetModifier(
+            isPresented: isPresented,
+            onDismiss: onDismiss,
+            sheetContent: content
+        ))
     }
 }
 
 private struct ZenAutoSizingSheetModifier<SheetContent: View>: ViewModifier {
     @Binding var isPresented: Bool
-
     let onDismiss: (() -> Void)?
-    let content: () -> SheetContent
-
-    @State private var presentationDetents: Set<PresentationDetent> = [.height(zenAutoSizingSheetDefaultHeight)]
-    @State private var selectedPresentationDetent: PresentationDetent = .height(zenAutoSizingSheetDefaultHeight)
-    @State private var detentCleanupToken = 0
+    let sheetContent: () -> SheetContent
+    
+    @State private var detents: Set<PresentationDetent> = [.height(200)]
+    @State private var selectedDetent: PresentationDetent = .height(200)
+    @State private var lastHeight: CGFloat = 200
 
     func body(content host: Content) -> some View {
         host.sheet(isPresented: $isPresented, onDismiss: onDismiss) {
-            ZenAutoSizingSheetContent(
-                presentationDetents: $presentationDetents,
-                selectedPresentationDetent: $selectedPresentationDetent,
-                detentCleanupToken: $detentCleanupToken,
-                content: self.content
-            )
+            #if os(iOS)
+            ZStack(alignment: .top) {
+                sheetContent()
+                    .zenReadSize { size in
+                        updateDetents(newHeight: size.height)
+                    }
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .presentationDetents(detents, selection: $selectedDetent)
+            .presentationDragIndicator(.visible)
+            #else
+            sheetContent()
+            #endif
         }
     }
-}
 
-private struct ZenAutoSizingSheetContent<SheetContent: View>: View {
-    @Binding var presentationDetents: Set<PresentationDetent>
-    @Binding var selectedPresentationDetent: PresentationDetent
-    @Binding var detentCleanupToken: Int
-
-    let content: () -> SheetContent
-
-    var body: some View {
-        content()
-            .background(
-                GeometryReader { proxy in
-                    Color.clear
-                        .preference(
-                            key: ZenAutoSizingSheetHeightPreferenceKey.self,
-                            value: proxy.size.height
-                        )
-                }
-            )
-            .onPreferenceChange(ZenAutoSizingSheetHeightPreferenceKey.self) { height in
-                let nextHeight = max(height, 1)
-                let nextDetent = PresentationDetent.height(nextHeight)
-                guard nextDetent != selectedPresentationDetent else { return }
-
-                presentationDetents.insert(nextDetent)
-
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    selectedPresentationDetent = nextDetent
-                }
-
-                detentCleanupToken += 1
-                let cleanupToken = detentCleanupToken
-
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    guard cleanupToken == detentCleanupToken else { return }
-                    presentationDetents = [selectedPresentationDetent]
-                }
-            }
-            .presentationDetents(presentationDetents, selection: $selectedPresentationDetent)
-    }
-}
-
-private struct ZenAutoSizingSheetHeightPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat = 0
-
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = nextValue()
+    private func updateDetents(newHeight: CGFloat) {
+        guard newHeight > 10, abs(newHeight - lastHeight) > 1 else { return }
+        
+        let newDetent = PresentationDetent.height(newHeight)
+        lastHeight = newHeight
+        
+        var newSet = detents
+        newSet.insert(newDetent)
+        detents = newSet
+        
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.8, blendDuration: 0)) {
+            selectedDetent = newDetent
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            detents = [newDetent]
+        }
     }
 }
