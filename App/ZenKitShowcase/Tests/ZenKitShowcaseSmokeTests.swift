@@ -20,4 +20,16 @@ final class ZenKitShowcaseSmokeTests: XCTestCase {
         let surfaces = ShowcaseSection.defaultSections.first(where: { $0.id == "surfaces" })
         XCTAssertTrue(surfaces?.entries.contains(where: { $0.screenID == .section }) == true)
     }
+
+    func test_surfaces_section_contains_onboarding_demo() {
+        let surfaces = ShowcaseSection.defaultSections.first(where: { $0.id == "surfaces" })
+        XCTAssertTrue(surfaces?.entries.contains(where: { $0.screenID == .onboarding }) == true)
+    }
+
+    func test_root_view_resolves_onboarding_destination() {
+        let rootView = ShowcaseRootView()
+        let destination = rootView.destination(for: .onboarding)
+
+        _ = destination
+    }
 }

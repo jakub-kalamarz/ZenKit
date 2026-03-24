@@ -17,7 +17,7 @@ struct ShowcaseRootView: View {
     }
 
     @ViewBuilder
-    private func destination(for screenID: ShowcaseScreenID) -> some View {
+    func destination(for screenID: ShowcaseScreenID) -> some View {
         switch screenID {
         // Foundations
         case .theme:
@@ -76,6 +76,8 @@ struct ShowcaseRootView: View {
             SheetShowcaseScreen()
         case .onboardingCard:
             OnboardingCardShowcaseScreen()
+        case .onboarding:
+            OnboardingShowcaseScreen()
         // Data Display
         case .badge:
             BadgeShowcaseScreen()

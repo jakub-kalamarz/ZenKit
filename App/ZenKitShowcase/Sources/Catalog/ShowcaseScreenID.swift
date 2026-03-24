@@ -30,6 +30,7 @@ enum ShowcaseScreenID: String, Equatable {
     case disclosure
     case sheet
     case onboardingCard
+    case onboarding
     // Data Display
     case badge
     case progressBar
