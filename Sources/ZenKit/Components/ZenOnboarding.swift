@@ -2,8 +2,10 @@ import SwiftUI
 
 public struct ZenOnboarding<Page, Content>: View where Page: Identifiable, Content: View {
     @Binding private var selection: Page.ID
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     private let backgroundStyle: ZenOnboardingBackgroundStyle
     private let transitionStyle: ZenOnboardingTransitionStyle
+    private let reduceMotionOverride: Bool?
     private let modelPages: [Page]?
     private let modelContent: ((Page) -> Content)?
     private let builderSteps: [ZenOnboardingStep<Page.ID, AnyView>]?
@@ -15,9 +17,28 @@ public struct ZenOnboarding<Page, Content>: View where Page: Identifiable, Conte
         transitionStyle: ZenOnboardingTransitionStyle = .default,
         @ViewBuilder content: @escaping (Page) -> Content
     ) {
+        self.init(
+            pages: pages,
+            selection: selection,
+            backgroundStyle: backgroundStyle,
+            transitionStyle: transitionStyle,
+            reduceMotionOverride: nil,
+            content: content
+        )
+    }
+
+    internal init(
+        pages: [Page],
+        selection: Binding<Page.ID>,
+        backgroundStyle: ZenOnboardingBackgroundStyle = .animatedMesh(),
+        transitionStyle: ZenOnboardingTransitionStyle = .default,
+        reduceMotionOverride: Bool?,
+        @ViewBuilder content: @escaping (Page) -> Content
+    ) {
         _selection = selection
         self.backgroundStyle = backgroundStyle
         self.transitionStyle = transitionStyle
+        self.reduceMotionOverride = reduceMotionOverride
         self.modelPages = pages
         self.modelContent = content
         self.builderSteps = nil
@@ -29,15 +50,34 @@ public struct ZenOnboarding<Page, Content>: View where Page: Identifiable, Conte
         transitionStyle: ZenOnboardingTransitionStyle = .default,
         @ZenOnboardingStepBuilder content: () -> [ZenOnboardingStep<ID, AnyView>]
     ) where Page == ZenOnboardingStep<ID, AnyView>, Content == AnyView {
+        self.init(
+            selection: selection,
+            backgroundStyle: backgroundStyle,
+            transitionStyle: transitionStyle,
+            reduceMotionOverride: nil,
+            content: content
+        )
+    }
+
+    internal init<ID: Hashable>(
+        selection: Binding<ID>,
+        backgroundStyle: ZenOnboardingBackgroundStyle = .animatedMesh(),
+        transitionStyle: ZenOnboardingTransitionStyle = .default,
+        reduceMotionOverride: Bool?,
+        @ZenOnboardingStepBuilder content: () -> [ZenOnboardingStep<ID, AnyView>]
+    ) where Page == ZenOnboardingStep<ID, AnyView>, Content == AnyView {
         _selection = selection
         self.backgroundStyle = backgroundStyle
         self.transitionStyle = transitionStyle
+        self.reduceMotionOverride = reduceMotionOverride
         self.modelPages = nil
         self.modelContent = nil
         self.builderSteps = content()
     }
 
     public var body: some View {
+        let transitionConfiguration = self.transitionConfiguration
+
         ZStack {
             backgroundLayer
 
@@ -45,6 +85,9 @@ public struct ZenOnboarding<Page, Content>: View where Page: Identifiable, Conte
                 Spacer(minLength: ZenSpacing.large)
 
                 selectedContent
+                    .id(resolvedSelectedStepID)
+                    .transition(transitionConfiguration.transition)
+                    .animation(transitionConfiguration.animation, value: resolvedSelectedStepID)
                     .frame(maxWidth: .infinity, alignment: .center)
 
                 Spacer(minLength: ZenSpacing.large)
@@ -63,6 +106,10 @@ public struct ZenOnboarding<Page, Content>: View where Page: Identifiable, Conte
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .ignoresSafeArea()
+    }
+
+    internal var transitionConfiguration: ZenOnboardingTransitionConfiguration {
+        transitionStyle.resolvedConfiguration(reduceMotion: reduceMotionOverride ?? reduceMotion)
     }
 
     internal var resolvedPageCount: Int {
@@ -97,10 +144,8 @@ public struct ZenOnboarding<Page, Content>: View where Page: Identifiable, Conte
     private var selectedContent: some View {
         if let modelPages, let modelContent, let page = modelPages.first(where: { $0.id == selection }) {
             modelContent(page)
-                .transition(.opacity.combined(with: .scale(scale: 0.985)))
         } else if let builderSteps, let step = builderSteps.first(where: { $0.id == selection }) {
             step.content
-                .transition(.opacity.combined(with: .scale(scale: 0.985)))
         } else {
             EmptyView()
         }

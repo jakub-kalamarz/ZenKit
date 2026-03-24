@@ -271,6 +271,55 @@ struct ZenKitPublicSurfaceSmokeTests {
     }
 
     @Test
+    func zenOnboardingComposesDefaultAndExpressiveTransitions() {
+        struct DemoPage: Identifiable, Equatable {
+            let id: String
+            let title: String
+        }
+
+        let pages = [
+            DemoPage(id: "welcome", title: "Welcome"),
+            DemoPage(id: "focus", title: "Focus"),
+        ]
+
+        let subtle = ZenOnboarding(
+            pages: pages,
+            selection: .constant("welcome"),
+            backgroundStyle: .animatedMesh(),
+            transitionStyle: .default
+        ) { page in
+            Text(page.title)
+        }
+
+        let expressive = ZenOnboarding(
+            pages: pages,
+            selection: .constant("focus"),
+            backgroundStyle: .animatedMesh(intensity: .expressive),
+            transitionStyle: .expressive
+        ) { page in
+            Text(page.title)
+        }
+
+        let reducedMotion = ZenOnboarding(
+            pages: pages,
+            selection: .constant("welcome"),
+            backgroundStyle: .animatedMesh(),
+            transitionStyle: .default,
+            reduceMotionOverride: true
+        ) { page in
+            Text(page.title)
+        }
+
+        #expect(subtle.transitionConfiguration == .defaultMotion)
+        #expect(expressive.transitionConfiguration == .expressiveMotion)
+        #expect(reducedMotion.transitionConfiguration == .reduceMotion)
+
+        _ = subtle
+        _ = expressive
+        _ = reducedMotion
+    }
+
+    @Test
     func zenOnboardingBackgroundComposesAnimatedMeshStyle() {
         let view = ZenOnboardingBackgroundView(
             pageIndex: 0,
