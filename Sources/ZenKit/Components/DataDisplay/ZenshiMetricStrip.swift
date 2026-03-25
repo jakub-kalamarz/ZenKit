@@ -1,16 +1,38 @@
 import SwiftUI
 
+public enum ZenMetricTrend: String, Sendable {
+    case up, down, neutral
+}
+
+public enum ZenMetricComparisonLogic: String, Sendable {
+    case moreIsBetter, lessIsBetter, neutral
+}
+
 public struct ZenMetricValue {
     public let label: String
     public let value: String
     public let tint: Color?
     public let iconSource: ZenIconSource?
+    public let comparisonValue: String?
+    public let trend: ZenMetricTrend?
+    public let comparisonLogic: ZenMetricComparisonLogic
     
-    public init(label: String, value: String, tint: Color? = nil, iconSource: ZenIconSource? = nil) {
+    public init(
+        label: String,
+        value: String,
+        tint: Color? = nil,
+        iconSource: ZenIconSource? = nil,
+        comparisonValue: String? = nil,
+        trend: ZenMetricTrend? = nil,
+        comparisonLogic: ZenMetricComparisonLogic = .moreIsBetter
+    ) {
         self.label = label
         self.value = value
         self.tint = tint
         self.iconSource = iconSource
+        self.comparisonValue = comparisonValue
+        self.trend = trend
+        self.comparisonLogic = comparisonLogic
     }
 }
 
@@ -126,25 +148,54 @@ public struct ZenMetricStrip: View {
                 .foregroundStyle(value.tint ?? Color.zenTextPrimary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
+            
+            if let comparisonValue = value.comparisonValue {
+                Text(comparisonValue)
+                    .font(.zenCaption)
+                    .foregroundStyle(comparisonColor(for: value))
+                    .lineLimit(1)
+            }
         }
     }
 
     private func compactMetricValue(for value: ZenMetricValue) -> some View {
-        Text(value.value)
-            .font(.zenTitle.weight(.semibold))
-            .monospacedDigit()
-            .foregroundStyle(value.tint ?? Color.zenTextPrimary)
-            .lineLimit(1)
-            .minimumScaleFactor(0.8)
+        VStack(alignment: .leading, spacing: 0) {
+            Text(value.value)
+                .font(.zenTitle.weight(.semibold))
+                .monospacedDigit()
+                .foregroundStyle(value.tint ?? Color.zenTextPrimary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+            
+            if let comparisonValue = value.comparisonValue {
+                Text(comparisonValue)
+                    .font(.zenCaption)
+                    .foregroundStyle(comparisonColor(for: value))
+                    .lineLimit(1)
+            }
+        }
+    }
+    
+    private func comparisonColor(for value: ZenMetricValue) -> Color {
+        guard let trend = value.trend else { return .zenTextMuted }
+        
+        switch (trend, value.comparisonLogic) {
+        case (.up, .moreIsBetter), (.down, .lessIsBetter):
+            return .zenSuccess
+        case (.down, .moreIsBetter), (.up, .lessIsBetter):
+            return .zenCritical
+        default:
+            return .zenTextMuted
+        }
     }
 }
 
 #Preview {
     ZenMetricStrip(values: [
-        ZenMetricValue(label: "Clicks", value: "694", tint: .zenAccent, iconSource: .asset("CursorClick")),
-        ZenMetricValue(label: "Impressions", value: "17.8K", tint: .zenSuccess, iconSource: .asset("ChartBar")),
-        ZenMetricValue(label: "CTR", value: "4%", iconSource: .system("percent")),
-        ZenMetricValue(label: "Position", value: "16", tint: .zenWarning, iconSource: .asset("TrendUp")),
+        ZenMetricValue(label: "Clicks", value: "694", tint: .zenAccent, iconSource: .asset("CursorClick"), comparisonValue: "+12%", trend: .up),
+        ZenMetricValue(label: "Impressions", value: "17.8K", tint: .zenSuccess, iconSource: .asset("ChartBar"), comparisonValue: "-2%", trend: .down),
+        ZenMetricValue(label: "CTR", value: "4%", iconSource: .system("percent"), comparisonValue: "0%", trend: .neutral),
+        ZenMetricValue(label: "Position", value: "16", tint: .zenWarning, iconSource: .asset("TrendUp"), comparisonValue: "+2", trend: .up, comparisonLogic: .lessIsBetter),
     ])
     .padding()
     .background(Color.zenBackground)

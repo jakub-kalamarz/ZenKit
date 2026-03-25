@@ -70,7 +70,8 @@ struct ShowcaseSection: Identifiable, Equatable {
                 .init(id: "rating", title: "Rating", screenID: .rating),
                 .init(id: "page-indicator", title: "Page Indicator", screenID: .pageIndicator),
                 .init(id: "color-swatch", title: "Color Swatch", screenID: .colorSwatch),
-                .init(id: "timeline", title: "Timeline", screenID: .timeline)
+                .init(id: "timeline", title: "Timeline", screenID: .timeline),
+                .init(id: "button-label", title: "Button Label", screenID: .buttonLabel)
             ]
         )
     ]

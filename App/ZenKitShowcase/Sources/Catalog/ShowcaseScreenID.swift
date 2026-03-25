@@ -38,4 +38,5 @@ enum ShowcaseScreenID: String, Equatable {
     case pageIndicator
     case colorSwatch
     case timeline
+    case buttonLabel
 }

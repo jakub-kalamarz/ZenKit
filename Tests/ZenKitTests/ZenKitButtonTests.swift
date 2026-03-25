@@ -163,4 +163,14 @@ struct ZenKitButtonTests {
         #expect(linkStyle.foregroundLight == colors.accent.light)
         #expect(linkStyle.foregroundDark == colors.accent.dark)
     }
+
+    @Test
+    func buttonLabelExposesExpectedInitializers() {
+        // Just verify it compiles and initializes
+        _ = ZenButtonLabel("Test")
+        _ = ZenButtonLabel("Test", variant: .outline)
+        _ = ZenButtonLabel("Test", size: .sm)
+        _ = ZenButtonLabel("Test", fullWidth: true)
+        _ = ZenButtonLabel("Test", leadingIcon: .init(assetName: "Plus"), trailingIcon: .init(assetName: "ArrowRight"))
+    }
 }

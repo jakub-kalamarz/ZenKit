@@ -58,6 +58,17 @@ public extension ZenSection where Footer == EmptyView {
             footer: { EmptyView() }
         )
     }
+
+    init(
+        @ViewBuilder header: @escaping () -> Header,
+        @ViewBuilder content: @escaping () -> Content
+    ) {
+        self.init(
+            content: content,
+            header: header,
+            footer: { EmptyView() }
+        )
+    }
 }
 
 public extension ZenSection where Header == EmptyView {

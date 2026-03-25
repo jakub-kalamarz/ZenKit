@@ -91,6 +91,8 @@ struct ShowcaseRootView: View {
             ColorSwatchShowcaseScreen()
         case .timeline:
             TimelineShowcaseScreen()
+        case .buttonLabel:
+            ButtonLabelShowcaseScreen()
         }
     }
 

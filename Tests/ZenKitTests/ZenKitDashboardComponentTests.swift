@@ -286,4 +286,19 @@ struct ZenKitDashboardComponentTests {
 
         _ = view
     }
+
+    @Test
+    func metricStripSupportsComparisons() {
+        let metric = ZenMetricValue(
+            label: "Test",
+            value: "100",
+            comparisonValue: "+10%",
+            trend: .up,
+            comparisonLogic: .moreIsBetter
+        )
+        
+        #expect(metric.comparisonValue == "+10%")
+        #expect(metric.trend == .up)
+        #expect(metric.comparisonLogic == .moreIsBetter)
+    }
 }

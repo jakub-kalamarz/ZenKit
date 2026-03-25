@@ -13,6 +13,45 @@ struct MetricsShowcaseScreen: View {
                 ])
             }
 
+            ZenCard(title: "Comparison Metrics", subtitle: "Metrics with trend indicators") {
+                ZenMetricStrip(values: [
+                    ZenMetricValue(
+                        label: "Revenue",
+                        value: "$12.4K",
+                        tint: .zenAccent,
+                        iconSource: .system("dollarsign.circle"),
+                        comparisonValue: "+12%",
+                        trend: .up
+                    ),
+                    ZenMetricValue(
+                        label: "Churn Rate",
+                        value: "2.1%",
+                        tint: .zenCritical,
+                        iconSource: .system("person.badge.minus"),
+                        comparisonValue: "+0.4%",
+                        trend: .up,
+                        comparisonLogic: .lessIsBetter
+                    ),
+                    ZenMetricValue(
+                        label: "NPS",
+                        value: "72",
+                        tint: .zenSuccess,
+                        iconSource: .system("heart"),
+                        comparisonValue: "+4",
+                        trend: .up
+                    ),
+                    ZenMetricValue(
+                        label: "Latency",
+                        value: "42ms",
+                        tint: .zenWarning,
+                        iconSource: .system("bolt"),
+                        comparisonValue: "-12ms",
+                        trend: .down,
+                        comparisonLogic: .lessIsBetter
+                    )
+                ])
+            }
+
             ZenCard(title: "Compact Metric Grid", subtitle: "2x2 icon and value tiles") {
                 ZenMetricStrip(
                     values: [
