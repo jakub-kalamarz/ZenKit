@@ -43,6 +43,22 @@ struct BadgeShowcaseScreen: View {
                     ZenBadge("Backend", isSelected: false, action: {}, onRemove: {})
                 }
             }
+
+            ZenCard(title: "Icons & Colors", subtitle: "Custom icons and tints") {
+                VStack(alignment: .leading, spacing: ZenSpacing.small) {
+                    HStack(spacing: ZenSpacing.small) {
+                        ZenBadge("Apple", iconSource: .system("apple.logo"))
+                        ZenBadge("Swift", iconSource: .system("swift"), tint: .orange)
+                        ZenBadge("GitHub", iconSource: .system("terminal"), tint: .purple)
+                    }
+                    
+                    HStack(spacing: ZenSpacing.small) {
+                        ZenBadge("Locked", iconSource: .system("lock.fill"), tint: .zenTextMuted)
+                        ZenBadge("Featured", iconSource: .system("star.fill"), tint: .yellow)
+                        ZenBadge("Custom", tint: .indigo)
+                    }
+                }
+            }
         }
     }
 }

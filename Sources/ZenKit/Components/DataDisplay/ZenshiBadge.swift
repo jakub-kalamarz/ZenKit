@@ -16,13 +16,22 @@ public struct ZenBadge: View {
     private let title: LocalizedStringKey
     private let tone: ZenSemanticTone
     private let isSelected: Bool
+    private let iconSource: ZenIconSource?
+    private let tint: Color?
     private let action: (() -> Void)?
     private let onRemove: (() -> Void)?
     
-    public init(_ title: LocalizedStringKey, tone: ZenSemanticTone = .neutral) {
+    public init(
+        _ title: LocalizedStringKey,
+        tone: ZenSemanticTone = .neutral,
+        iconSource: ZenIconSource? = nil,
+        tint: Color? = nil
+    ) {
         self.title = title
         self.tone = tone
         self.isSelected = false
+        self.iconSource = iconSource
+        self.tint = tint
         self.action = nil
         self.onRemove = nil
     }
@@ -31,11 +40,15 @@ public struct ZenBadge: View {
         _ title: LocalizedStringKey,
         tone: ZenSemanticTone = .neutral,
         isSelected: Bool = false,
+        iconSource: ZenIconSource? = nil,
+        tint: Color? = nil,
         action: @escaping () -> Void
     ) {
         self.title = title
         self.tone = tone
         self.isSelected = isSelected
+        self.iconSource = iconSource
+        self.tint = tint
         self.action = action
         self.onRemove = nil
     }
@@ -43,11 +56,15 @@ public struct ZenBadge: View {
     public init(
         _ title: LocalizedStringKey,
         tone: ZenSemanticTone = .neutral,
+        iconSource: ZenIconSource? = nil,
+        tint: Color? = nil,
         onRemove: @escaping () -> Void
     ) {
         self.title = title
         self.tone = tone
         self.isSelected = false
+        self.iconSource = iconSource
+        self.tint = tint
         self.action = nil
         self.onRemove = onRemove
     }
@@ -56,12 +73,16 @@ public struct ZenBadge: View {
         _ title: LocalizedStringKey,
         tone: ZenSemanticTone = .neutral,
         isSelected: Bool = false,
+        iconSource: ZenIconSource? = nil,
+        tint: Color? = nil,
         action: @escaping () -> Void,
         onRemove: @escaping () -> Void
     ) {
         self.title = title
         self.tone = tone
         self.isSelected = isSelected
+        self.iconSource = iconSource
+        self.tint = tint
         self.action = action
         self.onRemove = onRemove
     }
@@ -79,7 +100,7 @@ public struct ZenBadge: View {
                 removeDivider
                 
                 Button(action: onRemove) {
-                    ZenIcon(systemName: "xmark", size: ZenBadgeStyleMetrics.removeIconSize)
+                    ZenIcon(source: .system("xmark"), size: ZenBadgeStyleMetrics.removeIconSize)
                         .font(.system(size: ZenBadgeStyleMetrics.removeIconSize, weight: .bold))
                         .frame(
                             width: ZenBadgeStyleMetrics.removeButtonWidth,
@@ -105,6 +126,10 @@ public struct ZenBadge: View {
             return .zenPrimaryForeground
         }
         
+        if let tint {
+            return tint
+        }
+        
         switch tone {
         case .neutral:
             return .zenTextPrimary
@@ -120,6 +145,10 @@ public struct ZenBadge: View {
     private var backgroundColor: Color {
         if isSelected {
             return .zenPrimary
+        }
+        
+        if let tint {
+            return tint.opacity(0.12)
         }
         
         let colors = ZenTheme.current.resolvedColors
@@ -139,6 +168,10 @@ public struct ZenBadge: View {
     private var borderColor: Color {
         if isSelected {
             return .zenPrimary
+        }
+        
+        if let tint {
+            return tint.opacity(0.24)
         }
         
         let colors = ZenTheme.current.resolvedColors
@@ -171,7 +204,10 @@ public struct ZenBadge: View {
     private var badgeLabel: some View {
         HStack(spacing: ZenBadgeStyleMetrics.labelSpacing) {
             if isSelected {
-                ZenIcon(systemName: "checkmark", size: ZenBadgeStyleMetrics.iconSize)
+                ZenIcon(source: .system("checkmark"), size: ZenBadgeStyleMetrics.iconSize)
+                    .font(.system(size: ZenBadgeStyleMetrics.iconSize, weight: .bold))
+            } else if let iconSource {
+                ZenIcon(source: iconSource, size: ZenBadgeStyleMetrics.iconSize)
                     .font(.system(size: ZenBadgeStyleMetrics.iconSize, weight: .bold))
             }
             
