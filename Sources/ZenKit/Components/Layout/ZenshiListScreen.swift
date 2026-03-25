@@ -41,7 +41,7 @@ public struct ZenListScreen<ToolbarLeading: View, ToolbarPrincipal: View, Toolba
             content()
         }
         .scrollContentBackground(.hidden)
-        .background(Color.zenBackground)
+        .zenBackground()
         .zenListScreenRefreshable(onRefresh)
         .applyZenListScreenNavigationTitle(navigationTitle, displayMode: resolvedDisplayMode)
         .toolbar {

@@ -101,5 +101,5 @@ public struct ZenCard<Content: View, Footer: View>: View {
         }
     }
     .padding()
-    .background(Color.zenBackground)
+    .zenBackground()
 }

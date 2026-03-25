@@ -50,7 +50,7 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
             }
             .padding(.horizontal, ZenSpacing.small)
         }
-        .background(Color.zenBackground)
+        .zenBackground()
         .zenRefreshable(onRefresh)
         .applyNavigationTitle(navigationTitle, displayMode: resolvedDisplayMode)
         .toolbar {

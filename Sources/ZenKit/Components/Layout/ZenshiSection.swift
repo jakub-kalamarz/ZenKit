@@ -132,5 +132,5 @@ private struct ZenSectionBody<Content: View>: View {
     }
     .listStyle(.plain)
     .scrollContentBackground(.hidden)
-    .background(Color.zenBackground)
+    .zenBackground()
 }
