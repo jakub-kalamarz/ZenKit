@@ -1,6 +1,8 @@
 import SwiftUI
 
 public struct ZenSection<Content: View, Header: View, Footer: View>: View {
+    @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
+
     private let content: () -> Content
     private let header: () -> Header
     private let footer: () -> Footer
@@ -16,6 +18,9 @@ public struct ZenSection<Content: View, Header: View, Footer: View>: View {
     }
 
     public var body: some View {
+        let theme = ZenTheme.current
+        let cornerRadius = theme.resolvedCornerRadius(for: .nestedContainer, parentRadius: parentCornerRadius)
+
         VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
             header()
 
@@ -24,6 +29,12 @@ public struct ZenSection<Content: View, Header: View, Footer: View>: View {
             footer()
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.zenSurfaceMuted)
+        .overlay(
+            RoundedRectangle(cornerRadius: cornerRadius)
+                .strokeBorder(Color.zenBorder, lineWidth: 1)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .listRowInsets(
             EdgeInsets(
                 top: ZenSpacing.xSmall,
@@ -34,6 +45,7 @@ public struct ZenSection<Content: View, Header: View, Footer: View>: View {
         )
         .listRowBackground(Color.clear)
         .listRowSeparator(.hidden)
+        .zenContainerCornerRadius(cornerRadius)
     }
 }
 
@@ -97,11 +109,11 @@ private struct ZenSectionBody<Content: View>: View {
         let theme = ZenTheme.current
         let cornerRadius = theme.resolvedCornerRadius(for: .nestedContainer, parentRadius: parentCornerRadius)
 
-        VStack(alignment: .leading, spacing: ZenSpacing.small) {
+        VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
             content()
         }
         .padding(.vertical, ZenSpacing.xSmall)
-        .padding(.horizontal, ZenSpacing.small)
+        .padding(.horizontal, ZenSpacing.xSmall)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.zenSurface)
         .overlay(
@@ -109,28 +121,34 @@ private struct ZenSectionBody<Content: View>: View {
                 .strokeBorder(Color.zenBorder, lineWidth: 1)
         )
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+        .padding(.horizontal, ZenSpacing.xSmall)
         .zenContainerCornerRadius(cornerRadius)
     }
 }
 
 #Preview {
-    List {
-        ZenSection {
-            ZenNavigationRow(title: "Members", subtitle: "Manage access", leadingIconAsset: "UsersThree")
-            ZenNavigationRow(title: "Billing", subtitle: "Invoices and seats", leadingIconAsset: "CreditCard")
-        } header: {
-            ZenSectionHeader {
-                Text("Workspace")
-            } subtitle: {
-                Text("Shared settings")
+    ScrollView {
+        LazyVStack {
+            ZenSection {
+                ZenNavigationRow(title: "Members", subtitle: "Manage access", leadingIconAsset: "UsersThree")
+                ZenNavigationRow(title: "Billing", subtitle: "Invoices and seats", leadingIconAsset: "CreditCard")
+            } header: {
+                ZenSectionHeader {
+                    Text("Workspace")
+                }
+            } footer: {
+                ZenSectionFooter {
+                    Text("Admins can update access.")
+                }
             }
-        } footer: {
-            ZenSectionFooter {
-                Text("Admins can update access.")
+            ZenSection {
+                ZenNavigationRow(title: "API Keys", subtitle: "View and manage API keys", leadingIconAsset: "Key")
+                ZenNavigationRow(title: "Webhooks", subtitle: "Configure event webhooks", leadingIconAsset: "PaperPlane")
+            } header: {
+                ZenSectionHeader {
+                    Text("Integrations")
+                }
             }
         }
     }
-    .listStyle(.plain)
-    .scrollContentBackground(.hidden)
-    .zenBackground()
 }

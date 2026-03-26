@@ -13,6 +13,8 @@ public struct ZenSectionFooter<Content: View>: View {
             .foregroundStyle(Color.zenTextMuted)
             .textCase(nil)
             .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, ZenSpacing.small)
+            .padding(.bottom, ZenSpacing.small)
     }
 }
 

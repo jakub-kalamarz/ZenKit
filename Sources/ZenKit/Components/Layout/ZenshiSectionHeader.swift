@@ -28,6 +28,8 @@ public struct ZenSectionHeader<Title: View, Subtitle: View>: View {
         }
         .textCase(nil)
         .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, ZenSpacing.small)
+        .padding(.top, ZenSpacing.small)
     }
 }
 
