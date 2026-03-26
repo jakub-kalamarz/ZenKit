@@ -47,10 +47,12 @@ public enum ZenMetricStripLayout: Equatable {
 }
 
 public struct ZenMetricStrip: View {
-    public static let iconBadgeSize: CGFloat = 22
-    public static let iconBadgeIconSize: CGFloat = 12
+    public static let iconBadgeSize: CGFloat = 28
+    public static let iconBadgeIconSize: CGFloat = 18
+    public static let compactIconBadgeSize: CGFloat = 24
+    public static let compactIconBadgeIconSize: CGFloat = 14
     public static let iconBadgeCornerRadius: CGFloat = 8
-    public static let contentSpacing: CGFloat = 10
+    public static let contentSpacing: CGFloat = ZenSpacing.xSmall
     public static let textSpacing: CGFloat = 2
     public static let comparisonSpacing: CGFloat = 2
     public static let comparisonIconSize: CGFloat = 10
@@ -99,7 +101,12 @@ public struct ZenMetricStrip: View {
         case .compact:
             HStack(alignment: .center, spacing: Self.contentSpacing) {
                 if let iconSource = value.iconSource {
-                    iconBadge(for: iconSource, tint: value.tint)
+                    iconBadge(
+                        for: iconSource,
+                        tint: value.tint,
+                        badgeSize: Self.compactIconBadgeSize,
+                        iconSize: Self.compactIconBadgeIconSize
+                    )
                 }
 
                 compactMetricValue(for: value)
@@ -115,13 +122,18 @@ public struct ZenMetricStrip: View {
         }
     }
 
-    private func iconBadge(for iconSource: ZenIconSource, tint: Color?) -> some View {
+    private func iconBadge(
+        for iconSource: ZenIconSource,
+        tint: Color?,
+        badgeSize: CGFloat = Self.iconBadgeSize,
+        iconSize: CGFloat = Self.iconBadgeIconSize
+    ) -> some View {
         ZStack {
             RoundedRectangle(cornerRadius: Self.iconBadgeCornerRadius, style: .continuous)
                 .fill(Color.zenSurface)
-                .frame(width: Self.iconBadgeSize, height: Self.iconBadgeSize)
+                .frame(width: badgeSize, height: badgeSize)
 
-            ZenIcon(source: iconSource, size: Self.iconBadgeIconSize)
+            ZenIcon(source: iconSource, size: iconSize)
                 .foregroundStyle(tint ?? Color.zenTextMuted)
         }
     }
