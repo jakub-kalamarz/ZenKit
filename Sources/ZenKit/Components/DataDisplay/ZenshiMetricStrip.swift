@@ -47,11 +47,13 @@ public enum ZenMetricStripLayout: Equatable {
 }
 
 public struct ZenMetricStrip: View {
-    public static let iconBadgeSize: CGFloat = 40
-    public static let iconBadgeIconSize: CGFloat = 24
-    public static let iconBadgeCornerRadius: CGFloat = 10
-    public static let contentSpacing: CGFloat = 12
+    public static let iconBadgeSize: CGFloat = 22
+    public static let iconBadgeIconSize: CGFloat = 12
+    public static let iconBadgeCornerRadius: CGFloat = 8
+    public static let contentSpacing: CGFloat = 10
     public static let textSpacing: CGFloat = 2
+    public static let comparisonSpacing: CGFloat = 2
+    public static let comparisonIconSize: CGFloat = 10
 
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
     private let values: [ZenMetricValue]
@@ -93,14 +95,7 @@ public struct ZenMetricStrip: View {
     private func metricTile(for value: ZenMetricValue) -> some View {
         switch style {
         case .default:
-            if let iconSource = value.iconSource {
-                HStack(alignment: .top, spacing: Self.contentSpacing) {
-                    iconBadge(for: iconSource, tint: value.tint)
-                    metricText(for: value)
-                }
-            } else {
-                metricText(for: value)
-            }
+            metricText(for: value)
         case .compact:
             HStack(alignment: .center, spacing: Self.contentSpacing) {
                 if let iconSource = value.iconSource {
@@ -117,10 +112,6 @@ public struct ZenMetricStrip: View {
         ForEach(Array(values.enumerated()), id: \.offset) { _, value in
             metricTile(for: value)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical, ZenSpacing.small)
-                .padding(.horizontal, 12)
-                .background(Color.zenSurfaceMuted)
-                .clipShape(RoundedRectangle(cornerRadius: tileCornerRadius))
         }
     }
 
@@ -136,42 +127,64 @@ public struct ZenMetricStrip: View {
     }
 
     private func metricText(for value: ZenMetricValue) -> some View {
-        VStack(alignment: .leading, spacing: Self.textSpacing) {
-            Text(value.label)
-                .font(.zenCaption.weight(.medium))
-                .foregroundStyle(Color.zenTextMuted)
-                .lineLimit(1)
-
-            Text(value.value)
-                .font(.zenTitle.weight(.semibold))
-                .monospacedDigit()
-                .foregroundStyle(value.tint ?? Color.zenTextPrimary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.8)
-            
-            if let comparisonValue = value.comparisonValue {
-                Text(comparisonValue)
-                    .font(.zenCaption)
-                    .foregroundStyle(comparisonColor(for: value))
-                    .lineLimit(1)
+        HStack(alignment: .center, spacing: Self.contentSpacing) {
+            if let iconSource = value.iconSource {
+                iconBadge(for: iconSource, tint: value.tint)
             }
+
+            VStack(alignment: .leading, spacing: Self.textSpacing) {
+                Text(value.label)
+                    .font(.zenCaption.weight(.medium))
+                    .foregroundStyle(Color.zenTextMuted)
+                    .lineLimit(1)
+
+                HStack(alignment: .firstTextBaseline, spacing: Self.contentSpacing) {
+                    Text(value.value)
+                        .font(.zenTitle.weight(.semibold))
+                        .monospacedDigit()
+                        .foregroundStyle(value.tint ?? Color.zenTextPrimary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+
+                    comparisonAccessory(for: value)
+
+                    Spacer(minLength: 0)
+                }
+            }
+
+            Spacer(minLength: 0)
         }
     }
 
     private func compactMetricValue(for value: ZenMetricValue) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
+        HStack(spacing: Self.contentSpacing) {
             Text(value.value)
-                .font(.zenTitle.weight(.semibold))
+                .font(.zenLabel.weight(.semibold))
                 .monospacedDigit()
                 .foregroundStyle(value.tint ?? Color.zenTextPrimary)
                 .lineLimit(1)
-                .minimumScaleFactor(0.8)
-            
-            if let comparisonValue = value.comparisonValue {
+                .minimumScaleFactor(0.75)
+
+            comparisonAccessory(for: value)
+
+            Spacer(minLength: 0)
+        }
+    }
+
+    @ViewBuilder
+    private func comparisonAccessory(for value: ZenMetricValue) -> some View {
+        if let comparisonValue = value.comparisonValue {
+            HStack(spacing: Self.comparisonSpacing) {
+                if let trend = value.trend {
+                    ZenIcon(systemName: comparisonIconSystemName(for: trend), size: Self.comparisonIconSize)
+                        .foregroundStyle(comparisonColor(for: value))
+                }
+
                 Text(comparisonValue)
-                    .font(.zenCaption)
+                    .font(.zenCaption.weight(.semibold))
                     .foregroundStyle(comparisonColor(for: value))
                     .lineLimit(1)
+                    .monospacedDigit()
             }
         }
     }
@@ -186,6 +199,17 @@ public struct ZenMetricStrip: View {
             return .zenCritical
         default:
             return .zenTextMuted
+        }
+    }
+
+    private func comparisonIconSystemName(for trend: ZenMetricTrend) -> String {
+        switch trend {
+        case .up:
+            return "chevron.up"
+        case .down:
+            return "chevron.down"
+        case .neutral:
+            return "minus"
         }
     }
 }
