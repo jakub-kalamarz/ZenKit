@@ -56,6 +56,8 @@ public struct ZenMetricStrip: View {
     public static let textSpacing: CGFloat = 2
     public static let comparisonSpacing: CGFloat = 2
     public static let comparisonIconSize: CGFloat = 10
+    public static let gridComparisonBreakpoint: CGFloat = 132
+    public static let gridIconBreakpoint: CGFloat = 168
 
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
     private let values: [ZenMetricValue]
@@ -76,28 +78,37 @@ public struct ZenMetricStrip: View {
         let theme = ZenTheme.current
         let tileCornerRadius = theme.resolvedCornerRadius(for: .nestedContainer, parentRadius: parentCornerRadius)
 
-        Group {
-            switch layout {
-            case let .grid(columns):
-                LazyVGrid(
-                    columns: Array(repeating: GridItem(.flexible()), count: max(columns, 1)),
-                    spacing: ZenSpacing.small
-                ) {
-                    metricTiles(tileCornerRadius: tileCornerRadius)
-                }
-            case .row:
-                HStack(spacing: ZenSpacing.small) {
-                    metricTiles(tileCornerRadius: tileCornerRadius)
+        GeometryReader { proxy in
+            let availableWidth = proxy.size.width
+
+            Group {
+                switch layout {
+                case let .grid(columns):
+                    let columnCount = max(columns, 1)
+                    let tileWidth = resolvedTileWidth(availableWidth: availableWidth, columns: columnCount)
+                    let gridContentMode = gridContentMode(for: tileWidth)
+
+                    LazyVGrid(
+                        columns: Array(repeating: GridItem(.flexible()), count: columnCount),
+                        spacing: ZenSpacing.small
+                    ) {
+                        metricTiles(tileCornerRadius: tileCornerRadius, gridContentMode: gridContentMode)
+                    }
+                case .row:
+                    HStack(spacing: ZenSpacing.small) {
+                        metricTiles(tileCornerRadius: tileCornerRadius, gridContentMode: nil)
+                    }
                 }
             }
         }
+        .frame(minHeight: 0)
     }
 
     @ViewBuilder
-    private func metricTile(for value: ZenMetricValue) -> some View {
+    private func metricTile(for value: ZenMetricValue, gridContentMode: GridMetricContentMode?) -> some View {
         switch style {
         case .default:
-            metricText(for: value)
+            metricText(for: value, gridContentMode: gridContentMode)
         case .compact:
             HStack(alignment: .center, spacing: Self.contentSpacing) {
                 if let iconSource = value.iconSource {
@@ -115,9 +126,9 @@ public struct ZenMetricStrip: View {
     }
 
     @ViewBuilder
-    private func metricTiles(tileCornerRadius: CGFloat) -> some View {
+    private func metricTiles(tileCornerRadius: CGFloat, gridContentMode: GridMetricContentMode?) -> some View {
         ForEach(Array(values.enumerated()), id: \.offset) { _, value in
-            metricTile(for: value)
+            metricTile(for: value, gridContentMode: gridContentMode)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
@@ -138,11 +149,20 @@ public struct ZenMetricStrip: View {
         }
     }
 
-    private func metricText(for value: ZenMetricValue) -> some View {
-        ViewThatFits(in: .horizontal) {
-            metricTextContent(for: value, showsIcon: true, showsComparison: true)
-            metricTextContent(for: value, showsIcon: false, showsComparison: true)
-            metricTextContent(for: value, showsIcon: false, showsComparison: false)
+    @ViewBuilder
+    private func metricText(for value: ZenMetricValue, gridContentMode: GridMetricContentMode?) -> some View {
+        if let gridContentMode {
+            metricTextContent(
+                for: value,
+                showsIcon: gridContentMode.showsIcon,
+                showsComparison: gridContentMode.showsComparison
+            )
+        } else {
+            ViewThatFits(in: .horizontal) {
+                metricTextContent(for: value, showsIcon: true, showsComparison: true)
+                metricTextContent(for: value, showsIcon: false, showsComparison: true)
+                metricTextContent(for: value, showsIcon: false, showsComparison: false)
+            }
         }
     }
 
@@ -234,6 +254,47 @@ public struct ZenMetricStrip: View {
             return "chevron.down"
         case .neutral:
             return "minus"
+        }
+    }
+
+    private func resolvedTileWidth(availableWidth: CGFloat, columns: Int) -> CGFloat {
+        let totalSpacing = CGFloat(max(columns - 1, 0)) * ZenSpacing.small
+        return max((availableWidth - totalSpacing) / CGFloat(max(columns, 1)), 0)
+    }
+
+    private func gridContentMode(for tileWidth: CGFloat) -> GridMetricContentMode {
+        if tileWidth >= Self.gridIconBreakpoint {
+            return .iconAndComparison
+        }
+
+        if tileWidth >= Self.gridComparisonBreakpoint {
+            return .comparisonOnly
+        }
+
+        return .valueOnly
+    }
+}
+
+private enum GridMetricContentMode {
+    case iconAndComparison
+    case comparisonOnly
+    case valueOnly
+
+    var showsIcon: Bool {
+        switch self {
+        case .iconAndComparison:
+            return true
+        case .comparisonOnly, .valueOnly:
+            return false
+        }
+    }
+
+    var showsComparison: Bool {
+        switch self {
+        case .iconAndComparison, .comparisonOnly:
+            return true
+        case .valueOnly:
+            return false
         }
     }
 }
