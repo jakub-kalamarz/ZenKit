@@ -60,6 +60,7 @@ public struct ZenMetricStrip: View {
     public static let gridIconBreakpoint: CGFloat = 168
 
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
+    @State private var availableWidth: CGFloat = 0
     private let values: [ZenMetricValue]
     public let style: ZenMetricStripStyle
     public let layout: ZenMetricStripLayout
@@ -78,30 +79,29 @@ public struct ZenMetricStrip: View {
         let theme = ZenTheme.current
         let tileCornerRadius = theme.resolvedCornerRadius(for: .nestedContainer, parentRadius: parentCornerRadius)
 
-        GeometryReader { proxy in
-            let availableWidth = proxy.size.width
+        Group {
+            switch layout {
+            case let .grid(columns):
+                let columnCount = max(columns, 1)
+                let measuredWidth = availableWidth > 0 ? availableWidth : fallbackGridWidth(for: columnCount)
+                let tileWidth = resolvedTileWidth(availableWidth: measuredWidth, columns: columnCount)
+                let gridContentMode = gridContentMode(for: tileWidth)
 
-            Group {
-                switch layout {
-                case let .grid(columns):
-                    let columnCount = max(columns, 1)
-                    let tileWidth = resolvedTileWidth(availableWidth: availableWidth, columns: columnCount)
-                    let gridContentMode = gridContentMode(for: tileWidth)
-
-                    LazyVGrid(
-                        columns: Array(repeating: GridItem(.flexible()), count: columnCount),
-                        spacing: ZenSpacing.small
-                    ) {
-                        metricTiles(tileCornerRadius: tileCornerRadius, gridContentMode: gridContentMode)
-                    }
-                case .row:
-                    HStack(spacing: ZenSpacing.small) {
-                        metricTiles(tileCornerRadius: tileCornerRadius, gridContentMode: nil)
-                    }
+                LazyVGrid(
+                    columns: Array(repeating: GridItem(.flexible()), count: columnCount),
+                    spacing: ZenSpacing.small
+                ) {
+                    metricTiles(tileCornerRadius: tileCornerRadius, gridContentMode: gridContentMode)
+                }
+            case .row:
+                HStack(spacing: ZenSpacing.small) {
+                    metricTiles(tileCornerRadius: tileCornerRadius, gridContentMode: nil)
                 }
             }
         }
-        .frame(minHeight: 0)
+        .zenReadSize { size in
+            availableWidth = size.width
+        }
     }
 
     @ViewBuilder
@@ -272,6 +272,12 @@ public struct ZenMetricStrip: View {
         }
 
         return .valueOnly
+    }
+
+    private func fallbackGridWidth(for columns: Int) -> CGFloat {
+        let estimatedTileWidth = Self.gridIconBreakpoint
+        let totalSpacing = CGFloat(max(columns - 1, 0)) * ZenSpacing.small
+        return (estimatedTileWidth * CGFloat(columns)) + totalSpacing
     }
 }
 
