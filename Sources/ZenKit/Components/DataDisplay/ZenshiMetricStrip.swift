@@ -139,8 +139,23 @@ public struct ZenMetricStrip: View {
     }
 
     private func metricText(for value: ZenMetricValue) -> some View {
+        ViewThatFits(in: .horizontal) {
+            metricTextContent(for: value, showsIcon: true, showsComparison: true)
+            metricTextContent(for: value, showsIcon: false, showsComparison: true)
+            metricTextContent(for: value, showsIcon: false, showsComparison: false)
+        }
+    }
+
+    private func compactMetricValue(for value: ZenMetricValue) -> some View {
+        ViewThatFits(in: .horizontal) {
+            compactMetricValueContent(for: value, showsComparison: true)
+            compactMetricValueContent(for: value, showsComparison: false)
+        }
+    }
+
+    private func metricTextContent(for value: ZenMetricValue, showsIcon: Bool, showsComparison: Bool) -> some View {
         HStack(alignment: .center, spacing: Self.contentSpacing) {
-            if let iconSource = value.iconSource {
+            if showsIcon, let iconSource = value.iconSource {
                 iconBadge(for: iconSource, tint: value.tint)
             }
 
@@ -151,36 +166,33 @@ public struct ZenMetricStrip: View {
                     .lineLimit(1)
 
                 HStack(alignment: .firstTextBaseline, spacing: Self.contentSpacing) {
-                    Text(value.value)
-                        .font(.zenTitle.weight(.semibold))
-                        .monospacedDigit()
-                        .foregroundStyle(value.tint ?? Color.zenTextPrimary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.8)
+                    metricValueText(for: value, font: .zenTitle.weight(.semibold), minimumScaleFactor: 0.8)
 
-                    comparisonAccessory(for: value)
-
-                    Spacer(minLength: 0)
+                    if showsComparison {
+                        comparisonAccessory(for: value)
+                    }
                 }
             }
-
-            Spacer(minLength: 0)
         }
     }
 
-    private func compactMetricValue(for value: ZenMetricValue) -> some View {
+    private func compactMetricValueContent(for value: ZenMetricValue, showsComparison: Bool) -> some View {
         HStack(spacing: Self.contentSpacing) {
-            Text(value.value)
-                .font(.zenLabel.weight(.semibold))
-                .monospacedDigit()
-                .foregroundStyle(value.tint ?? Color.zenTextPrimary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.75)
+            metricValueText(for: value, font: .zenLabel.weight(.semibold), minimumScaleFactor: 0.75)
 
-            comparisonAccessory(for: value)
-
-            Spacer(minLength: 0)
+            if showsComparison {
+                comparisonAccessory(for: value)
+            }
         }
+    }
+
+    private func metricValueText(for value: ZenMetricValue, font: Font, minimumScaleFactor: CGFloat) -> some View {
+        Text(value.value)
+            .font(font)
+            .monospacedDigit()
+            .foregroundStyle(value.tint ?? Color.zenTextPrimary)
+            .lineLimit(1)
+            .minimumScaleFactor(minimumScaleFactor)
     }
 
     @ViewBuilder
