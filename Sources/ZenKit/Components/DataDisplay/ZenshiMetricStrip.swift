@@ -55,6 +55,7 @@ public struct ZenMetricStrip: View {
     public static let contentSpacing: CGFloat = ZenSpacing.xSmall
     public static let textSpacing: CGFloat = 2
     public static let comparisonSpacing: CGFloat = 2
+    public static let comparisonStackSpacing: CGFloat = 4
     public static let comparisonIconSize: CGFloat = 10
     public static let gridComparisonBreakpoint: CGFloat = 132
     public static let gridIconBreakpoint: CGFloat = 168
@@ -185,24 +186,46 @@ public struct ZenMetricStrip: View {
                     .foregroundStyle(Color.zenTextMuted)
                     .lineLimit(1)
 
-                HStack(alignment: .firstTextBaseline, spacing: Self.contentSpacing) {
-                    metricValueText(for: value, font: .zenTitle.weight(.semibold), minimumScaleFactor: 0.8)
-
-                    if showsComparison {
-                        comparisonAccessory(for: value)
-                    }
-                }
+                metricValueWithComparison(
+                    for: value,
+                    font: .zenTitle.weight(.semibold),
+                    minimumScaleFactor: 0.8,
+                    showsComparison: showsComparison
+                )
             }
         }
     }
 
     private func compactMetricValueContent(for value: ZenMetricValue, showsComparison: Bool) -> some View {
-        HStack(spacing: Self.contentSpacing) {
-            metricValueText(for: value, font: .zenLabel.weight(.semibold), minimumScaleFactor: 0.75)
+        metricValueWithComparison(
+            for: value,
+            font: .zenLabel.weight(.semibold),
+            minimumScaleFactor: 0.75,
+            showsComparison: showsComparison
+        )
+    }
 
-            if showsComparison {
-                comparisonAccessory(for: value)
+    @ViewBuilder
+    private func metricValueWithComparison(
+        for value: ZenMetricValue,
+        font: Font,
+        minimumScaleFactor: CGFloat,
+        showsComparison: Bool
+    ) -> some View {
+        if showsComparison, value.comparisonValue != nil {
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .firstTextBaseline, spacing: Self.contentSpacing) {
+                    metricValueText(for: value, font: font, minimumScaleFactor: minimumScaleFactor)
+                    comparisonAccessory(for: value)
+                }
+
+                VStack(alignment: .leading, spacing: Self.comparisonStackSpacing) {
+                    metricValueText(for: value, font: font, minimumScaleFactor: minimumScaleFactor)
+                    comparisonAccessory(for: value)
+                }
             }
+        } else {
+            metricValueText(for: value, font: font, minimumScaleFactor: minimumScaleFactor)
         }
     }
 
