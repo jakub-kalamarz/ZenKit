@@ -1,9 +1,7 @@
 import SwiftUI
 
+@available(*, deprecated, message: "Use ZenScreen(containerStyle: .list, ...) instead.")
 public struct ZenListScreen<ToolbarLeading: View, ToolbarPrincipal: View, ToolbarTrailing: View, Content: View>: View {
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.zenScreenNavigationContext) private var navigationContext
-
     private let navigationTitle: ZenScreenTitle?
     private let navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode
     private let hidesSharedToolbarBackground: Bool
@@ -37,55 +35,40 @@ public struct ZenListScreen<ToolbarLeading: View, ToolbarPrincipal: View, Toolba
     }
 
     public var body: some View {
-        List {
+        ZenScreen(
+            containerStyle: .list,
+            navigationTitle: navigationTitle,
+            navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
+            hidesSharedToolbarBackground: hidesSharedToolbarBackground,
+            backButton: backButton,
+            onRefresh: onRefresh,
+            header: {
+                EmptyView()
+            },
+            toolbarLeading: {
+                if let toolbarLeading {
+                    toolbarLeading()
+                } else {
+                    EmptyView()
+                }
+            },
+            toolbarPrincipal: {
+                if let toolbarPrincipal {
+                    toolbarPrincipal()
+                } else {
+                    EmptyView()
+                }
+            },
+            toolbarTrailing: {
+                if let toolbarTrailing {
+                    toolbarTrailing()
+                } else {
+                    EmptyView()
+                }
+            }
+        ) {
             content()
         }
-        .scrollContentBackground(.hidden)
-        .zenBackground()
-        .zenListScreenRefreshable(onRefresh)
-        .applyZenNavigationTitle(navigationTitle, displayMode: resolvedDisplayMode)
-        .toolbar { toolbarContent }
-        .navigationBarBackButtonHidden(resolvedCustomBackButton != nil)
-        .environment(
-            \.zenScreenNavigationContext,
-            ZenScreenNavigationContext(title: navigationTitle, backButton: backButton)
-        )
-    }
-
-    private var resolvedDisplayMode: ZenNavigationBarTitleDisplayMode {
-        ZenNavigationChrome.resolvedDisplayMode(
-            navigationTitle: navigationTitle,
-            navigationBarTitleDisplayMode: navigationBarTitleDisplayMode
-        )
-    }
-
-    private var resolvedCustomBackButton: ZenScreenBackButton? {
-        ZenNavigationChrome.resolvedCustomBackButton(
-            backButton: backButton,
-            navigationContext: navigationContext,
-            dismiss: dismiss.callAsFunction
-        )
-    }
-
-    private var shouldUseInlineTitleToolbarItem: Bool {
-        ZenNavigationChrome.shouldUseInlineTitleToolbarItem(
-            navigationTitle: navigationTitle,
-            resolvedDisplayMode: resolvedDisplayMode
-        )
-    }
-
-    private var toolbarContent: some ToolbarContent {
-        ZenNavigationToolbarContent(
-            hidesSharedBackground: hidesSharedToolbarBackground,
-            leadingPlacement: ZenNavigationChrome.leadingToolbarPlacement,
-            trailingPlacement: ZenNavigationChrome.trailingToolbarPlacement,
-            customBackButton: resolvedCustomBackButton,
-            navigationTitle: navigationTitle,
-            shouldUseInlineTitleToolbarItem: shouldUseInlineTitleToolbarItem,
-            toolbarLeading: toolbarLeading,
-            toolbarPrincipal: toolbarPrincipal,
-            toolbarTrailing: toolbarTrailing
-        )
     }
 }
 
@@ -274,26 +257,17 @@ public extension ZenListScreen where ToolbarPrincipal == EmptyView {
             toolbarTrailing: toolbarTrailing,
             content: content
         )
-    }
-}
-
-private extension View {
-    @ViewBuilder
-    func zenListScreenRefreshable(_ action: (@Sendable () async -> Void)?) -> some View {
-        if let action {
-            refreshable {
-                await action()
-            }
-        } else {
-            self
-        }
     }
 }
 
 #Preview {
     NavigationStack {
-        ZenListScreen(
+        ZenScreen(
+            containerStyle: .list,
             navigationTitle: "Settings",
+            header: {
+                EmptyView()
+            },
             toolbarTrailing: {
                 ZenButton("Edit", variant: .secondary, size: .sm) {}
             }

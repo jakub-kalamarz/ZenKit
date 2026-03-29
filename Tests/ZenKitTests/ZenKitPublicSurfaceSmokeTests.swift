@@ -560,9 +560,13 @@ struct ZenKitPublicSurfaceSmokeTests {
         }
 
         let listScreen = NavigationStack {
-            ZenListScreen(
-                navigationTitle: "Settings",
+            ZenScreen(
+                containerStyle: .list,
+                navigationTitle: ZenScreenTitle("Settings"),
                 hidesSharedToolbarBackground: false,
+                header: {
+                    EmptyView()
+                },
                 toolbarTrailing: {
                     ZenButton("Edit", variant: .secondary, size: .sm) {}
                 }
@@ -623,6 +627,53 @@ struct ZenKitPublicSurfaceSmokeTests {
                 .font(.zenTitle)
         }) {
             ZenStatusBanner(message: "Ready")
+        }
+
+        _ = view
+    }
+
+    @Test
+    func zenScreenSupportsStaticContainerStyleWithoutScrollView() {
+        let view = NavigationStack {
+            ZenScreen(
+                containerStyle: .static,
+                navigationTitle: ZenScreenTitle("Dashboard"),
+                header: {
+                    Text("Pinned header")
+                        .font(.zenTitle)
+                }
+            ) {
+                VStack(alignment: .leading, spacing: ZenSpacing.small) {
+                    ZenStatusBanner(message: "Ready")
+                    ZenButton("Continue") {}
+                }
+            }
+        }
+
+        _ = view
+    }
+
+    @Test
+    func zenScreenSupportsListContainerStyle() {
+        let view = NavigationStack {
+            ZenScreen(
+                containerStyle: .list,
+                navigationTitle: ZenScreenTitle("Settings"),
+                header: {
+                    EmptyView()
+                },
+                toolbarTrailing: {
+                    ZenButton("Edit", variant: .secondary, size: .sm) {}
+                }
+            ) {
+                Section("Workspace") {
+                    ZenNavigationRow(
+                        title: "Members",
+                        subtitle: "Manage access",
+                        leadingIconAsset: "UsersThree"
+                    )
+                }
+            }
         }
 
         _ = view
@@ -871,11 +922,18 @@ struct ZenKitPublicSurfaceSmokeTests {
     @Test
     func zenListScreenHostsNativeListContent() {
         let view = NavigationStack {
-            ZenListScreen(
-                navigationTitle: "Settings",
+            ZenScreen(
+                containerStyle: .list,
+                navigationTitle: ZenScreenTitle("Settings"),
                 onRefresh: {},
+                header: {
+                    EmptyView()
+                },
                 toolbarLeading: {
                     ZenButton("Back", variant: .ghost, size: .sm) {}
+                },
+                toolbarPrincipal: {
+                    EmptyView()
                 },
                 toolbarTrailing: {
                     ZenButton("Edit", variant: .secondary, size: .sm) {}

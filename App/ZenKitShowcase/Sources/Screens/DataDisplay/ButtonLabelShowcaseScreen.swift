@@ -3,7 +3,10 @@ import ZenKit
 
 struct ButtonLabelShowcaseScreen: View {
     var body: some View {
-        ZenListScreen(navigationTitle: "Button Label") {
+        ZenScreen(
+            containerStyle: .list,
+            navigationTitle: ZenScreenTitle("Button Label")
+        ) {
             ZenSection(header: { ZenSectionHeader { Text("Variants") } }) {
                 VStack(alignment: .leading, spacing: ZenSpacing.medium) {
                     ZenButtonLabel("Default")

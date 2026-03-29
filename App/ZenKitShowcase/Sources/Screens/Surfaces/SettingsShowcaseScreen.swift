@@ -5,7 +5,10 @@ struct SettingsShowcaseScreen: View {
     @State private var language = "English"
 
     var body: some View {
-        ZenListScreen(navigationTitle: "Settings") {
+        ZenScreen(
+            containerStyle: .list,
+            navigationTitle: ZenScreenTitle("Settings")
+        ) {
             ZenSection {
                 ZenSettingRow(
                     title: "Account",

@@ -1,9 +1,16 @@
 import SwiftUI
 
+public enum ZenScreenContainerStyle: Sendable {
+    case scroll
+    case list
+    case `static`
+}
+
 public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: View, ToolbarTrailing: View, Content: View>: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.zenScreenNavigationContext) private var navigationContext
 
+    private let containerStyle: ZenScreenContainerStyle
     private let navigationTitle: ZenScreenTitle?
     private let navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode
     private let hidesSharedToolbarBackground: Bool
@@ -16,6 +23,7 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
     private let content: () -> Content
 
     public init(
+        containerStyle: ZenScreenContainerStyle = .scroll,
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
@@ -27,6 +35,7 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
         @ViewBuilder toolbarTrailing: @escaping () -> ToolbarTrailing,
         @ViewBuilder content: @escaping () -> Content
     ) {
+        self.containerStyle = containerStyle
         self.navigationTitle = navigationTitle
         self.navigationBarTitleDisplayMode = navigationBarTitleDisplayMode
         self.hidesSharedToolbarBackground = hidesSharedToolbarBackground
@@ -40,16 +49,7 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
     }
 
     public var body: some View {
-        ScrollView {
-            LazyVStack(alignment: .leading, spacing: ZenSpacing.medium) {
-                if let header {
-                    header()
-                }
-
-                content()
-            }
-            .padding(.horizontal, ZenSpacing.small)
-        }
+        screenContainer
         .zenBackground()
         .zenRefreshable(onRefresh)
         .applyZenNavigationTitle(navigationTitle, displayMode: resolvedDisplayMode)
@@ -96,12 +96,57 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
             toolbarTrailing: toolbarTrailing
         )
     }
+
+    @ViewBuilder
+    private var screenContainer: some View {
+        switch containerStyle {
+        case .scroll:
+            ScrollView {
+                scrollScreenContent
+            }
+        case .list:
+            List {
+                if let header {
+                    header()
+                }
+
+                content()
+            }
+            .scrollContentBackground(.hidden)
+        case .static:
+            staticScreenContent
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        }
+    }
+
+    private var scrollScreenContent: some View {
+        LazyVStack(alignment: .leading, spacing: ZenSpacing.medium) {
+            if let header {
+                header()
+            }
+
+            content()
+        }
+        .padding(.horizontal, ZenSpacing.small)
+    }
+
+    private var staticScreenContent: some View {
+        VStack(alignment: .leading, spacing: ZenSpacing.medium) {
+            if let header {
+                header()
+            }
+
+            content()
+        }
+        .padding(.horizontal, ZenSpacing.small)
+    }
 }
 
 // MARK: - Convenience overloads
 
 public extension ZenScreen where Header == EmptyView, ToolbarLeading == EmptyView, ToolbarPrincipal == EmptyView, ToolbarTrailing == EmptyView {
     init(
+        containerStyle: ZenScreenContainerStyle = .scroll,
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
@@ -110,6 +155,7 @@ public extension ZenScreen where Header == EmptyView, ToolbarLeading == EmptyVie
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.init(
+            containerStyle: containerStyle,
             navigationTitle: navigationTitle,
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
@@ -126,6 +172,7 @@ public extension ZenScreen where Header == EmptyView, ToolbarLeading == EmptyVie
 
 public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarPrincipal == EmptyView, ToolbarTrailing == EmptyView {
     init(
+        containerStyle: ZenScreenContainerStyle = .scroll,
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
@@ -135,6 +182,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarPrincipal =
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.init(
+            containerStyle: containerStyle,
             navigationTitle: navigationTitle,
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
@@ -151,6 +199,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarPrincipal =
 
 public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarPrincipal == EmptyView {
     init(
+        containerStyle: ZenScreenContainerStyle = .scroll,
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
@@ -160,6 +209,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarPrincipal =
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.init(
+            containerStyle: containerStyle,
             navigationTitle: navigationTitle,
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
@@ -175,6 +225,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarPrincipal =
 
 public extension ZenScreen where ToolbarPrincipal == EmptyView, ToolbarTrailing == EmptyView {
     init(
+        containerStyle: ZenScreenContainerStyle = .scroll,
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
@@ -184,6 +235,7 @@ public extension ZenScreen where ToolbarPrincipal == EmptyView, ToolbarTrailing 
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.init(
+            containerStyle: containerStyle,
             navigationTitle: navigationTitle,
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
@@ -199,6 +251,7 @@ public extension ZenScreen where ToolbarPrincipal == EmptyView, ToolbarTrailing 
 
 public extension ZenScreen where Header == EmptyView, ToolbarPrincipal == EmptyView {
     init(
+        containerStyle: ZenScreenContainerStyle = .scroll,
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
@@ -208,6 +261,7 @@ public extension ZenScreen where Header == EmptyView, ToolbarPrincipal == EmptyV
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.init(
+            containerStyle: containerStyle,
             navigationTitle: navigationTitle,
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
@@ -223,6 +277,7 @@ public extension ZenScreen where Header == EmptyView, ToolbarPrincipal == EmptyV
 
 public extension ZenScreen where Header == EmptyView, ToolbarLeading == EmptyView, ToolbarTrailing == EmptyView {
     init(
+        containerStyle: ZenScreenContainerStyle = .scroll,
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
@@ -231,6 +286,7 @@ public extension ZenScreen where Header == EmptyView, ToolbarLeading == EmptyVie
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.init(
+            containerStyle: containerStyle,
             navigationTitle: navigationTitle,
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
@@ -246,6 +302,7 @@ public extension ZenScreen where Header == EmptyView, ToolbarLeading == EmptyVie
 
 public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarTrailing == EmptyView {
     init(
+        containerStyle: ZenScreenContainerStyle = .scroll,
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
@@ -255,6 +312,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarTrailing ==
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.init(
+            containerStyle: containerStyle,
             navigationTitle: navigationTitle,
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
@@ -325,6 +383,7 @@ public extension ZenScreen where ToolbarPrincipal == EmptyView {
 public extension ZenScreen where Header == EmptyView, ToolbarLeading == EmptyView, ToolbarPrincipal == EmptyView, ToolbarTrailing == EmptyView {
     @_disfavoredOverload
     init(
+        containerStyle: ZenScreenContainerStyle = .scroll,
         navigationTitle: String? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
@@ -332,6 +391,7 @@ public extension ZenScreen where Header == EmptyView, ToolbarLeading == EmptyVie
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.init(
+            containerStyle: containerStyle,
             navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
@@ -344,6 +404,7 @@ public extension ZenScreen where Header == EmptyView, ToolbarLeading == EmptyVie
 public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarTrailing == EmptyView {
     @_disfavoredOverload
     init(
+        containerStyle: ZenScreenContainerStyle = .scroll,
         navigationTitle: String? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
@@ -353,6 +414,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarTrailing ==
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.init(
+            containerStyle: containerStyle,
             navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
@@ -367,6 +429,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarTrailing ==
 public extension ZenScreen where ToolbarLeading == EmptyView {
     @_disfavoredOverload
     init(
+        containerStyle: ZenScreenContainerStyle = .scroll,
         navigationTitle: String? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
@@ -377,11 +440,13 @@ public extension ZenScreen where ToolbarLeading == EmptyView {
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.init(
+            containerStyle: containerStyle,
             navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
             backButton: backButton,
             header: header,
+            toolbarLeading: { EmptyView() },
             toolbarPrincipal: toolbarPrincipal,
             toolbarTrailing: toolbarTrailing,
             content: content
@@ -392,6 +457,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView {
 public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarPrincipal == EmptyView, ToolbarTrailing == EmptyView {
     @_disfavoredOverload
     init(
+        containerStyle: ZenScreenContainerStyle = .scroll,
         navigationTitle: String? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
@@ -400,6 +466,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarPrincipal =
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.init(
+            containerStyle: containerStyle,
             navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
@@ -413,6 +480,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarPrincipal =
 public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarPrincipal == EmptyView {
     @_disfavoredOverload
     init(
+        containerStyle: ZenScreenContainerStyle = .scroll,
         navigationTitle: String? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
@@ -422,6 +490,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarPrincipal =
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.init(
+            containerStyle: containerStyle,
             navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
@@ -436,6 +505,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarPrincipal =
 public extension ZenScreen where ToolbarPrincipal == EmptyView, ToolbarTrailing == EmptyView {
     @_disfavoredOverload
     init(
+        containerStyle: ZenScreenContainerStyle = .scroll,
         navigationTitle: String? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
@@ -445,6 +515,7 @@ public extension ZenScreen where ToolbarPrincipal == EmptyView, ToolbarTrailing 
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.init(
+            containerStyle: containerStyle,
             navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
@@ -459,6 +530,7 @@ public extension ZenScreen where ToolbarPrincipal == EmptyView, ToolbarTrailing 
 public extension ZenScreen where Header == EmptyView, ToolbarPrincipal == EmptyView {
     @_disfavoredOverload
     init(
+        containerStyle: ZenScreenContainerStyle = .scroll,
         navigationTitle: String? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
@@ -468,6 +540,7 @@ public extension ZenScreen where Header == EmptyView, ToolbarPrincipal == EmptyV
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.init(
+            containerStyle: containerStyle,
             navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
