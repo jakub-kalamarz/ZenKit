@@ -1,0 +1,4 @@
+interface:
+  display_name: "ZenKit Screen Composer"
+  short_description: "Compose screens from ZenKit primitives"
+  default_prompt: "Use $zenkit-screen-composer to turn this feature brief into a ZenKit screen composition."

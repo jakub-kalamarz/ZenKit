@@ -56,4 +56,14 @@ struct MyView: View {
 - **Testy jednostkowe**: `swift test`
 - **Aplikacja Showcase**: Otwórz `ZenKit.xcworkspace` i uruchom schemat `ZenKitShowcase`.
 
+## Using ZenKit with AI
+
+- Zacznij od [LLM.md](LLM.md). To główny entrypoint dla modeli i agentów pracujących z ZenKit.
+- Dla doboru komponentów użyj `LLM.md` razem z `docs/ai/selection-matrix.md` i `docs/ai/component-catalog.md`.
+- Dla gotowych kompozycji ekranów sprawdź `docs/ai/composition-recipes.md`.
+- W Codex możesz odwołać się bezpośrednio do skills:
+  - `$zenkit-component-selector`
+  - `$zenkit-screen-composer`
+  - `$zenkit-migration-advisor`
+
 Więcej informacji technicznych znajdziesz w pliku [LLM.md](LLM.md).

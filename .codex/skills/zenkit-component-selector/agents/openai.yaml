@@ -1,0 +1,4 @@
+interface:
+  display_name: "ZenKit Component Selector"
+  short_description: "Choose the right ZenKit primitives"
+  default_prompt: "Use $zenkit-component-selector to choose the best ZenKit primitives for this SwiftUI use case."

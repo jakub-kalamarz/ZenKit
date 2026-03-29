@@ -1,0 +1,4 @@
+interface:
+  display_name: "ZenKit Migration Advisor"
+  short_description: "Map existing SwiftUI code onto ZenKit"
+  default_prompt: "Use $zenkit-migration-advisor to map this SwiftUI code to current ZenKit primitives."
