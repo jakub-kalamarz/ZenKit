@@ -5,6 +5,7 @@ import Testing
 import AppKit
 #endif
 
+@Suite(.serialized)
 struct ZenKitPublicSurfaceSmokeTests {
     private enum Filter: String, CaseIterable {
         case all = "All"

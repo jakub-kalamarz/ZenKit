@@ -40,14 +40,11 @@ struct ZenThemePreviewScope<Content: View>: View {
 
     var body: some View {
         content()
-            .onAppear {
+            .task(id: theme) {
                 if originalTheme == nil {
                     originalTheme = ZenTheme.current
                 }
                 ZenTheme.apply(theme)
-            }
-            .onChange(of: theme, initial: true) { _, updatedTheme in
-                ZenTheme.apply(updatedTheme)
             }
             .onDisappear {
                 if let originalTheme {

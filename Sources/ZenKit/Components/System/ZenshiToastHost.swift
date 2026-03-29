@@ -53,15 +53,8 @@ public struct ZenToastHost: View {
                     edge: edge,
                     depth: depth,
                     isExpanded: isReviewingStack,
-                    onAction: {
-                        if let action = toast.action {
-                            action.handler()
-                        }
-                        center.dismiss(toast.id)
-                    },
-                    onDismiss: {
-                        center.dismiss(toast.id)
-                    }
+                    onAction: { handleAction(for: toast) },
+                    onDismiss: { dismissToast(toast) }
                 )
                 .frame(maxWidth: maxWidth(for: size), alignment: layout.cardAlignment)
                 .offset(y: layout.verticalOffset(for: depth, expanded: isReviewingStack))
@@ -109,6 +102,17 @@ public struct ZenToastHost: View {
 
     private func scale(for depth: Int, expanded: Bool) -> CGFloat {
         expanded ? 1 : max(0.9, 1 - (CGFloat(depth) * 0.04))
+    }
+
+    @MainActor
+    private func handleAction(for toast: ZenToastItem) {
+        toast.action?.handler()
+        center.dismiss(toast.id)
+    }
+
+    @MainActor
+    private func dismissToast(_ toast: ZenToastItem) {
+        center.dismiss(toast.id)
     }
 }
 

@@ -1,7 +1,8 @@
+import CoreGraphics
 import Testing
 @testable import ZenKit
-import CoreGraphics
 
+@Suite(.serialized)
 struct ZenKitButtonTests {
     private let contrastThemeColors = ZenThemeColors(
         background: .init(light: .rgb(0.97, 0.97, 0.99), dark: .rgb(0.08, 0.09, 0.11)),

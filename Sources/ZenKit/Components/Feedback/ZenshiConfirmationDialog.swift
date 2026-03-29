@@ -67,14 +67,11 @@ public struct ZenConfirmationDialog<Content: View>: View {
 
     public var body: some View {
         content()
-            .onAppear {
+            .task(id: isPresented) {
                 syncPresentation(isPresented)
             }
             .onDisappear {
                 overlayPresenter?.dismissConfirmationDialog(id: dialogID)
-            }
-            .onChange(of: isPresented) { newValue in
-                syncPresentation(newValue)
             }
     }
 

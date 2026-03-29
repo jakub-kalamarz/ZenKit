@@ -52,45 +52,8 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
         }
         .zenBackground()
         .zenRefreshable(onRefresh)
-        .applyNavigationTitle(navigationTitle, displayMode: resolvedDisplayMode)
-        .toolbar {
-            if let customBackButton = resolvedCustomBackButton {
-                standardToolbarItem(
-                    placement: leadingToolbarPlacement,
-                    hidesSharedBackground: hidesSharedToolbarBackground
-                ) {
-                    ZenScreenBackButtonView(backButton: customBackButton)
-                }
-            }
-
-            if let toolbarLeading {
-                standardToolbarItem(
-                    placement: leadingToolbarPlacement,
-                    hidesSharedBackground: hidesSharedToolbarBackground
-                ) {
-                    toolbarLeading()
-                }
-            }
-
-            if let toolbarPrincipal {
-                principalToolbarItem(hidesSharedBackground: hidesSharedToolbarBackground) {
-                    toolbarPrincipal()
-                }
-            } else if shouldUseInlineTitleToolbarItem, let navigationTitle {
-                principalToolbarItem(hidesSharedBackground: hidesSharedToolbarBackground) {
-                    ZenScreenInlineTitleView(title: navigationTitle)
-                }
-            }
-
-            if let toolbarTrailing {
-                standardToolbarItem(
-                    placement: trailingToolbarPlacement,
-                    hidesSharedBackground: hidesSharedToolbarBackground
-                ) {
-                    toolbarTrailing()
-                }
-            }
-        }
+        .applyZenNavigationTitle(navigationTitle, displayMode: resolvedDisplayMode)
+        .toolbar { toolbarContent }
         .navigationBarBackButtonHidden(resolvedCustomBackButton != nil)
         .environment(
             \.zenScreenNavigationContext,
@@ -99,46 +62,39 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
     }
 
     private var resolvedDisplayMode: ZenNavigationBarTitleDisplayMode {
-        guard navigationTitle != nil else { return .automatic }
-
-        switch navigationBarTitleDisplayMode {
-        case .automatic:
-            return .inline
-        case .inline:
-            return .inline
-        case .large:
-            return .large
-        }
+        ZenNavigationChrome.resolvedDisplayMode(
+            navigationTitle: navigationTitle,
+            navigationBarTitleDisplayMode: navigationBarTitleDisplayMode
+        )
     }
 
     private var resolvedCustomBackButton: ZenScreenBackButton? {
-        let explicitBackButton = backButton ?? navigationContext.backButton
-        guard let explicitBackButton else { return nil }
-
-        let action = explicitBackButton.action ?? { dismiss() }
-        return ZenScreenBackButton(explicitBackButton.text, action: action)
+        ZenNavigationChrome.resolvedCustomBackButton(
+            backButton: backButton,
+            navigationContext: navigationContext,
+            dismiss: dismiss.callAsFunction
+        )
     }
 
     private var shouldUseInlineTitleToolbarItem: Bool {
-        guard let navigationTitle else { return false }
-        guard resolvedDisplayMode == .inline else { return false }
-        return navigationTitle.leadingIconAsset != nil || navigationTitle.trailingIconAsset != nil
+        ZenNavigationChrome.shouldUseInlineTitleToolbarItem(
+            navigationTitle: navigationTitle,
+            resolvedDisplayMode: resolvedDisplayMode
+        )
     }
 
-    private var leadingToolbarPlacement: ToolbarItemPlacement {
-        #if os(macOS)
-        return .navigation
-        #else
-        return .navigationBarLeading
-        #endif
-    }
-
-    private var trailingToolbarPlacement: ToolbarItemPlacement {
-        #if os(macOS)
-        return .primaryAction
-        #else
-        return .navigationBarTrailing
-        #endif
+    private var toolbarContent: some ToolbarContent {
+        ZenNavigationToolbarContent(
+            hidesSharedBackground: hidesSharedToolbarBackground,
+            leadingPlacement: ZenNavigationChrome.leadingToolbarPlacement,
+            trailingPlacement: ZenNavigationChrome.trailingToolbarPlacement,
+            customBackButton: resolvedCustomBackButton,
+            navigationTitle: navigationTitle,
+            shouldUseInlineTitleToolbarItem: shouldUseInlineTitleToolbarItem,
+            toolbarLeading: toolbarLeading,
+            toolbarPrincipal: toolbarPrincipal,
+            toolbarTrailing: toolbarTrailing
+        )
     }
 }
 
@@ -548,58 +504,6 @@ public extension ZenScreen where ToolbarPrincipal == EmptyView {
     }
 }
 
-// MARK: - Private subviews
-
-private struct ZenScreenInlineTitleView: View {
-    let title: ZenScreenTitle
-
-    var body: some View {
-        HStack(spacing: ZenSpacing.xSmall) {
-            if let leadingIconAsset = title.leadingIconAsset {
-                ZenIcon(assetName: leadingIconAsset, size: 13)
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Color.zenTextMuted)
-            }
-
-            Text(title.text)
-                .font(.zenTitle)
-                .foregroundStyle(Color.zenTextPrimary)
-                .lineLimit(1)
-
-            if let trailingIconAsset = title.trailingIconAsset {
-                ZenIcon(assetName: trailingIconAsset, size: 13)
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Color.zenTextMuted)
-            }
-        }
-        .accessibilityElement(children: .combine)
-    }
-}
-
-private struct ZenScreenBackButtonView: View {
-    let backButton: ZenScreenBackButton
-
-    var body: some View {
-        Button(action: {
-            backButton.action?()
-        }) {
-            HStack(spacing: ZenSpacing.xSmall) {
-                Image(systemName: "chevron.left")
-                    .font(.system(size: 14, weight: .semibold))
-
-                if let text = backButton.text, !text.isEmpty {
-                    Text(text)
-                        .lineLimit(1)
-                }
-            }
-            .font(.zenLabel)
-            .foregroundStyle(Color.zenPrimary)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-    }
-}
-
 // MARK: - Private helpers
 
 private extension View {
@@ -613,75 +517,7 @@ private extension View {
             self
         }
     }
-
-    @ViewBuilder
-    func applyNavigationTitle(
-        _ title: ZenScreenTitle?,
-        displayMode: ZenNavigationBarTitleDisplayMode
-    ) -> some View {
-        if let title {
-            #if os(macOS)
-            navigationTitle(title.text)
-            #else
-            navigationTitle(title.text)
-                .navigationBarTitleDisplayMode(displayMode.swiftUIValue)
-            #endif
-        } else {
-            self
-        }
-    }
 }
-
-@ToolbarContentBuilder
-private func principalToolbarItem<Content: View>(
-    hidesSharedBackground: Bool,
-    @ViewBuilder content: () -> Content
-) -> some ToolbarContent {
-    standardToolbarItem(
-        placement: .principal,
-        hidesSharedBackground: hidesSharedBackground,
-        content: content
-    )
-}
-
-@ToolbarContentBuilder
-private func standardToolbarItem<Content: View>(
-    placement: ToolbarItemPlacement,
-    hidesSharedBackground: Bool,
-    @ViewBuilder content: () -> Content
-) -> some ToolbarContent {
-    #if os(iOS)
-    if #available(iOS 26.0, *), hidesSharedBackground {
-        ToolbarItem(placement: placement) {
-            content()
-        }
-        .sharedBackgroundVisibility(.hidden)
-    } else {
-        ToolbarItem(placement: placement) {
-            content()
-        }
-    }
-    #else
-    ToolbarItem(placement: placement) {
-        content()
-    }
-    #endif
-}
-
-#if !os(macOS)
-private extension ZenNavigationBarTitleDisplayMode {
-    var swiftUIValue: NavigationBarItem.TitleDisplayMode {
-        switch self {
-        case .automatic:
-            return .automatic
-        case .inline:
-            return .inline
-        case .large:
-            return .large
-        }
-    }
-}
-#endif
 
 #Preview {
     NavigationStack {

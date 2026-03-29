@@ -125,8 +125,8 @@ struct ZenKitAPIConventionsTests {
         #expect(colors.surfaceMuted.light != colors.background.light)
         #expect(colors.surfaceMuted.dark != colors.background.dark)
         #else
-        #expect(colors.surfaceMuted.light == .rgb(0.910, 0.910, 0.925))
-        #expect(colors.surfaceMuted.dark == .rgb(0.125, 0.125, 0.133))
+        #expect(colors.surfaceMuted.light == .rgb(0.945, 0.945, 0.955))
+        #expect(colors.surfaceMuted.dark == .rgb(0.180, 0.180, 0.192))
         #expect(colors.border.light == .rgb(0.898, 0.898, 0.918))
         #expect(colors.border.dark == .rgb(0.227, 0.227, 0.243))
         #expect(colors.textMuted.light == .rgb(0.541, 0.541, 0.557))

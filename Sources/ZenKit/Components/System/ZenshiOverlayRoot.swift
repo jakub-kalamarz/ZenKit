@@ -100,11 +100,8 @@ public struct ZenOverlayRoot<Content: View>: View {
                 )
             }
         }
-        .onAppear {
+        .task(id: presenter.confirmationDialog) {
             syncDialogRenderState(with: presenter.confirmationDialog)
-        }
-        .onChange(of: presenter.confirmationDialog) { newValue in
-            syncDialogRenderState(with: newValue)
         }
     }
 
