@@ -169,6 +169,15 @@ Each entry uses the same schema:
 - `example_paths`: `Sources/ZenKit/Components/Inputs/ZenshiPickerRow.swift`, `App/ZenKitShowcase/Sources/Screens/Inputs/PickerRowShowcaseScreen.swift`
 - `notes`: best when one current value should read like a setting row
 
+### `ZenSelectCard`
+- `category`: Inputs
+- `use_when`: single choice from a short visible list where each option needs card chrome, more copy, or an optional leading icon
+- `avoid_when`: multi-select, long searchable datasets, or compact row/menu interactions
+- `pairs_with`: `ZenCard`, `ZenIconBadge`, `LazyVGrid`
+- `required_state`: title, selected flag, action closure; optional subtitle and leading icon
+- `example_paths`: `Sources/ZenKit/Components/Inputs/ZenshiSelectCard.swift`, `App/ZenKitShowcase/Sources/Screens/Inputs/SelectCardShowcaseScreen.swift`, `Tests/ZenKitTests/ZenKitPublicSurfaceSmokeTests.swift`
+- `notes`: presentational radio-card primitive for externally managed single-selection state
+
 ### `ZenSegmentedControl`
 - `category`: Inputs
 - `use_when`: small mutually exclusive choices that should remain visible on screen

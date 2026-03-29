@@ -30,6 +30,7 @@ Use this matrix to narrow choices before opening the full component catalog.
 - Single line or secure text field: `ZenTextInput`
 - Labeled form row with helper text: `ZenField` around an input
 - Single selection from a short list: `ZenPickerRow`
+- Single selection from a short visible card list: `ZenSelectCard`
 - Multiple selection from a short list: `ZenMultiSelect`
 - Segmented choice: `ZenSegmentedControl`
 - Range toggle with two bounds: `ZenSegmentedRangePicker`

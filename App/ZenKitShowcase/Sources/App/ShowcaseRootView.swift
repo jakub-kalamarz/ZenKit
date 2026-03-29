@@ -35,6 +35,8 @@ struct ShowcaseRootView: View {
             PickerRowShowcaseScreen()
         case .multiSelect:
             MultiSelectShowcaseScreen()
+        case .selectCard:
+            SelectCardShowcaseScreen()
         case .stepper:
             StepperShowcaseScreen()
         case .searchBar:

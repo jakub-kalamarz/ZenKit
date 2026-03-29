@@ -239,6 +239,32 @@ struct ZenKitAPIConventionsTests {
     }
 
     @Test
+    func selectCardPrimitiveExposesPresetInitializerAPI() {
+        let simple = ZenSelectCard(title: "Plus", isSelected: false) {}
+        let detailed = ZenSelectCard(
+            title: "Visa ending in 4242",
+            subtitle: "Expires 12/26",
+            leadingIconSource: .asset("CreditCard"),
+            iconColor: .blue,
+            isSelected: true
+        ) {}
+        let inline = ZenSelectCard(
+            title: "Add new payment method",
+            leadingIconSource: .asset("Plus"),
+            variant: .inline,
+            isSelected: false
+        ) {}
+
+        let view = VStack {
+            simple
+            detailed
+            inline
+        }
+
+        _ = view
+    }
+
+    @Test
     func sectionPrimitivesExposeComposableBuilderAPI() {
         let view = ZenSection {
             Text("Row")

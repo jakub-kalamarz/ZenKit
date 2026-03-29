@@ -173,6 +173,34 @@ struct ZenKitPublicSurfaceSmokeTests {
     }
 
     @Test
+    func zenSelectCardComposesWithExpandedAndCompactLayouts() {
+        let view = VStack {
+            ZenSelectCard(
+                title: "Pro",
+                subtitle: "For professionals and small teams.",
+                isSelected: true
+            ) {}
+
+            ZenSelectCard(
+                title: "Visa ending in 4242",
+                subtitle: "Expires 12/26",
+                leadingIconSource: .asset("CreditCard"),
+                iconColor: .blue,
+                isSelected: false
+            ) {}
+
+            ZenSelectCard(
+                title: "Add new payment method",
+                leadingIconSource: .asset("Plus"),
+                variant: .inline,
+                isSelected: false
+            ) {}
+        }
+
+        _ = view
+    }
+
+    @Test
     func zenControlGroupComposesWithButtons() {
         let view = ZenControlGroup(layout: .adaptive) {
             ZenButton("Edit") {}

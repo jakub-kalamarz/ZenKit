@@ -21,6 +21,7 @@ struct ShowcaseSection: Identifiable, Equatable {
                 .init(id: "segmented-control", title: "Segmented Control", screenID: .segmentedControl),
                 .init(id: "picker-row", title: "Picker Row", screenID: .pickerRow),
                 .init(id: "multi-select", title: "Multi Select", screenID: .multiSelect),
+                .init(id: "select-card", title: "Select Card", screenID: .selectCard),
                 .init(id: "stepper", title: "Stepper", screenID: .stepper),
                 .init(id: "search-bar", title: "Search Bar", screenID: .searchBar),
                 .init(id: "tag-input", title: "Tag Input", screenID: .tagInput),

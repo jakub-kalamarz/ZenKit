@@ -8,6 +8,7 @@ enum ShowcaseScreenID: String, Equatable {
     case segmentedControl
     case pickerRow
     case multiSelect
+    case selectCard
     case stepper
     case searchBar
     case tagInput
