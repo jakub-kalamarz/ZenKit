@@ -52,6 +52,30 @@ struct NavigationRowShowcaseScreen: View {
                     )
                 }
             }
+
+            ZenCard(title: "Disabled", subtitle: "Inherited from SwiftUI disabled environment") {
+                VStack(spacing: ZenSpacing.small) {
+                    ZenNavigationRow(
+                        title: "Billing",
+                        subtitle: "Managed by workspace owner",
+                        leadingIconSystemName: "creditcard.fill",
+                        iconColor: .orange
+                    )
+                    .disabled(true)
+
+                    ZenNavigationLink {
+                        Text("Destination")
+                    } label: {
+                        ZenNavigationRow(
+                            title: "Workspace Transfer",
+                            subtitle: "Unavailable on trial plan",
+                            leadingIconSystemName: "arrow.left.arrow.right",
+                            iconColor: .indigo
+                        )
+                    }
+                    .disabled(true)
+                }
+            }
         }
     }
 }

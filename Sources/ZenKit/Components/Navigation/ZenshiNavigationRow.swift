@@ -6,6 +6,7 @@ public enum ZenNavigationAccessory {
 }
 
 public struct ZenNavigationRow: View {
+    @Environment(\.isEnabled) private var isEnabled
     public static let leadingIconBadgeSize: CGFloat = ZenIconBadge.defaultSize
     public static let leadingIconBadgeCornerRadius: CGFloat = 10
 
@@ -79,6 +80,7 @@ public struct ZenNavigationRow: View {
                     .foregroundStyle(Color.zenTextMuted)
             }
         }
+        .opacity(contentOpacity)
         .padding(.vertical, 12)
         .padding(.horizontal, ZenSpacing.medium)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -88,6 +90,10 @@ public struct ZenNavigationRow: View {
                 .strokeBorder(Color.zenBorder, lineWidth: 1)
         )
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+    }
+
+    private var contentOpacity: Double {
+        isEnabled ? 1 : 0.55
     }
 }
 
@@ -111,6 +117,13 @@ public struct ZenNavigationRow: View {
             leadingIconSystemName: "shield.fill",
             iconColor: .green
         )
+        ZenNavigationRow(
+            title: "Billing",
+            subtitle: "Managed by workspace owner",
+            leadingIconSystemName: "creditcard.fill",
+            iconColor: .orange
+        )
+        .disabled(true)
     }
     .padding()
     .background(Color.zenBackground)
