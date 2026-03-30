@@ -2,6 +2,7 @@ import SwiftUI
 
 enum ZenButtonBackgroundStyle: Equatable {
     case filled
+    case glass
     case muted
     case transparent
 }
@@ -41,6 +42,18 @@ struct ZenButtonResolvedStyle {
             borderWidth = 0
             backgroundStyle = .filled
             foregroundStyle = .inverse
+            isTextOnly = false
+        case .glass:
+            backgroundColor = .zenSurface
+            pressedBackgroundColor = .zenSurfaceMuted
+            pressedBackgroundToken = nil
+            foregroundLight = colors.textPrimary.light
+            foregroundDark = colors.textPrimary.dark
+            foregroundColor = ZenDynamicColor(light: foregroundLight, dark: foregroundDark).color
+            borderColor = .zenBorder.opacity(0.7)
+            borderWidth = 1
+            backgroundStyle = .glass
+            foregroundStyle = .primaryText
             isTextOnly = false
         case .outline:
             backgroundColor = .zenSurface
@@ -205,8 +218,11 @@ struct ZenSemanticButtonStyle: ButtonStyle {
         isPressed: Bool,
         cornerRadius: CGFloat
     ) -> some View {
-        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-            .fill(isPressed && !isLoading ? palette.pressedBackgroundColor : palette.backgroundColor)
+        ZenButtonBackground(
+            palette: palette,
+            isPressed: isPressed && !isLoading,
+            cornerRadius: cornerRadius
+        )
     }
 
     private func border(for palette: ZenButtonResolvedStyle, cornerRadius: CGFloat) -> some View {
@@ -219,6 +235,28 @@ struct ZenSemanticButtonStyle: ButtonStyle {
             return 0.78
         }
         return 1
+    }
+}
+
+struct ZenButtonBackground: View {
+    let palette: ZenButtonResolvedStyle
+    let isPressed: Bool
+    let cornerRadius: CGFloat
+
+    var body: some View {
+        switch palette.backgroundStyle {
+        case .filled, .muted, .transparent:
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                .fill(isPressed ? palette.pressedBackgroundColor : palette.backgroundColor)
+        case .glass:
+            ZStack {
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .fill(.ultraThinMaterial)
+
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .fill((isPressed ? palette.pressedBackgroundColor : palette.backgroundColor).opacity(isPressed ? 0.42 : 0.22))
+            }
+        }
     }
 }
 

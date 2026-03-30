@@ -105,6 +105,7 @@ struct ZenKitPublicSurfaceSmokeTests {
     func zenButtonSupportsShadcnInspiredVariantsAndSizes() {
         let view = VStack(spacing: ZenSpacing.small) {
             ZenButton("Default") {}
+            ZenButton("Glass", variant: .glass) {}
             ZenButton("Outline", variant: .outline) {}
             ZenButton("Secondary", variant: .secondary, size: .sm) {}
             ZenButton("Ghost", variant: .ghost, size: .xs) {}
@@ -115,6 +116,25 @@ struct ZenKitPublicSurfaceSmokeTests {
                 ZenIcon(assetName: "Plus", size: 17)
             }
             ZenButton("Full Width", isLoading: true, fullWidth: true) {}
+        }
+
+        _ = view
+    }
+
+    @Test
+    func pageIndicatorSupportsManualAndScrollTrackingModes() {
+        let scrollSelection = Binding<Int>(
+            get: { 1 },
+            set: { _ in }
+        )
+
+        let view = VStack(spacing: ZenSpacing.small) {
+            ZenPageIndicator(pageCount: 4, currentPage: .constant(1))
+            ZenPageIndicator(
+                pageCount: 4,
+                currentPage: scrollSelection,
+                behavior: .scrollTracking
+            )
         }
 
         _ = view
@@ -756,13 +776,16 @@ struct ZenKitPublicSurfaceSmokeTests {
     @Test
     func secondaryGhostAndLinkResolveToDistinctStyles() {
         let secondary = ZenButtonResolvedStyle(variant: .secondary)
+        let glass = ZenButtonResolvedStyle(variant: .glass)
         let ghost = ZenButtonResolvedStyle(variant: .ghost)
         let link = ZenButtonResolvedStyle(variant: .link)
 
+        #expect(glass.backgroundStyle != ghost.backgroundStyle)
         #expect(secondary.backgroundStyle != ghost.backgroundStyle)
         #expect(ghost.foregroundStyle != link.foregroundStyle)
         #expect(link.isTextOnly)
         #expect(!ghost.isTextOnly)
+        #expect(!glass.isTextOnly)
     }
 
     @Test

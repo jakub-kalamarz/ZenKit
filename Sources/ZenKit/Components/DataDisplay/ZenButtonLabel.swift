@@ -37,10 +37,7 @@ public struct ZenButtonLabel<Label: View>: View {
             )
             .padding(.horizontal, size.horizontalPadding)
             .padding(.vertical, size.verticalPadding)
-            .background(
-                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .fill(palette.backgroundColor)
-            )
+            .background(ZenButtonBackground(palette: palette, isPressed: false, cornerRadius: cornerRadius))
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .strokeBorder(palette.borderColor, lineWidth: palette.borderWidth)
@@ -94,6 +91,7 @@ public extension ZenButtonLabel where Label == ZenButtonTextLabel {
     VStack(alignment: .leading, spacing: ZenSpacing.medium) {
         HStack(spacing: ZenSpacing.small) {
             ZenButtonLabel("Default")
+            ZenButtonLabel("Glass", variant: .glass)
             ZenButtonLabel("Outline", variant: .outline)
             ZenButtonLabel("Secondary", variant: .secondary)
         }

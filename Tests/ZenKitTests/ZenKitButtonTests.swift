@@ -149,6 +149,22 @@ struct ZenKitButtonTests {
     }
 
     @Test
+    func glassButtonVariantUsesPrimaryTextForegroundAndGlassBackgroundStyle() {
+        let originalTheme = ZenTheme.current
+        defer { ZenTheme.apply(originalTheme) }
+
+        ZenTheme.apply(ZenTheme(colors: contrastThemeColors))
+
+        let colors = ZenTheme.current.resolvedColors
+        let style = ZenButtonResolvedStyle(variant: .glass)
+
+        #expect(style.foregroundLight == colors.textPrimary.light)
+        #expect(style.foregroundDark == colors.textPrimary.dark)
+        #expect(style.backgroundStyle == .glass)
+        #expect(!style.isTextOnly)
+    }
+
+    @Test
     func transparentButtonVariantsKeepSemanticForegrounds() {
         let originalTheme = ZenTheme.current
         defer { ZenTheme.apply(originalTheme) }
@@ -158,9 +174,12 @@ struct ZenKitButtonTests {
         let colors = ZenTheme.current.resolvedColors
         let ghostStyle = ZenButtonResolvedStyle(variant: .ghost)
         let linkStyle = ZenButtonResolvedStyle(variant: .link)
+        let glassStyle = ZenButtonResolvedStyle(variant: .glass)
 
         #expect(ghostStyle.foregroundLight == colors.textPrimary.light)
         #expect(ghostStyle.foregroundDark == colors.textPrimary.dark)
+        #expect(glassStyle.foregroundLight == colors.textPrimary.light)
+        #expect(glassStyle.foregroundDark == colors.textPrimary.dark)
         #expect(linkStyle.foregroundLight == colors.accent.light)
         #expect(linkStyle.foregroundDark == colors.accent.dark)
     }
@@ -169,6 +188,7 @@ struct ZenKitButtonTests {
     func buttonLabelExposesExpectedInitializers() {
         // Just verify it compiles and initializes
         _ = ZenButtonLabel("Test")
+        _ = ZenButtonLabel("Test", variant: .glass)
         _ = ZenButtonLabel("Test", variant: .outline)
         _ = ZenButtonLabel("Test", size: .sm)
         _ = ZenButtonLabel("Test", fullWidth: true)

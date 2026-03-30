@@ -2,6 +2,7 @@ import SwiftUI
 
 public enum ZenButtonVariant {
     case `default`
+    case glass
     case outline
     case secondary
     case ghost
@@ -288,6 +289,7 @@ public extension ZenButton where Label == ZenButtonTextLabel {
     VStack(alignment: .leading, spacing: ZenSpacing.medium) {
         HStack(spacing: ZenSpacing.small) {
             ZenButton("Default") {}
+            ZenButton("Glass", variant: .glass) {}
             ZenButton("Outline", variant: .outline) {}
             ZenButton("Secondary", variant: .secondary) {}
         }
