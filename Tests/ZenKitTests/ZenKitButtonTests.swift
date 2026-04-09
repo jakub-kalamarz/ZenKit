@@ -174,6 +174,7 @@ struct ZenKitButtonTests {
         let colors = ZenTheme.current.resolvedColors
         let ghostStyle = ZenButtonResolvedStyle(variant: .ghost)
         let linkStyle = ZenButtonResolvedStyle(variant: .link)
+        let plainStyle = ZenButtonResolvedStyle(variant: .plain)
         let glassStyle = ZenButtonResolvedStyle(variant: .glass)
 
         #expect(ghostStyle.foregroundLight == colors.textPrimary.light)
@@ -182,12 +183,15 @@ struct ZenKitButtonTests {
         #expect(glassStyle.foregroundDark == colors.textPrimary.dark)
         #expect(linkStyle.foregroundLight == colors.accent.light)
         #expect(linkStyle.foregroundDark == colors.accent.dark)
+        #expect(plainStyle.foregroundLight == colors.textPrimary.light)
+        #expect(plainStyle.foregroundDark == colors.textPrimary.dark)
     }
 
     @Test
     func buttonLabelExposesExpectedInitializers() {
         // Just verify it compiles and initializes
         _ = ZenButtonLabel("Test")
+        _ = ZenButtonLabel("Test", variant: .plain)
         _ = ZenButtonLabel("Test", variant: .glass)
         _ = ZenButtonLabel("Test", variant: .outline)
         _ = ZenButtonLabel("Test", size: .sm)

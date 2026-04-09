@@ -21,28 +21,34 @@ public struct ZenButtonLabel<Label: View>: View {
     }
 
     public var body: some View {
-        let theme = ZenTheme.current
-        let metrics = theme.resolvedMetrics
-        let palette = ZenButtonResolvedStyle(variant: variant)
-        let cornerRadius = size.cornerRadius(theme: theme, parentRadius: parentCornerRadius)
+        if variant == .plain {
+            label()
+                .lineLimit(1)
+                .frame(maxWidth: fullWidth ? .infinity : nil, alignment: .leading)
+        } else {
+            let theme = ZenTheme.current
+            let metrics = theme.resolvedMetrics
+            let palette = ZenButtonResolvedStyle(variant: variant)
+            let cornerRadius = size.cornerRadius(theme: theme, parentRadius: parentCornerRadius)
 
-        label()
-            .lineLimit(1)
-            .font(size.font)
-            .foregroundStyle(palette.foregroundColor)
-            .frame(
-                minWidth: size.isIconOnly ? size.minHeight(metrics: metrics) : nil,
-                maxWidth: fullWidth ? .infinity : nil,
-                minHeight: size.minHeight(metrics: metrics)
-            )
-            .padding(.horizontal, size.horizontalPadding)
-            .padding(.vertical, size.verticalPadding)
-            .background(ZenButtonBackground(palette: palette, isPressed: false, cornerRadius: cornerRadius))
-            .overlay(
-                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .strokeBorder(palette.borderColor, lineWidth: palette.borderWidth)
-            )
-            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+            label()
+                .lineLimit(1)
+                .font(size.font)
+                .foregroundStyle(palette.foregroundColor)
+                .frame(
+                    minWidth: size.isIconOnly ? size.minHeight(metrics: metrics) : nil,
+                    maxWidth: fullWidth ? .infinity : nil,
+                    minHeight: size.minHeight(metrics: metrics)
+                )
+                .padding(.horizontal, size.horizontalPadding)
+                .padding(.vertical, size.verticalPadding)
+                .background(ZenButtonBackground(palette: palette, isPressed: false, cornerRadius: cornerRadius))
+                .overlay(
+                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                        .strokeBorder(palette.borderColor, lineWidth: palette.borderWidth)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+        }
     }
 }
 
@@ -90,6 +96,7 @@ public extension ZenButtonLabel where Label == ZenButtonTextLabel {
 #Preview {
     VStack(alignment: .leading, spacing: ZenSpacing.medium) {
         HStack(spacing: ZenSpacing.small) {
+            ZenButtonLabel("Plain", variant: .plain)
             ZenButtonLabel("Default")
             ZenButtonLabel("Glass", variant: .glass)
             ZenButtonLabel("Outline", variant: .outline)

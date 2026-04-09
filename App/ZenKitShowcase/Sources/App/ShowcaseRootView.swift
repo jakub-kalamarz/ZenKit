@@ -25,6 +25,8 @@ struct ShowcaseRootView: View {
         // Inputs
         case .buttons:
             ButtonShowcaseScreen()
+        case .login:
+            LoginShowcaseScreen()
         case .textInput:
             TextInputShowcaseScreen()
         case .toggle:

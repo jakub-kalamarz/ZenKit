@@ -32,7 +32,7 @@ struct DisclosureShowcaseScreen: View {
                     ZenDisclosure(
                         "Advanced Settings",
                         subtitle: "Power user options",
-                        leadingIconSystemName: "gearshape.2"
+                        leadingIcon: .system("gearshape.2")
                     ) {
                         VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
                             Text("API access: Enabled")
@@ -48,7 +48,7 @@ struct DisclosureShowcaseScreen: View {
                     ZenDisclosure(
                         "Notifications",
                         subtitle: "Email and push alerts",
-                        leadingIconSystemName: "bell"
+                        leadingIcon: .system("bell")
                     ) {
                         Text("All notifications are enabled. Tap to manage channels.")
                             .font(.zenCaption)

@@ -84,7 +84,7 @@ private struct ZenSheetContainerPreview: View {
                         ZenTextInput(
                             text: .constant("new-teammate@example.com"),
                             prompt: "Email",
-                            leadingIconAsset: "Envelope"
+                            leadingIcon: .asset("Envelope")
                         )
                     }
                 }

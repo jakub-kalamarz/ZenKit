@@ -9,19 +9,19 @@ struct NavigationRowShowcaseScreen: View {
                     ZenNavigationRow(
                         title: "Account",
                         subtitle: "Profile, email, and devices",
-                        leadingIconSystemName: "person.circle.fill",
+                        leadingIcon: .system("person.circle.fill"),
                         iconColor: .blue
                     )
                     ZenNavigationRow(
                         title: "Notifications",
                         subtitle: "Alerts and mentions",
-                        leadingIconSystemName: "bell.fill",
+                        leadingIcon: .system("bell.fill"),
                         iconColor: .red
                     )
                     ZenNavigationRow(
                         title: "Security",
                         subtitle: "Password and two-factor",
-                        leadingIconSystemName: "shield.fill",
+                        leadingIcon: .system("shield.fill"),
                         iconColor: .green
                     )
                 }
@@ -39,14 +39,14 @@ struct NavigationRowShowcaseScreen: View {
                 VStack(spacing: ZenSpacing.small) {
                     ZenNavigationRow(
                         title: "Notifications",
-                        leadingIconSystemName: "bell.fill",
+                        leadingIcon: .system("bell.fill"),
                         iconColor: .red,
                         accessory: .none
                     )
                     ZenNavigationRow(
                         title: "Appearance",
                         subtitle: "Theme and density",
-                        leadingIconSystemName: "paintpalette.fill",
+                        leadingIcon: .system("paintpalette.fill"),
                         iconColor: .purple,
                         accessory: .none
                     )
@@ -58,7 +58,7 @@ struct NavigationRowShowcaseScreen: View {
                     ZenNavigationRow(
                         title: "Billing",
                         subtitle: "Managed by workspace owner",
-                        leadingIconSystemName: "creditcard.fill",
+                        leadingIcon: .system("creditcard.fill"),
                         iconColor: .orange
                     )
                     .disabled(true)
@@ -69,7 +69,7 @@ struct NavigationRowShowcaseScreen: View {
                         ZenNavigationRow(
                             title: "Workspace Transfer",
                             subtitle: "Unavailable on trial plan",
-                            leadingIconSystemName: "arrow.left.arrow.right",
+                            leadingIcon: .system("arrow.left.arrow.right"),
                             iconColor: .indigo
                         )
                     }

@@ -3,14 +3,26 @@ import SwiftUI
 public struct ZenMetricsTableSegment<ID: Hashable & Sendable>: Equatable, Sendable {
     public let id: ID
     public let count: Int
-    public let iconAssetName: String?
+    public let icon: ZenIconSource?
     public let title: String
     public let isDisabled: Bool
+
+    public var iconAssetName: String? {
+        guard case .asset(let assetName)? = icon else { return nil }
+        return assetName
+    }
     
-    public init(id: ID, count: Int, iconAssetName: String? = nil, title: String, isDisabled: Bool = false) {
+    public init(
+        id: ID,
+        count: Int,
+        icon: ZenIconSource? = nil,
+        iconAssetName: String? = nil,
+        title: String,
+        isDisabled: Bool = false
+    ) {
         self.id = id
         self.count = count
-        self.iconAssetName = iconAssetName
+        self.icon = icon ?? iconAssetName.map(ZenIconSource.asset)
         self.title = title
         self.isDisabled = isDisabled
     }
@@ -81,7 +93,7 @@ public struct ZenMetricsTableValues: Equatable, Sendable {
 
 public struct ZenMetricsTable<ID: Hashable & Sendable, Content: View>: View {
     private let title: String
-    private let iconAssetName: String?
+    private let icon: ZenIconSource?
     private let segments: [ZenMetricsTableSegment<ID>]
     private let isEmpty: Bool
     private let noDataDescription: String
@@ -90,6 +102,7 @@ public struct ZenMetricsTable<ID: Hashable & Sendable, Content: View>: View {
     
     public init(
         title: String,
+        icon: ZenIconSource? = nil,
         iconAssetName: String? = nil,
         segments: [ZenMetricsTableSegment<ID>] = [],
         isEmpty: Bool = false,
@@ -98,7 +111,7 @@ public struct ZenMetricsTable<ID: Hashable & Sendable, Content: View>: View {
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.title = title
-        self.iconAssetName = iconAssetName
+        self.icon = icon ?? iconAssetName.map(ZenIconSource.asset)
         self.segments = segments
         self.isEmpty = isEmpty
         self.noDataDescription = noDataDescription
@@ -109,8 +122,8 @@ public struct ZenMetricsTable<ID: Hashable & Sendable, Content: View>: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: ZenSpacing.medium) {
             HStack(spacing: ZenSpacing.small) {
-                if let iconAssetName {
-                    ZenIcon(assetName: iconAssetName, size: 16)
+                if let icon {
+                    ZenIcon(source: icon, size: 16)
                         .foregroundStyle(Color.zenAccent)
                 }
                 
@@ -138,8 +151,8 @@ public struct ZenMetricsTable<ID: Hashable & Sendable, Content: View>: View {
                     ZenEmpty {
                         ZenEmptyHeader {
                             ZenEmptyMedia(variant: .icon) {
-                                if let iconAssetName {
-                                    ZenIcon(assetName: iconAssetName, size: 24)
+                                if let icon {
+                                    ZenIcon(source: icon, size: 24)
                                 } else {
                                     ZenIcon(systemName: "info.circle", size: 24)
                                 }
@@ -160,13 +173,13 @@ public struct ZenMetricsTable<ID: Hashable & Sendable, Content: View>: View {
     
     @ViewBuilder
     private func metricsSegmentLabel(_ segment: ZenMetricsTableSegment<ID>, isSelected: Bool) -> some View {
-        if let iconAssetName = segment.iconAssetName {
+        if let icon = segment.icon {
             ViewThatFits {
                 HStack(spacing: 6) {
-                    ZenIcon(assetName: iconAssetName, size: 12)
+                    ZenIcon(source: icon, size: 12)
                     Text("\(segment.title) (\(segment.count))")
                 }
-                ZenIcon(assetName: iconAssetName, size: 12)
+                ZenIcon(source: icon, size: 12)
             }
         } else {
             Text("\(segment.title) (\(segment.count))")

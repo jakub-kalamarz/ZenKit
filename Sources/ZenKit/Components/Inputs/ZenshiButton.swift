@@ -2,6 +2,7 @@ import SwiftUI
 
 public enum ZenButtonVariant {
     case `default`
+    case plain
     case glass
     case outline
     case secondary
@@ -220,18 +221,28 @@ public struct ZenButton<Label: View>: View {
     }
 
     public var body: some View {
-        Button(action: action) {
-            label()
-                .lineLimit(1)
+        Group {
+            if variant == .plain {
+                Button(action: action) {
+                    label()
+                        .lineLimit(1)
+                }
+                .buttonStyle(.plain)
+            } else {
+                Button(action: action) {
+                    label()
+                        .lineLimit(1)
+                }
+                .buttonStyle(
+                    ZenSemanticButtonStyle(
+                        variant: variant,
+                        size: size,
+                        isLoading: isLoading,
+                        fullWidth: fullWidth
+                    )
+                )
+            }
         }
-        .buttonStyle(
-            ZenSemanticButtonStyle(
-                variant: variant,
-                size: size,
-                isLoading: isLoading,
-                fullWidth: fullWidth
-            )
-        )
         .disabled(isLoading)
     }
 }
@@ -288,6 +299,7 @@ public extension ZenButton where Label == ZenButtonTextLabel {
 #Preview {
     VStack(alignment: .leading, spacing: ZenSpacing.medium) {
         HStack(spacing: ZenSpacing.small) {
+            ZenButton("Plain", variant: .plain) {}
             ZenButton("Default") {}
             ZenButton("Glass", variant: .glass) {}
             ZenButton("Outline", variant: .outline) {}

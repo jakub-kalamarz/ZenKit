@@ -16,6 +16,7 @@ struct ShowcaseSection: Identifiable, Equatable {
             title: "Inputs",
             entries: [
                 .init(id: "buttons", title: "Buttons", screenID: .buttons),
+                .init(id: "login", title: "Login", screenID: .login),
                 .init(id: "text-input", title: "Text Input", screenID: .textInput),
                 .init(id: "toggle", title: "Toggle", screenID: .toggle),
                 .init(id: "segmented-control", title: "Segmented Control", screenID: .segmentedControl),

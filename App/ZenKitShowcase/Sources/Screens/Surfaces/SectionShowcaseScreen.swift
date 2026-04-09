@@ -20,14 +20,14 @@ struct SectionShowcaseScreen: View {
                 ZenSettingRow(
                     title: "Account",
                     subtitle: "Manage your plan",
-                    leadingIconSystemName: "person.crop.circle.fill",
+                    leadingIcon: .system("person.crop.circle.fill"),
                     iconColor: .blue,
                     accessory: .chevron
                 )
                 ZenSettingRow(
                     title: "Language",
                     subtitle: "Used for notifications",
-                    leadingIconSystemName: "globe",
+                    leadingIcon: .system("globe"),
                     iconColor: .cyan
                 ) {
                     Text(language)
@@ -48,7 +48,7 @@ struct SectionShowcaseScreen: View {
                 ZenPickerRow(
                     title: "Language",
                     subtitle: "Used for notifications",
-                    leadingIconSystemName: "globe",
+                    leadingIcon: .system("globe"),
                     iconColor: .cyan,
                     selection: $language,
                     options: ["English", "Polish", "German", "French"]

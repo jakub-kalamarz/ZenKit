@@ -45,7 +45,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                         }
                     }
 
-                    ZenNavigationRow(title: "Notifications", subtitle: "Configure alerts", leadingIconAsset: "Bell")
+                    ZenNavigationRow(title: "Notifications", subtitle: "Configure alerts", leadingIcon: .asset("Bell"))
                     ZenToggle("Biometric unlock", isOn: .constant(true), subtitle: "Use Face ID when available")
                     ZenProgressBar(progress: 0.4)
                     ZenStatusBanner(message: "All good")
@@ -97,6 +97,30 @@ struct ZenKitPublicSurfaceSmokeTests {
     @Test
     func zenIconSupportsAssetBackedRendering() {
         let view = ZenIcon(assetName: "Envelope", size: 18)
+
+        _ = view
+    }
+
+    @Test
+    func zenIconSourceBackedInputsAndTitlesSupportSystemIcons() {
+        let view = VStack {
+            ZenTextInput(
+                text: .constant("alex@example.com"),
+                prompt: "Email",
+                leadingIcon: .system("envelope.fill"),
+                trailingIcon: .system("checkmark.circle.fill")
+            )
+
+            ZenScreen(
+                navigationTitle: ZenScreenTitle(
+                    "Dashboard",
+                    leadingIcon: .system("chart.bar.fill"),
+                    trailingIcon: .system("bolt.fill")
+                )
+            ) {
+                Text("Content")
+            }
+        }
 
         _ = view
     }
@@ -361,7 +385,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                 ZenNavigationRow(
                     title: "Members",
                     subtitle: "Manage access",
-                    leadingIconAsset: "UsersThree"
+                    leadingIcon: .asset("UsersThree")
                 )
             } header: {
                 ZenSectionHeader {
@@ -387,7 +411,7 @@ struct ZenKitPublicSurfaceSmokeTests {
             ZenCardHeader(
                 title: "Notifications",
                 subtitle: "Manage delivery settings",
-                leadingIconSystemName: "bell.badge.fill",
+                leadingIcon: .system("bell.badge.fill"),
                 iconTint: .zenPrimary
             )
 
@@ -395,7 +419,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                 ZenSettingRow(
                     title: "Access",
                     subtitle: "System permission granted",
-                    leadingIconSystemName: "checkmark.circle.fill"
+                    leadingIcon: .system("checkmark.circle.fill")
                 ) {
                     Text("Enabled")
                 }
@@ -403,7 +427,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                 ZenPickerRow(
                     title: "Language",
                     subtitle: "Used for notifications",
-                    leadingIconSystemName: "globe",
+                    leadingIcon: .system("globe"),
                     selection: .constant(NotificationLanguage.english),
                     options: NotificationLanguage.allCases
                 ) { option in
@@ -483,8 +507,9 @@ struct ZenKitPublicSurfaceSmokeTests {
             ZenScreen(
                 navigationTitle: ZenScreenTitle(
                     "Dashboard",
-                    leadingIconAsset: "ChartBar",
-                    trailingIconAsset: "Lightning"
+                    subheadline: "Workspace overview",
+                    leadingIcon: .asset("ChartBar"),
+                    trailingIcon: .asset("Lightning")
                 ),
                 navigationBarTitleDisplayMode: .inline,
                 backButton: ZenScreenBackButton("Overview"),
@@ -537,7 +562,7 @@ struct ZenKitPublicSurfaceSmokeTests {
     func zenScreenSupportsLargeTitleWithBodyHeaderContent() {
         let view = NavigationStack {
             ZenScreen(
-                navigationTitle: ZenScreenTitle("Reports"),
+                navigationTitle: ZenScreenTitle("Reports", subheadline: "Weekly summary"),
                 navigationBarTitleDisplayMode: .large,
                 header: {
                     VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
@@ -623,7 +648,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                     ZenNavigationRow(
                         title: "Members",
                         subtitle: "Manage access",
-                        leadingIconAsset: "UsersThree"
+                        leadingIcon: .asset("UsersThree")
                     )
                 }
             }
@@ -718,7 +743,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                     ZenNavigationRow(
                         title: "Members",
                         subtitle: "Manage access",
-                        leadingIconAsset: "UsersThree"
+                        leadingIcon: .asset("UsersThree")
                     )
                 }
             }
@@ -779,11 +804,13 @@ struct ZenKitPublicSurfaceSmokeTests {
         let glass = ZenButtonResolvedStyle(variant: .glass)
         let ghost = ZenButtonResolvedStyle(variant: .ghost)
         let link = ZenButtonResolvedStyle(variant: .link)
+        let plain = ZenButtonResolvedStyle(variant: .plain)
 
         #expect(glass.backgroundStyle != ghost.backgroundStyle)
         #expect(secondary.backgroundStyle != ghost.backgroundStyle)
         #expect(ghost.foregroundStyle != link.foregroundStyle)
         #expect(link.isTextOnly)
+        #expect(plain.isTextOnly)
         #expect(!ghost.isTextOnly)
         #expect(!glass.isTextOnly)
     }
@@ -859,7 +886,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                     ZenNavigationRow(
                         title: "Review Components",
                         subtitle: "Cards, buttons and text fields",
-                        leadingIconAsset: "Swatches"
+                        leadingIcon: .asset("Swatches")
                     )
                 }
             }
@@ -939,7 +966,7 @@ struct ZenKitPublicSurfaceSmokeTests {
         let segment = ZenMetricsTableSegment(
             id: "all",
             count: 3,
-            iconAssetName: "Hash",
+            icon: .asset("Hash"),
             title: "All"
         )
         let values = ZenMetricsTableValues(
@@ -994,7 +1021,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                     ZenNavigationRow(
                         title: "Members",
                         subtitle: "Manage access",
-                        leadingIconAsset: "UsersThree"
+                        leadingIcon: .asset("UsersThree")
                     )
                 }
             }

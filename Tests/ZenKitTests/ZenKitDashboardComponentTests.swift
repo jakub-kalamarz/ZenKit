@@ -271,10 +271,10 @@ struct ZenKitDashboardComponentTests {
     func metricsTableCardSupportsIconHeaderAndSegmentedLabels() {
         let view = ZenMetricsTable(
             title: "Queries",
-            iconAssetName: "MagnifyingGlass",
+            icon: .asset("MagnifyingGlass"),
             segments: [
-                .init(id: "all", count: 12, iconAssetName: "Hash", title: "All"),
-                .init(id: "growing", count: 4, iconAssetName: "TrendUp", title: "Growing"),
+                .init(id: "all", count: 12, icon: .asset("Hash"), title: "All"),
+                .init(id: "growing", count: 4, icon: .asset("TrendUp"), title: "Growing"),
             ],
             selection: .constant("all")
         ) {

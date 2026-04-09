@@ -141,7 +141,7 @@ public struct ZenFieldSection<Content: View>: View {
                 ZenTextInput(
                     text: .constant("alex@example.com"),
                     prompt: "Email",
-                    leadingIconAsset: "Envelope"
+                    leadingIcon: .asset("Envelope")
                 )
             }
 

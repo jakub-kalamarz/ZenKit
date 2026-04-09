@@ -3,26 +3,27 @@ import SwiftUI
 public struct ZenCardHeader: View {
     private let title: String
     private let subtitle: String?
-    private let leadingIconSystemName: String?
+    private let leadingIcon: ZenIconSource?
     private let iconColor: Color?
 
     public init(
         title: String,
         subtitle: String? = nil,
+        leadingIcon: ZenIconSource? = nil,
         leadingIconSystemName: String? = nil,
         iconTint: Color? = nil,
         iconColor: Color? = nil
     ) {
         self.title = title
         self.subtitle = subtitle
-        self.leadingIconSystemName = leadingIconSystemName
+        self.leadingIcon = leadingIcon ?? leadingIconSystemName.map(ZenIconSource.system)
         self.iconColor = iconColor ?? iconTint
     }
 
     public var body: some View {
         HStack(alignment: .top, spacing: ZenSpacing.small) {
-            if let leadingIconSystemName, let iconColor {
-                ZenIconBadge(systemName: leadingIconSystemName, color: iconColor, size: 36)
+            if let leadingIcon, let iconColor {
+                ZenIconBadge(source: leadingIcon, color: iconColor, size: 36)
             }
 
             VStack(alignment: .leading, spacing: 4) {
@@ -46,7 +47,7 @@ public struct ZenCardHeader: View {
             ZenCardHeader(
                 title: "Notifications",
                 subtitle: "Manage delivery settings",
-                leadingIconSystemName: "bell.badge.fill",
+                leadingIcon: .system("bell.badge.fill"),
                 iconColor: .red
             )
         }
@@ -55,7 +56,7 @@ public struct ZenCardHeader: View {
             ZenCardHeader(
                 title: "Security",
                 subtitle: "Password and two-factor auth",
-                leadingIconSystemName: "shield.fill",
+                leadingIcon: .system("shield.fill"),
                 iconColor: .green
             )
         }

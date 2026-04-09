@@ -276,7 +276,7 @@ public extension ZenListScreen where ToolbarPrincipal == EmptyView {
                 ZenNavigationRow(
                     title: "Members",
                     subtitle: "Manage access",
-                    leadingIconAsset: "UsersThree"
+                    leadingIcon: .asset("UsersThree")
                 )
             }
         }

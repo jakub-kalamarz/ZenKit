@@ -6,19 +6,20 @@ public struct ZenDisclosure<Content: View>: View {
 
     private let title: String
     private let subtitle: String?
-    private let leadingIconSystemName: String?
+    private let leadingIcon: ZenIconSource?
     private let content: () -> Content
 
     public init(
         _ title: String,
         subtitle: String? = nil,
+        leadingIcon: ZenIconSource? = nil,
         leadingIconSystemName: String? = nil,
         isExpanded: Bool = false,
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.title = title
         self.subtitle = subtitle
-        self.leadingIconSystemName = leadingIconSystemName
+        self.leadingIcon = leadingIcon ?? leadingIconSystemName.map(ZenIconSource.system)
         _isExpanded = State(initialValue: isExpanded)
         self.content = content
     }
@@ -34,8 +35,8 @@ public struct ZenDisclosure<Content: View>: View {
                 }
             } label: {
                 HStack(spacing: ZenSpacing.small) {
-                    if let leadingIconSystemName {
-                        ZenIcon(systemName: leadingIconSystemName, size: 16)
+                    if let leadingIcon {
+                        ZenIcon(source: leadingIcon, size: 16)
                             .font(.system(size: 16, weight: .medium))
                             .foregroundStyle(Color.zenTextMuted)
                             .frame(width: 20, height: 20)
@@ -88,7 +89,7 @@ public struct ZenDisclosure<Content: View>: View {
 
 #Preview {
     VStack(spacing: ZenSpacing.small) {
-        ZenDisclosure("Advanced Settings", leadingIconSystemName: "gearshape") {
+        ZenDisclosure("Advanced Settings", leadingIcon: .system("gearshape")) {
             VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
                 Text("Configure advanced options below.")
                     .font(.zenCaption)
@@ -96,7 +97,7 @@ public struct ZenDisclosure<Content: View>: View {
             }
         }
 
-        ZenDisclosure("Notifications", subtitle: "Email and push", leadingIconSystemName: "bell", isExpanded: true) {
+        ZenDisclosure("Notifications", subtitle: "Email and push", leadingIcon: .system("bell"), isExpanded: true) {
             VStack(spacing: ZenSpacing.xSmall) {
                 Text("Push notifications are enabled.")
                     .font(.zenCaption)

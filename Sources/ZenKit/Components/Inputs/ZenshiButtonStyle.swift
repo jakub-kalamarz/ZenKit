@@ -43,6 +43,18 @@ struct ZenButtonResolvedStyle {
             backgroundStyle = .filled
             foregroundStyle = .inverse
             isTextOnly = false
+        case .plain:
+            backgroundColor = .clear
+            pressedBackgroundColor = .clear
+            pressedBackgroundToken = nil
+            foregroundLight = colors.textPrimary.light
+            foregroundDark = colors.textPrimary.dark
+            foregroundColor = ZenDynamicColor(light: foregroundLight, dark: foregroundDark).color
+            borderColor = .clear
+            borderWidth = 0
+            backgroundStyle = .transparent
+            foregroundStyle = .primaryText
+            isTextOnly = true
         case .glass:
             backgroundColor = .zenSurface
             pressedBackgroundColor = .zenSurfaceMuted

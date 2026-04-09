@@ -11,6 +11,11 @@ final class ZenKitShowcaseSmokeTests: XCTestCase {
         XCTAssertTrue(inputs?.entries.contains(where: { $0.screenID == .buttons }) == true)
     }
 
+    func test_inputs_section_contains_login_demo() {
+        let inputs = ShowcaseSection.defaultSections.first(where: { $0.id == "inputs" })
+        XCTAssertTrue(inputs?.entries.contains(where: { $0.screenID == .login }) == true)
+    }
+
     func test_inputs_section_contains_select_card_demo() {
         let inputs = ShowcaseSection.defaultSections.first(where: { $0.id == "inputs" })
         XCTAssertTrue(inputs?.entries.contains(where: { $0.screenID == .selectCard }) == true)

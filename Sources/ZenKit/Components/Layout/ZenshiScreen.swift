@@ -597,8 +597,8 @@ private extension View {
         ZenScreen(
             navigationTitle: ZenScreenTitle(
                 "Dashboard",
-                leadingIconAsset: "ChartBar",
-                trailingIconAsset: "Lightning"
+                leadingIcon: .asset("ChartBar"),
+                trailingIcon: .asset("Lightning")
             ),
             navigationBarTitleDisplayMode: .inline,
             backButton: ZenScreenBackButton("Overview"),
@@ -616,7 +616,7 @@ private extension View {
             }
         ) {
             VStack(spacing: ZenSpacing.medium) {
-                ZenTextInput(text: .constant(""), prompt: "Email", leadingIconAsset: "Envelope")
+                ZenTextInput(text: .constant(""), prompt: "Email", leadingIcon: .asset("Envelope"))
                 ZenButton("Continue") {}
             }
         }

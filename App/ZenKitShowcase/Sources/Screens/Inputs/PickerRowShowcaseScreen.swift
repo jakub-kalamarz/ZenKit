@@ -12,7 +12,7 @@ struct PickerRowShowcaseScreen: View {
                     ZenPickerRow(
                         title: "Language",
                         subtitle: "Used for notifications",
-                        leadingIconSystemName: "globe",
+                        leadingIcon: .system("globe"),
                         selection: $language,
                         options: ["English", "Polish", "German", "French"]
                     ) { option in
@@ -21,7 +21,7 @@ struct PickerRowShowcaseScreen: View {
 
                     ZenPickerRow(
                         title: "Timezone",
-                        leadingIconSystemName: "clock",
+                        leadingIcon: .system("clock"),
                         selection: $timezone,
                         options: ["UTC", "GMT+1", "EST", "PST"]
                     ) { option in

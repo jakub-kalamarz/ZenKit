@@ -13,21 +13,21 @@ struct SettingsShowcaseScreen: View {
                 ZenSettingRow(
                     title: "Account",
                     subtitle: "Manage your plan",
-                    leadingIconSystemName: "person.crop.circle.fill",
+                    leadingIcon: .system("person.crop.circle.fill"),
                     iconColor: .blue,
                     accessory: .chevron
                 )
                 ZenSettingRow(
                     title: "Language",
                     subtitle: "Used for notifications",
-                    leadingIconSystemName: "globe",
+                    leadingIcon: .system("globe"),
                     iconColor: .cyan
                 ) {
                     Text(language)
                 }
                 ZenSettingRow(
                     title: "Version",
-                    leadingIconSystemName: "info.circle.fill",
+                    leadingIcon: .system("info.circle.fill"),
                     iconColor: .gray
                 ) {
                     Text("1.0.0")
@@ -48,7 +48,7 @@ struct SettingsShowcaseScreen: View {
                 ZenPickerRow(
                     title: "Language",
                     subtitle: "Used for notifications",
-                    leadingIconSystemName: "globe",
+                    leadingIcon: .system("globe"),
                     iconColor: .cyan,
                     selection: $language,
                     options: ["English", "Polish", "German", "French"]

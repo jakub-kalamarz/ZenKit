@@ -3,6 +3,7 @@ enum ShowcaseScreenID: String, Equatable {
     case theme
     // Inputs
     case buttons
+    case login
     case textInput
     case toggle
     case segmentedControl

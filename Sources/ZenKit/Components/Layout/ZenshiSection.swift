@@ -130,8 +130,8 @@ private struct ZenSectionBody<Content: View>: View {
     ScrollView {
         LazyVStack {
             ZenSection {
-                ZenNavigationRow(title: "Members", subtitle: "Manage access", leadingIconAsset: "UsersThree")
-                ZenNavigationRow(title: "Billing", subtitle: "Invoices and seats", leadingIconAsset: "CreditCard")
+                ZenNavigationRow(title: "Members", subtitle: "Manage access", leadingIcon: .asset("UsersThree"))
+                ZenNavigationRow(title: "Billing", subtitle: "Invoices and seats", leadingIcon: .asset("CreditCard"))
             } header: {
                 ZenSectionHeader {
                     Text("Workspace")
@@ -142,8 +142,8 @@ private struct ZenSectionBody<Content: View>: View {
                 }
             }
             ZenSection {
-                ZenNavigationRow(title: "API Keys", subtitle: "View and manage API keys", leadingIconAsset: "Key")
-                ZenNavigationRow(title: "Webhooks", subtitle: "Configure event webhooks", leadingIconAsset: "PaperPlane")
+                ZenNavigationRow(title: "API Keys", subtitle: "View and manage API keys", leadingIcon: .asset("Key"))
+                ZenNavigationRow(title: "Webhooks", subtitle: "Configure event webhooks", leadingIcon: .asset("PaperPlane"))
             } header: {
                 ZenSectionHeader {
                     Text("Integrations")

@@ -5,7 +5,7 @@ public struct ZenSettingRow<Trailing: View>: View {
 
     private let title: String
     private let subtitle: String?
-    private let leadingIconSystemName: String?
+    private let leadingIcon: ZenIconSource?
     private let iconColor: Color?
     private let accessory: ZenNavigationAccessory
     private let trailing: () -> Trailing
@@ -13,6 +13,7 @@ public struct ZenSettingRow<Trailing: View>: View {
     public init(
         title: String,
         subtitle: String? = nil,
+        leadingIcon: ZenIconSource? = nil,
         leadingIconSystemName: String? = nil,
         iconColor: Color? = nil,
         accessory: ZenNavigationAccessory = .none,
@@ -20,7 +21,7 @@ public struct ZenSettingRow<Trailing: View>: View {
     ) {
         self.title = title
         self.subtitle = subtitle
-        self.leadingIconSystemName = leadingIconSystemName
+        self.leadingIcon = leadingIcon ?? leadingIconSystemName.map(ZenIconSource.system)
         self.iconColor = iconColor
         self.accessory = accessory
         self.trailing = trailing
@@ -31,11 +32,11 @@ public struct ZenSettingRow<Trailing: View>: View {
         let cornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
 
         HStack(spacing: ZenSpacing.small) {
-            if let leadingIconSystemName {
+            if let leadingIcon {
                 if let iconColor {
-                    ZenIconBadge(systemName: leadingIconSystemName, color: iconColor)
+                    ZenIconBadge(source: leadingIcon, color: iconColor)
                 } else {
-                    ZenIcon(systemName: leadingIconSystemName, size: 16)
+                    ZenIcon(source: leadingIcon, size: 16)
                         .foregroundStyle(Color.zenTextMuted)
                         .frame(width: 20, height: 20)
                 }
@@ -80,6 +81,7 @@ public extension ZenSettingRow where Trailing == EmptyView {
     init(
         title: String,
         subtitle: String? = nil,
+        leadingIcon: ZenIconSource? = nil,
         leadingIconSystemName: String? = nil,
         iconColor: Color? = nil,
         accessory: ZenNavigationAccessory = .none
@@ -87,6 +89,7 @@ public extension ZenSettingRow where Trailing == EmptyView {
         self.init(
             title: title,
             subtitle: subtitle,
+            leadingIcon: leadingIcon,
             leadingIconSystemName: leadingIconSystemName,
             iconColor: iconColor,
             accessory: accessory
@@ -102,14 +105,14 @@ public extension ZenSettingRow where Trailing == EmptyView {
             ZenSettingRow(
                 title: "Account",
                 subtitle: "Manage your plan",
-                leadingIconSystemName: "person.crop.circle",
+                leadingIcon: .system("person.crop.circle"),
                 accessory: .chevron
             )
 
             ZenSettingRow(
                 title: "Language",
                 subtitle: "Used for notifications",
-                leadingIconSystemName: "globe"
+                leadingIcon: .system("globe")
             ) {
                 Text("English")
             }

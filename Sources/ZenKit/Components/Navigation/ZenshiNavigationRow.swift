@@ -21,6 +21,7 @@ public struct ZenNavigationRow: View {
     public init(
         title: String,
         subtitle: String? = nil,
+        leadingIcon: ZenIconSource? = nil,
         leadingIconAsset: String? = nil,
         leadingIconSystemName: String? = nil,
         iconTint: Color? = nil,
@@ -29,7 +30,9 @@ public struct ZenNavigationRow: View {
     ) {
         self.title = title
         self.subtitle = subtitle
-        if let leadingIconSystemName {
+        if let leadingIcon {
+            self.leadingIconSource = leadingIcon
+        } else if let leadingIconSystemName {
             self.leadingIconSource = .system(leadingIconSystemName)
         } else if let leadingIconAsset {
             self.leadingIconSource = .asset(leadingIconAsset)
@@ -102,25 +105,25 @@ public struct ZenNavigationRow: View {
         ZenNavigationRow(
             title: "Account",
             subtitle: "Profile, email, and devices",
-            leadingIconSystemName: "person.circle.fill",
+            leadingIcon: .system("person.circle.fill"),
             iconColor: .blue
         )
         ZenNavigationRow(
             title: "Notifications",
-            leadingIconSystemName: "bell.fill",
+            leadingIcon: .system("bell.fill"),
             iconColor: .red,
             accessory: .none
         )
         ZenNavigationRow(
             title: "Security",
             subtitle: "Password and two-factor",
-            leadingIconSystemName: "shield.fill",
+            leadingIcon: .system("shield.fill"),
             iconColor: .green
         )
         ZenNavigationRow(
             title: "Billing",
             subtitle: "Managed by workspace owner",
-            leadingIconSystemName: "creditcard.fill",
+            leadingIcon: .system("creditcard.fill"),
             iconColor: .orange
         )
         .disabled(true)

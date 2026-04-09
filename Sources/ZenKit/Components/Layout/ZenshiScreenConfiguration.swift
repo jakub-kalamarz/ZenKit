@@ -8,17 +8,32 @@ public enum ZenNavigationBarTitleDisplayMode {
 
 public struct ZenScreenTitle: Equatable, Sendable {
     public let text: String
-    public let leadingIconAsset: String?
-    public let trailingIconAsset: String?
+    public let subheadline: String?
+    public let leadingIcon: ZenIconSource?
+    public let trailingIcon: ZenIconSource?
+
+    public var leadingIconAsset: String? {
+        guard case .asset(let assetName)? = leadingIcon else { return nil }
+        return assetName
+    }
+
+    public var trailingIconAsset: String? {
+        guard case .asset(let assetName)? = trailingIcon else { return nil }
+        return assetName
+    }
 
     public init(
         _ text: String,
+        subheadline: String? = nil,
+        leadingIcon: ZenIconSource? = nil,
+        trailingIcon: ZenIconSource? = nil,
         leadingIconAsset: String? = nil,
         trailingIconAsset: String? = nil
     ) {
         self.text = text
-        self.leadingIconAsset = leadingIconAsset
-        self.trailingIconAsset = trailingIconAsset
+        self.subheadline = subheadline
+        self.leadingIcon = leadingIcon ?? leadingIconAsset.map(ZenIconSource.asset)
+        self.trailingIcon = trailingIcon ?? trailingIconAsset.map(ZenIconSource.asset)
     }
 }
 

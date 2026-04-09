@@ -240,13 +240,13 @@ private struct ZenThemeColorWorkbenchPreview: View {
                     ZenTextInput(
                         text: $sampleText,
                         prompt: "Accent hex",
-                        leadingIconAsset: "MagnifyingGlass"
+                        leadingIcon: .asset("MagnifyingGlass")
                     )
 
                     ZenNavigationRow(
                         title: "Refine base colors",
                         subtitle: "Cards, inputs and separators should stay coherent",
-                        leadingIconAsset: "Swatches"
+                        leadingIcon: .asset("Swatches")
                     )
                 }
             }

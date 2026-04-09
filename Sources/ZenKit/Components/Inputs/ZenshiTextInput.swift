@@ -18,8 +18,8 @@ public struct ZenTextInput: View {
     @FocusState private var isFocused: Bool
 
     private let prompt: String
-    private let leadingIconAsset: String?
-    private let trailingIconAsset: String?
+    private let leadingIcon: ZenIconSource?
+    private let trailingIcon: ZenIconSource?
     private let kind: ZenTextInputKind
     private let state: ZenControlState
     private let message: String?
@@ -29,6 +29,8 @@ public struct ZenTextInput: View {
     public init(
         text: Binding<String>,
         prompt: String,
+        leadingIcon: ZenIconSource? = nil,
+        trailingIcon: ZenIconSource? = nil,
         leadingIconAsset: String? = nil,
         trailingIconAsset: String? = nil,
         kind: ZenTextInputKind = .plain,
@@ -39,8 +41,8 @@ public struct ZenTextInput: View {
     ) {
         _text = text
         self.prompt = prompt
-        self.leadingIconAsset = leadingIconAsset
-        self.trailingIconAsset = trailingIconAsset
+        self.leadingIcon = leadingIcon ?? leadingIconAsset.map(ZenIconSource.asset)
+        self.trailingIcon = trailingIcon ?? trailingIconAsset.map(ZenIconSource.asset)
         self.kind = kind
         self.state = state
         self.message = message
@@ -54,8 +56,8 @@ public struct ZenTextInput: View {
 
         VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
             HStack(spacing: ZenSpacing.small) {
-                if let leadingIconAsset {
-                    ZenIcon(assetName: leadingIconAsset, size: 15)
+                if let leadingIcon {
+                    ZenIcon(source: leadingIcon, size: 15)
                         .font(.system(size: 15, weight: .medium))
                         .foregroundStyle(Color.zenTextMuted)
                         .frame(width: 16, height: 16)
@@ -68,8 +70,8 @@ public struct ZenTextInput: View {
                     .disabled(state == .disabled)
                     .focused($isFocused)
 
-                if let trailingIconAsset {
-                    ZenIcon(assetName: trailingIconAsset, size: 15)
+                if let trailingIcon {
+                    ZenIcon(source: trailingIcon, size: 15)
                         .font(.system(size: 15, weight: .medium))
                         .foregroundStyle(Color.zenTextMuted)
                 }
@@ -142,9 +144,9 @@ public struct ZenTextInput: View {
 
 #Preview {
     VStack(spacing: ZenSpacing.medium) {
-        ZenTextInput(text: .constant("alex@example.com"), prompt: "Email", leadingIconAsset: "Envelope")
-        ZenTextInput(text: .constant(""), prompt: "Password", leadingIconAsset: "Lock", kind: .secure, state: .focused)
-        ZenTextInput(text: .constant(""), prompt: "Email", leadingIconAsset: "Envelope", state: .invalid, message: "Enter a valid email.")
+        ZenTextInput(text: .constant("alex@example.com"), prompt: "Email", leadingIcon: .asset("Envelope"))
+        ZenTextInput(text: .constant(""), prompt: "Password", leadingIcon: .asset("Lock"), kind: .secure, state: .focused)
+        ZenTextInput(text: .constant(""), prompt: "Email", leadingIcon: .asset("Envelope"), state: .invalid, message: "Enter a valid email.")
     }
     .padding()
     .background(Color.zenBackground)

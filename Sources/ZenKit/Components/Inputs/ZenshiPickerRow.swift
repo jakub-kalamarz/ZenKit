@@ -3,7 +3,7 @@ import SwiftUI
 public struct ZenPickerRow<Option: Hashable & Sendable, OptionLabel: View>: View {
     private let title: String
     private let subtitle: String?
-    private let leadingIconSystemName: String?
+    private let leadingIcon: ZenIconSource?
     private let iconColor: Color?
     @Binding private var selection: Option
     private let options: [Option]
@@ -12,6 +12,7 @@ public struct ZenPickerRow<Option: Hashable & Sendable, OptionLabel: View>: View
     public init(
         title: String,
         subtitle: String? = nil,
+        leadingIcon: ZenIconSource? = nil,
         leadingIconSystemName: String? = nil,
         iconColor: Color? = nil,
         selection: Binding<Option>,
@@ -20,7 +21,7 @@ public struct ZenPickerRow<Option: Hashable & Sendable, OptionLabel: View>: View
     ) {
         self.title = title
         self.subtitle = subtitle
-        self.leadingIconSystemName = leadingIconSystemName
+        self.leadingIcon = leadingIcon ?? leadingIconSystemName.map(ZenIconSource.system)
         self.iconColor = iconColor
         _selection = selection
         self.options = options
@@ -40,7 +41,7 @@ public struct ZenPickerRow<Option: Hashable & Sendable, OptionLabel: View>: View
             ZenSettingRow(
                 title: title,
                 subtitle: subtitle,
-                leadingIconSystemName: leadingIconSystemName,
+                leadingIcon: leadingIcon,
                 iconColor: iconColor
             ) {
                 HStack(spacing: ZenSpacing.xSmall) {
@@ -62,7 +63,7 @@ public struct ZenPickerRow<Option: Hashable & Sendable, OptionLabel: View>: View
                 ZenPickerRow(
                     title: "Language",
                     subtitle: "Used for notifications",
-                    leadingIconSystemName: "globe",
+                    leadingIcon: .system("globe"),
                     selection: $language,
                     options: options
                 ) { option in
