@@ -213,11 +213,21 @@ extension View {
 private extension View {
     @ViewBuilder
     func applyZenNavigationSubtitle(_ title: ZenScreenTitle) -> some View {
+        #if os(iOS)
+        if #available(iOS 26.0, *), ZenNavigationChrome.shouldUseNativeNavigationSubtitle(title) {
+            navigationSubtitle(Text(title.subheadline ?? ""))
+        } else {
+            self
+        }
+        #elseif os(macOS)
         if ZenNavigationChrome.shouldUseNativeNavigationSubtitle(title) {
             navigationSubtitle(Text(title.subheadline ?? ""))
         } else {
             self
         }
+        #else
+        self
+        #endif
     }
 }
 
