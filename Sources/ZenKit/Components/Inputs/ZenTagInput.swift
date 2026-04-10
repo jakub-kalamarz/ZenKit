@@ -22,9 +22,10 @@ public struct ZenTagInput: View {
     public var body: some View {
         let theme = ZenTheme.current
         let cornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
+        let controlStyle = ZenControlSurfaceStyle.field(theme: theme)
         let borderColor = isFocused
             ? theme.resolvedColors.focusRing.color
-            : Color.zenBorder
+            : controlStyle.borderColor
 
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: ZenSpacing.xSmall) {
@@ -49,10 +50,10 @@ public struct ZenTagInput: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .frame(minHeight: theme.resolvedMetrics.controlHeight)
-        .background(Color.zenSurfaceMuted)
+        .background(controlStyle.backgroundColor)
         .overlay(
             RoundedRectangle(cornerRadius: cornerRadius)
-                .strokeBorder(borderColor, lineWidth: 1)
+                .strokeBorder(borderColor, lineWidth: controlStyle.borderWidth)
         )
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .contentShape(Rectangle())

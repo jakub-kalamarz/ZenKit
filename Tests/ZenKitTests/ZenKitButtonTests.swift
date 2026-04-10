@@ -165,6 +165,26 @@ struct ZenKitButtonTests {
     }
 
     @Test
+    func outlinedButtonsShareChromeWithBorderedInputControls() {
+        let outlineButton = ZenButtonResolvedStyle(variant: .outline)
+        let controlStyle = ZenControlSurfaceStyle.outline()
+
+        #expect(outlineButton.backgroundToken == controlStyle.backgroundToken)
+        #expect(outlineButton.borderToken == controlStyle.borderToken)
+        #expect(outlineButton.borderWidth == controlStyle.borderWidth)
+    }
+
+    @Test
+    func fieldInputsShareMutedControlChrome() {
+        let fieldStyle = ZenControlSurfaceStyle.field()
+        let colors = ZenTheme.current.resolvedColors
+
+        #expect(fieldStyle.backgroundToken == colors.surfaceMuted)
+        #expect(fieldStyle.borderToken == colors.border)
+        #expect(fieldStyle.borderWidth == 1)
+    }
+
+    @Test
     func transparentButtonVariantsKeepSemanticForegrounds() {
         let originalTheme = ZenTheme.current
         defer { ZenTheme.apply(originalTheme) }

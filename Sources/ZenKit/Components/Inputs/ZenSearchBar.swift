@@ -15,6 +15,7 @@ public struct ZenSearchBar: View {
     public var body: some View {
         let theme = ZenTheme.current
         let cornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
+        let controlStyle = ZenControlSurfaceStyle.field(theme: theme)
 
         HStack(spacing: ZenSpacing.small) {
             ZenIcon(systemName: "magnifyingglass", size: 15)
@@ -42,19 +43,19 @@ public struct ZenSearchBar: View {
         .padding(.horizontal, 12)
         .frame(maxWidth: .infinity)
         .frame(minHeight: theme.resolvedMetrics.controlHeight)
-        .background(Color.zenSurfaceMuted)
+        .background(controlStyle.backgroundColor)
         .overlay(
             RoundedRectangle(cornerRadius: cornerRadius)
-                .strokeBorder(borderColor(theme: theme), lineWidth: 1)
+                .strokeBorder(borderColor(theme: theme, controlStyle: controlStyle), lineWidth: controlStyle.borderWidth)
         )
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
     }
 
-    private func borderColor(theme: ZenTheme) -> Color {
+    private func borderColor(theme: ZenTheme, controlStyle: ZenControlSurfaceStyle) -> Color {
         if isFocused {
             return theme.resolvedColors.focusRing.color
         }
-        return .zenBorder
+        return controlStyle.borderColor
     }
 }
 

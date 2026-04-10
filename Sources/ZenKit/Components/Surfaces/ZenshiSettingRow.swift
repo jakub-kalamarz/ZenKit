@@ -30,6 +30,7 @@ public struct ZenSettingRow<Trailing: View>: View {
     public var body: some View {
         let theme = ZenTheme.current
         let cornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
+        let controlStyle = ZenControlSurfaceStyle.outline(theme: theme)
 
         HStack(spacing: ZenSpacing.small) {
             if let leadingIcon {
@@ -67,11 +68,11 @@ public struct ZenSettingRow<Trailing: View>: View {
         }
         .padding(.vertical, 12)
         .padding(.horizontal, ZenSpacing.medium)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.zenSurface)
+        .frame(maxWidth: .infinity, minHeight: theme.resolvedMetrics.controlHeight, alignment: .leading)
+        .background(controlStyle.backgroundColor)
         .overlay(
             RoundedRectangle(cornerRadius: cornerRadius)
-                .strokeBorder(Color.zenBorder, lineWidth: 1)
+                .strokeBorder(controlStyle.borderColor, lineWidth: controlStyle.borderWidth)
         )
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
     }

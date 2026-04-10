@@ -50,8 +50,8 @@ struct LoginShowcaseScreen: View {
                                 ZenTextInput(
                                     text: $password,
                                     prompt: "Password",
-                                    kind: .secure,
-                                    leadingIcon: .asset("LockClosed")
+                                    leadingIcon: .asset("LockClosed"),
+                                    kind: .secure
                                 )
                             }
 

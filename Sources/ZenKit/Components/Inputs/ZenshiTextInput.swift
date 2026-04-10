@@ -53,6 +53,7 @@ public struct ZenTextInput: View {
     public var body: some View {
         let theme = ZenTheme.current
         let cornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
+        let controlStyle = ZenControlSurfaceStyle.field(theme: theme)
 
         VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
             HStack(spacing: ZenSpacing.small) {
@@ -84,10 +85,10 @@ public struct ZenTextInput: View {
                 maxHeight: theme.resolvedMetrics.controlHeight,
                 alignment: .leading
             )
-            .background(Color.zenSurfaceMuted)
+            .background(controlStyle.backgroundColor)
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius)
-                    .strokeBorder(borderColor, lineWidth: 1)
+                    .strokeBorder(borderColor(controlStyle: controlStyle), lineWidth: controlStyle.borderWidth)
             )
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
             .opacity(state == .disabled ? 0.6 : 1)
@@ -114,7 +115,7 @@ public struct ZenTextInput: View {
         }
     }
 
-    private var borderColor: Color {
+    private func borderColor(controlStyle: ZenControlSurfaceStyle) -> Color {
         let colors = ZenTheme.current.resolvedColors
 
         if state == .invalid {
@@ -131,13 +132,13 @@ public struct ZenTextInput: View {
 
         switch state {
         case .normal:
-            return .zenBorder
+            return controlStyle.borderColor
         case .focused:
             return colors.focusRing.color
         case .invalid:
             return colors.criticalBorder.color
         case .disabled:
-            return .zenBorder
+            return controlStyle.borderColor
         }
     }
 }
