@@ -8,28 +8,28 @@ struct ProgressBarShowcaseScreen: View {
                 VStack(alignment: .leading, spacing: ZenSpacing.medium) {
                     VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
                         Text("Empty")
-                            .font(.zenCaption)
+                            .font(.zenTextXS)
                             .foregroundStyle(Color.zenTextMuted)
                         ZenProgressBar(progress: 0)
                     }
 
                     VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
                         Text("Uploading — 35%")
-                            .font(.zenCaption)
+                            .font(.zenTextXS)
                             .foregroundStyle(Color.zenTextMuted)
                         ZenProgressBar(progress: 0.35)
                     }
 
                     VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
                         Text("Processing — 68%")
-                            .font(.zenCaption)
+                            .font(.zenTextXS)
                             .foregroundStyle(Color.zenTextMuted)
                         ZenProgressBar(progress: 0.68)
                     }
 
                     VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
                         Text("Complete — 100%")
-                            .font(.zenCaption)
+                            .font(.zenTextXS)
                             .foregroundStyle(Color.zenTextMuted)
                         ZenProgressBar(progress: 1)
                     }
@@ -40,16 +40,16 @@ struct ProgressBarShowcaseScreen: View {
                 VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
                     HStack {
                         Text("Syncing workspace")
-                            .font(.zenLabel)
+                            .font(.zenTextSM.weight(.medium))
                             .foregroundStyle(Color.zenTextPrimary)
                         Spacer()
                         Text("68%")
-                            .font(.zenCaption)
+                            .font(.zenTextXS)
                             .foregroundStyle(Color.zenTextMuted)
                     }
                     ZenProgressBar(progress: 0.68)
                     Text("Estimated time remaining: 12s")
-                        .font(.zenCaption)
+                        .font(.zenTextXS)
                         .foregroundStyle(Color.zenTextMuted)
                 }
             }

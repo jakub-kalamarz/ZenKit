@@ -2,11 +2,12 @@ import Foundation
 
 #if canImport(UIKit)
 import SwiftUI
+import UIKit
 #endif
 
 enum ZenThemeStore {
     private static let lock = NSLock()
-    private static var theme = ZenTheme.default
+    private static var theme = initializeTheme()
 
     static func currentTheme() -> ZenTheme {
         lock.withLock { theme }
@@ -15,7 +16,31 @@ enum ZenThemeStore {
     static func apply(_ theme: ZenTheme) {
         lock.withLock {
             self.theme = theme
+            applyUIKitAppearance(theme)
         }
+    }
+
+    private static func initializeTheme() -> ZenTheme {
+        let theme = ZenTheme.default
+        applyUIKitAppearance(theme)
+        return theme
+    }
+
+    private static func applyUIKitAppearance(_ theme: ZenTheme) {
+#if canImport(UIKit)
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithDefaultBackground()
+        appearance.titleTextAttributes = [.font: theme.resolvedTypography.fontSpec(for: .displayXS).uiFont]
+        appearance.largeTitleTextAttributes = [.font: theme.resolvedTypography.fontSpec(for: .displayLG).uiFont]
+
+        let navigationBar = UINavigationBar.appearance()
+        navigationBar.standardAppearance = appearance
+        navigationBar.scrollEdgeAppearance = appearance
+        navigationBar.compactAppearance = appearance
+        navigationBar.compactScrollEdgeAppearance = appearance
+        navigationBar.titleTextAttributes = appearance.titleTextAttributes
+        navigationBar.largeTitleTextAttributes = appearance.largeTitleTextAttributes
+#endif
     }
 }
 

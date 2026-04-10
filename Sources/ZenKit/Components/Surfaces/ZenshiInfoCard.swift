@@ -19,11 +19,11 @@ public struct ZenInfoCard: View {
 
         VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
             Text(title)
-                .font(.zenCaption)
+                .font(.zenTextXS)
                 .foregroundStyle(Color.zenTextMuted)
 
             Text(value)
-                .font(monospaced ? .zenMono : .zenBody)
+                .font(monospaced ? .system(size: 15, design: .monospaced) : .zenTextBase)
                 .foregroundStyle(Color.zenTextPrimary)
                 .lineLimit(1)
                 .truncationMode(.middle)

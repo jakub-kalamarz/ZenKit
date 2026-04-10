@@ -19,7 +19,7 @@ public struct ZenDatePicker: View {
 
         HStack(spacing: ZenSpacing.small) {
             Text(title)
-                .font(.zenLabel)
+                .font(.zenTextSM.weight(.medium))
                 .foregroundStyle(Color.zenTextPrimary)
 
             Spacer(minLength: ZenSpacing.small)

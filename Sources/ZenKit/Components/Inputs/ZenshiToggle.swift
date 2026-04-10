@@ -20,12 +20,12 @@ public struct ZenToggle: View {
         Toggle(isOn: $isOn) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.zenLabel)
+                    .font(.zenTextSM.weight(.medium))
                     .foregroundStyle(Color.zenTextPrimary)
 
                 if let subtitle {
                     Text(subtitle)
-                        .font(.zenCaption)
+                        .font(.zenTextXS)
                         .foregroundStyle(Color.zenTextMuted)
                 }
             }

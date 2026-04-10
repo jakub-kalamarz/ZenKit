@@ -43,13 +43,13 @@ public struct ZenCard<Content: View, Footer: View>: View {
                 VStack(alignment: .leading, spacing: 4) {
                     if let title {
                         Text(title)
-                            .font(.zenTitle)
+                            .font(.zenDisplayXS)
                             .foregroundStyle(Color.zenTextPrimary)
                     }
 
                     if let subtitle {
                         Text(subtitle)
-                            .font(.zenCaption)
+                            .font(.zenTextXS)
                             .foregroundStyle(Color.zenTextMuted)
                     }
                 }
@@ -82,11 +82,11 @@ public struct ZenCard<Content: View, Footer: View>: View {
         ) {
             VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
                 Text("zen")
-                    .font(.zenLabel)
+                    .font(.zenTextSM.weight(.medium))
                     .foregroundStyle(Color.zenTextPrimary)
 
                 Text("Last synced 2 minutes ago")
-                    .font(.zenCaption)
+                    .font(.zenTextXS)
                     .foregroundStyle(Color.zenTextMuted)
             }
         }

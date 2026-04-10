@@ -177,7 +177,7 @@ public struct ZenSelectCard: View {
 
     private var titleView: some View {
         Text(title)
-            .font(variant == .inline ? .zenLabel : .zenLabel)
+            .font(variant == .inline ? .zenTextSM.weight(.medium) : .zenTextSM.weight(.medium))
             .foregroundStyle(Color.zenTextPrimary)
             .multilineTextAlignment(.leading)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -185,7 +185,7 @@ public struct ZenSelectCard: View {
 
     private func subtitleView(_ subtitle: String) -> some View {
         Text(subtitle)
-            .font(.zenCaption)
+            .font(.zenTextXS)
             .foregroundStyle(Color.zenTextMuted)
             .multilineTextAlignment(.leading)
             .frame(maxWidth: .infinity, alignment: .leading)

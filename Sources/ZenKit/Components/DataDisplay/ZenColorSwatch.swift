@@ -75,7 +75,7 @@ private struct ZenColorSwatchPreview: View {
                     .fill(selection)
                     .frame(width: 24, height: 24)
                 Text("Selected color")
-                    .font(.zenLabel)
+                    .font(.zenTextSM.weight(.medium))
                     .foregroundStyle(Color.zenTextPrimary)
             }
         }

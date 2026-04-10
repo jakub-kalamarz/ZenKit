@@ -17,12 +17,12 @@ public struct ZenSectionHeader<Title: View, Subtitle: View>: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             title()
-                .font(.zenTitle)
+                .font(.zenDisplayXS)
                 .foregroundStyle(Color.zenTextPrimary)
 
             if showsSubtitle {
                 subtitle()
-                    .font(.zenCaption)
+                    .font(.zenTextXS)
                     .foregroundStyle(Color.zenTextMuted)
             }
         }

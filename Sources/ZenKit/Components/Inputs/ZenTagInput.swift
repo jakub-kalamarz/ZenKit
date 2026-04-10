@@ -35,7 +35,7 @@ public struct ZenTagInput: View {
                 }
 
                 TextField(prompt, text: $inputText)
-                    .font(.zenBody)
+                    .font(.zenTextBase)
                     .foregroundStyle(Color.zenTextPrimary)
                     .textFieldStyle(.plain)
                     .focused($isFocused)
@@ -90,13 +90,13 @@ private struct ZenTagInputPreview: View {
     var body: some View {
         VStack(alignment: .leading, spacing: ZenSpacing.medium) {
             Text("Tags")
-                .font(.zenLabel)
+                .font(.zenTextSM.weight(.medium))
                 .foregroundStyle(Color.zenTextPrimary)
 
             ZenTagInput(tags: $tags, prompt: "Add tag...")
 
             Text("Type a tag name and press Return to add. Tap \u{00D7} to remove.")
-                .font(.zenCaption)
+                .font(.zenTextXS)
                 .foregroundStyle(Color.zenTextMuted)
         }
         .padding()

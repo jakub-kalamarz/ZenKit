@@ -25,7 +25,7 @@ struct PageIndicatorShowcaseScreen: View {
                         Spacer()
 
                         Text("Step \(onboardingPage + 1) of 4")
-                            .font(.zenCaption)
+                            .font(.zenTextXS)
                             .foregroundStyle(Color.zenTextMuted)
 
                         Spacer()
@@ -132,11 +132,11 @@ struct PageIndicatorShowcaseScreen: View {
 
             VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
                 Text(title)
-                    .font(.zenLabel)
+                    .font(.zenTextSM.weight(.medium))
                     .foregroundStyle(Color.white)
 
                 Text(subtitle)
-                    .font(.zenCaption)
+                    .font(.zenTextXS)
                     .foregroundStyle(Color.white.opacity(0.88))
             }
             .padding(ZenSpacing.large)

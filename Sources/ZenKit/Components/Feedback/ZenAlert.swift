@@ -46,18 +46,18 @@ public struct ZenAlert: View {
             VStack(alignment: .leading, spacing: 4) {
                 if let title {
                     Text(title)
-                        .font(.zenLabel)
+                        .font(.zenTextSM.weight(.medium))
                         .foregroundStyle(tintColor)
                 }
 
                 Text(message)
-                    .font(.zenCaption)
+                    .font(.zenTextXS)
                     .foregroundStyle(tintColor)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                 if let action {
                     Button(action.label, action: action.handler)
-                        .font(.zenCaption.weight(.semibold))
+                        .font(.zenTextXS.weight(.semibold))
                         .foregroundStyle(tintColor)
                         .buttonStyle(.plain)
                         .padding(.top, 2)

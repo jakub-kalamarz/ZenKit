@@ -60,7 +60,7 @@ public struct ZenSwipeRow<Content: View>: View {
                                 ZenIcon(systemName: action.systemIconName, size: 16)
                                     .font(.system(size: 16, weight: .medium))
                                 Text(action.label)
-                                    .font(.zenCaption)
+                                    .font(.zenTextXS)
                             }
                             .foregroundStyle(Color.white)
                             .frame(width: 72)
@@ -145,10 +145,10 @@ public struct ZenSwipeRow<Content: View>: View {
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Team Update")
-                        .font(.zenLabel)
+                        .font(.zenTextSM.weight(.medium))
                         .foregroundStyle(Color.zenTextPrimary)
                     Text("Swipe left to reveal actions")
-                        .font(.zenCaption)
+                        .font(.zenTextXS)
                         .foregroundStyle(Color.zenTextMuted)
                 }
 
@@ -178,10 +178,10 @@ public struct ZenSwipeRow<Content: View>: View {
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Reminder")
-                        .font(.zenLabel)
+                        .font(.zenTextSM.weight(.medium))
                         .foregroundStyle(Color.zenTextPrimary)
                     Text("Swipe left to delete")
-                        .font(.zenCaption)
+                        .font(.zenTextXS)
                         .foregroundStyle(Color.zenTextMuted)
                 }
 

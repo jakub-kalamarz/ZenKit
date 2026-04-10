@@ -144,7 +144,7 @@ struct ZenNavigationInlineTitleView: View {
                 }
 
                 Text(title.text)
-                    .font(.zenTitle)
+                    .font(.zenDisplayXS)
                     .foregroundStyle(Color.zenTextPrimary)
                     .lineLimit(1)
 
@@ -157,7 +157,7 @@ struct ZenNavigationInlineTitleView: View {
 
             if let subheadline = title.subheadline {
                 Text(subheadline)
-                    .font(.zenCaption)
+                    .font(.zenTextXS)
                     .foregroundStyle(Color.zenTextMuted)
                     .lineLimit(1)
                     .fixedSize(horizontal: false, vertical: true)
@@ -181,7 +181,7 @@ struct ZenNavigationBackButtonView: View {
                         .lineLimit(1)
                 }
             }
-            .font(.zenLabel)
+            .font(.zenTextSM.weight(.medium))
             .foregroundStyle(Color.zenPrimary)
             .contentShape(Rectangle())
         }

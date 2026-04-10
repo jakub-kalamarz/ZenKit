@@ -160,20 +160,20 @@ private struct ZenThemeColorWorkbenchPreview: View {
     ) -> some View {
         VStack(alignment: .leading, spacing: ZenSpacing.small) {
             Text(title)
-                .font(.zenLabel)
+                .font(.zenTextSM.weight(.medium))
                 .foregroundStyle(Color.zenTextPrimary)
 
             HStack(spacing: ZenSpacing.medium) {
                 ColorPicker("Light", selection: color.light)
                 Text(color.wrappedValue.dynamicColor.light.hexString)
-                    .font(.zenMono)
+                    .font(.system(size: 12, design: .monospaced))
                     .foregroundStyle(Color.zenTextMuted)
             }
 
             HStack(spacing: ZenSpacing.medium) {
                 ColorPicker("Dark", selection: color.dark)
                 Text(color.wrappedValue.dynamicColor.dark.hexString)
-                    .font(.zenMono)
+                    .font(.system(size: 12, design: .monospaced))
                     .foregroundStyle(Color.zenTextMuted)
             }
         }
@@ -186,20 +186,20 @@ private struct ZenThemeColorWorkbenchPreview: View {
     ) -> some View {
         VStack(alignment: .leading, spacing: ZenSpacing.small) {
             Text(title)
-                .font(.zenLabel)
+                .font(.zenTextSM.weight(.medium))
                 .foregroundStyle(Color.zenTextPrimary)
 
             HStack(spacing: ZenSpacing.medium) {
                 ColorPicker("Light", selection: seedColor.light)
                 Text(seedColor.wrappedValue.dynamicColor.light.hexString)
-                    .font(.zenMono)
+                    .font(.system(size: 12, design: .monospaced))
                     .foregroundStyle(Color.zenTextMuted)
             }
 
             HStack(spacing: ZenSpacing.medium) {
                 ColorPicker("Dark", selection: seedColor.dark)
                 Text(seedColor.wrappedValue.dynamicColor.dark.hexString)
-                    .font(.zenMono)
+                    .font(.system(size: 12, design: .monospaced))
                     .foregroundStyle(Color.zenTextMuted)
             }
         }
@@ -213,13 +213,13 @@ private struct ZenThemeColorWorkbenchPreview: View {
         VStack(alignment: .leading, spacing: ZenSpacing.medium) {
             HStack {
                 Text(title)
-                    .font(.zenTitle)
+                    .font(.zenDisplayXS)
                     .foregroundStyle(Color.zenTextPrimary)
 
                 Spacer()
 
                 Text("Primary \(primaryHex) / Accent \(accentHex)")
-                    .font(.zenCaption)
+                    .font(.zenTextXS)
                     .foregroundStyle(Color.zenTextMuted)
             }
 

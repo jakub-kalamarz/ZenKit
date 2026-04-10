@@ -37,7 +37,7 @@ public enum ZenIconStyle: Sendable {
 }
 
 public struct ZenTheme: Equatable, Sendable {
-    public static let `default` = ZenTheme()
+    public static var `default`: ZenTheme { ZenTheme() }
 
     public let density: ZenDensity
     public let cornerStyle: ZenCornerStyle
@@ -103,32 +103,22 @@ public struct ZenTheme: Equatable, Sendable {
     }
 
     public var resolvedTypography: ZenResolvedTypography {
-        makeResolvedTypography(
-            titleSize: 18,
-            bodySize: 15,
-            labelSize: 14,
-            captionSize: 12,
-            buttonSize: 14,
-            monoSize: 12
-        )
+        makeResolvedTypography()
     }
 
-    private func makeResolvedTypography(
-        titleSize: CGFloat,
-        bodySize: CGFloat,
-        labelSize: CGFloat,
-        captionSize: CGFloat,
-        buttonSize: CGFloat,
-        monoSize: CGFloat
-    ) -> ZenResolvedTypography {
+    private func makeResolvedTypography() -> ZenResolvedTypography {
         ZenResolvedTypography(
-            heading: makeResolvedFontSpec(role: .display, size: 28, weight: .semibold),
-            title: makeResolvedFontSpec(role: .display, size: titleSize, weight: .semibold),
-            body: makeResolvedFontSpec(role: .body, size: bodySize, weight: .regular),
-            label: makeResolvedFontSpec(role: .body, size: labelSize, weight: .medium),
-            caption: makeResolvedFontSpec(role: .body, size: captionSize, weight: .regular),
-            button: makeResolvedFontSpec(role: .body, size: buttonSize, weight: .medium),
-            mono: makeResolvedFontSpec(role: .code, size: monoSize, weight: .regular)
+            textXS: makeResolvedFontSpec(role: .text, size: 12, weight: .regular),
+            textSM: makeResolvedFontSpec(role: .text, size: 14, weight: .regular),
+            textBase: makeResolvedFontSpec(role: .text, size: 15, weight: .regular),
+            textLG: makeResolvedFontSpec(role: .text, size: 16, weight: .regular),
+            textXL: makeResolvedFontSpec(role: .text, size: 18, weight: .regular),
+            displayXS: makeResolvedFontSpec(role: .display, size: 18, weight: .semibold),
+            displaySM: makeResolvedFontSpec(role: .display, size: 20, weight: .semibold),
+            displayMD: makeResolvedFontSpec(role: .display, size: 24, weight: .semibold),
+            displayLG: makeResolvedFontSpec(role: .display, size: 28, weight: .semibold),
+            displayXL: makeResolvedFontSpec(role: .display, size: 32, weight: .semibold),
+            display2XL: makeResolvedFontSpec(role: .display, size: 40, weight: .semibold)
         )
     }
 
@@ -214,13 +204,13 @@ public struct ZenTheme: Equatable, Sendable {
     VStack(alignment: .leading, spacing: ZenSpacing.medium) {
         ZenCard(title: "Comfortable Rounded", subtitle: "Default theme axis sample") {
             Text("Control height \(Int(ZenTheme().resolvedMetrics.controlHeight))")
-                .font(.zenBody)
+                .font(.zenTextBase)
                 .foregroundStyle(Color.zenTextPrimary)
         }
 
         ZenCard(title: "Compact None", subtitle: "Density and corner style") {
             Text("Control height \(Int(ZenTheme(density: .compact, cornerStyle: .none).resolvedMetrics.controlHeight))")
-                .font(.zenBody)
+                .font(.zenTextBase)
                 .foregroundStyle(Color.zenTextPrimary)
         }
     }

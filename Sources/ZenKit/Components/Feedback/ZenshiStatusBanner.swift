@@ -28,7 +28,7 @@ public struct ZenStatusBanner: View {
                 .padding(.top, 1)
 
             Text(message)
-                .font(.zenCaption)
+                .font(.zenTextXS)
                 .foregroundStyle(tintColor)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }

@@ -80,15 +80,15 @@ public enum ZenButtonSize {
     }
 
     func textFontSpec(theme: ZenTheme) -> ZenResolvedFontSpec {
-        let buttonSpec = theme.resolvedTypography.fontSpec(for: .button)
+        let buttonSpec = theme.resolvedTypography.fontSpec(for: .textSM)
 
         switch self {
         case .default, .icon:
             return buttonSpec.with(size: 14, weight: .semibold)
         case .xs:
-            return buttonSpec.with(size: 12)
+            return buttonSpec.with(size: 12, weight: .medium)
         case .sm, .iconXs, .iconSm:
-            return buttonSpec.with(size: 13)
+            return buttonSpec.with(size: 13, weight: .medium)
         case .lg:
             return buttonSpec.with(size: 15, weight: .semibold)
         case .iconLg:

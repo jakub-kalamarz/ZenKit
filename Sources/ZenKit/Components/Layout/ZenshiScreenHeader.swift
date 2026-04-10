@@ -16,13 +16,13 @@ public struct ZenScreenHeader: View {
         VStack(alignment: .leading, spacing: ZenSpacing.large) {
             VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
                 Text(title)
-                    .font(.zenHeading)
+                    .font(.zenDisplayLG)
                     .tracking(-0.5)
                     .foregroundStyle(Color.zenTextPrimary)
 
                 if let subtitle {
                     Text(subtitle)
-                        .font(.zenBody)
+                        .font(.zenTextBase)
                         .foregroundStyle(Color.zenTextMuted)
                 }
             }

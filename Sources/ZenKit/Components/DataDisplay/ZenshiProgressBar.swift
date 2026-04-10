@@ -30,14 +30,14 @@ public struct ZenProgressBar: View {
     VStack(alignment: .leading, spacing: ZenSpacing.medium) {
         VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
             Text("Uploading")
-                .font(.zenLabel)
+                .font(.zenTextSM.weight(.medium))
                 .foregroundStyle(Color.zenTextPrimary)
             ZenProgressBar(progress: 0.35)
         }
 
         VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
             Text("Sync complete")
-                .font(.zenLabel)
+                .font(.zenTextSM.weight(.medium))
                 .foregroundStyle(Color.zenTextPrimary)
             ZenProgressBar(progress: 1)
         }

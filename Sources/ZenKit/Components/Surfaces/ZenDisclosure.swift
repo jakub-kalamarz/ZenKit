@@ -44,12 +44,12 @@ public struct ZenDisclosure<Content: View>: View {
 
                     VStack(alignment: .leading, spacing: 4) {
                         Text(title)
-                            .font(.zenLabel)
+                            .font(.zenTextSM.weight(.medium))
                             .foregroundStyle(Color.zenTextPrimary)
 
                         if let subtitle {
                             Text(subtitle)
-                                .font(.zenCaption)
+                                .font(.zenTextXS)
                                 .foregroundStyle(Color.zenTextMuted)
                         }
                     }
@@ -92,7 +92,7 @@ public struct ZenDisclosure<Content: View>: View {
         ZenDisclosure("Advanced Settings", leadingIcon: .system("gearshape")) {
             VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
                 Text("Configure advanced options below.")
-                    .font(.zenCaption)
+                    .font(.zenTextXS)
                     .foregroundStyle(Color.zenTextMuted)
             }
         }
@@ -100,10 +100,10 @@ public struct ZenDisclosure<Content: View>: View {
         ZenDisclosure("Notifications", subtitle: "Email and push", leadingIcon: .system("bell"), isExpanded: true) {
             VStack(spacing: ZenSpacing.xSmall) {
                 Text("Push notifications are enabled.")
-                    .font(.zenCaption)
+                    .font(.zenTextXS)
                     .foregroundStyle(Color.zenTextMuted)
                 Text("Email digest: weekly")
-                    .font(.zenCaption)
+                    .font(.zenTextXS)
                     .foregroundStyle(Color.zenTextMuted)
             }
             .frame(maxWidth: .infinity, alignment: .leading)

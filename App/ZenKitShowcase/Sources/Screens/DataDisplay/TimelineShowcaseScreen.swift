@@ -94,7 +94,7 @@ struct TimelineShowcaseScreen: View {
         } content: {
             ZenTimelineContent {
                 Text(detail)
-                    .font(.zenCaption)
+                    .font(.zenTextXS)
                     .foregroundStyle(Color.zenTextMuted)
             }
         }
@@ -111,7 +111,7 @@ struct TimelineShowcaseScreen: View {
         ZenTimelineItem(showsSeparator: showsSeparator) {
             ZenTimelineIndicator {
                 Text(step)
-                    .font(.zenLabel)
+                    .font(.zenTextSM.weight(.medium))
             }
         } header: {
             ZenTimelineHeader {
@@ -124,7 +124,7 @@ struct TimelineShowcaseScreen: View {
                     VStack(alignment: .leading, spacing: ZenSpacing.small) {
                         ZenBadge(badge.label, tone: badge.tone)
                         Text(summary)
-                            .font(.zenCaption)
+                            .font(.zenTextXS)
                             .foregroundStyle(Color.zenTextMuted)
                     }
                 }

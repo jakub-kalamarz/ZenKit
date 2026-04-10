@@ -36,12 +36,12 @@ public struct ZenStepper: View {
         HStack(spacing: ZenSpacing.small) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.zenLabel)
+                    .font(.zenTextSM.weight(.medium))
                     .foregroundStyle(Color.zenTextPrimary)
 
                 if let subtitle {
                     Text(subtitle)
-                        .font(.zenCaption)
+                        .font(.zenTextXS)
                         .foregroundStyle(Color.zenTextMuted)
                 }
             }
@@ -52,7 +52,7 @@ public struct ZenStepper: View {
                 stepButton(systemName: "minus", action: decrement, disabled: value <= range.lowerBound, cornerRadius: buttonRadius)
 
                 Text(format(value))
-                    .font(.zenLabel)
+                    .font(.zenTextSM.weight(.medium))
                     .foregroundStyle(Color.zenTextPrimary)
                     .monospacedDigit()
                     .frame(minWidth: 40, alignment: .center)

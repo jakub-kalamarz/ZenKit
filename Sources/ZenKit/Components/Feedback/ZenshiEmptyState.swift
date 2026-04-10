@@ -77,7 +77,7 @@ public struct ZenEmptyTitle<Content: View>: View {
 
     public var body: some View {
         content()
-            .font(.zenTitle)
+            .font(.zenDisplayXS)
             .foregroundStyle(Color.zenTextPrimary)
             .multilineTextAlignment(.center)
     }
@@ -92,7 +92,7 @@ public struct ZenEmptyDescription<Content: View>: View {
 
     public var body: some View {
         content()
-            .font(.zenCaption)
+            .font(.zenTextXS)
             .foregroundStyle(Color.zenTextMuted)
             .multilineTextAlignment(.center)
     }

@@ -10,13 +10,13 @@ struct ThemePreviewScreen: View {
             ) {
                 VStack(alignment: .leading, spacing: ZenSpacing.small) {
                     Text("Density: \(description(for: ZenTheme.current.density))")
-                        .font(.zenBody)
+                        .font(.zenTextBase)
                         .foregroundStyle(Color.zenTextPrimary)
                     Text("Corner style: \(description(for: ZenTheme.current.cornerStyle))")
-                        .font(.zenBody)
+                        .font(.zenTextBase)
                         .foregroundStyle(Color.zenTextPrimary)
                     Text("Motion: \(description(for: ZenTheme.current.motion))")
-                        .font(.zenBody)
+                        .font(.zenTextBase)
                         .foregroundStyle(Color.zenTextPrimary)
                 }
             }
@@ -31,7 +31,36 @@ struct ThemePreviewScreen: View {
                     tokenSwatch(title: "Muted", color: .zenSurfaceMuted)
                 }
             }
+
+            ZenCard(
+                title: "Typography Scale",
+                subtitle: "Current text and display tokens"
+            ) {
+                VStack(alignment: .leading, spacing: ZenSpacing.small) {
+                    ForEach(scaleRows, id: \.name) { row in
+                        Text(row.name)
+                            .font(row.font)
+                            .foregroundStyle(Color.zenTextPrimary)
+                    }
+                }
+            }
         }
+    }
+
+    private var scaleRows: [(name: String, font: Font)] {
+        [
+            ("Text XS", .zenTextXS),
+            ("Text SM", .zenTextSM),
+            ("Text Base", .zenTextBase),
+            ("Text LG", .zenTextLG),
+            ("Text XL", .zenTextXL),
+            ("Display XS", .zenDisplayXS),
+            ("Display SM", .zenDisplaySM),
+            ("Display MD", .zenDisplayMD),
+            ("Display LG", .zenDisplayLG),
+            ("Display XL", .zenDisplayXL),
+            ("Display 2XL", .zenDisplay2XL),
+        ]
     }
 
     private func tokenSwatch(title: String, color: Color) -> some View {
@@ -45,7 +74,7 @@ struct ThemePreviewScreen: View {
                 )
 
             Text(title)
-                .font(.zenCaption)
+                .font(.zenTextXS)
                 .foregroundStyle(Color.zenTextMuted)
         }
         .frame(maxWidth: .infinity, alignment: .leading)

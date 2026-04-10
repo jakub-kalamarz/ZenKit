@@ -30,7 +30,7 @@ struct ColorSwatchShowcaseScreen: View {
                             .fill(accentColor)
                             .frame(width: 20, height: 20)
                         Text("Selected accent color")
-                            .font(.zenCaption)
+                            .font(.zenTextXS)
                             .foregroundStyle(Color.zenTextMuted)
                     }
                 }

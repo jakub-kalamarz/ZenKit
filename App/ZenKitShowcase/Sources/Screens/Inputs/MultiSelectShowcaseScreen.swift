@@ -33,7 +33,7 @@ struct MultiSelectShowcaseScreen: View {
                     }
 
                     Text("Selected: \(selectedColumns.map(\.rawValue).sorted().joined(separator: ", "))")
-                        .font(.zenCaption)
+                        .font(.zenTextXS)
                         .foregroundStyle(Color.zenTextMuted)
                 }
             }
@@ -50,7 +50,7 @@ struct MultiSelectShowcaseScreen: View {
                     }
 
                     Text("Applied: \(selectedFilters.map(\.rawValue).sorted().joined(separator: ", "))")
-                        .font(.zenCaption)
+                        .font(.zenTextXS)
                         .foregroundStyle(Color.zenTextMuted)
                 }
             }

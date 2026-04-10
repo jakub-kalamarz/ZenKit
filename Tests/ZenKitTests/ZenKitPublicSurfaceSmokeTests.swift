@@ -516,9 +516,9 @@ struct ZenKitPublicSurfaceSmokeTests {
                 header: {
                     VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
                         Text("Custom intro")
-                            .font(.zenTitle)
+                            .font(.zenDisplayXS)
                         Text("Summary below the custom bar")
-                            .font(.zenCaption)
+                            .font(.zenTextXS)
                     }
                 },
                 toolbarLeading: {
@@ -567,9 +567,9 @@ struct ZenKitPublicSurfaceSmokeTests {
                 header: {
                     VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
                         Text("Weekly summary")
-                            .font(.zenTitle)
+                            .font(.zenDisplayXS)
                         Text("Body content should remain separate from native navigation")
-                            .font(.zenCaption)
+                            .font(.zenTextXS)
                     }
                 }
             ) {
@@ -697,7 +697,7 @@ struct ZenKitPublicSurfaceSmokeTests {
     func zenScreenSupportsPlainScrollContainerWithoutNavigationTitle() {
         let view = ZenScreen(header: {
             Text("Standalone intro")
-                .font(.zenTitle)
+                .font(.zenDisplayXS)
         }) {
             ZenStatusBanner(message: "Ready")
         }
@@ -713,7 +713,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                 navigationTitle: ZenScreenTitle("Dashboard"),
                 header: {
                     Text("Pinned header")
-                        .font(.zenTitle)
+                        .font(.zenDisplayXS)
                 }
             ) {
                 VStack(alignment: .leading, spacing: ZenSpacing.small) {
@@ -828,7 +828,7 @@ struct ZenKitPublicSurfaceSmokeTests {
     @Test
     func inlineActionResolvesAccentCaptionStylingFromTheme() {
         let style = ZenInlineActionResolvedStyle()
-        let caption = ZenTheme.current.resolvedTypography.fontSpec(for: .caption)
+        let caption = ZenTheme.current.resolvedTypography.fontSpec(for: .textXS)
 
         #expect(style.fontSpec.familyRole == caption.familyRole)
         #expect(style.fontSpec.size == caption.size)

@@ -134,7 +134,7 @@ public struct ZenTrendChartCard: View {
         VStack(alignment: .leading, spacing: ZenSpacing.small) {
             if let title {
                 Text(title)
-                    .font(.zenLabel)
+                    .font(.zenTextSM.weight(.medium))
                     .foregroundStyle(Color.zenTextPrimary)
             }
 
@@ -162,7 +162,7 @@ public struct ZenTrendChartCard: View {
                     AxisTick(stroke: StrokeStyle(lineWidth: Self.tickLineWidth))
                         .foregroundStyle(Color.zenBorder.opacity(Self.tickLineOpacity))
                     AxisValueLabel(format: .dateTime.month(.abbreviated).day(), centered: false)
-                        .font(.zenCaption)
+                        .font(.zenTextXS)
                         .foregroundStyle(Color.zenTextMuted)
                 }
             }
@@ -179,7 +179,7 @@ public struct ZenTrendChartCard: View {
                             .foregroundStyle(Color.zenBorder.opacity(Self.tickLineOpacity))
                         AxisValueLabel {
                             Text(label)
-                                .font(.zenCaption)
+                                .font(.zenTextXS)
                                 .foregroundStyle(Color.zenTextMuted)
                         }
                     }
@@ -197,7 +197,7 @@ public struct ZenTrendChartCard: View {
                             .fill(item.color)
                             .frame(width: 7, height: 7)
                         Text(item.title)
-                            .font(.zenCaption)
+                            .font(.zenTextXS)
                             .foregroundStyle(Color.zenTextMuted)
                     }
                 }

@@ -22,21 +22,21 @@ struct RatingShowcaseScreen: View {
                         ZenRating(value: 5)
                         Spacer()
                         Text("Excellent")
-                            .font(.zenCaption)
+                            .font(.zenTextXS)
                             .foregroundStyle(Color.zenTextMuted)
                     }
                     HStack {
                         ZenRating(value: 3)
                         Spacer()
                         Text("Average")
-                            .font(.zenCaption)
+                            .font(.zenTextXS)
                             .foregroundStyle(Color.zenTextMuted)
                     }
                     HStack {
                         ZenRating(value: 1)
                         Spacer()
                         Text("Poor")
-                            .font(.zenCaption)
+                            .font(.zenTextXS)
                             .foregroundStyle(Color.zenTextMuted)
                     }
                 }

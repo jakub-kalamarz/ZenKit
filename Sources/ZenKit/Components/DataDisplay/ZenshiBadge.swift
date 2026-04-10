@@ -214,7 +214,7 @@ public struct ZenBadge: View {
             Text(title)
                 .lineLimit(1)
         }
-        .font(.zenCaption.weight(.semibold))
+        .font(.zenTextXS.weight(.semibold))
         .foregroundStyle(foregroundColor)
         .fixedSize(horizontal: true, vertical: false)
         .padding(.leading, ZenBadgeStyleMetrics.horizontalPadding)

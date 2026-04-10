@@ -8,7 +8,7 @@ struct DisclosureShowcaseScreen: View {
                 VStack(spacing: ZenSpacing.small) {
                     ZenDisclosure("Getting Started") {
                         Text("Follow the quick-start guide to configure your workspace and invite your first team member.")
-                            .font(.zenCaption)
+                            .font(.zenTextXS)
                             .foregroundStyle(Color.zenTextMuted)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
@@ -16,10 +16,10 @@ struct DisclosureShowcaseScreen: View {
                     ZenDisclosure("Billing & Plans", isExpanded: true) {
                         VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
                             Text("Current plan: Pro")
-                                .font(.zenLabel)
+                                .font(.zenTextSM.weight(.medium))
                                 .foregroundStyle(Color.zenTextPrimary)
                             Text("Renews on April 1, 2026 · $29/month")
-                                .font(.zenCaption)
+                                .font(.zenTextXS)
                                 .foregroundStyle(Color.zenTextMuted)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -36,10 +36,10 @@ struct DisclosureShowcaseScreen: View {
                     ) {
                         VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
                             Text("API access: Enabled")
-                                .font(.zenCaption)
+                                .font(.zenTextXS)
                                 .foregroundStyle(Color.zenTextMuted)
                             Text("Debug mode: Disabled")
-                                .font(.zenCaption)
+                                .font(.zenTextXS)
                                 .foregroundStyle(Color.zenTextMuted)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -51,7 +51,7 @@ struct DisclosureShowcaseScreen: View {
                         leadingIcon: .system("bell")
                     ) {
                         Text("All notifications are enabled. Tap to manage channels.")
-                            .font(.zenCaption)
+                            .font(.zenTextXS)
                             .foregroundStyle(Color.zenTextMuted)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }

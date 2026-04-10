@@ -36,12 +36,12 @@ public struct ZenSheetContainer<Content: View, Footer: View>: View {
         VStack(alignment: .leading, spacing: ZenSpacing.medium) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.zenTitle)
+                    .font(.zenDisplayXS)
                     .foregroundStyle(Color.zenTextPrimary)
 
                 if let subtitle {
                     Text(subtitle)
-                        .font(.zenCaption)
+                        .font(.zenTextXS)
                         .foregroundStyle(Color.zenTextMuted)
                 }
             }

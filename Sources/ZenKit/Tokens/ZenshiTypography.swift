@@ -1,3 +1,4 @@
+import Foundation
 import SwiftUI
 
 #if canImport(AppKit)
@@ -8,18 +9,21 @@ import UIKit
 
 public enum ZenTypographyFamilyRole: CaseIterable, Sendable {
     case display
-    case body
-    case code
+    case text
 }
 
-public enum ZenTypographyRole: Sendable {
-    case heading
-    case title
-    case body
-    case label
-    case caption
-    case button
-    case mono
+public enum ZenTypographyToken: String, CaseIterable, Sendable {
+    case textXS
+    case textSM
+    case textBase
+    case textLG
+    case textXL
+    case displayXS
+    case displaySM
+    case displayMD
+    case displayLG
+    case displayXL
+    case display2XL
 }
 
 public enum ZenSystemFontDesign: Sendable, Equatable {
@@ -99,6 +103,19 @@ public enum ZenFontWeight: Sendable, Equatable {
             return .semibold
         }
     }
+
+#if canImport(UIKit)
+    fileprivate var uiKitWeight: UIFont.Weight {
+        switch self {
+        case .regular:
+            return .regular
+        case .medium:
+            return .medium
+        case .semibold:
+            return .semibold
+        }
+    }
+#endif
 }
 
 public struct ZenTypographyFamily: Equatable, Sendable {
@@ -118,35 +135,52 @@ public struct ZenTypographyFamily: Equatable, Sendable {
 }
 
 public struct ZenTypography: Equatable, Sendable {
-    public static let `default` = ZenTypography(
-        display: .init(source: .custom(.bricolageGrotesque)),
-        body: .init(source: .custom(.bricolageGrotesque)),
-        code: .init(source: .system(.monospaced))
-    )
+    public static var `default`: ZenTypography {
+        ZenFontRegistry.registeredTypography() ?? ZenTypography(
+            display: .init(source: .system(.default)),
+            text: .init(source: .system(.default))
+        )
+    }
 
     public let display: ZenTypographyFamily
-    public let body: ZenTypographyFamily
-    public let code: ZenTypographyFamily
+    public let text: ZenTypographyFamily
 
     public init(
         display: ZenTypographyFamily = .init(source: .system(.default)),
-        body: ZenTypographyFamily = .init(source: .system(.default)),
-        code: ZenTypographyFamily = .init(source: .system(.monospaced))
+        text: ZenTypographyFamily = .init(source: .system(.default))
     ) {
         self.display = display
-        self.body = body
-        self.code = code
+        self.text = text
     }
 
     func family(for role: ZenTypographyFamilyRole) -> ZenTypographyFamily {
         switch role {
         case .display:
             return display
-        case .body:
-            return body
-        case .code:
-            return code
+        case .text:
+            return text
         }
+    }
+}
+
+public enum ZenFontRegistry {
+    private static let lock = NSLock()
+    private static var typography: ZenTypography?
+
+    public static func register(display: ZenTypographyFamily, text: ZenTypographyFamily) {
+        lock.withLock {
+            typography = ZenTypography(display: display, text: text)
+        }
+    }
+
+    public static func clear() {
+        lock.withLock {
+            typography = nil
+        }
+    }
+
+    static func registeredTypography() -> ZenTypography? {
+        lock.withLock { typography }
     }
 }
 
@@ -187,6 +221,21 @@ public struct ZenResolvedFontSpec: Equatable, Sendable {
         }
     }
 
+#if canImport(UIKit)
+    var uiFont: UIFont {
+        switch resolvedSource {
+        case .system:
+            return .systemFont(ofSize: size, weight: weight.uiKitWeight)
+        case .custom:
+            if let resolvedFontName, let customFont = UIFont(name: resolvedFontName, size: size) {
+                return customFont
+            }
+
+            return .systemFont(ofSize: size, weight: weight.uiKitWeight)
+        }
+    }
+#endif
+
     func with(size: CGFloat, weight: ZenFontWeight? = nil) -> ZenResolvedFontSpec {
         let resolvedWeight = weight ?? self.weight
         let resolvedFontName = {
@@ -210,64 +259,88 @@ public struct ZenResolvedFontSpec: Equatable, Sendable {
 }
 
 public struct ZenResolvedTypography: Equatable, Sendable {
-    public let heading: ZenResolvedFontSpec
-    public let title: ZenResolvedFontSpec
-    public let body: ZenResolvedFontSpec
-    public let label: ZenResolvedFontSpec
-    public let caption: ZenResolvedFontSpec
-    public let button: ZenResolvedFontSpec
-    public let mono: ZenResolvedFontSpec
+    public let textXS: ZenResolvedFontSpec
+    public let textSM: ZenResolvedFontSpec
+    public let textBase: ZenResolvedFontSpec
+    public let textLG: ZenResolvedFontSpec
+    public let textXL: ZenResolvedFontSpec
+    public let displayXS: ZenResolvedFontSpec
+    public let displaySM: ZenResolvedFontSpec
+    public let displayMD: ZenResolvedFontSpec
+    public let displayLG: ZenResolvedFontSpec
+    public let displayXL: ZenResolvedFontSpec
+    public let display2XL: ZenResolvedFontSpec
 
     public init(
-        heading: ZenResolvedFontSpec,
-        title: ZenResolvedFontSpec,
-        body: ZenResolvedFontSpec,
-        label: ZenResolvedFontSpec,
-        caption: ZenResolvedFontSpec,
-        button: ZenResolvedFontSpec,
-        mono: ZenResolvedFontSpec
+        textXS: ZenResolvedFontSpec,
+        textSM: ZenResolvedFontSpec,
+        textBase: ZenResolvedFontSpec,
+        textLG: ZenResolvedFontSpec,
+        textXL: ZenResolvedFontSpec,
+        displayXS: ZenResolvedFontSpec,
+        displaySM: ZenResolvedFontSpec,
+        displayMD: ZenResolvedFontSpec,
+        displayLG: ZenResolvedFontSpec,
+        displayXL: ZenResolvedFontSpec,
+        display2XL: ZenResolvedFontSpec
     ) {
-        self.heading = heading
-        self.title = title
-        self.body = body
-        self.label = label
-        self.caption = caption
-        self.button = button
-        self.mono = mono
+        self.textXS = textXS
+        self.textSM = textSM
+        self.textBase = textBase
+        self.textLG = textLG
+        self.textXL = textXL
+        self.displayXS = displayXS
+        self.displaySM = displaySM
+        self.displayMD = displayMD
+        self.displayLG = displayLG
+        self.displayXL = displayXL
+        self.display2XL = display2XL
     }
 
-    public func fontSpec(for role: ZenTypographyRole) -> ZenResolvedFontSpec {
+    public func fontSpec(for role: ZenTypographyToken) -> ZenResolvedFontSpec {
         switch role {
-        case .heading:
-            return heading
-        case .title:
-            return title
-        case .body:
-            return body
-        case .label:
-            return label
-        case .caption:
-            return caption
-        case .button:
-            return button
-        case .mono:
-            return mono
+        case .textXS:
+            return textXS
+        case .textSM:
+            return textSM
+        case .textBase:
+            return textBase
+        case .textLG:
+            return textLG
+        case .textXL:
+            return textXL
+        case .displayXS:
+            return displayXS
+        case .displaySM:
+            return displaySM
+        case .displayMD:
+            return displayMD
+        case .displayLG:
+            return displayLG
+        case .displayXL:
+            return displayXL
+        case .display2XL:
+            return display2XL
         }
     }
 
-    public func font(for role: ZenTypographyRole) -> Font {
+    public func font(for role: ZenTypographyToken) -> Font {
         fontSpec(for: role).font
     }
 }
 
 public extension Font {
-    static var zenHeading: Font { ZenTheme.current.resolvedTypography.font(for: .heading) }
-    static var zenTitle: Font { ZenTheme.current.resolvedTypography.font(for: .title) }
-    static var zenBody: Font { ZenTheme.current.resolvedTypography.font(for: .body) }
-    static var zenLabel: Font { ZenTheme.current.resolvedTypography.font(for: .label) }
-    static var zenCaption: Font { ZenTheme.current.resolvedTypography.font(for: .caption) }
-    static var zenButton: Font { ZenTheme.current.resolvedTypography.font(for: .button) }
-    static var zenMono: Font { ZenTheme.current.resolvedTypography.font(for: .mono) }
+    static var zenTextXS: Font { ZenTheme.current.resolvedTypography.font(for: .textXS) }
+    static var zenTextSM: Font { ZenTheme.current.resolvedTypography.font(for: .textSM) }
+    static var zenTextBase: Font { ZenTheme.current.resolvedTypography.font(for: .textBase) }
+    static var zenTextLG: Font { ZenTheme.current.resolvedTypography.font(for: .textLG) }
+    static var zenTextXL: Font { ZenTheme.current.resolvedTypography.font(for: .textXL) }
+    static var zenDisplayXS: Font { ZenTheme.current.resolvedTypography.font(for: .displayXS) }
+    static var zenDisplaySM: Font { ZenTheme.current.resolvedTypography.font(for: .displaySM) }
+    static var zenDisplayMD: Font { ZenTheme.current.resolvedTypography.font(for: .displayMD) }
+    static var zenDisplayLG: Font { ZenTheme.current.resolvedTypography.font(for: .displayLG) }
+    static var zenDisplayXL: Font { ZenTheme.current.resolvedTypography.font(for: .displayXL) }
+    static var zenDisplay2XL: Font { ZenTheme.current.resolvedTypography.font(for: .display2XL) }
 }
 
 extension ZenTypographyFamily {
@@ -295,4 +368,12 @@ private func isAvailableCustomFont(named name: String) -> Bool {
 #else
     false
 #endif
+}
+
+private extension NSLock {
+    func withLock<T>(_ body: () -> T) -> T {
+        lock()
+        defer { unlock() }
+        return body()
+    }
 }

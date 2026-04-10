@@ -21,19 +21,19 @@ public struct ZenStatRow: View {
                 .frame(width: 38, height: 38)
                 .overlay(
                     Text(String(title.prefix(1)).uppercased())
-                        .font(.zenLabel)
+                        .font(.zenTextSM.weight(.medium))
                         .foregroundStyle(Color.zenTextPrimary)
                 )
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.zenLabel)
+                    .font(.zenTextSM.weight(.medium))
                     .foregroundStyle(Color.zenTextPrimary)
                     .lineLimit(1)
 
                 if let subtitle {
                     Text(subtitle)
-                        .font(.zenCaption)
+                        .font(.zenTextXS)
                         .foregroundStyle(Color.zenTextMuted)
                         .lineLimit(1)
                 }
@@ -44,10 +44,10 @@ public struct ZenStatRow: View {
             ForEach(Array(metrics.prefix(2).enumerated()), id: \.offset) { _, metric in
                 VStack(alignment: .trailing, spacing: 2) {
                     Text(metric.value)
-                        .font(.zenLabel)
+                        .font(.zenTextSM.weight(.medium))
                         .foregroundStyle(metric.tint ?? Color.zenTextPrimary)
                     Text(metric.label)
-                        .font(.zenCaption)
+                        .font(.zenTextXS)
                         .foregroundStyle(Color.zenTextMuted)
                 }
             }

@@ -33,10 +33,10 @@ struct AvatarShowcaseScreen: View {
                             ZenAvatar(name: name, imageURL: nil, size: 36)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(name)
-                                    .font(.zenLabel)
+                                    .font(.zenTextSM.weight(.medium))
                                     .foregroundStyle(Color.zenTextPrimary)
                                 Text(email)
-                                    .font(.zenCaption)
+                                    .font(.zenTextXS)
                                     .foregroundStyle(Color.zenTextMuted)
                             }
                             Spacer()

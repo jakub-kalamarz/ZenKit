@@ -66,15 +66,15 @@ struct ZenKitAPIConventionsTests {
 
     @Test
     func themeExposesConfigurableStylingAxes() {
+        ZenFontRegistry.clear()
         let theme = ZenTheme()
 
         #expect(theme.density == .comfortable)
         #expect(theme.cornerStyle == .rounded)
         #expect(theme.motion == .standard)
         #expect(theme.colors == nil)
-        #expect(theme.typography.display.source == .custom(.bricolageGrotesque))
-        #expect(theme.typography.body.source == .custom(.bricolageGrotesque))
-        #expect(theme.typography.code.source == .system(.monospaced))
+        #expect(theme.typography.display.source == .system(.default))
+        #expect(theme.typography.text.source == .system(.default))
     }
 
     @Test
@@ -157,10 +157,10 @@ struct ZenKitAPIConventionsTests {
     }
 
     @Test
-    func typographyFamilyRolesExposeDisplayBodyAndCodeCases() {
-        let roles: [ZenTypographyFamilyRole] = [.display, .body, .code]
+    func typographyFamilyRolesExposeDisplayAndTextCases() {
+        let roles: [ZenTypographyFamilyRole] = [.display, .text]
 
-        #expect(roles.count == 3)
+        #expect(roles.count == 2)
     }
 
     @Test

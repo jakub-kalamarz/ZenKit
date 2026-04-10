@@ -9,7 +9,7 @@ public struct ZenFieldLabel: View {
 
     public var body: some View {
         Text(text)
-            .font(.zenLabel)
+            .font(.zenTextSM.weight(.medium))
             .foregroundStyle(Color.zenTextPrimary)
     }
 }
@@ -25,7 +25,7 @@ public struct ZenFieldMessage: View {
 
     public var body: some View {
         Text(text)
-            .font(.zenCaption)
+            .font(.zenTextXS)
             .foregroundStyle(messageColor)
     }
 
@@ -111,13 +111,13 @@ public struct ZenFieldSection<Content: View>: View {
                 VStack(alignment: .leading, spacing: 4) {
                     if let title {
                         Text(title)
-                            .font(.zenTitle)
+                            .font(.zenDisplayXS)
                             .foregroundStyle(Color.zenTextPrimary)
                     }
 
                     if let subtitle {
                         Text(subtitle)
-                            .font(.zenCaption)
+                            .font(.zenTextXS)
                             .foregroundStyle(Color.zenTextMuted)
                     }
                 }

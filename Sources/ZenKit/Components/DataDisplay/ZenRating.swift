@@ -67,7 +67,7 @@ public struct ZenRatingRow: View {
 
         HStack(spacing: ZenSpacing.small) {
             Text(title)
-                .font(.zenLabel)
+                .font(.zenTextSM.weight(.medium))
                 .foregroundStyle(Color.zenTextPrimary)
 
             Spacer(minLength: ZenSpacing.small)
@@ -94,14 +94,14 @@ private struct ZenRatingPreview: View {
         VStack(spacing: ZenSpacing.medium) {
             VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
                 Text("Interactive Rating")
-                    .font(.zenCaption)
+                    .font(.zenTextXS)
                     .foregroundStyle(Color.zenTextMuted)
                 ZenRating(value: $interactiveRating)
             }
 
             VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
                 Text("Display-only Rating")
-                    .font(.zenCaption)
+                    .font(.zenTextXS)
                     .foregroundStyle(Color.zenTextMuted)
                 ZenRating(value: 2)
             }

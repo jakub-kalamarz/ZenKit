@@ -91,7 +91,7 @@ public struct ZenMultiSelect<Option, OptionLabel: View, SummaryLabel: View>: Vie
 
         if selectedOptions.isEmpty {
             Text(placeholder)
-                .font(.zenLabel)
+                .font(.zenTextSM.weight(.medium))
                 .foregroundStyle(Color.zenTextMuted)
         } else {
             summaryLabel(selectedOptions)

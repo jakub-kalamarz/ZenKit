@@ -104,16 +104,13 @@ struct ZenKitThemeTests {
     }
 
     @Test
-    func defaultTypographyMapsDisplayBodyAndCodeFamiliesToRoles() {
+    func defaultTypographyMapsDisplayAndTextFamiliesToScale() {
         let typography = ZenTheme.default.resolvedTypography
 
-        #expect(typography.fontSpec(for: .heading).familyRole == .display)
-        #expect(typography.fontSpec(for: .title).familyRole == .display)
-        #expect(typography.fontSpec(for: .body).familyRole == .body)
-        #expect(typography.fontSpec(for: .label).familyRole == .body)
-        #expect(typography.fontSpec(for: .caption).familyRole == .body)
-        #expect(typography.fontSpec(for: .button).familyRole == .body)
-        #expect(typography.fontSpec(for: .mono).familyRole == .code)
+        #expect(typography.fontSpec(for: .displayXS).familyRole == .display)
+        #expect(typography.fontSpec(for: .display2XL).familyRole == .display)
+        #expect(typography.fontSpec(for: .textXS).familyRole == .text)
+        #expect(typography.fontSpec(for: .textXL).familyRole == .text)
     }
 
     @Test
@@ -121,58 +118,68 @@ struct ZenKitThemeTests {
         let comfortable = ZenTheme.default.resolvedTypography
         let compact = ZenTheme(density: .compact).resolvedTypography
 
-        #expect(compact.fontSpec(for: .title).familyRole == comfortable.fontSpec(for: .title).familyRole)
-        #expect(compact.fontSpec(for: .button).familyRole == comfortable.fontSpec(for: .button).familyRole)
-        #expect(compact.fontSpec(for: .mono).familyRole == .code)
+        #expect(compact.fontSpec(for: .displayXS).familyRole == comfortable.fontSpec(for: .displayXS).familyRole)
+        #expect(compact.fontSpec(for: .textSM).familyRole == comfortable.fontSpec(for: .textSM).familyRole)
+        #expect(compact.fontSpec(for: .textSM).familyRole == .text)
     }
 
     @Test
-    func customTypographyFamiliesFlowIntoResolvedRoleSpecs() {
+    func customTypographyFamiliesFlowIntoResolvedScaleSpecs() {
         let displayFamily = ZenFontFamily(
             regular: "InstrumentSerif-Regular",
             semibold: "InstrumentSerif-SemiBold"
         )
-        let codeFamily = ZenFontFamily(regular: "JetBrainsMono-Regular")
         let theme = ZenTheme(
             typography: ZenTypography(
                 display: .init(source: .custom(displayFamily)),
-                body: .init(source: .system(.serif)),
-                code: .init(source: .custom(codeFamily), fallback: .monospaced)
+                text: .init(source: .system(.serif))
             )
         )
         let typography = theme.resolvedTypography
 
-        #expect(typography.fontSpec(for: .heading).source == .custom(displayFamily))
-        #expect(typography.fontSpec(for: .body).source == .system(.serif))
-        #expect(typography.fontSpec(for: .mono).source == .custom(codeFamily))
+        #expect(typography.fontSpec(for: .displayLG).source == .custom(displayFamily))
+        #expect(typography.fontSpec(for: .textBase).source == .system(.serif))
     }
 
     @Test
     func missingCustomFontsFallBackToSystemDesignPerFamily() {
         let missingDisplay = ZenFontFamily(regular: "MissingDisplay")
-        let missingBody = ZenFontFamily(regular: "MissingBody")
-        let missingCode = ZenFontFamily(regular: "MissingCode")
+        let missingText = ZenFontFamily(regular: "MissingText")
         let typography = ZenTheme(
             typography: ZenTypography(
                 display: .init(source: .custom(missingDisplay)),
-                body: .init(source: .custom(missingBody)),
-                code: .init(source: .custom(missingCode), fallback: .monospaced)
+                text: .init(source: .custom(missingText))
             )
         ).resolvedTypography
 
-        #expect(typography.fontSpec(for: .heading).resolvedSource == .system(.default))
-        #expect(typography.fontSpec(for: .body).resolvedSource == .system(.default))
-        #expect(typography.fontSpec(for: .mono).resolvedSource == .system(.monospaced))
+        #expect(typography.fontSpec(for: .displayLG).resolvedSource == .system(.default))
+        #expect(typography.fontSpec(for: .textBase).resolvedSource == .system(.default))
     }
 
     @Test
-    func defaultTypographyUsesBricolageGrotesqueFamilyForDisplayAndBody() {
+    func fontRegistryInjectsDisplayAndTextFamiliesIntoDefaults() {
+        ZenFontRegistry.clear()
+        defer { ZenFontRegistry.clear() }
+
+        let displayFamily = ZenFontFamily(
+            regular: "InstrumentSerif-Regular",
+            semibold: "InstrumentSerif-SemiBold"
+        )
+        let textFamily = ZenFontFamily(
+            regular: "Inter-Regular",
+            medium: "Inter-Medium",
+            semibold: "Inter-SemiBold"
+        )
+        ZenFontRegistry.register(
+            display: .init(source: .custom(displayFamily)),
+            text: .init(source: .custom(textFamily))
+        )
+
         let typography = ZenTheme.default.resolvedTypography
 
-        #expect(typography.fontSpec(for: .heading).source == .custom(.bricolageGrotesque))
-        #expect(typography.fontSpec(for: .body).source == .custom(.bricolageGrotesque))
-        #expect(typography.fontSpec(for: .button).source == .custom(.bricolageGrotesque))
-        #expect(typography.fontSpec(for: .button).weight == .medium)
+        #expect(typography.fontSpec(for: .displayLG).source == .custom(displayFamily))
+        #expect(typography.fontSpec(for: .textBase).source == .custom(textFamily))
+        #expect(typography.fontSpec(for: .displayLG).weight == .semibold)
     }
 
     @Test

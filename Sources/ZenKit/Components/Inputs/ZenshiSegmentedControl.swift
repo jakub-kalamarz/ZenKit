@@ -34,7 +34,7 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
         return VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
             if let title {
                 Text(title)
-                    .font(.zenCaption.weight(.semibold))
+                    .font(.zenTextXS.weight(.semibold))
                     .foregroundStyle(Color.zenTextMuted)
             }
 
@@ -75,7 +75,7 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
         } label: {
             label(value, isSelected)
                 .lineLimit(1)
-                .font(.zenLabel)
+                .font(.zenTextSM.weight(.medium))
                 .foregroundStyle(isSelected ? Color.zenPrimaryForeground : (isDisabled ? Color.zenTextMuted.opacity(0.5) : Color.zenTextPrimary))
                 .frame(maxWidth: .infinity, minHeight: metrics.controlHeightSmall)
                 .padding(.horizontal, ZenSpacing.small)

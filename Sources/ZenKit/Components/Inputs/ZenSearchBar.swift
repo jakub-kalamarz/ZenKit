@@ -22,7 +22,7 @@ public struct ZenSearchBar: View {
                 .foregroundStyle(Color.zenTextMuted)
 
             TextField(prompt, text: $text)
-                .font(.zenBody)
+                .font(.zenTextBase)
                 .foregroundStyle(Color.zenTextPrimary)
                 .textFieldStyle(.plain)
                 .focused($isFocused)
@@ -67,7 +67,7 @@ private struct ZenSearchBarPreview: View {
             ZenSearchBar(text: $query, prompt: "Search members…")
             if !query.isEmpty {
                 Text("Searching for: \(query)")
-                    .font(.zenCaption)
+                    .font(.zenTextXS)
                     .foregroundStyle(Color.zenTextMuted)
             }
         }
