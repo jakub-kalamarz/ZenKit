@@ -175,11 +175,11 @@ struct ZenKitButtonTests {
     }
 
     @Test
-    func fieldInputsShareMutedControlChrome() {
+    func fieldInputsShareOutlineControlChrome() {
         let fieldStyle = ZenControlSurfaceStyle.field()
         let colors = ZenTheme.current.resolvedColors
 
-        #expect(fieldStyle.backgroundToken == colors.surfaceMuted)
+        #expect(fieldStyle.backgroundToken == colors.surface)
         #expect(fieldStyle.borderToken == colors.border)
         #expect(fieldStyle.borderWidth == 1)
     }

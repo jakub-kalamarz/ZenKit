@@ -22,7 +22,7 @@ struct ZenControlSurfaceStyle {
         let colors = theme.resolvedColors
 
         return ZenControlSurfaceStyle(
-            backgroundToken: colors.surfaceMuted,
+            backgroundToken: colors.surface,
             borderToken: colors.border,
             borderWidth: 1
         )
