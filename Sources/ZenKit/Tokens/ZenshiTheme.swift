@@ -135,6 +135,7 @@ public struct ZenTheme: Equatable, Sendable {
             source: family.source,
             resolvedSource: resolved.source,
             resolvedFontName: resolved.resolvedFontName,
+            resolvedVariableAxes: resolved.resolvedVariableAxes,
             size: size,
             weight: weight
         )

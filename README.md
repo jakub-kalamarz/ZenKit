@@ -1,29 +1,29 @@
 # ZenKit
 
-ZenKit to biblioteka nowoczesnych, reużywalnych prymitywów SwiftUI wykorzystywanych w ekosystemie ZenKit.
+ZenKit is a library of modern, reusable SwiftUI primitives used across the ZenKit ecosystem.
 
-## Funkcje
+## Features
 
-- **Zorientowane na design**: Komponenty są zbudowane w oparciu o wspólne tokeny (kolory, typografia, odstępy).
-- **Elastyczność**: Preferujemy kompozycję (`ViewBuilder`) nad sztywnymi API opartymi o ciągi znaków.
-- **Wsparcie platform**: iOS 17.0+ oraz macOS 13.0+.
-- **Showcase**: Dołączona aplikacja demo prezentująca wszystkie dostępne komponenty.
+- **Design-driven**: Components are built on shared tokens for color, typography, and spacing.
+- **Composable**: Prefer `ViewBuilder` composition over rigid string-based APIs.
+- **Platform support**: iOS 17.0+ and macOS 13.0+.
+- **Showcase app**: Includes a demo app covering all available components.
 
-## Struktura biblioteki
+## Library Structure
 
-Komponenty w `Sources/ZenKit/Components/` są podzielone na kategorie:
+Components in `Sources/ZenKit/Components/` are grouped into categories:
 
-- **DataDisplay**: Prezentacja danych (Avatar, Badge, Progress, Metrics).
-- **Feedback**: Informacje zwrotne (Alert, Spinner, Loading, Skeleton).
-- **Inputs**: Kontrolki formularzy (Button, TextInput, MultiSelect, Toggle).
-- **Layout**: Struktura ekranów i sekcji (ZenScreen, ListScreen, Sections).
-- **Navigation**: Elementy nawigacyjne (Menu, Rows).
-- **Surfaces**: Kontenery i struktury danych (Card, Sheet, Settings).
-- **System**: Infrastruktura techniczna (Overlays, Toasts).
+- **DataDisplay**: Data presentation primitives such as Avatar, Badge, Progress, and Metrics.
+- **Feedback**: Feedback components such as Alert, Spinner, Loading, and Skeleton.
+- **Inputs**: Form controls such as Button, TextInput, MultiSelect, and Toggle.
+- **Layout**: Screen and section structure such as ZenScreen, ListScreen, and Sections.
+- **Navigation**: Navigation primitives such as Menu and Rows.
+- **Surfaces**: Container and content surfaces such as Card, Sheet, and Settings.
+- **System**: Technical infrastructure such as Overlays and Toasts.
 
-## Instalacja (Swift Package Manager)
+## Installation (Swift Package Manager)
 
-Dodaj ZenKit jako zależność w swoim `Package.swift`:
+Add ZenKit as a dependency in your `Package.swift`:
 
 ```swift
 dependencies: [
@@ -31,7 +31,7 @@ dependencies: [
 ]
 ```
 
-## Szybki start
+## Quick Start
 
 ```swift
 import SwiftUI
@@ -40,9 +40,9 @@ import ZenKit
 struct MyView: View {
     var body: some View {
         ZenScreen(navigationTitle: "Dashboard") {
-            ZenCard(title: "Witaj") {
-                Text("To jest Twój nowy panel.")
-                ZenButton("Rozpocznij") {
+            ZenCard(title: "Welcome") {
+                Text("This is your new dashboard.")
+                ZenButton("Get Started") {
                     print("Start!")
                 }
             }
@@ -51,19 +51,39 @@ struct MyView: View {
 }
 ```
 
-## Rozwój i testowanie
+## Variable Fonts
 
-- **Testy jednostkowe**: `swift test`
-- **Aplikacja Showcase**: Otwórz `ZenKit.xcworkspace` i uruchom schemat `ZenKitShowcase`.
+ZenKit also supports variable fonts via `ZenFontSource.variable(...)`.
+The font must already be added to the app and registered by the host bundle.
+
+```swift
+let displayFont = ZenVariableFont(
+    name: "Skia",
+    axes: .init(width: 110, opticalSize: 28),
+    weights: .init(regular: 420, medium: 520, semibold: 640)
+)
+
+let theme = ZenTheme(
+    typography: ZenTypography(
+        display: .init(source: .variable(displayFont)),
+        text: .init(source: .system(.rounded))
+    )
+)
+```
+
+## Development and Testing
+
+- **Unit tests**: `swift test`
+- **Showcase app**: Open `ZenKit.xcworkspace` and run the `ZenKitShowcase` scheme.
 
 ## Using ZenKit with AI
 
-- Zacznij od [LLM.md](LLM.md). To główny entrypoint dla modeli i agentów pracujących z ZenKit.
-- Dla doboru komponentów użyj `LLM.md` razem z `docs/ai/selection-matrix.md` i `docs/ai/component-catalog.md`.
-- Dla gotowych kompozycji ekranów sprawdź `docs/ai/composition-recipes.md`.
-- W Codex możesz odwołać się bezpośrednio do skills:
+- Start with [LLM.md](LLM.md). It is the main entry point for models and agents working with ZenKit.
+- For component selection, use `LLM.md` together with `docs/ai/selection-matrix.md` and `docs/ai/component-catalog.md`.
+- For ready-made screen compositions, see `docs/ai/composition-recipes.md`.
+- In Codex, you can reference these skills directly:
   - `$zenkit-component-selector`
   - `$zenkit-screen-composer`
   - `$zenkit-migration-advisor`
 
-Więcej informacji technicznych znajdziesz w pliku [LLM.md](LLM.md).
+For more technical details, see [LLM.md](LLM.md).

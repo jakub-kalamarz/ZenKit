@@ -168,9 +168,11 @@ struct ZenKitAPIConventionsTests {
         let system = ZenFontSource.system(.rounded)
         let family = ZenFontFamily(regular: "InstrumentSerif-Regular")
         let custom = ZenFontSource.custom(family)
+        let variable = ZenFontSource.variable(.init(name: "Skia"))
 
         #expect(system == .system(.rounded))
         #expect(custom == .custom(family))
+        #expect(variable == .variable(.init(name: "Skia")))
     }
 
     @Test

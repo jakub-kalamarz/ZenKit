@@ -1,6 +1,13 @@
 import Foundation
 import Testing
 @testable import ZenKit
+import CoreText
+
+#if canImport(AppKit)
+import AppKit
+#elseif canImport(UIKit)
+import UIKit
+#endif
 
 @Suite(.serialized)
 struct ZenKitThemeTests {
@@ -157,6 +164,68 @@ struct ZenKitThemeTests {
     }
 
     @Test
+    func variableTypographyFamiliesFlowIntoResolvedScaleSpecs() {
+        let variableFont = ZenVariableFont(
+            name: variableFontTestFontName(),
+            axes: .init(width: 112, opticalSize: 26),
+            weights: .init(regular: 420, medium: 520, semibold: 640)
+        )
+        let typography = ZenTheme(
+            typography: ZenTypography(
+                display: .init(source: .variable(variableFont)),
+                text: .init(source: .system(.serif))
+            )
+        ).resolvedTypography
+
+        let spec = typography.fontSpec(for: .displayLG)
+        let supportedTags = supportedVariationAxisTags(forFontNamed: variableFont.name)
+
+        #expect(spec.source == .variable(variableFont))
+        #expect(spec.resolvedSource == .variable(variableFont))
+        #expect(spec.resolvedFontName == variableFont.name)
+
+        if supportedTags.contains(variableAxisTag("wght")) {
+            #expect(spec.resolvedVariableAxes?.weight == 640)
+        } else {
+            #expect(spec.resolvedVariableAxes?.weight == nil)
+        }
+
+        if supportedTags.contains(variableAxisTag("wdth")) {
+            #expect(spec.resolvedVariableAxes?.width == 112)
+        } else {
+            #expect(spec.resolvedVariableAxes?.width == nil)
+        }
+
+        if supportedTags.contains(variableAxisTag("opsz")) {
+            #expect(spec.resolvedVariableAxes?.opticalSize == 26)
+        } else {
+            #expect(spec.resolvedVariableAxes?.opticalSize == nil)
+        }
+    }
+
+    @Test
+    func missingVariableFontsFallBackToSystemDesignPerFamily() {
+        let missingVariable = ZenVariableFont(
+            name: "MissingVariableFont",
+            axes: .init(width: 110, opticalSize: 18),
+            weights: .init(regular: 410, medium: 515, semibold: 620)
+        )
+        let typography = ZenTheme(
+            typography: ZenTypography(
+                display: .init(source: .variable(missingVariable)),
+                text: .init(source: .system(.default))
+            )
+        ).resolvedTypography
+
+        let spec = typography.fontSpec(for: .displayLG)
+
+        #expect(spec.source == .variable(missingVariable))
+        #expect(spec.resolvedSource == .system(.default))
+        #expect(spec.resolvedFontName == nil)
+        #expect(spec.resolvedVariableAxes == nil)
+    }
+
+    @Test
     func fontRegistryInjectsDisplayAndTextFamiliesIntoDefaults() {
         ZenFontRegistry.clear()
         defer { ZenFontRegistry.clear() }
@@ -180,6 +249,29 @@ struct ZenKitThemeTests {
         #expect(typography.fontSpec(for: .displayLG).source == .custom(displayFamily))
         #expect(typography.fontSpec(for: .textBase).source == .custom(textFamily))
         #expect(typography.fontSpec(for: .displayLG).weight == .semibold)
+    }
+
+    @Test
+    func fontRegistryInjectsVariableFontFamiliesIntoDefaults() {
+        ZenFontRegistry.clear()
+        defer { ZenFontRegistry.clear() }
+
+        let variableDisplay = ZenVariableFont(
+            name: variableFontTestFontName(),
+            axes: .init(width: 104, opticalSize: 24),
+            weights: .init(regular: 410, medium: 520, semibold: 610)
+        )
+
+        ZenFontRegistry.register(
+            display: .init(source: .variable(variableDisplay)),
+            text: .init(source: .system(.rounded))
+        )
+
+        let typography = ZenTheme.default.resolvedTypography
+
+        #expect(typography.fontSpec(for: .displayLG).source == .variable(variableDisplay))
+        #expect(typography.fontSpec(for: .displayLG).resolvedSource == .variable(variableDisplay))
+        #expect(typography.fontSpec(for: .textBase).source == .system(.rounded))
     }
 
     @Test
@@ -272,6 +364,50 @@ struct ZenKitThemeTests {
         #expect(colors.accent == accent)
         #expect(colors.primary == accent)
         #expect(colors.background == ZenNativeThemeTokens.defaultResolvedColors.background)
+    }
+}
+
+private func variableFontTestFontName() -> String {
+#if canImport(UIKit)
+    UIFont.systemFont(ofSize: 12).fontName
+#elseif canImport(AppKit)
+    NSFont.systemFont(ofSize: 12).fontName
+#else
+    "System"
+#endif
+}
+
+private func supportedVariationAxisTags(forFontNamed name: String) -> Set<Int> {
+    let size: CGFloat = 12
+
+#if canImport(UIKit)
+    guard let font = UIFont(name: name, size: size) else {
+        return []
+    }
+    let ctFont = CTFontCreateWithName(font.fontName as CFString, size, nil)
+#elseif canImport(AppKit)
+    guard let font = NSFont(name: name, size: size) else {
+        return []
+    }
+    let ctFont = CTFontCreateWithName(font.fontName as CFString, size, nil)
+#else
+    return []
+#endif
+
+    guard let axes = CTFontCopyVariationAxes(ctFont) as? [[CFString: Any]] else {
+        return []
+    }
+
+    return Set(
+        axes.compactMap { axis in
+            (axis[kCTFontVariationAxisIdentifierKey] as? NSNumber)?.intValue
+        }
+    )
+}
+
+private func variableAxisTag(_ tag: String) -> Int {
+    tag.utf8.reduce(0) { partialResult, character in
+        (partialResult << 8) | Int(character)
     }
 }
 
