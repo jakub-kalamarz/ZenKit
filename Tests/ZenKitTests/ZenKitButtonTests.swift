@@ -117,11 +117,13 @@ struct ZenKitButtonTests {
     @Test
     func decorativeIconPlacementTracksLeadingAndTrailingSlots() {
         let leading = ZenButtonDecorativeIcon(assetName: "GoogleLogo")
-        let trailing = ZenButtonDecorativeIcon(assetName: "ArrowRight", placement: .trailing)
+        let trailing = ZenButtonDecorativeIcon(systemName: "arrow.right", placement: .trailing)
 
+        #expect(leading.source == .asset("GoogleLogo"))
         #expect(leading.assetName == "GoogleLogo")
         #expect(leading.placement == .leading)
-        #expect(trailing.assetName == "ArrowRight")
+        #expect(trailing.source == .system("arrow.right"))
+        #expect(trailing.assetName == nil)
         #expect(trailing.placement == .trailing)
     }
 
@@ -216,6 +218,7 @@ struct ZenKitButtonTests {
         _ = ZenButtonLabel("Test", variant: .outline)
         _ = ZenButtonLabel("Test", size: .sm)
         _ = ZenButtonLabel("Test", fullWidth: true)
+        _ = ZenButtonLabel("Test", leadingIcon: .asset("Plus"), trailingIcon: .system("arrow.right"))
         _ = ZenButtonLabel("Test", leadingIcon: .init(assetName: "Plus"), trailingIcon: .init(assetName: "ArrowRight"))
     }
 }

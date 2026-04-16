@@ -17,15 +17,39 @@ public enum ZenButtonDecorativeIconPlacement: Equatable, Sendable {
 }
 
 public struct ZenButtonDecorativeIcon: Equatable, Sendable {
-    public let assetName: String
+    public let source: ZenIconSource
     public let placement: ZenButtonDecorativeIconPlacement
 
     public init(
         assetName: String,
         placement: ZenButtonDecorativeIconPlacement = .leading
     ) {
-        self.assetName = assetName
+        self.source = .asset(assetName)
         self.placement = placement
+    }
+
+    public init(
+        systemName: String,
+        placement: ZenButtonDecorativeIconPlacement = .leading
+    ) {
+        self.source = .system(systemName)
+        self.placement = placement
+    }
+
+    public init(
+        source: ZenIconSource,
+        placement: ZenButtonDecorativeIconPlacement = .leading
+    ) {
+        self.source = source
+        self.placement = placement
+    }
+
+    public var assetName: String? {
+        guard case .asset(let assetName) = source else {
+            return nil
+        }
+
+        return assetName
     }
 }
 
@@ -161,14 +185,14 @@ public enum ZenButtonSize {
 public struct ZenButtonTextLabel: View {
     let title: LocalizedStringKey
     let size: ZenButtonSize
-    let leadingIcon: ZenButtonDecorativeIcon?
-    let trailingIcon: ZenButtonDecorativeIcon?
+    let leadingIcon: ZenIconSource?
+    let trailingIcon: ZenIconSource?
 
     public init(
         title: LocalizedStringKey,
         size: ZenButtonSize,
-        leadingIcon: ZenButtonDecorativeIcon? = nil,
-        trailingIcon: ZenButtonDecorativeIcon? = nil
+        leadingIcon: ZenIconSource? = nil,
+        trailingIcon: ZenIconSource? = nil
     ) {
         self.title = title
         self.size = size
@@ -191,8 +215,8 @@ public struct ZenButtonTextLabel: View {
     }
 
     @ViewBuilder
-    private func decorativeIcon(_ icon: ZenButtonDecorativeIcon) -> some View {
-        ZenIcon(assetName: icon.assetName, size: size.iconSize)
+    private func decorativeIcon(_ icon: ZenIconSource) -> some View {
+        ZenIcon(source: icon, size: size.iconSize)
     }
 }
 
@@ -273,8 +297,8 @@ public extension ZenButton where Label == ZenButtonTextLabel {
         _ title: LocalizedStringKey,
         variant: ZenButtonVariant = .default,
         size: ZenButtonSize = .default,
-        leadingIcon: ZenButtonDecorativeIcon? = nil,
-        trailingIcon: ZenButtonDecorativeIcon? = nil,
+        leadingIcon: ZenIconSource? = nil,
+        trailingIcon: ZenIconSource? = nil,
         isLoading: Bool = false,
         fullWidth: Bool = false,
         action: @escaping () -> Void
@@ -293,6 +317,28 @@ public extension ZenButton where Label == ZenButtonTextLabel {
                 trailingIcon: size.supportsDecorativeIcons ? trailingIcon : nil
             )
         }
+    }
+
+    init(
+        _ title: LocalizedStringKey,
+        variant: ZenButtonVariant = .default,
+        size: ZenButtonSize = .default,
+        leadingIcon: ZenButtonDecorativeIcon? = nil,
+        trailingIcon: ZenButtonDecorativeIcon? = nil,
+        isLoading: Bool = false,
+        fullWidth: Bool = false,
+        action: @escaping () -> Void
+    ) {
+        self.init(
+            title,
+            variant: variant,
+            size: size,
+            leadingIcon: leadingIcon?.source,
+            trailingIcon: trailingIcon?.source,
+            isLoading: isLoading,
+            fullWidth: fullWidth,
+            action: action
+        )
     }
 }
 

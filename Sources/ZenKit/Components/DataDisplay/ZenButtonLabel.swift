@@ -74,8 +74,8 @@ public extension ZenButtonLabel where Label == ZenButtonTextLabel {
         _ title: LocalizedStringKey,
         variant: ZenButtonVariant = .default,
         size: ZenButtonSize = .default,
-        leadingIcon: ZenButtonDecorativeIcon? = nil,
-        trailingIcon: ZenButtonDecorativeIcon? = nil,
+        leadingIcon: ZenIconSource? = nil,
+        trailingIcon: ZenIconSource? = nil,
         fullWidth: Bool = false
     ) {
         self.init(
@@ -90,6 +90,24 @@ public extension ZenButtonLabel where Label == ZenButtonTextLabel {
                 trailingIcon: size.supportsDecorativeIcons ? trailingIcon : nil
             )
         }
+    }
+
+    init(
+        _ title: LocalizedStringKey,
+        variant: ZenButtonVariant = .default,
+        size: ZenButtonSize = .default,
+        leadingIcon: ZenButtonDecorativeIcon? = nil,
+        trailingIcon: ZenButtonDecorativeIcon? = nil,
+        fullWidth: Bool = false
+    ) {
+        self.init(
+            title,
+            variant: variant,
+            size: size,
+            leadingIcon: leadingIcon?.source,
+            trailingIcon: trailingIcon?.source,
+            fullWidth: fullWidth
+        )
     }
 }
 
