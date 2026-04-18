@@ -18,7 +18,7 @@ let project = Project(
             ]),
             buildableFolders: [
                 "App/ZenKitShowcase/Sources",
-                "App/ZenKitShowcase/Resources"
+//                "App/ZenKitShowcase/Resources"
             ],
             dependencies: [
                 .package(product: "ZenKit")

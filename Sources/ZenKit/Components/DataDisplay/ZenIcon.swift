@@ -27,7 +27,7 @@ public struct ZenIcon: View {
             switch source {
             case .asset(let assetName):
                 Image(assetName)
-                    .renderingMode(.template)
+                    .renderingMode(.original)
                     .resizable()
                     .scaledToFit()
             case .system(let systemName):
@@ -60,7 +60,7 @@ public struct ZenMenuIcon: View {
         switch source {
         case .asset(let assetName):
             Image(assetName)
-                .renderingMode(.template)
+                .renderingMode(.original)
         case .system(let systemName):
             Image(systemName: systemName)
                 .renderingMode(.template)
