@@ -177,7 +177,7 @@ public struct ZenSelectCard: View {
 
     private var titleView: some View {
         Text(title)
-            .font(variant == .inline ? .zenTextSM.weight(.medium) : .zenTextSM.weight(.medium))
+            .font(.zenTextSM.weight(.semibold))
             .foregroundStyle(Color.zenTextPrimary)
             .multilineTextAlignment(.leading)
             .frame(maxWidth: .infinity, alignment: .leading)
