@@ -27,6 +27,7 @@ public struct ZenSelectCard: View {
     private let subtitle: String?
     private let leadingIconSource: ZenIconSource?
     private let iconColor: Color?
+    private let iconSize: CGFloat
     private let variant: ZenSelectCardVariant
     private let isSelected: Bool
     private let action: () -> Void
@@ -36,6 +37,7 @@ public struct ZenSelectCard: View {
         subtitle: String? = nil,
         leadingIconSource: ZenIconSource? = nil,
         iconColor: Color? = nil,
+        iconSize: CGFloat = 40,
         variant: ZenSelectCardVariant = .card,
         isSelected: Bool,
         action: @escaping () -> Void
@@ -44,6 +46,7 @@ public struct ZenSelectCard: View {
         self.subtitle = subtitle
         self.leadingIconSource = leadingIconSource
         self.iconColor = iconColor
+        self.iconSize = iconSize
         self.variant = variant
         self.isSelected = isSelected
         self.action = action
@@ -194,15 +197,19 @@ public struct ZenSelectCard: View {
     @ViewBuilder
     private func leadingIcon(for source: ZenIconSource) -> some View {
         if let iconColor {
-            ZenIconBadge(source: source, color: iconColor)
+            ZenIconBadge(source: source, color: iconColor, size: iconSize)
+        } else if case .asset = source, variant == .card {
+            ZenIcon(source: source, size: iconSize)
+                .frame(width: iconSize, height: iconSize)
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
         } else {
             ZStack {
                 RoundedRectangle(cornerRadius: ZenNavigationRow.leadingIconBadgeCornerRadius, style: .continuous)
                     .fill(Color.zenSurfaceMuted)
-                    .frame(width: ZenNavigationRow.leadingIconBadgeSize, height: ZenNavigationRow.leadingIconBadgeSize)
+                    .frame(width: iconSize, height: iconSize)
 
-                ZenIcon(source: source, size: 14)
-                    .font(.system(size: 14, weight: .semibold))
+                ZenIcon(source: source, size: iconSize * 0.5)
+                    .font(.system(size: iconSize * 0.5, weight: .semibold))
                     .foregroundStyle(Color.zenTextMuted)
             }
         }

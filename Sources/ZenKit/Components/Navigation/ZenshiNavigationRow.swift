@@ -65,7 +65,7 @@ public struct ZenNavigationRow: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.zenTextSM.weight(.medium))
+                    .font(.zenTextSM.weight(.semibold))
                     .foregroundStyle(Color.zenTextPrimary)
 
                 if let subtitle {
