@@ -5,6 +5,7 @@ public struct ZenStepper: View {
 
     private let title: String
     private let subtitle: String?
+    private let leadingIconSource: ZenIconSource?
     @Binding private var value: Double
     private let range: ClosedRange<Double>
     private let step: Double
@@ -13,6 +14,7 @@ public struct ZenStepper: View {
     public init(
         _ title: String,
         subtitle: String? = nil,
+        leadingIconSource: ZenIconSource? = nil,
         value: Binding<Double>,
         in range: ClosedRange<Double> = 0...100,
         step: Double = 1,
@@ -22,6 +24,7 @@ public struct ZenStepper: View {
     ) {
         self.title = title
         self.subtitle = subtitle
+        self.leadingIconSource = leadingIconSource
         _value = value
         self.range = range
         self.step = step
@@ -35,9 +38,16 @@ public struct ZenStepper: View {
         let controlStyle = ZenControlSurfaceStyle.outline(theme: theme)
 
         HStack(spacing: ZenSpacing.small) {
+            if let iconSource = leadingIconSource {
+                ZenIcon(source: iconSource, size: 22)
+                    .frame(width: 40, height: 40)
+                    .background(Color.zenSurfaceMuted)
+                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+            }
+
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.zenTextSM.weight(.medium))
+                    .font(.zenTextSM.weight(.semibold))
                     .foregroundStyle(Color.zenTextPrimary)
 
                 if let subtitle {
@@ -53,10 +63,10 @@ public struct ZenStepper: View {
                 stepButton(systemName: "minus", action: decrement, disabled: value <= range.lowerBound, cornerRadius: buttonRadius)
 
                 Text(format(value))
-                    .font(.zenTextSM.weight(.medium))
+                    .font(.zenTextLG.weight(.semibold))
                     .foregroundStyle(Color.zenTextPrimary)
                     .monospacedDigit()
-                    .frame(minWidth: 40, alignment: .center)
+                    .frame(minWidth: 52, alignment: .center)
                     .contentTransition(.numericText())
                     .animation(.spring(duration: 0.3), value: value)
 
