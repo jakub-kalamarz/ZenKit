@@ -3,6 +3,7 @@ import SwiftUI
 public enum ZenSelectCardVariant: Sendable {
     case card
     case inline
+    case inlineLarge
 }
 
 enum ZenSelectCardMetrics {
@@ -119,6 +120,24 @@ public struct ZenSelectCard: View {
 
                 Spacer(minLength: 0)
             }
+        case .inlineLarge:
+            HStack(spacing: ZenSpacing.medium) {
+                if let leadingIconSource {
+                    leadingIcon(for: leadingIconSource)
+                }
+
+                VStack(alignment: .leading, spacing: ZenSelectCardMetrics.verticalSpacing) {
+                    titleView
+
+                    if let subtitle {
+                        subtitleView(subtitle)
+                    }
+                }
+
+                Spacer(minLength: 0)
+
+                ZenSelectCardIndicator(isSelected: isSelected)
+            }
         }
     }
 
@@ -127,7 +146,7 @@ public struct ZenSelectCard: View {
     }
 
     internal var usesCompactLayout: Bool {
-        subtitle == nil
+        subtitle == nil && variant != .inlineLarge
     }
 
     internal var appliesSelectedAccessibilityTrait: Bool {
@@ -140,7 +159,7 @@ public struct ZenSelectCard: View {
 
     private var backgroundColor: Color {
         switch variant {
-        case .card:
+        case .card, .inlineLarge:
             isSelected ? Color.zenSurfaceMuted : Color.zenSurface
         case .inline:
             Color.zenSurface
@@ -149,7 +168,7 @@ public struct ZenSelectCard: View {
 
     private var borderColor: Color {
         switch variant {
-        case .card:
+        case .card, .inlineLarge:
             isSelected ? Color.zenTextPrimary.opacity(0.22) : Color.zenBorder
         case .inline:
             Color.zenBorder
@@ -160,14 +179,14 @@ public struct ZenSelectCard: View {
         switch variant {
         case .card:
             usesCompactLayout ? ZenSelectCardMetrics.compactVerticalPadding : ZenSelectCardMetrics.verticalPadding
-        case .inline:
+        case .inline, .inlineLarge:
             ZenSelectCardMetrics.inlineVerticalPadding
         }
     }
 
     private var cornerRole: ZenCornerRole {
         switch variant {
-        case .card:
+        case .card, .inlineLarge:
             .nestedContainer
         case .inline:
             .nestedControl
@@ -180,7 +199,7 @@ public struct ZenSelectCard: View {
 
     private var titleView: some View {
         Text(title)
-            .font(.zenTextSM.weight(.semibold))
+            .font(.zenTextLG.weight(.medium))
             .foregroundStyle(Color.zenTextPrimary)
             .multilineTextAlignment(.leading)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -188,28 +207,32 @@ public struct ZenSelectCard: View {
 
     private func subtitleView(_ subtitle: String) -> some View {
         Text(subtitle)
-            .font(.zenTextXS)
+            .font(.zenTextSM)
             .foregroundStyle(Color.zenTextMuted)
             .multilineTextAlignment(.leading)
             .frame(maxWidth: .infinity, alignment: .leading)
     }
 
+    private var effectiveIconSize: CGFloat {
+        variant == .inlineLarge ? max(iconSize, 52) : iconSize
+    }
+
     @ViewBuilder
     private func leadingIcon(for source: ZenIconSource) -> some View {
         if let iconColor {
-            ZenIconBadge(source: source, color: iconColor, size: iconSize)
-        } else if case .asset = source, variant == .card {
-            ZenIcon(source: source, size: iconSize)
-                .frame(width: iconSize, height: iconSize)
+            ZenIconBadge(source: source, color: iconColor, size: effectiveIconSize)
+        } else if case .asset = source, variant == .card || variant == .inlineLarge {
+            ZenIcon(source: source, size: effectiveIconSize)
+                .frame(width: effectiveIconSize, height: effectiveIconSize)
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
         } else {
             ZStack {
                 RoundedRectangle(cornerRadius: ZenNavigationRow.leadingIconBadgeCornerRadius, style: .continuous)
                     .fill(Color.zenSurfaceMuted)
-                    .frame(width: iconSize, height: iconSize)
+                    .frame(width: effectiveIconSize, height: effectiveIconSize)
 
-                ZenIcon(source: source, size: iconSize * 0.5)
-                    .font(.system(size: iconSize * 0.5, weight: .semibold))
+                ZenIcon(source: source, size: effectiveIconSize * 0.5)
+                    .font(.system(size: effectiveIconSize * 0.5, weight: .semibold))
                     .foregroundStyle(Color.zenTextMuted)
             }
         }
