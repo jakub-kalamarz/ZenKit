@@ -29,32 +29,39 @@ private struct ZenAutoSizingSheetModifier<SheetContent: View>: ViewModifier {
     @State private var isScrollable = false
 
     func body(content host: Content) -> some View {
-        host.sheet(isPresented: $isPresented, onDismiss: onDismiss) {
-            #if os(iOS)
-            GeometryReader { proxy in
-                let maxHeight = proxy.size.height * 0.92
-
-                ZStack(alignment: .top) {
-                    backgroundColor
-                        .ignoresSafeArea()
-
-                    if isScrollable {
-                        sheetContent()
-                    } else {
-                        sheetContent()
-                            .zenReadSize { size in
-                                if size.height > maxHeight {
-                                    isScrollable = true
-                                    updateDetents(newHeight: maxHeight)
-                                } else {
-                                    updateDetents(newHeight: size.height)
-                                }
-                            }
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        host.sheet(
+            isPresented: $isPresented,
+            onDismiss: {
+                isScrollable = false
+                detents = [.height(200)]
+                selectedDetent = .height(200)
+                lastHeight = 200
+                onDismiss?()
             }
+        ) {
+            #if os(iOS)
+            ZStack(alignment: .top) {
+                backgroundColor
+                    .ignoresSafeArea()
+
+                if isScrollable {
+                    sheetContent()
+                } else {
+                    sheetContent()
+                        .zenReadSize { size in
+                            let screenHeight = UIScreen.main.bounds.height
+                            let maxHeight = screenHeight * 0.92
+                            if size.height > maxHeight {
+                                isScrollable = true
+                                updateDetents(newHeight: maxHeight)
+                            } else {
+                                updateDetents(newHeight: size.height)
+                            }
+                        }
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .presentationDetents(detents, selection: $selectedDetent)
             .presentationDragIndicator(.visible)
             #else
