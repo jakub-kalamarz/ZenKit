@@ -18,6 +18,9 @@ enum ZenThemeStore {
             self.theme = theme
             applyUIKitAppearance(theme)
         }
+        #if canImport(UIKit)
+        ZenToastWindowManager.scheduleSetup()
+        #endif
     }
 
     private static func initializeTheme() -> ZenTheme {
