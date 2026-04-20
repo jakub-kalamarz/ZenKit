@@ -1,10 +1,11 @@
-#if canImport(UIKit)
-import UIKit
 import SwiftUI
 
-enum ZenToastWindowManager {
-    private static var window: UIWindow?
-    private static var observer: NSObjectProtocol?
+#if canImport(UIKit)
+import UIKit
+
+private enum ZenToastWindowManager {
+    static var window: UIWindow?
+    static var observer: NSObjectProtocol?
 
     static func scheduleSetup() {
         guard observer == nil else { return }
@@ -38,3 +39,9 @@ private final class ZenToastWindow: UIWindow {
     }
 }
 #endif
+
+func zenScheduleToastWindow() {
+    #if canImport(UIKit)
+    ZenToastWindowManager.scheduleSetup()
+    #endif
+}
