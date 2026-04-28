@@ -14,15 +14,17 @@ public struct ZenMetricValue {
     public let tint: Color?
     public let iconSource: ZenIconSource?
     public let comparisonValue: String?
+    public let comparisonDetail: String?
     public let trend: ZenMetricTrend?
     public let comparisonLogic: ZenMetricComparisonLogic
-    
+
     public init(
         label: String,
         value: String,
         tint: Color? = nil,
         iconSource: ZenIconSource? = nil,
         comparisonValue: String? = nil,
+        comparisonDetail: String? = nil,
         trend: ZenMetricTrend? = nil,
         comparisonLogic: ZenMetricComparisonLogic = .moreIsBetter
     ) {
@@ -31,6 +33,7 @@ public struct ZenMetricValue {
         self.tint = tint
         self.iconSource = iconSource
         self.comparisonValue = comparisonValue
+        self.comparisonDetail = comparisonDetail
         self.trend = trend
         self.comparisonLogic = comparisonLogic
     }
@@ -252,6 +255,14 @@ public struct ZenMetricStrip: View {
                     .foregroundStyle(comparisonColor(for: value))
                     .lineLimit(1)
                     .monospacedDigit()
+
+                if let detail = value.comparisonDetail {
+                    Text(detail)
+                        .font(.zenTextXS)
+                        .foregroundStyle(Color.zenTextMuted)
+                        .lineLimit(1)
+                        .monospacedDigit()
+                }
             }
         }
     }
@@ -330,10 +341,10 @@ private enum GridMetricContentMode {
 
 #Preview {
     ZenMetricStrip(values: [
-        ZenMetricValue(label: "Clicks", value: "694", tint: .zenAccent, iconSource: .asset("CursorClick"), comparisonValue: "+12%", trend: .up),
-        ZenMetricValue(label: "Impressions", value: "17.8K", tint: .zenSuccess, iconSource: .asset("ChartBar"), comparisonValue: "-2%", trend: .down),
-        ZenMetricValue(label: "CTR", value: "4%", iconSource: .system("percent"), comparisonValue: "0%", trend: .neutral),
-        ZenMetricValue(label: "Position", value: "16", tint: .zenWarning, iconSource: .asset("TrendUp"), comparisonValue: "+2", trend: .up, comparisonLogic: .lessIsBetter),
+        ZenMetricValue(label: "Clicks", value: "694", tint: .zenAccent, iconSource: .asset("CursorClick"), comparisonValue: "+120", comparisonDetail: "(+20%)", trend: .up),
+        ZenMetricValue(label: "Impressions", value: "17.8K", tint: .zenSuccess, iconSource: .asset("ChartBar"), comparisonValue: "-2.1K", comparisonDetail: "(-12%)", trend: .down),
+        ZenMetricValue(label: "CTR", value: "4%", iconSource: .system("percent"), comparisonValue: "+0.5%", comparisonDetail: "(+15%)", trend: .up),
+        ZenMetricValue(label: "Position", value: "16", tint: .zenWarning, iconSource: .asset("TrendUp"), comparisonValue: "-2.2", comparisonDetail: "(-13%)", trend: .up, comparisonLogic: .lessIsBetter),
     ])
     .padding()
     .background(Color.zenBackground)
