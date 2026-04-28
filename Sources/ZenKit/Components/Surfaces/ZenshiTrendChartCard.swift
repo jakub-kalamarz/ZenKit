@@ -207,8 +207,10 @@ public struct ZenTrendChartCard: View {
         .clipShape(RoundedRectangle(cornerRadius: theme.resolvedCornerRadius(for: ZenRadius.medium)))
     }
 
-    private var xAxisStride: Int {
-        max(1, points.count / 4)
+    var xAxisStride: Int {
+        guard let first = points.first?.date, let last = points.last?.date else { return 1 }
+        let totalDays = Calendar.current.dateComponents([.day], from: first, to: last).day ?? 1
+        return max(1, totalDays / 4)
     }
 
     private var legendItems: [LegendItem] {

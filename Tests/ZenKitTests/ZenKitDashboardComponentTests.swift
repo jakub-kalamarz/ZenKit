@@ -300,9 +300,70 @@ struct ZenKitDashboardComponentTests {
             trend: .up,
             comparisonLogic: .moreIsBetter
         )
-        
+
         #expect(metric.comparisonValue == "+10%")
         #expect(metric.trend == .up)
         #expect(metric.comparisonLogic == .moreIsBetter)
+    }
+
+    @Test
+    func xAxisStrideUsesDateRangeForMonthlyData() {
+        let calendar = Calendar.current
+        let base = calendar.date(from: DateComponents(year: 2025, month: 1, day: 1))!
+        let points = (0..<12).map { month in
+            ZenTrendPoint(
+                date: calendar.date(byAdding: .month, value: month, to: base)!,
+                clicks: 10,
+                impressions: 100
+            )
+        }
+        let chart = ZenTrendChartCard(points: points)
+        let totalDays = calendar.dateComponents([.day], from: points.first!.date, to: points.last!.date).day!
+        #expect(chart.xAxisStride == max(1, totalDays / 4))
+        #expect(chart.xAxisStride > 60)
+    }
+
+    @Test
+    func xAxisStrideUsesDateRangeForWeeklyData() {
+        let calendar = Calendar.current
+        let base = calendar.date(from: DateComponents(year: 2025, month: 1, day: 1))!
+        let points = (0..<52).map { week in
+            ZenTrendPoint(
+                date: calendar.date(byAdding: .weekOfYear, value: week, to: base)!,
+                clicks: 10,
+                impressions: 100
+            )
+        }
+        let chart = ZenTrendChartCard(points: points)
+        #expect(chart.xAxisStride > 60)
+    }
+
+    @Test
+    func xAxisStrideHandlesDailyData() {
+        let calendar = Calendar.current
+        let base = calendar.date(from: DateComponents(year: 2025, month: 3, day: 1))!
+        let points = (0..<28).map { day in
+            ZenTrendPoint(
+                date: calendar.date(byAdding: .day, value: day, to: base)!,
+                clicks: 10,
+                impressions: 100
+            )
+        }
+        let chart = ZenTrendChartCard(points: points)
+        #expect(chart.xAxisStride == 6)
+    }
+
+    @Test
+    func xAxisStrideReturnsOneForSinglePoint() {
+        let chart = ZenTrendChartCard(points: [
+            ZenTrendPoint(date: Date(), clicks: 10, impressions: 100),
+        ])
+        #expect(chart.xAxisStride == 1)
+    }
+
+    @Test
+    func xAxisStrideReturnsOneForEmptyPoints() {
+        let chart = ZenTrendChartCard(points: [])
+        #expect(chart.xAxisStride == 1)
     }
 }
