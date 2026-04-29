@@ -259,9 +259,11 @@ public struct ZenMetricStrip: View {
                 if let detail = value.comparisonDetail {
                     Text(detail)
                         .font(.zenTextXS)
+                        .fontWidth(.condensed)
                         .foregroundStyle(Color.zenTextMuted)
                         .lineLimit(1)
                         .monospacedDigit()
+                        .baselineOffset(1)
                 }
             }
         }
