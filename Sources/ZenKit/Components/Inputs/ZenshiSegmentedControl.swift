@@ -121,7 +121,7 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
     private func segmentLabel(for value: Value, isSelected: Bool, isDisabled: Bool) -> some View {
         label(value, isSelected)
             .lineLimit(1)
-            .font(.zen(.tab, weight: isSelected ? .semibold : .medium))
+            .font(.zen(.body2, weight: isSelected ? .semibold : .medium))
             .foregroundStyle(foregroundColor(isSelected: isSelected, isDisabled: isDisabled))
             .multilineTextAlignment(.center)
     }

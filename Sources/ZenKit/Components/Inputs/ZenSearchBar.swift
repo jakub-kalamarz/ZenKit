@@ -23,7 +23,7 @@ public struct ZenSearchBar: View {
                 .foregroundStyle(Color.zenTextMuted)
 
             TextField(prompt, text: $text)
-                .font(.zenIntro)
+                .font(.zenBody2)
                 .foregroundStyle(Color.zenTextPrimary)
                 .textFieldStyle(.plain)
                 .focused($isFocused)
