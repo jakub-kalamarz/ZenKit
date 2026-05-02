@@ -2,6 +2,7 @@ import CoreGraphics
 
 public struct ZenResolvedMetrics: Equatable, Sendable {
     public let controlHeight: CGFloat
+    public var controlHeightMedium: CGFloat { controlHeight }
     public let controlHeightSmall: CGFloat
     public let controlHeightLarge: CGFloat
     public let cardPadding: CGFloat

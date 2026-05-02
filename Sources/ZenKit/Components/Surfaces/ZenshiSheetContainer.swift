@@ -36,12 +36,12 @@ public struct ZenSheetContainer<Content: View, Footer: View>: View {
         VStack(alignment: .leading, spacing: ZenSpacing.medium) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.zenDisplayXS)
+                    .font(.zenStat)
                     .foregroundStyle(Color.zenTextPrimary)
 
                 if let subtitle {
                     Text(subtitle)
-                        .font(.zenTextXS)
+                        .font(.zenGroup)
                         .foregroundStyle(Color.zenTextMuted)
                 }
             }
@@ -53,7 +53,9 @@ public struct ZenSheetContainer<Content: View, Footer: View>: View {
                 footer()
             }
         }
-        .padding(ZenSpacing.large)
+        .padding(.top, ZenSpacing.medium)
+        .padding(.horizontal, ZenSpacing.medium)
+        .ignoresSafeArea(.all, edges: .bottom)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
@@ -96,7 +98,6 @@ private struct ZenSheetContainerPreview: View {
                     ZenButton("Send Invite", fullWidth: true) {}
                 }
             }
-            .padding()
         }
     }
 }

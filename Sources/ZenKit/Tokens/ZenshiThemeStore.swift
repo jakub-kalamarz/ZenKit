@@ -31,8 +31,8 @@ enum ZenThemeStore {
 #if canImport(UIKit)
         let appearance = UINavigationBarAppearance()
         appearance.configureWithDefaultBackground()
-        appearance.titleTextAttributes = [.font: theme.resolvedTypography.fontSpec(for: .displayXS).uiFont]
-        appearance.largeTitleTextAttributes = [.font: theme.resolvedTypography.fontSpec(for: .displayLG).uiFont]
+        appearance.titleTextAttributes = [.font: theme.resolvedTypography.fontSpec(for: .stat).uiFont]
+        appearance.largeTitleTextAttributes = [.font: theme.resolvedTypography.fontSpec(for: .displayXL).uiFont]
 
         let navigationBar = UINavigationBar.appearance()
         navigationBar.standardAppearance = appearance

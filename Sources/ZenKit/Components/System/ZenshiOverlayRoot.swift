@@ -143,7 +143,7 @@ private struct ZenRootConfirmationDialogPresentation: View {
         VStack(spacing: 0) {
             VStack(spacing: ZenSpacing.small) {
                 Text(state.title)
-                    .font(.zenDisplayXS)
+                    .font(.zenStat)
                     .foregroundStyle(Color.zenTextPrimary)
                     .multilineTextAlignment(.center)
                     .accessibilityIdentifier(ZenAccessibilityID.ConfirmationDialog.title)
@@ -157,7 +157,7 @@ private struct ZenRootConfirmationDialogPresentation: View {
 
                 if let message = state.message {
                     Text(message)
-                        .font(.zenTextBase)
+                        .font(.zenIntro)
                         .foregroundStyle(Color.zenTextMuted)
                         .multilineTextAlignment(.center)
                         .fixedSize(horizontal: false, vertical: true)

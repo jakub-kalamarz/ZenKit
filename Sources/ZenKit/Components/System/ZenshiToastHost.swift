@@ -224,12 +224,12 @@ private struct ZenToastCard: View {
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(toast.title)
-                        .font(.zenTextSM.weight(.medium))
+                        .font(.zen(.body2, weight: .medium))
                         .foregroundStyle(Color.zenTextPrimary)
 
                     if let message = toast.message {
                         Text(message)
-                            .font(.zenTextXS)
+                            .font(.zenGroup)
                             .foregroundStyle(Color.zenTextMuted)
                             .fixedSize(horizontal: false, vertical: true)
                     }

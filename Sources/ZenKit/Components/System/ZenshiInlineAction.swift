@@ -30,7 +30,7 @@ struct ZenInlineActionResolvedStyle {
     let foregroundStyle: ZenInlineActionForegroundStyle
 
     init(theme: ZenTheme = .current) {
-        let caption = theme.resolvedTypography.fontSpec(for: .textXS)
+        let caption = theme.resolvedTypography.fontSpec(for: .group)
 
         fontSpec = caption.with(size: caption.size, weight: .semibold)
         font = fontSpec.font

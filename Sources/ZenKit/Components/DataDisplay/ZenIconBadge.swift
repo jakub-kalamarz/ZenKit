@@ -1,16 +1,23 @@
 import SwiftUI
 
 public struct ZenIconBadge: View {
-    private let source: ZenIconSource
+    private enum Content {
+        case icon(ZenIconSource)
+        case label(String)
+    }
+
+    private let content: Content
     private let color: Color
     private let size: CGFloat
+    private let labelForeground: Color?
 
     public static let defaultSize: CGFloat = 28
 
     public init(source: ZenIconSource, color: Color, size: CGFloat = defaultSize) {
-        self.source = source
+        self.content = .icon(source)
         self.color = color
         self.size = size
+        self.labelForeground = nil
     }
 
     public init(systemName: String, color: Color, size: CGFloat = defaultSize) {
@@ -19,6 +26,13 @@ public struct ZenIconBadge: View {
 
     public init(assetName: String, color: Color, size: CGFloat = defaultSize) {
         self.init(source: .asset(assetName), color: color, size: size)
+    }
+
+    public init(label: String, color: Color, foregroundColor: Color? = nil, size: CGFloat = defaultSize) {
+        self.content = .label(label)
+        self.color = color
+        self.labelForeground = foregroundColor
+        self.size = size
     }
 
     public var body: some View {
@@ -30,9 +44,16 @@ public struct ZenIconBadge: View {
                 .fill(background(for: style))
                 .frame(width: size, height: size)
 
-            ZenIcon(source: source, size: size * 0.5)
-                .font(.system(size: size * 0.5, weight: .semibold))
-                .foregroundStyle(iconColor(for: style))
+            switch content {
+            case .icon(let source):
+                ZenIcon(source: source, size: size * 0.65)
+                    .font(.system(size: size * 0.65, weight: .semibold))
+                    .foregroundStyle(iconColor(for: style))
+            case .label(let text):
+                Text(text)
+                    .font(.system(size: size * 0.45, weight: .bold))
+                    .foregroundStyle(labelForeground ?? iconColor(for: style))
+            }
         }
     }
 
@@ -66,7 +87,7 @@ public struct ZenIconBadge: View {
             VStack(alignment: .leading, spacing: ZenSpacing.small) {
                 Text("simple").font(.caption).foregroundStyle(.secondary)
                 HStack(spacing: ZenSpacing.small) {
-                    ZenIconBadge(systemName: "person.circle.fill", color: .blue)
+                    ZenIconBadge(systemName: "person.circle.fill", color: .blue, size: 48)
                     ZenIconBadge(systemName: "bell.fill", color: .red)
                     ZenIconBadge(systemName: "shield.fill", color: .green)
                     ZenIconBadge(systemName: "globe", color: .cyan)

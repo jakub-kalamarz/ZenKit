@@ -187,6 +187,16 @@ struct ZenKitButtonTests {
     }
 
     @Test
+    func searchInputsUseMutedControlChrome() {
+        let searchStyle = ZenControlSurfaceStyle.searchField()
+        let colors = ZenTheme.current.resolvedColors
+
+        #expect(searchStyle.backgroundToken == colors.surfaceMuted)
+        #expect(searchStyle.borderToken == colors.border)
+        #expect(searchStyle.borderWidth == 1)
+    }
+
+    @Test
     func transparentButtonVariantsKeepSemanticForegrounds() {
         let originalTheme = ZenTheme.current
         defer { ZenTheme.apply(originalTheme) }

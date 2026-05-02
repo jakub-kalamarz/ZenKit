@@ -185,13 +185,13 @@ public struct ZenMetricStrip: View {
 
             VStack(alignment: .leading, spacing: Self.textSpacing) {
                 Text(value.label)
-                    .font(.zenTextXS.weight(.medium))
+                    .font(.zen(.group, weight: .medium))
                     .foregroundStyle(Color.zenTextMuted)
                     .lineLimit(1)
 
                 metricValueWithComparison(
                     for: value,
-                    font: .zenDisplayXS.weight(.semibold),
+                    font: .zen(.stat, weight: .semibold),
                     minimumScaleFactor: 0.8,
                     showsComparison: showsComparison
                 )
@@ -202,7 +202,7 @@ public struct ZenMetricStrip: View {
     private func compactMetricValueContent(for value: ZenMetricValue, showsComparison: Bool) -> some View {
         metricValueWithComparison(
             for: value,
-            font: .zenTextSM.weight(.semibold),
+            font: .zen(.body2, weight: .semibold),
             minimumScaleFactor: 0.75,
             showsComparison: showsComparison
         )
@@ -251,14 +251,14 @@ public struct ZenMetricStrip: View {
                 }
 
                 Text(comparisonValue)
-                    .font(.zenTextXS.weight(.semibold))
+                    .font(.zen(.group, weight: .semibold))
                     .foregroundStyle(comparisonColor(for: value))
                     .lineLimit(1)
                     .monospacedDigit()
 
                 if let detail = value.comparisonDetail {
                     Text(detail)
-                        .font(.zenTextXS)
+                        .font(.zenGroup)
                         .fontWidth(.condensed)
                         .foregroundStyle(Color.zenTextMuted)
                         .lineLimit(1)

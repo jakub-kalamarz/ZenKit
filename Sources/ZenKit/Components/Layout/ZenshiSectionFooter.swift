@@ -9,7 +9,7 @@ public struct ZenSectionFooter<Content: View>: View {
 
     public var body: some View {
         content()
-            .font(.zenTextXS)
+            .font(.zenGroup)
             .foregroundStyle(Color.zenTextMuted)
             .textCase(nil)
             .frame(maxWidth: .infinity, alignment: .leading)

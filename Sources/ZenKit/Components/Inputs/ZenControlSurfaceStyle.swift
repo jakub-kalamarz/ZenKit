@@ -27,4 +27,14 @@ struct ZenControlSurfaceStyle {
             borderWidth: 1
         )
     }
+
+    static func searchField(theme: ZenTheme = .current) -> ZenControlSurfaceStyle {
+        let colors = theme.resolvedColors
+
+        return ZenControlSurfaceStyle(
+            backgroundToken: colors.surfaceMuted,
+            borderToken: colors.border,
+            borderWidth: 1
+        )
+    }
 }

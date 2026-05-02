@@ -23,12 +23,12 @@ public struct ZenCollectionCard<Content: View>: View {
             HStack(alignment: .top, spacing: ZenSpacing.small) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(title)
-                        .font(.zenDisplayXS)
+                        .font(.zenStat)
                         .foregroundStyle(Color.zenTextPrimary)
                     
                     if let subtitle {
                         Text(subtitle)
-                            .font(.zenTextXS)
+                            .font(.zenGroup)
                             .foregroundStyle(Color.zenTextMuted)
                     }
                 }

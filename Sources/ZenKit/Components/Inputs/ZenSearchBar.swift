@@ -15,7 +15,7 @@ public struct ZenSearchBar: View {
     public var body: some View {
         let theme = ZenTheme.current
         let cornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
-        let controlStyle = ZenControlSurfaceStyle.field(theme: theme)
+        let controlStyle = ZenControlSurfaceStyle.searchField(theme: theme)
 
         HStack(spacing: ZenSpacing.small) {
             ZenIcon(systemName: "magnifyingglass", size: 15)
@@ -23,7 +23,7 @@ public struct ZenSearchBar: View {
                 .foregroundStyle(Color.zenTextMuted)
 
             TextField(prompt, text: $text)
-                .font(.zenTextBase)
+                .font(.zenIntro)
                 .foregroundStyle(Color.zenTextPrimary)
                 .textFieldStyle(.plain)
                 .focused($isFocused)
@@ -46,9 +46,13 @@ public struct ZenSearchBar: View {
         .background(controlStyle.backgroundColor)
         .overlay(
             RoundedRectangle(cornerRadius: cornerRadius)
-                .strokeBorder(borderColor(theme: theme, controlStyle: controlStyle), lineWidth: controlStyle.borderWidth)
+                .strokeBorder(borderColor(theme: theme, controlStyle: controlStyle), lineWidth: borderWidth(controlStyle: controlStyle))
         )
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+    }
+
+    private func borderWidth(controlStyle: ZenControlSurfaceStyle) -> CGFloat {
+        isFocused ? 1 : controlStyle.borderWidth
     }
 
     private func borderColor(theme: ZenTheme, controlStyle: ZenControlSurfaceStyle) -> Color {
@@ -68,7 +72,7 @@ private struct ZenSearchBarPreview: View {
             ZenSearchBar(text: $query, prompt: "Search members…")
             if !query.isEmpty {
                 Text("Searching for: \(query)")
-                    .font(.zenTextXS)
+                    .font(.zenGroup)
                     .foregroundStyle(Color.zenTextMuted)
             }
         }

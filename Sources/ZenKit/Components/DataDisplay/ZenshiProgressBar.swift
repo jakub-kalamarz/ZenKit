@@ -2,14 +2,17 @@ import SwiftUI
 
 public struct ZenProgressBar: View {
     public let progress: Double
+    public let tint: Color?
 
-    public init(progress: Double) {
+    public init(progress: Double, tint: Color? = nil) {
         self.progress = min(max(progress, 0), 1)
+        self.tint = tint
     }
 
     public var body: some View {
         let theme = ZenTheme.current
         let cornerRadius = theme.resolvedFullyRoundedCornerRadius(for: 8)
+        let barColor = tint ?? Color.zenPrimary
 
         GeometryReader { proxy in
             ZStack(alignment: .leading) {
@@ -17,7 +20,7 @@ public struct ZenProgressBar: View {
                     .fill(Color.zenBorder)
 
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .fill(Color.zenPrimary)
+                    .fill(barColor)
                     .frame(width: proxy.size.width * progress)
             }
         }
@@ -30,14 +33,14 @@ public struct ZenProgressBar: View {
     VStack(alignment: .leading, spacing: ZenSpacing.medium) {
         VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
             Text("Uploading")
-                .font(.zenTextSM.weight(.medium))
+                .font(.zen(.body2, weight: .medium))
                 .foregroundStyle(Color.zenTextPrimary)
             ZenProgressBar(progress: 0.35)
         }
 
         VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
             Text("Sync complete")
-                .font(.zenTextSM.weight(.medium))
+                .font(.zen(.body2, weight: .medium))
                 .foregroundStyle(Color.zenTextPrimary)
             ZenProgressBar(progress: 1)
         }

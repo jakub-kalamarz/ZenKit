@@ -108,24 +108,26 @@ public struct ZenTheme: Equatable, Sendable {
 
     private func makeResolvedTypography() -> ZenResolvedTypography {
         ZenResolvedTypography(
-            textXS: makeResolvedFontSpec(role: .text, size: 12, weight: .regular),
-            textSM: makeResolvedFontSpec(role: .text, size: 14, weight: .regular),
-            textBase: makeResolvedFontSpec(role: .text, size: 15, weight: .regular),
-            textLG: makeResolvedFontSpec(role: .text, size: 16, weight: .regular),
-            textXL: makeResolvedFontSpec(role: .text, size: 18, weight: .regular),
-            displayXS: makeResolvedFontSpec(role: .display, size: 18, weight: .semibold),
-            displaySM: makeResolvedFontSpec(role: .display, size: 20, weight: .semibold),
-            displayMD: makeResolvedFontSpec(role: .display, size: 24, weight: .semibold),
-            displayLG: makeResolvedFontSpec(role: .display, size: 28, weight: .semibold),
-            displayXL: makeResolvedFontSpec(role: .display, size: 32, weight: .semibold),
-            display2XL: makeResolvedFontSpec(role: .display, size: 40, weight: .semibold)
+            displayXL: makeResolvedFontSpec(role: .display, size: 30, weight: .semibold, leading: .tight),
+            displayL: makeResolvedFontSpec(role: .display, size: 32, weight: .semibold, leading: .tight),
+            displayM: makeResolvedFontSpec(role: .display, size: 22, weight: .semibold, leading: .tight),
+            displayS: makeResolvedFontSpec(role: .display, size: 16, weight: .semibold),
+            stat: makeResolvedFontSpec(role: .display, size: 18, weight: .semibold),
+            body: makeResolvedFontSpec(role: .text, size: 16, weight: .medium),
+            body2: makeResolvedFontSpec(role: .text, size: 13, weight: .medium),
+            intro: makeResolvedFontSpec(role: .text, size: 15, weight: .regular),
+            button: makeResolvedFontSpec(role: .text, size: 16, weight: .bold),
+            tab: makeResolvedFontSpec(role: .text, size: 10, weight: .semibold),
+            eyebrow: makeResolvedFontSpec(role: .text, size: 11, weight: .bold),
+            group: makeResolvedFontSpec(role: .text, size: 12, weight: .semibold)
         )
     }
 
     private func makeResolvedFontSpec(
         role: ZenTypographyFamilyRole,
         size: CGFloat,
-        weight: ZenFontWeight
+        weight: ZenFontWeight,
+        leading: Font.Leading? = nil
     ) -> ZenResolvedFontSpec {
         let family = typography.family(for: role)
         let resolved = family.resolvedSource(for: weight)
@@ -137,7 +139,8 @@ public struct ZenTheme: Equatable, Sendable {
             resolvedFontName: resolved.resolvedFontName,
             resolvedVariableAxes: resolved.resolvedVariableAxes,
             size: size,
-            weight: weight
+            weight: weight,
+            leading: leading
         )
     }
 
@@ -177,7 +180,7 @@ public struct ZenTheme: Equatable, Sendable {
             return resolvedCornerRadius(for: ZenRadius.small)
         case .nestedControl:
             guard let parentRadius else {
-                return resolvedCornerRadius(for: .control)
+                return resolvedCornerRadius
             }
             return resolvedNestedCornerRadius(inside: parentRadius, inset: 4)
         }
@@ -205,13 +208,13 @@ public struct ZenTheme: Equatable, Sendable {
     VStack(alignment: .leading, spacing: ZenSpacing.medium) {
         ZenCard(title: "Comfortable Rounded", subtitle: "Default theme axis sample") {
             Text("Control height \(Int(ZenTheme().resolvedMetrics.controlHeight))")
-                .font(.zenTextBase)
+                .font(.zenIntro)
                 .foregroundStyle(Color.zenTextPrimary)
         }
 
         ZenCard(title: "Compact None", subtitle: "Density and corner style") {
             Text("Control height \(Int(ZenTheme(density: .compact, cornerStyle: .none).resolvedMetrics.controlHeight))")
-                .font(.zenTextBase)
+                .font(.zenIntro)
                 .foregroundStyle(Color.zenTextPrimary)
         }
     }

@@ -77,7 +77,7 @@ public struct ZenTimelineItem: View {
         } content: {
             ZenTimelineContent {
                 Text("Created by Alex Johnson")
-                    .font(.zenTextXS)
+                    .font(.zenGroup)
                     .foregroundStyle(Color.zenTextMuted)
             }
         }
@@ -85,7 +85,7 @@ public struct ZenTimelineItem: View {
         ZenTimelineItem {
             ZenTimelineIndicator {
                 Text("2")
-                    .font(.zenTextSM.weight(.medium))
+                    .font(.zen(.body2, weight: .medium))
             }
         } header: {
             ZenTimelineHeader {
@@ -99,7 +99,7 @@ public struct ZenTimelineItem: View {
                         ZenBadge("Build", tone: .warning)
 
                         Text("Timeline primitives are wired into the package and showcased with richer nested content.")
-                            .font(.zenTextXS)
+                            .font(.zenGroup)
                             .foregroundStyle(Color.zenTextMuted)
                     }
                 }
@@ -119,7 +119,7 @@ public struct ZenTimelineItem: View {
         } content: {
             ZenTimelineContent {
                 Text("Final item hides the separator for a clean terminal state.")
-                    .font(.zenTextXS)
+                    .font(.zenGroup)
                     .foregroundStyle(Color.zenTextMuted)
             }
         }

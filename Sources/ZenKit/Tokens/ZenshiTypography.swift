@@ -14,17 +14,18 @@ public enum ZenTypographyFamilyRole: CaseIterable, Sendable {
 }
 
 public enum ZenTypographyToken: String, CaseIterable, Sendable {
-    case textXS
-    case textSM
-    case textBase
-    case textLG
-    case textXL
-    case displayXS
-    case displaySM
-    case displayMD
-    case displayLG
     case displayXL
-    case display2XL
+    case displayL
+    case displayM
+    case displayS
+    case stat
+    case body
+    case body2
+    case intro
+    case button
+    case tab
+    case eyebrow
+    case group
 }
 
 public enum ZenSystemFontDesign: Sendable, Equatable {
@@ -73,6 +74,8 @@ public struct ZenFontFamily: Equatable, Sendable {
             return medium ?? semibold ?? regular
         case .semibold:
             return semibold ?? medium ?? bold ?? regular
+        case .bold:
+            return bold ?? semibold ?? medium ?? regular
         }
     }
 
@@ -142,15 +145,18 @@ public struct ZenVariableFontWeightMap: Equatable, Sendable {
     public let regular: Double
     public let medium: Double
     public let semibold: Double
+    public let bold: Double
 
     public init(
         regular: Double = 400,
         medium: Double = 500,
-        semibold: Double = 600
+        semibold: Double = 600,
+        bold: Double = 700
     ) {
         self.regular = regular
         self.medium = medium
         self.semibold = semibold
+        self.bold = bold
     }
 
     public func value(for weight: ZenFontWeight) -> Double {
@@ -161,6 +167,8 @@ public struct ZenVariableFontWeightMap: Equatable, Sendable {
             return medium
         case .semibold:
             return semibold
+        case .bold:
+            return bold
         }
     }
 }
@@ -195,6 +203,7 @@ public enum ZenFontWeight: Sendable, Equatable {
     case regular
     case medium
     case semibold
+    case bold
 
     fileprivate var swiftUIWeight: Font.Weight {
         switch self {
@@ -204,6 +213,8 @@ public enum ZenFontWeight: Sendable, Equatable {
             return .medium
         case .semibold:
             return .semibold
+        case .bold:
+            return .bold
         }
     }
 
@@ -216,6 +227,8 @@ public enum ZenFontWeight: Sendable, Equatable {
             return .medium
         case .semibold:
             return .semibold
+        case .bold:
+            return .bold
         }
     }
 #elseif canImport(AppKit)
@@ -227,6 +240,8 @@ public enum ZenFontWeight: Sendable, Equatable {
             return .medium
         case .semibold:
             return .semibold
+        case .bold:
+            return .bold
         }
     }
 #endif
@@ -306,6 +321,7 @@ public struct ZenResolvedFontSpec: Equatable, Sendable {
     public let resolvedVariableAxes: ZenVariableFontAxes?
     public let size: CGFloat
     public let weight: ZenFontWeight
+    public let leading: Font.Leading?
 
     public init(
         familyRole: ZenTypographyFamilyRole,
@@ -314,7 +330,8 @@ public struct ZenResolvedFontSpec: Equatable, Sendable {
         resolvedFontName: String? = nil,
         resolvedVariableAxes: ZenVariableFontAxes? = nil,
         size: CGFloat,
-        weight: ZenFontWeight
+        weight: ZenFontWeight,
+        leading: Font.Leading? = nil
     ) {
         self.familyRole = familyRole
         self.source = source
@@ -323,25 +340,38 @@ public struct ZenResolvedFontSpec: Equatable, Sendable {
         self.resolvedVariableAxes = resolvedVariableAxes
         self.size = size
         self.weight = weight
+        self.leading = leading
     }
 
     var font: Font {
+        var result: Font
+
         switch resolvedSource {
         case let .system(design):
-            return .system(size: size, weight: weight.swiftUIWeight, design: design.swiftUIDesign)
+            result = .system(size: size, weight: weight.swiftUIWeight, design: design.swiftUIDesign)
         case .custom, .variable:
             #if canImport(UIKit)
             if let platformFont = resolvedUIFont {
-                return Font(platformFont)
+                result = Font(platformFont)
+            } else {
+                result = .system(size: size, weight: weight.swiftUIWeight, design: .default)
             }
             #elseif canImport(AppKit)
             if let platformFont = resolvedNSFont {
-                return Font(platformFont)
+                result = Font(platformFont)
+            } else {
+                result = .system(size: size, weight: weight.swiftUIWeight, design: .default)
             }
+            #else
+            result = .system(size: size, weight: weight.swiftUIWeight, design: .default)
             #endif
-
-            return .system(size: size, weight: weight.swiftUIWeight, design: .default)
         }
+
+        if let leading {
+            result = result.leading(leading)
+        }
+
+        return result
     }
 
 #if canImport(UIKit)
@@ -372,8 +402,14 @@ public struct ZenResolvedFontSpec: Equatable, Sendable {
     }
 #endif
 
-    func with(size: CGFloat, weight: ZenFontWeight? = nil) -> ZenResolvedFontSpec {
+    func with(size: CGFloat, weight: ZenFontWeight? = nil, leading: Font.Leading?? = nil) -> ZenResolvedFontSpec {
         let resolvedWeight = weight ?? self.weight
+        let resolvedLeading: Font.Leading? = {
+            switch leading {
+            case .some(let value): return value
+            case .none: return self.leading
+            }
+        }()
         let resolved = {
             switch resolvedSource {
             case .system:
@@ -405,7 +441,8 @@ public struct ZenResolvedFontSpec: Equatable, Sendable {
             resolvedFontName: resolved.fontName,
             resolvedVariableAxes: resolved.variableAxes,
             size: size,
-            weight: resolvedWeight
+            weight: resolvedWeight,
+            leading: resolvedLeading
         )
     }
 
@@ -437,68 +474,61 @@ public struct ZenResolvedFontSpec: Equatable, Sendable {
 }
 
 public struct ZenResolvedTypography: Equatable, Sendable {
-    public let textXS: ZenResolvedFontSpec
-    public let textSM: ZenResolvedFontSpec
-    public let textBase: ZenResolvedFontSpec
-    public let textLG: ZenResolvedFontSpec
-    public let textXL: ZenResolvedFontSpec
-    public let displayXS: ZenResolvedFontSpec
-    public let displaySM: ZenResolvedFontSpec
-    public let displayMD: ZenResolvedFontSpec
-    public let displayLG: ZenResolvedFontSpec
     public let displayXL: ZenResolvedFontSpec
-    public let display2XL: ZenResolvedFontSpec
+    public let displayL: ZenResolvedFontSpec
+    public let displayM: ZenResolvedFontSpec
+    public let displayS: ZenResolvedFontSpec
+    public let stat: ZenResolvedFontSpec
+    public let body: ZenResolvedFontSpec
+    public let body2: ZenResolvedFontSpec
+    public let intro: ZenResolvedFontSpec
+    public let button: ZenResolvedFontSpec
+    public let tab: ZenResolvedFontSpec
+    public let eyebrow: ZenResolvedFontSpec
+    public let group: ZenResolvedFontSpec
 
     public init(
-        textXS: ZenResolvedFontSpec,
-        textSM: ZenResolvedFontSpec,
-        textBase: ZenResolvedFontSpec,
-        textLG: ZenResolvedFontSpec,
-        textXL: ZenResolvedFontSpec,
-        displayXS: ZenResolvedFontSpec,
-        displaySM: ZenResolvedFontSpec,
-        displayMD: ZenResolvedFontSpec,
-        displayLG: ZenResolvedFontSpec,
         displayXL: ZenResolvedFontSpec,
-        display2XL: ZenResolvedFontSpec
+        displayL: ZenResolvedFontSpec,
+        displayM: ZenResolvedFontSpec,
+        displayS: ZenResolvedFontSpec,
+        stat: ZenResolvedFontSpec,
+        body: ZenResolvedFontSpec,
+        body2: ZenResolvedFontSpec,
+        intro: ZenResolvedFontSpec,
+        button: ZenResolvedFontSpec,
+        tab: ZenResolvedFontSpec,
+        eyebrow: ZenResolvedFontSpec,
+        group: ZenResolvedFontSpec
     ) {
-        self.textXS = textXS
-        self.textSM = textSM
-        self.textBase = textBase
-        self.textLG = textLG
-        self.textXL = textXL
-        self.displayXS = displayXS
-        self.displaySM = displaySM
-        self.displayMD = displayMD
-        self.displayLG = displayLG
         self.displayXL = displayXL
-        self.display2XL = display2XL
+        self.displayL = displayL
+        self.displayM = displayM
+        self.displayS = displayS
+        self.stat = stat
+        self.body = body
+        self.body2 = body2
+        self.intro = intro
+        self.button = button
+        self.tab = tab
+        self.eyebrow = eyebrow
+        self.group = group
     }
 
     public func fontSpec(for role: ZenTypographyToken) -> ZenResolvedFontSpec {
         switch role {
-        case .textXS:
-            return textXS
-        case .textSM:
-            return textSM
-        case .textBase:
-            return textBase
-        case .textLG:
-            return textLG
-        case .textXL:
-            return textXL
-        case .displayXS:
-            return displayXS
-        case .displaySM:
-            return displaySM
-        case .displayMD:
-            return displayMD
-        case .displayLG:
-            return displayLG
-        case .displayXL:
-            return displayXL
-        case .display2XL:
-            return display2XL
+        case .displayXL: return displayXL
+        case .displayL: return displayL
+        case .displayM: return displayM
+        case .displayS: return displayS
+        case .stat: return stat
+        case .body: return body
+        case .body2: return body2
+        case .intro: return intro
+        case .button: return button
+        case .tab: return tab
+        case .eyebrow: return eyebrow
+        case .group: return group
         }
     }
 
@@ -508,17 +538,37 @@ public struct ZenResolvedTypography: Equatable, Sendable {
 }
 
 public extension Font {
-    static var zenTextXS: Font { ZenTheme.current.resolvedTypography.font(for: .textXS) }
-    static var zenTextSM: Font { ZenTheme.current.resolvedTypography.font(for: .textSM) }
-    static var zenTextBase: Font { ZenTheme.current.resolvedTypography.font(for: .textBase) }
-    static var zenTextLG: Font { ZenTheme.current.resolvedTypography.font(for: .textLG) }
-    static var zenTextXL: Font { ZenTheme.current.resolvedTypography.font(for: .textXL) }
-    static var zenDisplayXS: Font { ZenTheme.current.resolvedTypography.font(for: .displayXS) }
-    static var zenDisplaySM: Font { ZenTheme.current.resolvedTypography.font(for: .displaySM) }
-    static var zenDisplayMD: Font { ZenTheme.current.resolvedTypography.font(for: .displayMD) }
-    static var zenDisplayLG: Font { ZenTheme.current.resolvedTypography.font(for: .displayLG) }
+    static func zen(_ role: ZenTypographyToken, weight: ZenFontWeight? = nil) -> Font {
+        let spec = ZenTheme.current.resolvedTypography.fontSpec(for: role)
+        return spec.with(size: spec.size, weight: weight).font
+    }
+
     static var zenDisplayXL: Font { ZenTheme.current.resolvedTypography.font(for: .displayXL) }
-    static var zenDisplay2XL: Font { ZenTheme.current.resolvedTypography.font(for: .display2XL) }
+    static var zenDisplayL: Font { ZenTheme.current.resolvedTypography.font(for: .displayL) }
+    static var zenDisplayM: Font { ZenTheme.current.resolvedTypography.font(for: .displayM) }
+    static var zenDisplayS: Font { ZenTheme.current.resolvedTypography.font(for: .displayS) }
+    static var zenStat: Font { ZenTheme.current.resolvedTypography.font(for: .stat) }
+    static var zenBody: Font { ZenTheme.current.resolvedTypography.font(for: .body) }
+    static var zenBody2: Font { ZenTheme.current.resolvedTypography.font(for: .body2) }
+    static var zenIntro: Font { ZenTheme.current.resolvedTypography.font(for: .intro) }
+    static var zenButton: Font { ZenTheme.current.resolvedTypography.font(for: .button) }
+    static var zenTab: Font { ZenTheme.current.resolvedTypography.font(for: .tab) }
+    static var zenEyebrow: Font { ZenTheme.current.resolvedTypography.font(for: .eyebrow) }
+    static var zenGroup: Font { ZenTheme.current.resolvedTypography.font(for: .group) }
+}
+
+public extension View {
+    func zenEyebrowStyle() -> some View {
+        self.font(.zenEyebrow)
+            .tracking(0.6)
+            .textCase(.uppercase)
+    }
+
+    func zenGroupStyle() -> some View {
+        self.font(.zenGroup)
+            .tracking(0.5)
+            .textCase(.uppercase)
+    }
 }
 
 extension ZenTypographyFamily {

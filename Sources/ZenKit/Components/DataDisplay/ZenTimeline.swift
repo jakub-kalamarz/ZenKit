@@ -131,7 +131,7 @@ public struct ZenTimelineTitle: View {
 
     public var body: some View {
         Text(title)
-            .font(.zenTextSM.weight(.medium))
+            .font(.zen(.body2, weight: .medium))
             .foregroundStyle(Color.zenTextPrimary)
             .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -146,7 +146,7 @@ public struct ZenTimelineDate: View {
 
     public var body: some View {
         Text(value)
-            .font(.zenTextXS)
+            .font(.zenGroup)
             .foregroundStyle(Color.zenTextMuted)
     }
 }

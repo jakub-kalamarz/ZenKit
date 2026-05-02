@@ -241,7 +241,7 @@ private struct ZenPageIndicatorPreview: View {
                             .fill(Color.zenSurface)
                             .overlay {
                                 Text("Page \(index + 1)")
-                                    .font(.zenTextBase)
+                                    .font(.zenIntro)
                                     .foregroundStyle(Color.zenTextPrimary)
                             }
                             .containerRelativeFrame(.horizontal)

@@ -160,7 +160,7 @@ private struct ZenThemeColorWorkbenchPreview: View {
     ) -> some View {
         VStack(alignment: .leading, spacing: ZenSpacing.small) {
             Text(title)
-                .font(.zenTextSM.weight(.medium))
+                .font(.zen(.body2, weight: .medium))
                 .foregroundStyle(Color.zenTextPrimary)
 
             HStack(spacing: ZenSpacing.medium) {
@@ -186,7 +186,7 @@ private struct ZenThemeColorWorkbenchPreview: View {
     ) -> some View {
         VStack(alignment: .leading, spacing: ZenSpacing.small) {
             Text(title)
-                .font(.zenTextSM.weight(.medium))
+                .font(.zen(.body2, weight: .medium))
                 .foregroundStyle(Color.zenTextPrimary)
 
             HStack(spacing: ZenSpacing.medium) {
@@ -213,13 +213,13 @@ private struct ZenThemeColorWorkbenchPreview: View {
         VStack(alignment: .leading, spacing: ZenSpacing.medium) {
             HStack {
                 Text(title)
-                    .font(.zenDisplayXS)
+                    .font(.zenStat)
                     .foregroundStyle(Color.zenTextPrimary)
 
                 Spacer()
 
                 Text("Primary \(primaryHex) / Accent \(accentHex)")
-                    .font(.zenTextXS)
+                    .font(.zenGroup)
                     .foregroundStyle(Color.zenTextMuted)
             }
 

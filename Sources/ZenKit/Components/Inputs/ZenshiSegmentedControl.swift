@@ -1,8 +1,14 @@
 import SwiftUI
 
+public enum ZenSegmentedControlLabelLayout: Equatable, Sendable {
+    case horizontal(spacing: CGFloat = 6)
+    case vertical(spacing: CGFloat = 4)
+}
+
 public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
+    @Environment(\.colorScheme) private var colorScheme
 
     private let title: String?
     @Binding private var selection: Value
@@ -34,7 +40,7 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
         return VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
             if let title {
                 Text(title)
-                    .font(.zenTextXS.weight(.semibold))
+                    .font(.zen(.group, weight: .semibold))
                     .foregroundStyle(Color.zenTextMuted)
             }
 
@@ -48,7 +54,7 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
                 }
             }
             .padding(4)
-            .background(Color.zenSurface)
+            .background(Color.zenSurfaceMuted)
             .overlay(
                 RoundedRectangle(cornerRadius: controlCornerRadius, style: .continuous)
                     .strokeBorder(Color.zenBorder, lineWidth: 1)
@@ -73,16 +79,20 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
                 selection = value
             }
         } label: {
-            label(value, isSelected)
-                .lineLimit(1)
-                .font(.zenTextSM.weight(.medium))
-                .foregroundStyle(isSelected ? Color.zenPrimaryForeground : (isDisabled ? Color.zenTextMuted.opacity(0.5) : Color.zenTextPrimary))
+            segmentLabel(for: value, isSelected: isSelected, isDisabled: isDisabled)
                 .frame(maxWidth: .infinity, minHeight: metrics.controlHeightSmall)
                 .padding(.horizontal, ZenSpacing.small)
                 .background {
                     if isSelected {
                         RoundedRectangle(cornerRadius: segmentCornerRadius, style: .continuous)
-                            .fill(Color.zenPrimary)
+                            .fill(Color.zenSurface)
+                            .shadow(color: selectedSegmentShadowColor, radius: 10, y: 3)
+                            .overlay {
+                                if colorScheme == .dark {
+                                    RoundedRectangle(cornerRadius: segmentCornerRadius, style: .continuous)
+                                        .strokeBorder(.white.opacity(0.08), lineWidth: 0.5)
+                                }
+                            }
                             .matchedGeometryEffect(id: "selected-segment", in: selectionAnimation)
                     }
                 }
@@ -100,26 +110,59 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
 
         return .spring(response: 0.28, dampingFraction: 0.84)
     }
+
+    private var selectedSegmentShadowColor: Color {
+        if colorScheme == .dark {
+            return .white.opacity(0.06)
+        }
+        return .black.opacity(0.06)
+    }
+
+    private func segmentLabel(for value: Value, isSelected: Bool, isDisabled: Bool) -> some View {
+        label(value, isSelected)
+            .lineLimit(1)
+            .font(.zen(.tab, weight: isSelected ? .semibold : .medium))
+            .foregroundStyle(foregroundColor(isSelected: isSelected, isDisabled: isDisabled))
+            .multilineTextAlignment(.center)
+    }
+
+    private func foregroundColor(isSelected: Bool, isDisabled: Bool) -> Color {
+        if isSelected {
+            return .zenPrimary
+        }
+
+        return isDisabled ? Color.zenTextMuted.opacity(0.5) : Color.zenTextMuted
+    }
+
 }
 
 public extension ZenSegmentedControl where Label == AnyView {
-    init<IconView: View, LabelView: View>(
+    init<IconView: View>(
         title: String? = nil,
         selection: Binding<Value>,
         segments: [Value],
         disabledSegments: Set<Value> = [],
+        layout: ZenSegmentedControlLabelLayout = .vertical(),
         @ViewBuilder icon: @escaping (Value) -> IconView,
-        @ViewBuilder label: @escaping (Value, Bool) -> LabelView
+        segmentTitle: @escaping (Value) -> String
     ) {
-        self.init(title: title, selection: selection, segments: segments, disabledSegments: disabledSegments) { value, isSelected in
+        self.init(title: title, selection: selection, segments: segments, disabledSegments: disabledSegments) { value, _ in
             AnyView(
-                ViewThatFits {
-                    HStack(spacing: 6) {
-                        icon(value)
-                        label(value, isSelected)
+                Group {
+                    switch layout {
+                    case .horizontal(let spacing):
+                        HStack(spacing: spacing) {
+                            icon(value)
+                            Text(segmentTitle(value))
+                        }
+                    case .vertical(let spacing):
+                        VStack(spacing: spacing) {
+                            icon(value)
+                            Text(segmentTitle(value))
+                        }
                     }
-                    icon(value)
                 }
+                .padding(.vertical, 4)
             )
         }
     }
@@ -179,15 +222,30 @@ private struct ZenSegmentedControlPreview: View {
             )
 
             ZenSegmentedControl(
-                title: "Icon + Label (ViewThatFits)",
+                title: "Horizontal Icon + Title",
                 selection: $selection,
                 segments: Segment.allCases,
+                layout: .horizontal(),
                 icon: { value in
                     Image(systemName: value.systemImage)
-                        .font(.system(size: 12))
+                        .font(.system(size: 14))
                 },
-                label: { value, _ in
-                    Text(value.rawValue)
+                segmentTitle: { value in
+                    value.rawValue
+                }
+            )
+
+            ZenSegmentedControl(
+                title: "Vertical Icon + Title",
+                selection: $selection,
+                segments: Segment.allCases,
+                layout: .vertical(),
+                icon: { value in
+                    Image(systemName: value.systemImage)
+                        .font(.system(size: 14))
+                },
+                segmentTitle: { value in
+                    value.rawValue
                 }
             )
         }
@@ -198,4 +256,9 @@ private struct ZenSegmentedControlPreview: View {
 
 #Preview {
     ZenSegmentedControlPreview()
+}
+
+#Preview("Dark") {
+    ZenSegmentedControlPreview()
+        .preferredColorScheme(.dark)
 }

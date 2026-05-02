@@ -128,7 +128,7 @@ public struct ZenMetricsTable<ID: Hashable & Sendable, Content: View>: View {
                 }
                 
                 Text(title)
-                    .font(.zenDisplayXS)
+                    .font(.zenStat)
                     .foregroundStyle(Color.zenTextPrimary)
                 
                 Spacer()
@@ -210,7 +210,7 @@ public struct ZenMetricsTableHeader: View {
     
     private func metricLabel(_ title: String) -> some View {
         Text(title)
-            .font(.zenTextXS.weight(.semibold))
+            .font(.zen(.group, weight: .semibold))
             .foregroundStyle(Color.zenTextMuted)
             .frame(minWidth: 52, alignment: .trailing)
     }
@@ -243,7 +243,7 @@ public struct ZenMetricsTableRow<LeadingAccessory: View>: View {
                 HStack(alignment: .top, spacing: ZenSpacing.xSmall) {
                     leadingAccessory
                     Text(title)
-                        .font(.zenTextBase)
+                        .font(.zenIntro)
                         .foregroundStyle(Color.zenTextPrimary)
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -263,7 +263,7 @@ public struct ZenMetricsTableRow<LeadingAccessory: View>: View {
     
     private func metricValue(_ value: String, tint: Color) -> some View {
         Text(value)
-            .font(.zenTextSM.weight(.medium))
+            .font(.zen(.body2, weight: .medium))
             .foregroundStyle(tint)
             .frame(minWidth: 52, alignment: .trailing)
     }

@@ -45,12 +45,12 @@ public struct ZenSettingRow<Trailing: View>: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.zenTextSM.weight(.medium))
+                    .font(.zen(.body2, weight: .medium))
                     .foregroundStyle(Color.zenTextPrimary)
 
                 if let subtitle {
                     Text(subtitle)
-                        .font(.zenTextXS)
+                        .font(.zenGroup)
                         .foregroundStyle(Color.zenTextMuted)
                 }
             }
@@ -58,7 +58,7 @@ public struct ZenSettingRow<Trailing: View>: View {
             Spacer(minLength: ZenSpacing.small)
 
             trailing()
-                .font(.zenTextSM.weight(.medium))
+                .font(.zen(.body2, weight: .medium))
                 .foregroundStyle(Color.zenTextMuted)
 
             if accessory == .chevron {

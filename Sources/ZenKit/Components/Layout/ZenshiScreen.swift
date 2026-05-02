@@ -14,8 +14,10 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
     private let navigationTitle: ZenScreenTitle?
     private let navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode
     private let hidesSharedToolbarBackground: Bool
+    private let ignoresTopSafeArea: Bool
     private let backButton: ZenScreenBackButton?
     private let onRefresh: (@Sendable () async -> Void)?
+    private let onScroll: ((CGFloat) -> Void)?
     private let header: (() -> Header)?
     private let toolbarLeading: (() -> ToolbarLeading)?
     private let toolbarPrincipal: (() -> ToolbarPrincipal)?
@@ -27,8 +29,10 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
+        ignoresTopSafeArea: Bool = false,
         backButton: ZenScreenBackButton? = nil,
         onRefresh: (@Sendable () async -> Void)? = nil,
+        onScroll: ((CGFloat) -> Void)? = nil,
         @ViewBuilder header: @escaping () -> Header,
         @ViewBuilder toolbarLeading: @escaping () -> ToolbarLeading,
         @ViewBuilder toolbarPrincipal: @escaping () -> ToolbarPrincipal,
@@ -39,8 +43,10 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
         self.navigationTitle = navigationTitle
         self.navigationBarTitleDisplayMode = navigationBarTitleDisplayMode
         self.hidesSharedToolbarBackground = hidesSharedToolbarBackground
+        self.ignoresTopSafeArea = ignoresTopSafeArea
         self.backButton = backButton
         self.onRefresh = onRefresh
+        self.onScroll = onScroll
         self.header = header
         self.toolbarLeading = toolbarLeading
         self.toolbarPrincipal = toolbarPrincipal
@@ -101,21 +107,35 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
     private var screenContainer: some View {
         switch containerStyle {
         case .scroll:
-            ScrollView {
-                scrollScreenContent
+            if ignoresTopSafeArea {
+                scrollView.ignoresSafeArea(edges: .top)
+            } else {
+                scrollView
             }
         case .list:
-            List {
-                if let header {
-                    header()
+            if ignoresTopSafeArea {
+                List {
+                    if let header { header() }
+                    content()
                 }
-
-                content()
+                .scrollContentBackground(.hidden)
+                .ignoresSafeArea(edges: .top)
+            } else {
+                List {
+                    if let header { header() }
+                    content()
+                }
+                .scrollContentBackground(.hidden)
             }
-            .scrollContentBackground(.hidden)
         case .static:
-            staticScreenContent
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            if ignoresTopSafeArea {
+                staticScreenContent
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                    .ignoresSafeArea(edges: .top)
+            } else {
+                staticScreenContent
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            }
         }
     }
 
@@ -123,11 +143,23 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
         LazyVStack(alignment: .leading, spacing: ZenSpacing.medium) {
             if let header {
                 header()
+                    .frame(maxWidth: .infinity)
             }
 
             content()
         }
-        .padding(.horizontal, ZenSpacing.small)
+    }
+
+    @ViewBuilder
+    private var scrollView: some View {
+        if #available(iOS 18, *) {
+            ScrollView { scrollScreenContent }
+                .onScrollGeometryChange(for: CGFloat.self) { $0.contentOffset.y } action: { _, y in
+                    onScroll?(y)
+                }
+        } else {
+            ScrollView { scrollScreenContent }
+        }
     }
 
     private var staticScreenContent: some View {
@@ -138,7 +170,6 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
 
             content()
         }
-        .padding(.horizontal, ZenSpacing.small)
     }
 }
 
@@ -150,6 +181,7 @@ public extension ZenScreen where Header == EmptyView, ToolbarLeading == EmptyVie
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
+        ignoresTopSafeArea: Bool = false,
         backButton: ZenScreenBackButton? = nil,
         onRefresh: (@Sendable () async -> Void)? = nil,
         @ViewBuilder content: @escaping () -> Content
@@ -159,6 +191,7 @@ public extension ZenScreen where Header == EmptyView, ToolbarLeading == EmptyVie
             navigationTitle: navigationTitle,
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
+            ignoresTopSafeArea: ignoresTopSafeArea,
             backButton: backButton,
             onRefresh: onRefresh,
             header: { EmptyView() },
@@ -176,6 +209,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarPrincipal =
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
+        ignoresTopSafeArea: Bool = false,
         backButton: ZenScreenBackButton? = nil,
         onRefresh: (@Sendable () async -> Void)? = nil,
         @ViewBuilder header: @escaping () -> Header,
@@ -186,6 +220,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarPrincipal =
             navigationTitle: navigationTitle,
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
+            ignoresTopSafeArea: ignoresTopSafeArea,
             backButton: backButton,
             onRefresh: onRefresh,
             header: header,
@@ -203,6 +238,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarPrincipal =
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
+        ignoresTopSafeArea: Bool = false,
         backButton: ZenScreenBackButton? = nil,
         @ViewBuilder header: @escaping () -> Header,
         @ViewBuilder toolbarTrailing: @escaping () -> ToolbarTrailing,
@@ -213,6 +249,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarPrincipal =
             navigationTitle: navigationTitle,
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
+            ignoresTopSafeArea: ignoresTopSafeArea,
             backButton: backButton,
             header: header,
             toolbarLeading: { EmptyView() },
@@ -229,6 +266,7 @@ public extension ZenScreen where ToolbarPrincipal == EmptyView, ToolbarTrailing 
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
+        ignoresTopSafeArea: Bool = false,
         backButton: ZenScreenBackButton? = nil,
         @ViewBuilder header: @escaping () -> Header,
         @ViewBuilder toolbarLeading: @escaping () -> ToolbarLeading,
@@ -239,6 +277,7 @@ public extension ZenScreen where ToolbarPrincipal == EmptyView, ToolbarTrailing 
             navigationTitle: navigationTitle,
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
+            ignoresTopSafeArea: ignoresTopSafeArea,
             backButton: backButton,
             header: header,
             toolbarLeading: toolbarLeading,
@@ -255,6 +294,7 @@ public extension ZenScreen where Header == EmptyView, ToolbarPrincipal == EmptyV
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
+        ignoresTopSafeArea: Bool = false,
         backButton: ZenScreenBackButton? = nil,
         @ViewBuilder toolbarLeading: @escaping () -> ToolbarLeading,
         @ViewBuilder toolbarTrailing: @escaping () -> ToolbarTrailing,
@@ -265,6 +305,7 @@ public extension ZenScreen where Header == EmptyView, ToolbarPrincipal == EmptyV
             navigationTitle: navigationTitle,
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
+            ignoresTopSafeArea: ignoresTopSafeArea,
             backButton: backButton,
             header: { EmptyView() },
             toolbarLeading: toolbarLeading,
@@ -281,6 +322,7 @@ public extension ZenScreen where Header == EmptyView, ToolbarLeading == EmptyVie
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
+        ignoresTopSafeArea: Bool = false,
         backButton: ZenScreenBackButton? = nil,
         @ViewBuilder toolbarPrincipal: @escaping () -> ToolbarPrincipal,
         @ViewBuilder content: @escaping () -> Content
@@ -290,6 +332,7 @@ public extension ZenScreen where Header == EmptyView, ToolbarLeading == EmptyVie
             navigationTitle: navigationTitle,
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
+            ignoresTopSafeArea: ignoresTopSafeArea,
             backButton: backButton,
             header: { EmptyView() },
             toolbarLeading: { EmptyView() },
@@ -306,6 +349,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarTrailing ==
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
+        ignoresTopSafeArea: Bool = false,
         backButton: ZenScreenBackButton? = nil,
         @ViewBuilder header: @escaping () -> Header,
         @ViewBuilder toolbarPrincipal: @escaping () -> ToolbarPrincipal,
@@ -316,6 +360,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarTrailing ==
             navigationTitle: navigationTitle,
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
+            ignoresTopSafeArea: ignoresTopSafeArea,
             backButton: backButton,
             header: header,
             toolbarLeading: { EmptyView() },
@@ -331,6 +376,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView {
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
+        ignoresTopSafeArea: Bool = false,
         backButton: ZenScreenBackButton? = nil,
         @ViewBuilder header: @escaping () -> Header,
         @ViewBuilder toolbarPrincipal: @escaping () -> ToolbarPrincipal,
@@ -341,6 +387,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView {
             navigationTitle: navigationTitle,
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
+            ignoresTopSafeArea: ignoresTopSafeArea,
             backButton: backButton,
             header: header,
             toolbarLeading: { EmptyView() },
@@ -356,6 +403,7 @@ public extension ZenScreen where ToolbarPrincipal == EmptyView {
         navigationTitle: ZenScreenTitle? = nil,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
+        ignoresTopSafeArea: Bool = false,
         backButton: ZenScreenBackButton? = nil,
         onRefresh: (@Sendable () async -> Void)? = nil,
         @ViewBuilder header: @escaping () -> Header,
@@ -367,6 +415,7 @@ public extension ZenScreen where ToolbarPrincipal == EmptyView {
             navigationTitle: navigationTitle,
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
+            ignoresTopSafeArea: ignoresTopSafeArea,
             backButton: backButton,
             onRefresh: onRefresh,
             header: header,
@@ -619,6 +668,7 @@ private extension View {
                 ZenTextInput(text: .constant(""), prompt: "Email", leadingIcon: .asset("Envelope"))
                 ZenButton("Continue") {}
             }
+            .padding(.horizontal, ZenSpacing.small)
         }
     }
 }

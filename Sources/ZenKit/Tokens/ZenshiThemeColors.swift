@@ -462,7 +462,7 @@ private struct ZenThemeColorSwatch: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
-                    .font(.zenTextSM.weight(.medium))
+                    .font(.zen(.body2, weight: .medium))
                     .foregroundStyle(Color.zenTextPrimary)
                 Text(hex)
                     .font(.system(size: 12, design: .monospaced))

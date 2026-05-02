@@ -65,7 +65,7 @@ public struct ZenTextInput: View {
                 }
 
                 field
-                    .font(.zenTextBase)
+                    .font(.zenIntro)
                     .foregroundStyle(Color.zenTextPrimary)
                     .textFieldStyle(.plain)
                     .disabled(state == .disabled)
@@ -95,7 +95,7 @@ public struct ZenTextInput: View {
 
             if let message {
                 Text(message)
-                    .font(.zenTextXS)
+                    .font(.zenGroup)
                     .foregroundStyle(state == .invalid ? Color.zenCritical : Color.zenTextMuted)
             }
         }

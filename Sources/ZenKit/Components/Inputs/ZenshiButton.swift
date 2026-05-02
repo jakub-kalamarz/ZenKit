@@ -4,6 +4,7 @@ public enum ZenButtonVariant {
     case `default`
     case plain
     case glass
+    case glassProminent
     case outline
     case secondary
     case ghost
@@ -104,7 +105,7 @@ public enum ZenButtonSize {
     }
 
     func textFontSpec(theme: ZenTheme) -> ZenResolvedFontSpec {
-        let buttonSpec = theme.resolvedTypography.fontSpec(for: .textSM)
+        let buttonSpec = theme.resolvedTypography.fontSpec(for: .body2)
 
         switch self {
         case .default, .icon:

@@ -114,10 +114,10 @@ struct ZenKitThemeTests {
     func defaultTypographyMapsDisplayAndTextFamiliesToScale() {
         let typography = ZenTheme.default.resolvedTypography
 
-        #expect(typography.fontSpec(for: .displayXS).familyRole == .display)
-        #expect(typography.fontSpec(for: .display2XL).familyRole == .display)
-        #expect(typography.fontSpec(for: .textXS).familyRole == .text)
-        #expect(typography.fontSpec(for: .textXL).familyRole == .text)
+        #expect(typography.fontSpec(for: .stat).familyRole == .display)
+        #expect(typography.fontSpec(for: .displayXL).familyRole == .display)
+        #expect(typography.fontSpec(for: .group).familyRole == .text)
+        #expect(typography.fontSpec(for: .body).familyRole == .text)
     }
 
     @Test
@@ -125,9 +125,9 @@ struct ZenKitThemeTests {
         let comfortable = ZenTheme.default.resolvedTypography
         let compact = ZenTheme(density: .compact).resolvedTypography
 
-        #expect(compact.fontSpec(for: .displayXS).familyRole == comfortable.fontSpec(for: .displayXS).familyRole)
-        #expect(compact.fontSpec(for: .textSM).familyRole == comfortable.fontSpec(for: .textSM).familyRole)
-        #expect(compact.fontSpec(for: .textSM).familyRole == .text)
+        #expect(compact.fontSpec(for: .stat).familyRole == comfortable.fontSpec(for: .stat).familyRole)
+        #expect(compact.fontSpec(for: .body2).familyRole == comfortable.fontSpec(for: .body2).familyRole)
+        #expect(compact.fontSpec(for: .body2).familyRole == .text)
     }
 
     @Test
@@ -144,8 +144,8 @@ struct ZenKitThemeTests {
         )
         let typography = theme.resolvedTypography
 
-        #expect(typography.fontSpec(for: .displayLG).source == .custom(displayFamily))
-        #expect(typography.fontSpec(for: .textBase).source == .system(.serif))
+        #expect(typography.fontSpec(for: .displayXL).source == .custom(displayFamily))
+        #expect(typography.fontSpec(for: .intro).source == .system(.serif))
     }
 
     @Test
@@ -159,8 +159,8 @@ struct ZenKitThemeTests {
             )
         ).resolvedTypography
 
-        #expect(typography.fontSpec(for: .displayLG).resolvedSource == .system(.default))
-        #expect(typography.fontSpec(for: .textBase).resolvedSource == .system(.default))
+        #expect(typography.fontSpec(for: .displayXL).resolvedSource == .system(.default))
+        #expect(typography.fontSpec(for: .intro).resolvedSource == .system(.default))
     }
 
     @Test
@@ -177,7 +177,7 @@ struct ZenKitThemeTests {
             )
         ).resolvedTypography
 
-        let spec = typography.fontSpec(for: .displayLG)
+        let spec = typography.fontSpec(for: .displayXL)
         let supportedTags = supportedVariationAxisTags(forFontNamed: variableFont.name)
 
         #expect(spec.source == .variable(variableFont))
@@ -217,7 +217,7 @@ struct ZenKitThemeTests {
             )
         ).resolvedTypography
 
-        let spec = typography.fontSpec(for: .displayLG)
+        let spec = typography.fontSpec(for: .displayXL)
 
         #expect(spec.source == .variable(missingVariable))
         #expect(spec.resolvedSource == .system(.default))
@@ -246,9 +246,9 @@ struct ZenKitThemeTests {
 
         let typography = ZenTheme.default.resolvedTypography
 
-        #expect(typography.fontSpec(for: .displayLG).source == .custom(displayFamily))
-        #expect(typography.fontSpec(for: .textBase).source == .custom(textFamily))
-        #expect(typography.fontSpec(for: .displayLG).weight == .semibold)
+        #expect(typography.fontSpec(for: .displayXL).source == .custom(displayFamily))
+        #expect(typography.fontSpec(for: .intro).source == .custom(textFamily))
+        #expect(typography.fontSpec(for: .displayXL).weight == .semibold)
     }
 
     @Test
@@ -269,9 +269,9 @@ struct ZenKitThemeTests {
 
         let typography = ZenTheme.default.resolvedTypography
 
-        #expect(typography.fontSpec(for: .displayLG).source == .variable(variableDisplay))
-        #expect(typography.fontSpec(for: .displayLG).resolvedSource == .variable(variableDisplay))
-        #expect(typography.fontSpec(for: .textBase).source == .system(.rounded))
+        #expect(typography.fontSpec(for: .displayXL).source == .variable(variableDisplay))
+        #expect(typography.fontSpec(for: .displayXL).resolvedSource == .variable(variableDisplay))
+        #expect(typography.fontSpec(for: .intro).source == .system(.rounded))
     }
 
     @Test

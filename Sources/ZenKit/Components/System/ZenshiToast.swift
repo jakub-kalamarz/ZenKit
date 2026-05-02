@@ -434,11 +434,11 @@ private func zenToastPreviewCenter() -> ZenToastCenter {
 
         VStack(alignment: .leading, spacing: ZenSpacing.small) {
             Text("Toast state samples")
-                .font(.zenDisplayXS)
+                .font(.zenStat)
                 .foregroundStyle(Color.zenTextPrimary)
 
             Text("Uses the shared toast models and center with a seeded host stack.")
-                .font(.zenTextXS)
+                .font(.zenGroup)
                 .foregroundStyle(Color.zenTextMuted)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)

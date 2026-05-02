@@ -219,7 +219,7 @@ private struct ZenStepperNumpadSheet: View {
 
                     if let error = model.validationError {
                         Text(error)
-                            .font(.zenTextXS)
+                            .font(.zenGroup)
                             .foregroundStyle(.red)
                             .transition(.opacity.combined(with: .move(edge: .top)))
                     }
@@ -319,12 +319,12 @@ public struct ZenStepper: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.zenTextLG.weight(.semibold))
+                    .font(.zen(.body, weight: .semibold))
                     .foregroundStyle(Color.zenTextPrimary)
 
                 if let subtitle {
                     Text(subtitle)
-                        .font(.zenTextXS)
+                        .font(.zenGroup)
                         .foregroundStyle(Color.zenTextMuted)
                 }
             }
@@ -336,7 +336,7 @@ public struct ZenStepper: View {
 
                 Button { isEditingValue = true } label: {
                     Text(format(value))
-                        .font(.zenTextLG.weight(.semibold))
+                        .font(.zen(.body, weight: .semibold))
                         .foregroundStyle(Color.zenTextPrimary)
                         .monospacedDigit()
                         .frame(minWidth: 52, alignment: .center)

@@ -51,12 +51,12 @@ private struct SegmentedProgressBarPreview: View {
             HStack(spacing: ZenSpacing.small) {
                 Button("−") { if current > 0 { current -= 1 } }
                 Text("\(current) / \(total)")
-                    .font(.zenTextSM.weight(.medium))
+                    .font(.zen(.body2, weight: .medium))
                     .foregroundStyle(Color.zenTextPrimary)
                     .frame(width: 60)
                 Button("+") { if current < total { current += 1 } }
             }
-            .font(.zenTextSM)
+            .font(.zenBody2)
         }
         .padding()
         .background(Color.zenBackground)

@@ -17,13 +17,13 @@ public struct ZenLoading: View {
                 VStack(spacing: 4) {
                     if let title {
                         Text(title)
-                            .font(.zenDisplayXS)
+                            .font(.zenStat)
                             .foregroundStyle(Color.zenTextPrimary)
                     }
 
                     if let message {
                         Text(message)
-                            .font(.zenTextXS)
+                            .font(.zenGroup)
                             .foregroundStyle(Color.zenTextMuted)
                             .multilineTextAlignment(.center)
                     }
