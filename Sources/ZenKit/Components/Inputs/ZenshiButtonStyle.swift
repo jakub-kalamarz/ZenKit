@@ -313,7 +313,7 @@ struct ZenButtonBackground: View {
             }
         case .glassProminent:
             if #available(iOS 26, *) {
-                Color.clear.glassEffect(.regular.tint(glassTint ?? .zenPrimary), in: shape)
+                Color.clear.glassEffect(.regular.tint((glassTint ?? .zenPrimary).opacity(0.5)), in: shape)
             } else {
                 ZStack {
                     shape.fill(.ultraThinMaterial)
