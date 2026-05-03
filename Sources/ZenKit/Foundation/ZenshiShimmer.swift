@@ -8,15 +8,28 @@ public struct ZenshiShimmer: ViewModifier {
     }
 
     private let animation: Animation
-    private let gradient: Gradient
+    private let gradient: Gradient?
     private let min, max: CGFloat
     private let mode: Mode
     @State private var isInitialState = true
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.layoutDirection) private var layoutDirection
 
     public init(
         animation: Animation = Self.defaultAnimation,
-        gradient: Gradient = Self.defaultGradient,
+        bandSize: CGFloat = 0.3,
+        mode: Mode = .mask
+    ) {
+        self.animation = animation
+        self.gradient = nil
+        self.min = 0 - bandSize
+        self.max = 1 + bandSize
+        self.mode = mode
+    }
+
+    public init(
+        animation: Animation = Self.defaultAnimation,
+        gradient: Gradient,
         bandSize: CGFloat = 0.3,
         mode: Mode = .mask
     ) {
@@ -28,7 +41,17 @@ public struct ZenshiShimmer: ViewModifier {
     }
 
     public static let defaultAnimation = Animation.linear(duration: 1.5).delay(0.25).repeatForever(autoreverses: false)
-    public static let defaultGradient = Gradient(colors: [.black.opacity(0.3), .black, .black.opacity(0.3)])
+    public static let defaultGradient = defaultGradient(for: .light)
+
+    public static func defaultGradient(for colorScheme: ColorScheme) -> Gradient {
+        let highlight = colorScheme == .dark ? Color.white : Color.black
+
+        return Gradient(colors: [
+            highlight.opacity(0.3),
+            highlight,
+            highlight.opacity(0.3),
+        ])
+    }
 
     var startPoint: UnitPoint {
         if layoutDirection == .rightToLeft {
@@ -57,7 +80,7 @@ public struct ZenshiShimmer: ViewModifier {
     }
 
     @ViewBuilder public func applyingGradient(to content: Content) -> some View {
-        let gradient = LinearGradient(gradient: gradient, startPoint: startPoint, endPoint: endPoint)
+        let gradient = LinearGradient(gradient: gradient ?? Self.defaultGradient(for: colorScheme), startPoint: startPoint, endPoint: endPoint)
         switch mode {
         case .mask:
             content.mask(gradient)
@@ -73,7 +96,20 @@ public extension View {
     @ViewBuilder func zenShimmering(
         active: Bool = true,
         animation: Animation = ZenshiShimmer.defaultAnimation,
-        gradient: Gradient = ZenshiShimmer.defaultGradient,
+        bandSize: CGFloat = 0.3,
+        mode: ZenshiShimmer.Mode = .mask
+    ) -> some View {
+        if active {
+            modifier(ZenshiShimmer(animation: animation, bandSize: bandSize, mode: mode))
+        } else {
+            self
+        }
+    }
+
+    @ViewBuilder func zenShimmering(
+        active: Bool = true,
+        animation: Animation = ZenshiShimmer.defaultAnimation,
+        gradient: Gradient,
         bandSize: CGFloat = 0.3,
         mode: ZenshiShimmer.Mode = .mask
     ) -> some View {

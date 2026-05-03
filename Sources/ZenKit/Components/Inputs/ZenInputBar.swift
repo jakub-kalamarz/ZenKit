@@ -44,7 +44,7 @@ public struct ZenInputBar: View {
     @ViewBuilder
     private var textField: some View {
         let field = TextField(prompt, text: $text, axis: .vertical)
-            .font(.zenGroup)
+            .font(.zenBody2)
             .foregroundStyle(Color.zenTextPrimary)
             .textFieldStyle(.plain)
             .lineLimit(lineLimit)

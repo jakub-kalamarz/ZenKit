@@ -1,4 +1,5 @@
 import Testing
+import SwiftUI
 @testable import ZenKit
 
 struct ZenKitFoundationTests {
@@ -38,5 +39,18 @@ struct ZenKitFoundationTests {
 
         _ = view
         _ = menuIcon
+    }
+
+    @Test
+    func shimmerProvidesThemeAwareDefaultGradient() {
+        #expect(ZenshiShimmer.defaultGradient(for: .light).stops.count == 3)
+        #expect(ZenshiShimmer.defaultGradient(for: .dark).stops.count == 3)
+    }
+
+    @Test
+    func shimmerStillAcceptsCustomGradients() {
+        let shimmer = ZenshiShimmer(gradient: Gradient(colors: [.clear, .white, .clear]), mode: .overlay())
+
+        _ = shimmer
     }
 }

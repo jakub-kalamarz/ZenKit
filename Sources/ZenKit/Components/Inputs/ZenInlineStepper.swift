@@ -1,5 +1,21 @@
 import SwiftUI
 
+private struct ButtonShape: InsettableShape {
+    let cornerRadius: CGFloat
+    var insetAmount: CGFloat = 0
+
+    func path(in rect: CGRect) -> Path {
+        let r = rect.insetBy(dx: insetAmount, dy: insetAmount)
+        return cornerRadius >= 14
+            ? Circle().path(in: r)
+            : RoundedRectangle(cornerRadius: cornerRadius, style: .continuous).path(in: r)
+    }
+
+    func inset(by amount: CGFloat) -> ButtonShape {
+        var s = self; s.insetAmount += amount; return s
+    }
+}
+
 public struct ZenInlineStepper: View {
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
     @Binding private var value: Int
@@ -53,23 +69,9 @@ public struct ZenInlineStepper: View {
                 .foregroundStyle(disabled ? Color.zenBorder : Color.zenTextPrimary)
                 .frame(width: 28, height: 28)
                 
-                .overlay(
-                    Group {
-                        if cornerRadius >= 14 {
-                            Circle()
-                                .strokeBorder(Color.zenBorder, lineWidth: 1)
-                        } else {
-                            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                                .strokeBorder(Color.zenBorder, lineWidth: 1)
-                        }
-                    }
-                )
-                .clipShape(
-                    cornerRadius >= 14
-                        ? AnyShape(Circle())
-                        : AnyShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-                )
                 .background(Color.zenSurfaceMuted)
+                .clipShape(ButtonShape(cornerRadius: cornerRadius))
+                .overlay(ButtonShape(cornerRadius: cornerRadius).strokeBorder(Color.zenBorder, lineWidth: 1))
         }
         .buttonStyle(.plain)
         .disabled(disabled)
