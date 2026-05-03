@@ -173,6 +173,7 @@ struct ZenSemanticButtonStyle: ButtonStyle {
     let size: ZenButtonSize
     let isLoading: Bool
     let fullWidth: Bool
+    let glassTint: Color?
 
     func makeBody(configuration: Configuration) -> some View {
         let theme = ZenTheme.current
@@ -267,7 +268,8 @@ struct ZenSemanticButtonStyle: ButtonStyle {
         ZenButtonBackground(
             palette: palette,
             isPressed: isPressed && !isLoading,
-            cornerRadius: cornerRadius
+            cornerRadius: cornerRadius,
+            glassTint: glassTint
         )
     }
 
@@ -288,34 +290,34 @@ struct ZenButtonBackground: View {
     let palette: ZenButtonResolvedStyle
     let isPressed: Bool
     let cornerRadius: CGFloat
+    var glassTint: Color? = nil
 
     var body: some View {
+        let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+
         switch palette.backgroundStyle {
         case .filled, .muted, .transparent:
-            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                .fill(isPressed ? palette.pressedBackgroundColor : palette.backgroundColor)
+            shape.fill(isPressed ? palette.pressedBackgroundColor : palette.backgroundColor)
         case .glass:
             if #available(iOS 26, *) {
-                Color.clear
-                    .glassEffect(in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                if let glassTint {
+                    Color.clear.glassEffect(.regular.tint(glassTint), in: shape)
+                } else {
+                    Color.clear.glassEffect(in: shape)
+                }
             } else {
                 ZStack {
-                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .fill(.ultraThinMaterial)
-                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .fill((isPressed ? palette.pressedBackgroundColor : palette.backgroundColor).opacity(isPressed ? 0.42 : 0.22))
+                    shape.fill(.ultraThinMaterial)
+                    shape.fill((isPressed ? palette.pressedBackgroundColor : palette.backgroundColor).opacity(isPressed ? 0.42 : 0.22))
                 }
             }
         case .glassProminent:
             if #available(iOS 26, *) {
-                Color.clear
-                    .glassEffect(.regular.tint(.zenPrimary), in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                Color.clear.glassEffect(.regular.tint(glassTint ?? .zenPrimary), in: shape)
             } else {
                 ZStack {
-                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .fill(.ultraThinMaterial)
-                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .fill((isPressed ? palette.pressedBackgroundColor : palette.backgroundColor).opacity(isPressed ? 0.65 : 0.45))
+                    shape.fill(.ultraThinMaterial)
+                    shape.fill((isPressed ? palette.pressedBackgroundColor : palette.backgroundColor).opacity(isPressed ? 0.65 : 0.45))
                 }
             }
         }

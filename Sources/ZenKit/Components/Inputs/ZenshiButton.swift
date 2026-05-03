@@ -226,6 +226,7 @@ public struct ZenButton<Label: View>: View {
     private let size: ZenButtonSize
     private let isLoading: Bool
     private let fullWidth: Bool
+    private let glassTint: Color?
     private let action: () -> Void
     private let label: () -> Label
 
@@ -234,6 +235,7 @@ public struct ZenButton<Label: View>: View {
         size: ZenButtonSize = .default,
         isLoading: Bool = false,
         fullWidth: Bool = false,
+        glassTint: Color? = nil,
         action: @escaping () -> Void,
         @ViewBuilder label: @escaping () -> Label
     ) {
@@ -241,6 +243,7 @@ public struct ZenButton<Label: View>: View {
         self.size = size
         self.isLoading = isLoading
         self.fullWidth = fullWidth
+        self.glassTint = glassTint
         self.action = action
         self.label = label
     }
@@ -263,7 +266,8 @@ public struct ZenButton<Label: View>: View {
                         variant: variant,
                         size: size,
                         isLoading: isLoading,
-                        fullWidth: fullWidth
+                        fullWidth: fullWidth,
+                        glassTint: glassTint
                     )
                 )
             }
