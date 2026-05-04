@@ -272,7 +272,6 @@ public struct ZenBadge: View {
         }
         .font(font)
         .foregroundStyle(foregroundColor)
-        .fixedSize(horizontal: true, vertical: false)
         .padding(.leading, hPad)
         .padding(.trailing, onRemove == nil ? hPad : 8)
         .padding(.vertical, vPad)

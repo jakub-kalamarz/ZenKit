@@ -49,7 +49,7 @@ public struct ZenConfirmationDialog<Content: View>: View {
     private let actions: [ZenConfirmationDialogAction]
     private let content: () -> Content
     @Environment(\.zenOverlayPresenter) private var overlayPresenter
-    private let dialogID = UUID()
+    @State private var dialogID = UUID()
 
     public init(
         title: String,

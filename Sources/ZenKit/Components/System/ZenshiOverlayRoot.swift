@@ -1,4 +1,7 @@
 import SwiftUI
+#if os(iOS)
+import UIKit
+#endif
 
 private struct ZenOverlayPresenterKey: EnvironmentKey {
     static let defaultValue: ZenOverlayPresenter? = nil
@@ -14,6 +17,15 @@ extension EnvironmentValues {
 @MainActor
 final class ZenOverlayPresenter: ObservableObject {
     @Published private(set) var confirmationDialog: ConfirmationDialogState?
+    @Published private(set) var usesWindowPresentation = false
+
+    #if os(iOS)
+    static let confirmationWindowLevel = UIWindow.Level.alert + 1
+
+    private weak var windowScene: UIWindowScene?
+    private var overlayWindow: UIWindow?
+    private var windowDismissalTask: Task<Void, Never>?
+    #endif
 
     struct ConfirmationDialogState: Equatable, Identifiable {
         let id: UUID
@@ -52,18 +64,90 @@ final class ZenOverlayPresenter: ObservableObject {
                 )
             }
         )
+        updateWindowPresentation()
     }
 
     func dismissConfirmationDialog(id: UUID? = nil) {
         guard let id else {
             confirmationDialog = nil
+            updateWindowPresentation()
             return
         }
 
         if confirmationDialog?.id == id {
             confirmationDialog = nil
+            updateWindowPresentation()
         }
     }
+
+    #if os(iOS)
+    func setWindowScene(_ scene: UIWindowScene?) {
+        guard windowScene !== scene else {
+            return
+        }
+
+        windowScene = scene
+        usesWindowPresentation = scene != nil
+        updateWindowPresentation()
+    }
+
+    private func updateWindowPresentation() {
+        guard let windowScene else {
+            tearDownOverlayWindow()
+            usesWindowPresentation = false
+            return
+        }
+
+        usesWindowPresentation = true
+
+        if confirmationDialog != nil {
+            windowDismissalTask?.cancel()
+            windowDismissalTask = nil
+            showOverlayWindow(in: windowScene)
+        } else {
+            scheduleOverlayWindowDismissal()
+        }
+    }
+
+    private func showOverlayWindow(in scene: UIWindowScene) {
+        if overlayWindow == nil || overlayWindow?.windowScene !== scene {
+            let window = UIWindow(windowScene: scene)
+            let hostingController = UIHostingController(
+                rootView: ZenWindowConfirmationDialogRoot(presenter: self)
+            )
+            hostingController.view.backgroundColor = .clear
+
+            window.rootViewController = hostingController
+            window.backgroundColor = .clear
+            window.windowLevel = Self.confirmationWindowLevel
+            overlayWindow = window
+        }
+
+        overlayWindow?.isHidden = false
+    }
+
+    private func scheduleOverlayWindowDismissal() {
+        windowDismissalTask?.cancel()
+        windowDismissalTask = Task { @MainActor in
+            try? await Task.sleep(for: .seconds(ZenConfirmationDialogMotion.dismissCompletionDelay))
+            guard !Task.isCancelled, confirmationDialog == nil else {
+                return
+            }
+            tearDownOverlayWindow()
+            windowDismissalTask = nil
+        }
+    }
+
+    private func tearDownOverlayWindow() {
+        windowDismissalTask?.cancel()
+        windowDismissalTask = nil
+        overlayWindow?.isHidden = true
+        overlayWindow?.rootViewController = nil
+        overlayWindow = nil
+    }
+    #else
+    private func updateWindowPresentation() {}
+    #endif
 }
 
 public struct ZenOverlayRoot<Content: View>: View {
@@ -86,11 +170,81 @@ public struct ZenOverlayRoot<Content: View>: View {
                 presentAnimation: ZenConfirmationDialogMotion.presentAnimation,
                 dismissAnimation: ZenConfirmationDialogMotion.dismissAnimation
             ),
+            isOverlayPresented: !presenter.usesWindowPresentation && dialogRenderState.renderedDialog != nil,
+            isOverlayVisible: dialogRenderState.isPresented
+        ) {
+            rootContent
+        } overlay: {
+            if !presenter.usesWindowPresentation, let dialog = dialogRenderState.renderedDialog {
+                ZenRootConfirmationDialogPresentation(
+                    state: dialog,
+                    isPresented: dialogRenderState.isPresented,
+                    dismiss: { presenter.dismissConfirmationDialog(id: dialog.id) }
+                )
+            }
+        }
+        .task(id: presenter.confirmationDialog) {
+            syncDialogRenderState(with: presenter.confirmationDialog)
+        }
+    }
+
+    @ViewBuilder
+    private var rootContent: some View {
+        #if os(iOS)
+        content
+            .environment(\.zenOverlayPresenter, presenter)
+            .background {
+                ZenOverlayWindowSceneReader { scene in
+                    presenter.setWindowScene(scene)
+                }
+            }
+        #else
+        content
+            .environment(\.zenOverlayPresenter, presenter)
+        #endif
+    }
+
+    private func syncDialogRenderState(with dialog: ZenOverlayPresenter.ConfirmationDialogState?) {
+        dismissalTask?.cancel()
+        dismissalTask = nil
+
+        dialogRenderState.sync(with: dialog)
+
+        guard dialog == nil else {
+            return
+        }
+
+        dismissalTask = Task { @MainActor in
+            try? await Task.sleep(for: .seconds(ZenConfirmationDialogMotion.dismissCompletionDelay))
+            guard !Task.isCancelled else {
+                return
+            }
+            dialogRenderState.finishDismissalIfNeeded()
+            dismissalTask = nil
+        }
+    }
+}
+
+#if os(iOS)
+private struct ZenWindowConfirmationDialogRoot: View {
+    @ObservedObject var presenter: ZenOverlayPresenter
+    @State private var dialogRenderState = ZenConfirmationDialogRenderState()
+    @State private var dismissalTask: Task<Void, Never>?
+
+    var body: some View {
+        ZenOverlayHost(
+            configuration: .centeredModal(
+                scrimTransition: ZenConfirmationDialogMotion.backdropTransition,
+                overlayTransition: .identity,
+                scrimPresentAnimation: .easeOut(duration: 0.16),
+                scrimDismissAnimation: .easeOut(duration: 0.12),
+                presentAnimation: ZenConfirmationDialogMotion.presentAnimation,
+                dismissAnimation: ZenConfirmationDialogMotion.dismissAnimation
+            ),
             isOverlayPresented: dialogRenderState.renderedDialog != nil,
             isOverlayVisible: dialogRenderState.isPresented
         ) {
-            content
-                .environment(\.zenOverlayPresenter, presenter)
+            Color.clear
         } overlay: {
             if let dialog = dialogRenderState.renderedDialog {
                 ZenRootConfirmationDialogPresentation(
@@ -100,6 +254,7 @@ public struct ZenOverlayRoot<Content: View>: View {
                 )
             }
         }
+        .background(Color.clear)
         .task(id: presenter.confirmationDialog) {
             syncDialogRenderState(with: presenter.confirmationDialog)
         }
@@ -125,6 +280,38 @@ public struct ZenOverlayRoot<Content: View>: View {
         }
     }
 }
+
+private struct ZenOverlayWindowSceneReader: UIViewRepresentable {
+    let onSceneChange: @MainActor (UIWindowScene?) -> Void
+
+    func makeUIView(context: Context) -> SceneReportingView {
+        let view = SceneReportingView()
+        view.onSceneChange = onSceneChange
+        return view
+    }
+
+    func updateUIView(_ uiView: SceneReportingView, context: Context) {
+        uiView.onSceneChange = onSceneChange
+        uiView.reportScene()
+    }
+
+    final class SceneReportingView: UIView {
+        var onSceneChange: (@MainActor (UIWindowScene?) -> Void)?
+
+        override func didMoveToWindow() {
+            super.didMoveToWindow()
+            reportScene()
+        }
+
+        func reportScene() {
+            let scene = window?.windowScene
+            Task { @MainActor in
+                onSceneChange?(scene)
+            }
+        }
+    }
+}
+#endif
 
 private struct ZenRootConfirmationDialogPresentation: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -160,7 +347,6 @@ private struct ZenRootConfirmationDialogPresentation: View {
                         .font(.zenIntro)
                         .foregroundStyle(Color.zenTextMuted)
                         .multilineTextAlignment(.center)
-                        .fixedSize(horizontal: false, vertical: true)
                         .modifier(
                             ZenConfirmationDialogContentStage(
                                 isVisible: hasAnimatedIn,

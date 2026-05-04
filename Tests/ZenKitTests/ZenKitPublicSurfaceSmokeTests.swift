@@ -1,6 +1,9 @@
 import SwiftUI
 import Testing
 @testable import ZenKit
+#if os(iOS)
+import UIKit
+#endif
 #if canImport(AppKit)
 import AppKit
 #endif
@@ -299,6 +302,13 @@ struct ZenKitPublicSurfaceSmokeTests {
         #expect(ZenConfirmationDialogMotion.exitScale == 0.985)
         #expect(ZenConfirmationDialogMotion.contentEnterOffsetY == 10)
     }
+
+    #if os(iOS)
+    @Test
+    func confirmationDialogWindowUsesAlertLevel() {
+        #expect(ZenOverlayPresenter.confirmationWindowLevel == UIWindow.Level.alert + 1)
+    }
+    #endif
 
     @Test
     func confirmationDialogRenderStateRetainsDialogDuringDismissal() {

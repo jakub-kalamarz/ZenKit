@@ -15,7 +15,6 @@ public struct ZenSectionDivider: View {
             Text(label)
                 .font(.zenGroup)
                 .foregroundStyle(Color.zenTextMuted)
-                .fixedSize()
             Rectangle()
                 .fill(Color.zenBorder)
                 .frame(height: 1)

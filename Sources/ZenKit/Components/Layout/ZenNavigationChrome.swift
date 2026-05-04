@@ -160,7 +160,6 @@ struct ZenNavigationInlineTitleView: View {
                     .font(.zenGroup)
                     .foregroundStyle(Color.zenTextMuted)
                     .lineLimit(1)
-                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .accessibilityElement(children: .combine)

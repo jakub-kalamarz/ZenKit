@@ -231,7 +231,6 @@ private struct ZenToastCard: View {
                         Text(message)
                             .font(.zenGroup)
                             .foregroundStyle(Color.zenTextMuted)
-                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)

@@ -40,7 +40,6 @@ public struct ZenTagInput: View {
                     .foregroundStyle(Color.zenTextPrimary)
                     .textFieldStyle(.plain)
                     .focused($isFocused)
-                    .fixedSize()
                     .onSubmit {
                         submitTag()
                     }
