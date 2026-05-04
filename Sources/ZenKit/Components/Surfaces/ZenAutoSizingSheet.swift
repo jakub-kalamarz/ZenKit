@@ -1,19 +1,20 @@
 import SwiftUI
 
-public extension View {
+extension View {
     /// Prezentuje arkusz (sheet), który automatycznie dostosowuje swoją wysokość do zawartości.
-    func zenAutoSizingSheet<Content: View>(
+    public func zenAutoSizingSheet<Content: View>(
         isPresented: Binding<Bool>,
         backgroundColor: Color = Color.zenBackground,
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping () -> Content
     ) -> some View {
-        self.modifier(ZenAutoSizingSheetModifier(
-            isPresented: isPresented,
-            backgroundColor: backgroundColor,
-            onDismiss: onDismiss,
-            sheetContent: content
-        ))
+        self.modifier(
+            ZenAutoSizingSheetModifier(
+                isPresented: isPresented,
+                backgroundColor: backgroundColor,
+                onDismiss: onDismiss,
+                sheetContent: content
+            ))
     }
 }
 
@@ -40,34 +41,33 @@ private struct ZenAutoSizingSheetModifier<SheetContent: View>: ViewModifier {
             }
         ) {
             #if os(iOS)
-            ZStack(alignment: .top) {
-                backgroundColor
-                    .ignoresSafeArea()
+                ZStack(alignment: .top) {
+                    backgroundColor
+                        .ignoresSafeArea()
 
-                if isScrollable {
-                    sheetContent()
-                } else {
-                    sheetContent()
-                        .zenReadSize { size in
-                            let screenHeight = UIScreen.main.bounds.height
-                            let maxHeight = screenHeight * 0.92
-                            if size.height > maxHeight {
-                                isScrollable = true
-                                updateDetents(newHeight: maxHeight)
-                            } else {
-                                updateDetents(newHeight: size.height)
+                    if isScrollable {
+                        sheetContent()
+                    } else {
+                        sheetContent()
+                            .zenReadSize { size in
+                                let screenHeight = UIScreen.main.bounds.height
+                                let maxHeight = screenHeight * 0.92
+                                if size.height > maxHeight {
+                                    isScrollable = true
+                                    updateDetents(newHeight: maxHeight)
+                                } else {
+                                    updateDetents(newHeight: size.height)
+                                }
                             }
-                        }
+                    }
                 }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .presentationDetents(detents, selection: $selectedDetent)
-            .presentationDragIndicator(.hidden)
-            .presentationCornerRadius(12)
-            .presentationBackground(backgroundColor)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .presentationDetents(detents, selection: $selectedDetent)
+                .presentationDragIndicator(.hidden)
+                .presentationBackground(backgroundColor)
             #else
-            sheetContent()
-                .background(backgroundColor)
+                sheetContent()
+                    .background(backgroundColor)
             #endif
         }
     }
@@ -87,6 +87,7 @@ private struct ZenAutoSizingSheetModifier<SheetContent: View>: ViewModifier {
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            guard selectedDetent == newDetent else { return }
             detents = [newDetent]
         }
     }
