@@ -27,4 +27,23 @@ struct ZenKitFormComponentTests {
 
         _ = view
     }
+
+    @Test
+    func inputBarSupportsReturnSubmitAndLoadingState() {
+        let view = VStack {
+            ZenInputBar(
+                text: .constant("Draft message"),
+                prompt: "Ask anything",
+                submitsOnReturn: true
+            ) {}
+
+            ZenInputBar(
+                text: .constant("Sending message"),
+                prompt: "Reply",
+                isLoading: true
+            ) {}
+        }
+
+        _ = view
+    }
 }

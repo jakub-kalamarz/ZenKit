@@ -1,12 +1,14 @@
 import SwiftUI
 
 public struct ZenInputBar: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Binding private var text: String
     @FocusState private var internalFocus: Bool
 
     private let prompt: String
     private let isLoading: Bool
     private let lineLimit: ClosedRange<Int>
+    private let submitsOnReturn: Bool
     private let onSubmit: () -> Void
     private let externalFocus: FocusState<Bool>.Binding?
 
@@ -16,6 +18,7 @@ public struct ZenInputBar: View {
         isFocused: FocusState<Bool>.Binding? = nil,
         isLoading: Bool = false,
         lineLimit: ClosedRange<Int> = 1...4,
+        submitsOnReturn: Bool = false,
         onSubmit: @escaping () -> Void
     ) {
         _text = text
@@ -23,6 +26,7 @@ public struct ZenInputBar: View {
         self.externalFocus = isFocused
         self.isLoading = isLoading
         self.lineLimit = lineLimit
+        self.submitsOnReturn = submitsOnReturn
         self.onSubmit = onSubmit
     }
 
@@ -34,11 +38,14 @@ public struct ZenInputBar: View {
         .padding(.leading, ZenSpacing.medium)
         .padding(.trailing, ZenSpacing.xSmall)
         .padding(.vertical, ZenSpacing.xSmall)
-        .background(
+        .background(Capsule().fill(Color.zenSurface))
+        .overlay(
             Capsule()
-                .fill(Color.zenSurface)
-                .overlay(Capsule().stroke(Color.zenBorder, lineWidth: 1))
+                .strokeBorder(borderColor, lineWidth: isFieldFocused ? 1.5 : 1)
         )
+        .shadow(color: shadowColor, radius: isFieldFocused ? 14 : 0, y: isFieldFocused ? 6 : 0)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.18), value: isFieldFocused)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.18), value: canSubmit)
     }
 
     @ViewBuilder
@@ -48,6 +55,12 @@ public struct ZenInputBar: View {
             .foregroundStyle(Color.zenTextPrimary)
             .textFieldStyle(.plain)
             .lineLimit(lineLimit)
+            .submitLabel(submitsOnReturn ? .send : .return)
+            .onSubmit {
+                guard submitsOnReturn else { return }
+                submitIfPossible()
+            }
+            .accessibilityLabel(prompt)
 
         if let externalFocus {
             field.focused(externalFocus)
@@ -57,7 +70,7 @@ public struct ZenInputBar: View {
     }
 
     private var submitButton: some View {
-        Button(action: onSubmit) {
+        Button(action: submitIfPossible) {
             if isLoading {
                 ProgressView()
                     .tint(Color.zenPrimaryForeground)
@@ -69,8 +82,44 @@ public struct ZenInputBar: View {
             }
         }
         .frame(width: 34, height: 34)
-        .background(Circle().fill(Color.zenPrimary))
-        .disabled(isLoading)
+        .background(
+            Circle()
+                .fill(isSubmitControlActive ? Color.zenPrimary : Color.zenSurfaceMuted)
+        )
+        .scaleEffect(isSubmitControlActive ? 1 : 0.92)
+        .opacity(isSubmitControlActive ? 1 : 0.72)
+        .disabled(!canSubmit)
+        .accessibilityLabel("Send")
+        .accessibilityHint(submitsOnReturn ? "Sends the message. Return also sends." : "Sends the message.")
+    }
+
+    private var isSubmitControlActive: Bool {
+        isLoading || canSubmit
+    }
+
+    private var canSubmit: Bool {
+        !isLoading && !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    private var isFieldFocused: Bool {
+        externalFocus?.wrappedValue ?? internalFocus
+    }
+
+    private var borderColor: Color {
+        if isFieldFocused {
+            return Color.zenPrimary.opacity(0.75)
+        }
+
+        return Color.zenBorder
+    }
+
+    private var shadowColor: Color {
+        Color.zenPrimary.opacity(0.10)
+    }
+
+    private func submitIfPossible() {
+        guard canSubmit else { return }
+        onSubmit()
     }
 }
 
@@ -80,7 +129,7 @@ private struct ZenInputBarPreview: View {
 
     var body: some View {
         VStack(spacing: ZenSpacing.medium) {
-            ZenInputBar(text: $text, prompt: "Ask anything...", onSubmit: {})
+            ZenInputBar(text: $text, prompt: "Ask anything...", submitsOnReturn: true, onSubmit: {})
             ZenInputBar(text: $text, prompt: "Ask anything...", isLoading: true, onSubmit: {})
             ZenInputBar(text: .constant("Some text"), prompt: "Ask anything...", onSubmit: {})
         }
