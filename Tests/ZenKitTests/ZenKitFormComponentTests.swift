@@ -42,6 +42,12 @@ struct ZenKitFormComponentTests {
                 prompt: "Reply",
                 isLoading: true
             ) {}
+
+            ZenInputBar(
+                text: .constant("Draft\nmessage"),
+                prompt: "Reply",
+                lineLimit: 1...3
+            ) {}
         }
 
         _ = view

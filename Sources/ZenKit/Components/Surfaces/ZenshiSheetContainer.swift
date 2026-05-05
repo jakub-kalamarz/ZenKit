@@ -104,13 +104,9 @@ public struct ZenSheetContainer<Content: View, Footer: View>: View {
 
     private var footerBlock: some View {
         VStack(spacing: 0) {
-            Divider()
-                .overlay(Color.zenBorder.opacity(0.7))
-
             footer()
                 .padding(.horizontal, ZenSpacing.medium)
-                .padding(.top, 14)
-                .padding(.bottom, ZenSpacing.medium)
+                .padding(.top, ZenSpacing.small)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
         .background(Color.zenBackground)

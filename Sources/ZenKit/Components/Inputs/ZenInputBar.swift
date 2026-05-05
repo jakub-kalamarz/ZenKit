@@ -50,22 +50,29 @@ public struct ZenInputBar: View {
 
     @ViewBuilder
     private var textField: some View {
-        let field = TextField(prompt, text: $text, axis: .vertical)
+        let field = inputField
             .font(.zenBody2)
             .foregroundStyle(Color.zenTextPrimary)
             .textFieldStyle(.plain)
-            .lineLimit(lineLimit)
-            .submitLabel(submitsOnReturn ? .send : .return)
-            .onSubmit {
-                guard submitsOnReturn else { return }
-                submitIfPossible()
-            }
             .accessibilityLabel(prompt)
 
         if let externalFocus {
             field.focused(externalFocus)
         } else {
             field.focused($internalFocus)
+        }
+    }
+
+    @ViewBuilder
+    private var inputField: some View {
+        if submitsOnReturn {
+            TextField(prompt, text: $text)
+                .submitLabel(.send)
+                .onSubmit(submitIfPossible)
+        } else {
+            TextField(prompt, text: $text, axis: .vertical)
+                .lineLimit(lineLimit)
+                .submitLabel(.return)
         }
     }
 
