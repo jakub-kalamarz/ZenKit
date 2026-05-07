@@ -46,8 +46,8 @@ public struct ZenIconBadge: View {
 
             switch content {
             case .icon(let source):
-                ZenIcon(source: source, size: size * 0.65)
-                    .font(.system(size: size * 0.65, weight: .semibold))
+                ZenIcon(source: source, size: size * 0.55)
+                    .font(.system(size: size * 0.55, weight: .semibold))
                     .foregroundStyle(iconColor(for: style))
             case .label(let text):
                 Text(text)
