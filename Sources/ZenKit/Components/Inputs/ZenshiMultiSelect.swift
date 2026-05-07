@@ -116,11 +116,11 @@ public struct ZenMultiSelect<Option, OptionLabel: View, SummaryLabel: View>: Vie
                 }
 
                 if mode == .deferred {
-                    ZenButton("Apply", fullWidth: true) {
+                    ZenButton("Apply") {
                         applyDraft()
                     }
                 } else {
-                    ZenButton("Done", fullWidth: true) {
+                    ZenButton("Done") {
                         isPresented = false
                     }
                 }

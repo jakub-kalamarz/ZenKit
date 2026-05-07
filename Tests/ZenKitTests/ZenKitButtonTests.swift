@@ -115,6 +115,29 @@ struct ZenKitButtonTests {
     }
 
     @Test
+    func buttonFramesKeepIconOnlySizesSquareAndTextSizesIntrinsic() {
+        let metrics = ZenTheme(density: .compact).resolvedMetrics
+        let iconFrame = ZenButtonSize.iconSm.resolvedFrame(metrics: metrics, fullWidth: true)
+        let textFrame = ZenButtonSize.sm.resolvedFrame(metrics: metrics, fullWidth: false)
+        let fullWidthTextFrame = ZenButtonSize.sm.resolvedFrame(metrics: metrics, fullWidth: true)
+
+        #expect(iconFrame.width == 36)
+        #expect(iconFrame.height == 36)
+        #expect(iconFrame.maxWidth == nil)
+        #expect(iconFrame.minHeight == nil)
+
+        #expect(textFrame.width == nil)
+        #expect(textFrame.height == nil)
+        #expect(textFrame.maxWidth == nil)
+        #expect(textFrame.minHeight == 36)
+
+        #expect(fullWidthTextFrame.width == nil)
+        #expect(fullWidthTextFrame.height == nil)
+        #expect(fullWidthTextFrame.maxWidth == .infinity)
+        #expect(fullWidthTextFrame.minHeight == 36)
+    }
+
+    @Test
     func decorativeIconPlacementTracksLeadingAndTrailingSlots() {
         let leading = ZenButtonDecorativeIcon(assetName: "GoogleLogo")
         let trailing = ZenButtonDecorativeIcon(systemName: "arrow.right", placement: .trailing)

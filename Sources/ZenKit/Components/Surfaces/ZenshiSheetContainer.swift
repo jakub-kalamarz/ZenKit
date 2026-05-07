@@ -148,7 +148,7 @@ private struct ZenSheetContainerPreview: View {
                     ZenButton("Cancel", variant: .secondary) {
                         isPresented = false
                     }
-                    ZenButton("Send Invite", fullWidth: true) {}
+                    ZenButton("Send Invite") {}
                 }
             }
         }

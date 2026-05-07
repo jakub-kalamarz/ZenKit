@@ -21,6 +21,7 @@ public struct ZenButtonLabel<Label: View>: View {
     }
 
     public var body: some View {
+        Group {
         if variant == .plain {
             label()
                 .lineLimit(1)
@@ -30,15 +31,19 @@ public struct ZenButtonLabel<Label: View>: View {
             let metrics = theme.resolvedMetrics
             let palette = ZenButtonResolvedStyle(variant: variant)
             let cornerRadius = size.cornerRadius(theme: theme, parentRadius: parentCornerRadius)
+            let frame = size.resolvedFrame(metrics: metrics, fullWidth: fullWidth)
 
             label()
                 .lineLimit(1)
                 .font(size.font)
                 .foregroundStyle(palette.foregroundColor)
                 .frame(
-                    minWidth: size.isIconOnly ? size.minHeight(metrics: metrics) : nil,
-                    maxWidth: fullWidth ? .infinity : nil,
-                    minHeight: size.minHeight(metrics: metrics)
+                    width: frame.width,
+                    height: frame.height
+                )
+                .frame(
+                    maxWidth: frame.maxWidth,
+                    minHeight: frame.minHeight
                 )
                 .padding(.horizontal, size.horizontalPadding)
                 .padding(.vertical, size.verticalPadding)
@@ -49,6 +54,8 @@ public struct ZenButtonLabel<Label: View>: View {
                 )
                 .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         }
+        }
+        .fixedSize(horizontal: !fullWidth, vertical: true)
     }
 }
 

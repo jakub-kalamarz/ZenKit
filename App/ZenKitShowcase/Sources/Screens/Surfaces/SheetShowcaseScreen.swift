@@ -50,7 +50,7 @@ struct SheetShowcaseScreen: View {
                     ZenButton("Cancel", variant: .secondary) {
                         isPresented = false
                     }
-                    ZenButton("Send invite", fullWidth: true) {}
+                    ZenButton("Send invite") {}
                 }
             }
         }

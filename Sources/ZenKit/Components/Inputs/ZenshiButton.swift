@@ -181,6 +181,23 @@ public enum ZenButtonSize {
     var supportsDecorativeIcons: Bool {
         isIconOnly == false
     }
+
+    func resolvedFrame(metrics: ZenResolvedMetrics, fullWidth: Bool) -> ZenControlFrame {
+        let height = minHeight(metrics: metrics)
+
+        if isIconOnly {
+            return ZenControlFrame(width: height, height: height, maxWidth: nil, minHeight: nil)
+        }
+
+        return ZenControlFrame(width: nil, height: nil, maxWidth: fullWidth ? .infinity : nil, minHeight: height)
+    }
+}
+
+struct ZenControlFrame: Equatable {
+    let width: CGFloat?
+    let height: CGFloat?
+    let maxWidth: CGFloat?
+    let minHeight: CGFloat?
 }
 
 public struct ZenButtonTextLabel: View {
@@ -273,6 +290,7 @@ public struct ZenButton<Label: View>: View {
             }
         }
         .disabled(isLoading)
+        .fixedSize(horizontal: !fullWidth, vertical: true)
     }
 }
 

@@ -180,14 +180,18 @@ struct ZenSemanticButtonStyle: ButtonStyle {
         let metrics = theme.resolvedMetrics
         let palette = ZenButtonResolvedStyle(variant: variant)
         let cornerRadius = size.cornerRadius(theme: theme, parentRadius: parentCornerRadius)
+        let frame = size.resolvedFrame(metrics: metrics, fullWidth: fullWidth)
 
         buttonContent(configuration: configuration, palette: palette)
             .font(size.font)
             .foregroundStyle(palette.foregroundColor)
             .frame(
-                minWidth: size.isIconOnly ? size.minHeight(metrics: metrics) : nil,
-                maxWidth: fullWidth ? .infinity : nil,
-                minHeight: size.minHeight(metrics: metrics)
+                width: frame.width,
+                height: frame.height
+            )
+            .frame(
+                maxWidth: frame.maxWidth,
+                minHeight: frame.minHeight
             )
             .padding(.horizontal, size.horizontalPadding)
             .padding(.vertical, size.verticalPadding)
@@ -299,6 +303,7 @@ struct ZenButtonBackground: View {
         case .filled, .muted, .transparent:
             shape.fill(isPressed ? palette.pressedBackgroundColor : palette.backgroundColor)
         case .glass:
+            #if os(iOS)
             if #available(iOS 26, *) {
                 if let glassTint {
                     Color.clear.glassEffect(.regular.tint(glassTint), in: shape)
@@ -311,7 +316,14 @@ struct ZenButtonBackground: View {
                     shape.fill((isPressed ? palette.pressedBackgroundColor : palette.backgroundColor).opacity(isPressed ? 0.42 : 0.22))
                 }
             }
+            #else
+            ZStack {
+                shape.fill(.ultraThinMaterial)
+                shape.fill((isPressed ? palette.pressedBackgroundColor : palette.backgroundColor).opacity(isPressed ? 0.42 : 0.22))
+            }
+            #endif
         case .glassProminent:
+            #if os(iOS)
             if #available(iOS 26, *) {
                 Color.clear.glassEffect(.regular.tint((glassTint ?? .zenPrimary).opacity(0.5)), in: shape)
             } else {
@@ -320,6 +332,12 @@ struct ZenButtonBackground: View {
                     shape.fill((isPressed ? palette.pressedBackgroundColor : palette.backgroundColor).opacity(isPressed ? 0.65 : 0.45))
                 }
             }
+            #else
+            ZStack {
+                shape.fill(.ultraThinMaterial)
+                shape.fill((isPressed ? palette.pressedBackgroundColor : palette.backgroundColor).opacity(isPressed ? 0.65 : 0.45))
+            }
+            #endif
         }
     }
 }

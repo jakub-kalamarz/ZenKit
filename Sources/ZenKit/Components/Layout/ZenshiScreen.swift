@@ -1,5 +1,18 @@
 import SwiftUI
 
+private enum ZenScreenMetrics {
+    static let contentPadding = ZenSpacing.medium
+
+    static var listRowInsets: EdgeInsets {
+        EdgeInsets(
+            top: ZenSpacing.xSmall,
+            leading: contentPadding,
+            bottom: ZenSpacing.xSmall,
+            trailing: contentPadding
+        )
+    }
+}
+
 public enum ZenScreenContainerStyle: Sendable {
     case scroll
     case list
@@ -114,17 +127,11 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
             }
         case .list:
             if ignoresTopSafeArea {
-                List {
-                    if let header { header() }
-                    content()
-                }
+                listView
                 .scrollContentBackground(.hidden)
                 .ignoresSafeArea(edges: .top)
             } else {
-                List {
-                    if let header { header() }
-                    content()
-                }
+                listView
                 .scrollContentBackground(.hidden)
             }
         case .static:
@@ -169,6 +176,18 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
             }
 
             content()
+        }
+    }
+
+    private var listView: some View {
+        List {
+            if let header {
+                header()
+                    .listRowInsets(ZenScreenMetrics.listRowInsets)
+            }
+
+            content()
+                .listRowInsets(ZenScreenMetrics.listRowInsets)
         }
     }
 }

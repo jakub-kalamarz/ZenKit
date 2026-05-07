@@ -167,6 +167,7 @@ public struct ZenBadge: View {
         )
         .clipShape(shape)
         .contentShape(shape)
+        .fixedSize(horizontal: true, vertical: false)
     }
     
     private var foregroundColor: Color {

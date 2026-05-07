@@ -35,4 +35,12 @@ struct ZenKitBadgeTests {
         let badge = ZenBadge("Tint", tint: .orange)
         _ = badge
     }
+
+    @Test
+    func removableBadgeMetricsStayFixedForCompactChips() {
+        #expect(ZenBadgeStyleMetrics.removeButtonWidth == 24)
+        #expect(ZenBadgeStyleMetrics.height == 28)
+        #expect(ZenBadgeStyleMetrics.smallHeight == 20)
+        #expect(ZenBadgeStyleMetrics.removeIconSize == 10)
+    }
 }
