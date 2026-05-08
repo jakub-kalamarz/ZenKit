@@ -44,17 +44,7 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
                     .foregroundStyle(Color.zenTextMuted)
             }
 
-            HStack(spacing: ZenSpacing.xSmall) {
-                ForEach(segments, id: \.self) { value in
-                    segmentButton(
-                        for: value,
-                        metrics: metrics,
-                        segmentCornerRadius: segmentCornerRadius
-                    )
-                }
-            }
-            .padding(4)
-            .background(alignment: .topLeading) {
+            ZStack(alignment: .topLeading) {
                 RoundedRectangle(cornerRadius: segmentCornerRadius, style: .continuous)
                     .fill(Color.zenSurface)
                     .shadow(color: selectedSegmentShadowColor, radius: 10, y: 3)
@@ -66,7 +56,18 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
                     }
                     .matchedGeometryEffect(id: selection, in: selectionAnimation)
                     .allowsHitTesting(false)
+
+                HStack(spacing: ZenSpacing.xSmall) {
+                    ForEach(segments, id: \.self) { value in
+                        segmentButton(
+                            for: value,
+                            metrics: metrics,
+                            segmentCornerRadius: segmentCornerRadius
+                        )
+                    }
+                }
             }
+            .padding(4)
             .background(Color.zenSurfaceMuted)
             .overlay(
                 RoundedRectangle(cornerRadius: controlCornerRadius, style: .continuous)
