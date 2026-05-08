@@ -102,27 +102,27 @@ public struct ZenMultiSelect<Option, OptionLabel: View, SummaryLabel: View>: Vie
     private var sheetContent: some View {
         ZenSheetContainer(
             title: title,
-            subtitle: mode == .deferred ? "Select options and apply changes." : "Changes are applied immediately."
+            subtitle: mode == .deferred ? "Select options and apply changes." : "Changes are applied immediately.",
+            toolbarLeading: {
+                ZenButton("Clear", variant: .glass, size: .sm) {
+                    clearSelection()
+                }
+            },
+            toolbarTrailing: {
+                if mode == .deferred {
+                    ZenButton("Apply", variant: .glassProminent, size: .sm) {
+                        applyDraft()
+                    }
+                } else {
+                    ZenButton("Done", variant: .glassProminent, size: .sm) {
+                        isPresented = false
+                    }
+                }
+            }
         ) {
             VStack(spacing: ZenSpacing.small) {
                 ForEach(options, id: \.self) { option in
                     optionRow(for: option)
-                }
-            }
-        } footer: {
-            HStack(spacing: ZenSpacing.small) {
-                ZenButton("Clear", variant: .secondary) {
-                    clearSelection()
-                }
-
-                if mode == .deferred {
-                    ZenButton("Apply") {
-                        applyDraft()
-                    }
-                } else {
-                    ZenButton("Done") {
-                        isPresented = false
-                    }
                 }
             }
         }

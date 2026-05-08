@@ -27,10 +27,18 @@ struct SheetShowcaseScreen: View {
         .zenAutoSizingSheet(isPresented: $isPresented) {
             ZenSheetContainer(
                 title: "Invite collaborator",
-                subtitle: "Adjust the content while the sheet is open."
+                subtitle: "Add teammates by email",
+                toolbarLeading: {
+                    ZenButton("Cancel", variant: .glass, size: .sm) {
+                        isPresented = false
+                    }
+                },
+                toolbarTrailing: {
+                    ZenButton("Send", variant: .glassProminent, size: .sm) {}
+                }
             ) {
                 ZenFieldGroup {
-                    ZenField(label: "Email", message: "We’ll send the invite here.") {
+                    ZenField(label: "Email", message: "We'll send the invite here.") {
                         ZenTextInput(text: $email, prompt: "Email")
                     }
 
@@ -44,13 +52,6 @@ struct SheetShowcaseScreen: View {
                             ZenTextInput(text: $message, prompt: "Optional note")
                         }
                     }
-                }
-            } footer: {
-                HStack(spacing: ZenSpacing.small) {
-                    ZenButton("Cancel", variant: .secondary) {
-                        isPresented = false
-                    }
-                    ZenButton("Send invite") {}
                 }
             }
         }

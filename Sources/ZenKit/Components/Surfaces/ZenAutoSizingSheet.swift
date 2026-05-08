@@ -63,7 +63,6 @@ private struct ZenAutoSizingSheetModifier<SheetContent: View>: ViewModifier {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 .presentationDetents(detents, selection: $selectedDetent)
-                .presentationDragIndicator(.hidden)
                 .presentationBackground(backgroundColor)
             #else
                 sheetContent()

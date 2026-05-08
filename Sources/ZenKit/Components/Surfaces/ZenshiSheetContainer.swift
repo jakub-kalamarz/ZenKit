@@ -1,10 +1,10 @@
 import SwiftUI
 
-public struct ZenSheetContainer<Content: View, Footer: View>: View {
+public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Content: View, Footer: View>: View {
     private let title: String
     private let subtitle: String?
-    private let trailingActionTitle: String?
-    private let trailingAction: (() -> Void)?
+    private let toolbarLeading: () -> ToolbarLeading
+    private let toolbarTrailing: () -> ToolbarTrailing
     private let content: () -> Content
     private let footer: () -> Footer
     private let showsFooter: Bool
@@ -12,14 +12,31 @@ public struct ZenSheetContainer<Content: View, Footer: View>: View {
     public init(
         title: String,
         subtitle: String? = nil,
-        trailingActionTitle: String? = nil,
-        trailingAction: (() -> Void)? = nil,
+        @ViewBuilder toolbarLeading: @escaping () -> ToolbarLeading,
+        @ViewBuilder toolbarTrailing: @escaping () -> ToolbarTrailing,
+        @ViewBuilder content: @escaping () -> Content,
+        @ViewBuilder footer: @escaping () -> Footer
+    ) {
+        self.title = title
+        self.subtitle = subtitle
+        self.toolbarLeading = toolbarLeading
+        self.toolbarTrailing = toolbarTrailing
+        self.content = content
+        self.footer = footer
+        self.showsFooter = true
+    }
+
+    public init(
+        title: String,
+        subtitle: String? = nil,
+        @ViewBuilder toolbarLeading: @escaping () -> ToolbarLeading,
+        @ViewBuilder toolbarTrailing: @escaping () -> ToolbarTrailing,
         @ViewBuilder content: @escaping () -> Content
     ) where Footer == EmptyView {
         self.title = title
         self.subtitle = subtitle
-        self.trailingActionTitle = trailingActionTitle
-        self.trailingAction = trailingAction
+        self.toolbarLeading = toolbarLeading
+        self.toolbarTrailing = toolbarTrailing
         self.content = content
         self.footer = { EmptyView() }
         self.showsFooter = false
@@ -28,127 +45,139 @@ public struct ZenSheetContainer<Content: View, Footer: View>: View {
     public init(
         title: String,
         subtitle: String? = nil,
-        trailingActionTitle: String? = nil,
-        trailingAction: (() -> Void)? = nil,
-        @ViewBuilder content: @escaping () -> Content,
-        @ViewBuilder footer: @escaping () -> Footer
-    ) {
+        @ViewBuilder toolbarTrailing: @escaping () -> ToolbarTrailing,
+        @ViewBuilder content: @escaping () -> Content
+    ) where ToolbarLeading == EmptyView, Footer == EmptyView {
         self.title = title
         self.subtitle = subtitle
-        self.trailingActionTitle = trailingActionTitle
-        self.trailingAction = trailingAction
+        self.toolbarLeading = { EmptyView() }
+        self.toolbarTrailing = toolbarTrailing
+        self.content = content
+        self.footer = { EmptyView() }
+        self.showsFooter = false
+    }
+
+    public init(
+        title: String,
+        subtitle: String? = nil,
+        @ViewBuilder content: @escaping () -> Content,
+        @ViewBuilder footer: @escaping () -> Footer
+    ) where ToolbarLeading == EmptyView, ToolbarTrailing == EmptyView {
+        self.title = title
+        self.subtitle = subtitle
+        self.toolbarLeading = { EmptyView() }
+        self.toolbarTrailing = { EmptyView() }
         self.content = content
         self.footer = footer
         self.showsFooter = true
     }
 
+    public init(
+        title: String,
+        subtitle: String? = nil,
+        @ViewBuilder content: @escaping () -> Content
+    ) where ToolbarLeading == EmptyView, ToolbarTrailing == EmptyView, Footer == EmptyView {
+        self.title = title
+        self.subtitle = subtitle
+        self.toolbarLeading = { EmptyView() }
+        self.toolbarTrailing = { EmptyView() }
+        self.content = content
+        self.footer = { EmptyView() }
+        self.showsFooter = false
+    }
+
     public var body: some View {
-        VStack(spacing: 0) {
-            grabber
-            header
-
-            VStack(alignment: .leading, spacing: ZenSpacing.medium) {
-                content()
-            }
-            .padding(.horizontal, ZenSpacing.medium)
-            .padding(.top, 8)
-            .padding(.bottom, showsFooter ? ZenSpacing.medium : ZenSpacing.large)
-            .frame(maxWidth: .infinity, alignment: .leading)
-
-            if showsFooter {
-                footerBlock
-            }
+        NavigationStack {
+            scrollableContent
+                .navigationTitle(title)
+                .zenInlineNavigationTitle()
+                .toolbar {
+                    ToolbarItem(placement: ZenNavigationChrome.leadingToolbarPlacement) {
+                        toolbarLeading()
+                    }
+                    ToolbarItem(placement: ZenNavigationChrome.trailingToolbarPlacement) {
+                        toolbarTrailing()
+                    }
+                }
+                .safeAreaInset(edge: .bottom) {
+                    if showsFooter {
+                        footerBlock
+                    }
+                }
+                .zenBackground()
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.zenBackground)
-        .ignoresSafeArea(.all, edges: .bottom)
+        .presentationDragIndicator(.visible)
     }
 
-    private var grabber: some View {
-        Capsule()
-            .fill(Color.zenTextPrimary.opacity(0.18))
-            .frame(width: 36, height: 5)
-            .frame(maxWidth: .infinity)
-            .padding(.top, 8)
-            .padding(.bottom, 4)
-    }
-
-    private var header: some View {
-        HStack(alignment: .center, spacing: ZenSpacing.medium) {
-            VStack(alignment: .leading, spacing: 2) {
+    private var scrollableContent: some View {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: ZenSpacing.medium) {
                 if let subtitle {
                     Text(subtitle)
                         .font(.zen(.eyebrow, weight: .bold))
                         .foregroundStyle(Color.zenPrimary)
                         .textCase(.uppercase)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
 
-                Text(title)
-                    .font(.zenStat)
-                    .foregroundStyle(Color.zenTextPrimary)
-                    .lineLimit(2)
+                content()
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-
-            if let trailingActionTitle, let trailingAction {
-                Button(trailingActionTitle, action: trailingAction)
-                    .font(.zen(.body2, weight: .semibold))
-                    .foregroundStyle(Color.zenPrimary)
-                    .buttonStyle(.plain)
-            }
+            .padding(.horizontal, ZenSpacing.medium)
+            .padding(.top, ZenSpacing.small)
+            .padding(.bottom, ZenSpacing.large)
         }
-        .padding(.horizontal, ZenSpacing.medium)
-        .padding(.top, 6)
-        .padding(.bottom, 10)
     }
 
     private var footerBlock: some View {
         VStack(spacing: 0) {
             footer()
                 .padding(.horizontal, ZenSpacing.medium)
-                .padding(.top, ZenSpacing.small)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, ZenSpacing.small)
         }
         .background(Color.zenBackground)
     }
 }
 
-private struct ZenSheetContainerPreview: View {
-    @State private var isPresented: Bool
-
-    init(isPresented: Bool = false) {
-        _isPresented = State(initialValue: isPresented)
+private extension View {
+    @ViewBuilder
+    func zenInlineNavigationTitle() -> some View {
+        #if os(iOS)
+        self.navigationBarTitleDisplayMode(.inline)
+        #else
+        self
+        #endif
     }
+}
+
+private struct ZenSheetContainerPreview: View {
+    @State private var isPresented = false
 
     var body: some View {
         ZStack {
-            Color.zenBackground
-                .ignoresSafeArea()
-
-            ZenButton("Open sheet") {
-                isPresented = true
-            }
+            Color.zenBackground.ignoresSafeArea()
+            ZenButton("Open sheet") { isPresented = true }
         }
-        .zenAutoSizingSheet(isPresented: $isPresented) {
+        .sheet(isPresented: $isPresented) {
             ZenSheetContainer(
                 title: "Share workspace",
-                subtitle: "Invite collaborators by email"
+                subtitle: "Invite collaborators by email",
+                toolbarLeading: {
+                    ZenButton("Cancel", variant: .glass, size: .sm) {
+                        isPresented = false
+                    }
+                },
+                toolbarTrailing: {
+                    ZenButton("Send", variant: .glassProminent, size: .sm) {}
+                }
             ) {
                 ZenFieldGroup {
-                    ZenField(label: "Email", message: "We’ll send them an invite") {
+                    ZenField(label: "Email", message: "We'll send them an invite") {
                         ZenTextInput(
                             text: .constant("new-teammate@example.com"),
                             prompt: "Email",
                             leadingIcon: .asset("Envelope")
                         )
                     }
-                }
-            } footer: {
-                HStack(spacing: ZenSpacing.small) {
-                    ZenButton("Cancel", variant: .secondary) {
-                        isPresented = false
-                    }
-                    ZenButton("Send Invite") {}
                 }
             }
         }
@@ -160,5 +189,28 @@ private struct ZenSheetContainerPreview: View {
 }
 
 #Preview("Presented") {
-    ZenSheetContainerPreview(isPresented: true)
+    Color.zenBackground
+        .ignoresSafeArea()
+        .sheet(isPresented: .constant(true)) {
+            ZenSheetContainer(
+                title: "Share workspace",
+                subtitle: "Invite collaborators by email",
+                toolbarLeading: {
+                    ZenButton("Cancel", variant: .glass, size: .sm) {}
+                },
+                toolbarTrailing: {
+                    ZenButton("Send", variant: .glassProminent, size: .sm) {}
+                }
+            ) {
+                ZenFieldGroup {
+                    ZenField(label: "Email", message: "We'll send them an invite") {
+                        ZenTextInput(
+                            text: .constant("new-teammate@example.com"),
+                            prompt: "Email",
+                            leadingIcon: .asset("Envelope")
+                        )
+                    }
+                }
+            }
+        }
 }
