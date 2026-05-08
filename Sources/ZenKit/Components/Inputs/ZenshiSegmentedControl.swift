@@ -137,13 +137,13 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
 }
 
 public extension ZenSegmentedControl where Label == AnyView {
-    init<IconView: View>(
+    init(
         title: String? = nil,
         selection: Binding<Value>,
         segments: [Value],
         disabledSegments: Set<Value> = [],
         layout: ZenSegmentedControlLabelLayout = .vertical(),
-        @ViewBuilder icon: @escaping (Value) -> IconView,
+        icon: @escaping (Value) -> ZenIconSource,
         segmentTitle: @escaping (Value) -> String
     ) {
         self.init(title: title, selection: selection, segments: segments, disabledSegments: disabledSegments) { value, _ in
@@ -152,12 +152,12 @@ public extension ZenSegmentedControl where Label == AnyView {
                     switch layout {
                     case .horizontal(let spacing):
                         HStack(spacing: spacing) {
-                            icon(value)
+                            ZenSegmentIcon(source: icon(value))
                             Text(segmentTitle(value))
                         }
                     case .vertical(let spacing):
                         VStack(spacing: spacing) {
-                            icon(value)
+                            ZenSegmentIcon(source: icon(value))
                             Text(segmentTitle(value))
                         }
                     }
@@ -194,6 +194,25 @@ public extension ZenSegmentedControl where Value: RawRepresentable, Value.RawVal
     }
 }
 
+private struct ZenSegmentIcon: View {
+    let source: ZenIconSource
+
+    var body: some View {
+        switch source {
+        case .asset(let name):
+            Image(name)
+                .renderingMode(.template)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 16, height: 16)
+        case .system(let name):
+            Image(systemName: name)
+                .renderingMode(.template)
+                .frame(width: 16, height: 16)
+        }
+    }
+}
+
 private struct ZenSegmentedControlPreview: View {
     private enum Segment: String, CaseIterable {
         case week = "7D"
@@ -226,13 +245,8 @@ private struct ZenSegmentedControlPreview: View {
                 selection: $selection,
                 segments: Segment.allCases,
                 layout: .horizontal(),
-                icon: { value in
-                    Image(systemName: value.systemImage)
-                        .font(.system(size: 14))
-                },
-                segmentTitle: { value in
-                    value.rawValue
-                }
+                icon: { .system($0.systemImage) },
+                segmentTitle: { $0.rawValue }
             )
 
             ZenSegmentedControl(
@@ -240,13 +254,8 @@ private struct ZenSegmentedControlPreview: View {
                 selection: $selection,
                 segments: Segment.allCases,
                 layout: .vertical(),
-                icon: { value in
-                    Image(systemName: value.systemImage)
-                        .font(.system(size: 14))
-                },
-                segmentTitle: { value in
-                    value.rawValue
-                }
+                icon: { .system($0.systemImage) },
+                segmentTitle: { $0.rawValue }
             )
         }
         .padding()
