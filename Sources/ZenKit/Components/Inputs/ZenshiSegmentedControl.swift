@@ -54,6 +54,19 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
                 }
             }
             .padding(4)
+            .background(alignment: .topLeading) {
+                RoundedRectangle(cornerRadius: segmentCornerRadius, style: .continuous)
+                    .fill(Color.zenSurface)
+                    .shadow(color: selectedSegmentShadowColor, radius: 10, y: 3)
+                    .overlay {
+                        if colorScheme == .dark {
+                            RoundedRectangle(cornerRadius: segmentCornerRadius, style: .continuous)
+                                .strokeBorder(.white.opacity(0.08), lineWidth: 0.5)
+                        }
+                    }
+                    .matchedGeometryEffect(id: selection, in: selectionAnimation)
+                    .allowsHitTesting(false)
+            }
             .background(Color.zenSurfaceMuted)
             .overlay(
                 RoundedRectangle(cornerRadius: controlCornerRadius, style: .continuous)
@@ -82,20 +95,7 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
             segmentLabel(for: value, isSelected: isSelected, isDisabled: isDisabled)
                 .frame(maxWidth: .infinity, minHeight: metrics.controlHeightSmall)
                 .padding(.horizontal, ZenSpacing.small)
-                .background {
-                    if isSelected {
-                        RoundedRectangle(cornerRadius: segmentCornerRadius, style: .continuous)
-                            .fill(Color.zenSurface)
-                            .shadow(color: selectedSegmentShadowColor, radius: 10, y: 3)
-                            .overlay {
-                                if colorScheme == .dark {
-                                    RoundedRectangle(cornerRadius: segmentCornerRadius, style: .continuous)
-                                        .strokeBorder(.white.opacity(0.08), lineWidth: 0.5)
-                                }
-                            }
-                            .matchedGeometryEffect(id: "selected-segment", in: selectionAnimation)
-                    }
-                }
+                .background(Color.clear.matchedGeometryEffect(id: value, in: selectionAnimation))
                 .contentShape(RoundedRectangle(cornerRadius: segmentCornerRadius, style: .continuous))
         }
         .buttonStyle(.plain)
