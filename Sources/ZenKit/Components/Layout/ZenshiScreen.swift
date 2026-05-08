@@ -28,6 +28,7 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
     private let navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode
     private let hidesSharedToolbarBackground: Bool
     private let ignoresTopSafeArea: Bool
+    private let isLoading: Bool
     private let backButton: ZenScreenBackButton?
     private let onRefresh: (@Sendable () async -> Void)?
     private let onScroll: ((CGFloat) -> Void)?
@@ -43,6 +44,7 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode = .automatic,
         hidesSharedToolbarBackground: Bool = true,
         ignoresTopSafeArea: Bool = false,
+        isLoading: Bool = false,
         backButton: ZenScreenBackButton? = nil,
         onRefresh: (@Sendable () async -> Void)? = nil,
         onScroll: ((CGFloat) -> Void)? = nil,
@@ -57,6 +59,7 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
         self.navigationBarTitleDisplayMode = navigationBarTitleDisplayMode
         self.hidesSharedToolbarBackground = hidesSharedToolbarBackground
         self.ignoresTopSafeArea = ignoresTopSafeArea
+        self.isLoading = isLoading
         self.backButton = backButton
         self.onRefresh = onRefresh
         self.onScroll = onScroll
@@ -98,7 +101,8 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
     private var shouldUseInlineTitleToolbarItem: Bool {
         ZenNavigationChrome.shouldUseInlineTitleToolbarItem(
             navigationTitle: navigationTitle,
-            resolvedDisplayMode: resolvedDisplayMode
+            resolvedDisplayMode: resolvedDisplayMode,
+            isLoading: isLoading
         )
     }
 
@@ -110,6 +114,7 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
             customBackButton: resolvedCustomBackButton,
             navigationTitle: navigationTitle,
             shouldUseInlineTitleToolbarItem: shouldUseInlineTitleToolbarItem,
+            isLoading: isLoading,
             toolbarLeading: toolbarLeading,
             toolbarPrincipal: toolbarPrincipal,
             toolbarTrailing: toolbarTrailing

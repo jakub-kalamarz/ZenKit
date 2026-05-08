@@ -7,6 +7,7 @@ struct ZenNavigationToolbarContent<Leading: View, Principal: View, Trailing: Vie
     let customBackButton: ZenScreenBackButton?
     let navigationTitle: ZenScreenTitle?
     let shouldUseInlineTitleToolbarItem: Bool
+    let isLoading: Bool
     let toolbarLeading: (() -> Leading)?
     let toolbarPrincipal: (() -> Principal)?
     let toolbarTrailing: (() -> Trailing)?
@@ -36,7 +37,7 @@ struct ZenNavigationToolbarContent<Leading: View, Principal: View, Trailing: Vie
             }
         } else if shouldUseInlineTitleToolbarItem, let navigationTitle {
             zenPrincipalToolbarItem(hidesSharedBackground: hidesSharedBackground) {
-                ZenNavigationInlineTitleView(title: navigationTitle)
+                ZenNavigationInlineTitleView(title: navigationTitle, isLoading: isLoading)
             }
         }
 
@@ -85,11 +86,14 @@ enum ZenNavigationChrome {
 
     static func shouldUseInlineTitleToolbarItem(
         navigationTitle: ZenScreenTitle?,
-        resolvedDisplayMode: ZenNavigationBarTitleDisplayMode
+        resolvedDisplayMode: ZenNavigationBarTitleDisplayMode,
+        isLoading: Bool = false
     ) -> Bool {
-        guard let navigationTitle else { return false }
+        guard navigationTitle != nil else { return false }
         guard resolvedDisplayMode == .inline else { return false }
-        return navigationTitle.leadingIcon != nil
+        guard let navigationTitle else { return false }
+        return isLoading
+            || navigationTitle.leadingIcon != nil
             || navigationTitle.trailingIcon != nil
             || (navigationTitle.subheadline != nil && !shouldUseNativeNavigationSubtitle(navigationTitle))
     }
@@ -133,6 +137,9 @@ enum ZenNavigationChrome {
 
 struct ZenNavigationInlineTitleView: View {
     let title: ZenScreenTitle
+    var isLoading: Bool = false
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         VStack(spacing: 0) {
@@ -148,12 +155,27 @@ struct ZenNavigationInlineTitleView: View {
                     .foregroundStyle(Color.zenTextPrimary)
                     .lineLimit(1)
 
+                if isLoading {
+                    ZenSpinner(size: .small, tint: Color.zenTextMuted, showsTrack: false)
+                        .transition(
+                            reduceMotion
+                                ? .opacity
+                                : .scale(scale: 0.82).combined(with: .opacity)
+                        )
+                }
+
                 if let trailingIcon = title.trailingIcon {
                     ZenIcon(source: trailingIcon, size: 13)
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundStyle(Color.zenTextMuted)
                 }
             }
+            .animation(
+                reduceMotion
+                    ? .easeInOut(duration: 0.12)
+                    : .spring(response: 0.28, dampingFraction: 0.84),
+                value: isLoading
+            )
 
             if let subheadline = title.subheadline {
                 Text(subheadline)
