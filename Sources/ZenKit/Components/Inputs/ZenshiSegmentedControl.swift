@@ -54,7 +54,7 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
                                 .strokeBorder(.white.opacity(0.08), lineWidth: 0.5)
                         }
                     }
-                    .matchedGeometryEffect(id: selection, in: selectionAnimation)
+                    .matchedGeometryEffect(id: selection, in: selectionAnimation, isSource: false)
                     .allowsHitTesting(false)
 
                 HStack(spacing: ZenSpacing.xSmall) {
