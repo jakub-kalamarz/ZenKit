@@ -17,18 +17,18 @@ struct ZenKitSelectCardTests {
     func selectCardResolvesAssetIconSource() {
         let assetIcon = ZenSelectCard(
             title: "Custom",
-            leadingIconSource: .asset("Bell"),
+            leadingIconSource: .asset("Bell", renderingMode: .template),
             isSelected: false
         ) {}
 
-        #expect(assetIcon.resolvedLeadingIconSource == .asset("Bell"))
+        #expect(assetIcon.resolvedLeadingIconSource == .asset("Bell", renderingMode: .template))
     }
 
     @Test
     func selectCardUsesCompactLayoutWhenSubtitleIsMissing() {
         let compact = ZenSelectCard(
             title: "Add new payment method",
-            leadingIconSource: .asset("Plus"),
+            leadingIconSource: .asset("Plus", renderingMode: .template),
             isSelected: false
         ) {}
         let full = ZenSelectCard(
@@ -45,7 +45,7 @@ struct ZenKitSelectCardTests {
     func inlineVariantHidesSelectionIndicator() {
         let inline = ZenSelectCard(
             title: "Add new payment method",
-            leadingIconSource: .asset("Plus"),
+            leadingIconSource: .asset("Plus", renderingMode: .template),
             variant: .inline,
             isSelected: false
         ) {}

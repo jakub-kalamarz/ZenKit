@@ -8,7 +8,7 @@ public struct ZenMetricsTableSegment<ID: Hashable & Sendable>: Equatable, Sendab
     public let isDisabled: Bool
 
     public var iconAssetName: String? {
-        guard case .asset(let assetName)? = icon else { return nil }
+        guard case .asset(let assetName, _)? = icon else { return nil }
         return assetName
     }
     
@@ -22,7 +22,7 @@ public struct ZenMetricsTableSegment<ID: Hashable & Sendable>: Equatable, Sendab
     ) {
         self.id = id
         self.count = count
-        self.icon = icon ?? iconAssetName.map(ZenIconSource.asset)
+        self.icon = icon ?? iconAssetName.map { .asset($0, renderingMode: .template) }
         self.title = title
         self.isDisabled = isDisabled
     }
@@ -111,7 +111,7 @@ public struct ZenMetricsTable<ID: Hashable & Sendable, Content: View>: View {
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.title = title
-        self.icon = icon ?? iconAssetName.map(ZenIconSource.asset)
+        self.icon = icon ?? iconAssetName.map { .asset($0, renderingMode: .template) }
         self.segments = segments
         self.isEmpty = isEmpty
         self.noDataDescription = noDataDescription

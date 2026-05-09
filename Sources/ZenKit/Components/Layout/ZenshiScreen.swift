@@ -670,8 +670,8 @@ private extension View {
         ZenScreen(
             navigationTitle: ZenScreenTitle(
                 "Dashboard",
-                leadingIcon: .asset("ChartBar"),
-                trailingIcon: .asset("Lightning")
+                leadingIcon: .asset("ChartBar", renderingMode: .template),
+                trailingIcon: .asset("Lightning", renderingMode: .template)
             ),
             navigationBarTitleDisplayMode: .inline,
             backButton: ZenScreenBackButton("Overview"),
@@ -682,14 +682,14 @@ private extension View {
                 )
             },
             toolbarLeading: {
-                ZenIcon(assetName: "Sidebar", size: 18)
+                ZenIcon(assetName: "Sidebar", size: 18, renderingMode: .template)
             },
             toolbarTrailing: {
-                ZenIcon(assetName: "UserCircle", size: 18)
+                ZenIcon(assetName: "UserCircle", size: 18, renderingMode: .template)
             }
         ) {
             VStack(spacing: ZenSpacing.medium) {
-                ZenTextInput(text: .constant(""), prompt: "Email", leadingIcon: .asset("Envelope"))
+                ZenTextInput(text: .constant(""), prompt: "Email", leadingIcon: .asset("Envelope", renderingMode: .template))
                 ZenButton("Continue") {}
             }
             .padding(.horizontal, ZenSpacing.small)

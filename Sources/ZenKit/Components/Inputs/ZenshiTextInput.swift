@@ -41,8 +41,8 @@ public struct ZenTextInput: View {
     ) {
         _text = text
         self.prompt = prompt
-        self.leadingIcon = leadingIcon ?? leadingIconAsset.map(ZenIconSource.asset)
-        self.trailingIcon = trailingIcon ?? trailingIconAsset.map(ZenIconSource.asset)
+        self.leadingIcon = leadingIcon ?? leadingIconAsset.map { .asset($0, renderingMode: .template) }
+        self.trailingIcon = trailingIcon ?? trailingIconAsset.map { .asset($0, renderingMode: .template) }
         self.kind = kind
         self.state = state
         self.message = message
@@ -145,9 +145,9 @@ public struct ZenTextInput: View {
 
 #Preview {
     VStack(spacing: ZenSpacing.medium) {
-        ZenTextInput(text: .constant("alex@example.com"), prompt: "Email", leadingIcon: .asset("Envelope"))
-        ZenTextInput(text: .constant(""), prompt: "Password", leadingIcon: .asset("Lock"), kind: .secure, state: .focused)
-        ZenTextInput(text: .constant(""), prompt: "Email", leadingIcon: .asset("Envelope"), state: .invalid, message: "Enter a valid email.")
+        ZenTextInput(text: .constant("alex@example.com"), prompt: "Email", leadingIcon: .asset("Envelope", renderingMode: .template))
+        ZenTextInput(text: .constant(""), prompt: "Password", leadingIcon: .asset("Lock", renderingMode: .template), kind: .secure, state: .focused)
+        ZenTextInput(text: .constant(""), prompt: "Email", leadingIcon: .asset("Envelope", renderingMode: .template), state: .invalid, message: "Enter a valid email.")
     }
     .padding()
     .background(Color.zenBackground)

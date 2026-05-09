@@ -175,7 +175,7 @@ private struct ZenSheetContainerPreview: View {
                         ZenTextInput(
                             text: .constant("new-teammate@example.com"),
                             prompt: "Email",
-                            leadingIcon: .asset("Envelope")
+                            leadingIcon: .asset("Envelope", renderingMode: .template)
                         )
                     }
                 }
@@ -207,7 +207,7 @@ private struct ZenSheetContainerPreview: View {
                         ZenTextInput(
                             text: .constant("new-teammate@example.com"),
                             prompt: "Email",
-                            leadingIcon: .asset("Envelope")
+                            leadingIcon: .asset("Envelope", renderingMode: .template)
                         )
                     }
                 }

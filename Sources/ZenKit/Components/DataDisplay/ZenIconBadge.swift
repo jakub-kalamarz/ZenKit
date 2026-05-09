@@ -25,7 +25,7 @@ public struct ZenIconBadge: View {
     }
 
     public init(assetName: String, color: Color, size: CGFloat = defaultSize) {
-        self.init(source: .asset(assetName), color: color, size: size)
+        self.init(source: .asset(assetName, renderingMode: .template), color: color, size: size)
     }
 
     public init(label: String, color: Color, foregroundColor: Color? = nil, size: CGFloat = defaultSize) {

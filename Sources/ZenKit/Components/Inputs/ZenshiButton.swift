@@ -23,9 +23,10 @@ public struct ZenButtonDecorativeIcon: Equatable, Sendable {
 
     public init(
         assetName: String,
+        renderingMode: ZenIconRenderingMode,
         placement: ZenButtonDecorativeIconPlacement = .leading
     ) {
-        self.source = .asset(assetName)
+        self.source = .asset(assetName, renderingMode: renderingMode)
         self.placement = placement
     }
 
@@ -46,7 +47,7 @@ public struct ZenButtonDecorativeIcon: Equatable, Sendable {
     }
 
     public var assetName: String? {
-        guard case .asset(let assetName) = source else {
+        guard case .asset(let assetName, _) = source else {
             return nil
         }
 
@@ -383,10 +384,10 @@ public extension ZenButton where Label == ZenButtonTextLabel {
 
         HStack(spacing: ZenSpacing.small) {
             ZenButton(variant: .default, size: .icon) {} label: {
-                ZenIcon(assetName: "Plus", size: 17)
+                ZenIcon(assetName: "Plus", size: 17, renderingMode: .template)
             }
             ZenButton(variant: .secondary, size: .iconSm, isLoading: true) {} label: {
-                ZenIcon(assetName: "ArrowsClockwise", size: 14)
+                ZenIcon(assetName: "ArrowsClockwise", size: 14, renderingMode: .template)
             }
             ZenButton("Large", size: .lg) {}
         }

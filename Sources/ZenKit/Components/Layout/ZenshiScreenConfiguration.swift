@@ -13,12 +13,12 @@ public struct ZenScreenTitle: Equatable, Sendable {
     public let trailingIcon: ZenIconSource?
 
     public var leadingIconAsset: String? {
-        guard case .asset(let assetName)? = leadingIcon else { return nil }
+        guard case .asset(let assetName, _)? = leadingIcon else { return nil }
         return assetName
     }
 
     public var trailingIconAsset: String? {
-        guard case .asset(let assetName)? = trailingIcon else { return nil }
+        guard case .asset(let assetName, _)? = trailingIcon else { return nil }
         return assetName
     }
 
@@ -32,8 +32,8 @@ public struct ZenScreenTitle: Equatable, Sendable {
     ) {
         self.text = text
         self.subheadline = subheadline
-        self.leadingIcon = leadingIcon ?? leadingIconAsset.map(ZenIconSource.asset)
-        self.trailingIcon = trailingIcon ?? trailingIconAsset.map(ZenIconSource.asset)
+        self.leadingIcon = leadingIcon ?? leadingIconAsset.map { .asset($0, renderingMode: .template) }
+        self.trailingIcon = trailingIcon ?? trailingIconAsset.map { .asset($0, renderingMode: .template) }
     }
 }
 

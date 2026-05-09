@@ -9,7 +9,7 @@ struct ZenKitDropdownMenuTests {
         let view = Label {
             Text("Profile")
         } icon: {
-            ZenMenuIcon(assetName: "User")
+            ZenMenuIcon(assetName: "User", renderingMode: .template)
         }
 
         _ = view

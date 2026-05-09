@@ -35,7 +35,7 @@ public struct ZenNavigationRow: View {
         } else if let leadingIconSystemName {
             self.leadingIconSource = .system(leadingIconSystemName)
         } else if let leadingIconAsset {
-            self.leadingIconSource = .asset(leadingIconAsset)
+            self.leadingIconSource = .asset(leadingIconAsset, renderingMode: .template)
         } else {
             self.leadingIconSource = nil
         }

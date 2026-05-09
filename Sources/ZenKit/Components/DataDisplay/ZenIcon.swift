@@ -1,8 +1,22 @@
 import SwiftUI
 
 public enum ZenIconSource: Equatable, Sendable {
-    case asset(String)
+    case asset(String, renderingMode: ZenIconRenderingMode)
     case system(String)
+}
+
+public enum ZenIconRenderingMode: Equatable, Sendable {
+    case original
+    case template
+
+    var imageRenderingMode: Image.TemplateRenderingMode {
+        switch self {
+        case .original:
+            return .original
+        case .template:
+            return .template
+        }
+    }
 }
 
 public struct ZenIcon: View {
@@ -14,8 +28,8 @@ public struct ZenIcon: View {
         self.size = size
     }
 
-    public init(assetName: String, size: CGFloat = 16) {
-        self.init(source: .asset(assetName), size: size)
+    public init(assetName: String, size: CGFloat = 16, renderingMode: ZenIconRenderingMode) {
+        self.init(source: .asset(assetName, renderingMode: renderingMode), size: size)
     }
 
     public init(systemName: String, size: CGFloat = 16) {
@@ -25,9 +39,9 @@ public struct ZenIcon: View {
     public var body: some View {
         Group {
             switch source {
-            case .asset(let assetName):
+            case .asset(let assetName, let renderingMode):
                 Image(assetName)
-                    .renderingMode(.original)
+                    .renderingMode(renderingMode.imageRenderingMode)
                     .resizable()
                     .scaledToFit()
             case .system(let systemName):
@@ -48,8 +62,8 @@ public struct ZenMenuIcon: View {
         self.source = source
     }
 
-    public init(assetName: String) {
-        self.init(source: .asset(assetName))
+    public init(assetName: String, renderingMode: ZenIconRenderingMode) {
+        self.init(source: .asset(assetName, renderingMode: renderingMode))
     }
 
     public init(systemName: String) {
@@ -58,9 +72,9 @@ public struct ZenMenuIcon: View {
 
     public var body: some View {
         switch source {
-        case .asset(let assetName):
+        case .asset(let assetName, let renderingMode):
             Image(assetName)
-                .renderingMode(.original)
+                .renderingMode(renderingMode.imageRenderingMode)
         case .system(let systemName):
             Image(systemName: systemName)
                 .renderingMode(.template)
@@ -69,7 +83,7 @@ public struct ZenMenuIcon: View {
 }
 
 #Preview {
-    ZenIcon(assetName: "Envelope", size: 18)
+    ZenIcon(assetName: "Envelope", size: 18, renderingMode: .template)
         .foregroundStyle(Color.zenPrimary)
         .padding()
 }

@@ -136,7 +136,7 @@ public extension ZenButtonLabel where Label == ZenButtonTextLabel {
 
         HStack(spacing: ZenSpacing.small) {
             ZenButtonLabel(variant: .default, size: .icon) {
-                ZenIcon(assetName: "Plus", size: 17)
+                ZenIcon(assetName: "Plus", size: 17, renderingMode: .template)
             }
             ZenButtonLabel("Large", size: .lg)
         }

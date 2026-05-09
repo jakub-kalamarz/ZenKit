@@ -145,7 +145,7 @@ public struct ZenMenuSeparator: View {
                     Label {
                         Text("More")
                     } icon: {
-                        ZenMenuIcon(assetName: "DotsThree")
+                        ZenMenuIcon(assetName: "DotsThree", renderingMode: .template)
                     }
                 }
                 ZenMenuSeparator()

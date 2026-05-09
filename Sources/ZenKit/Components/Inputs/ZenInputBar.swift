@@ -150,7 +150,7 @@ private struct NonDismissingTextField: UIViewRepresentable {
     func makeUIView(context: Context) -> UITextField {
         let tf = UITextField()
         tf.placeholder = prompt
-        tf.returnKeyType = .send
+        tf.returnKeyType = .default
         tf.font = .preferredFont(forTextStyle: .body)
         tf.delegate = context.coordinator
         tf.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)

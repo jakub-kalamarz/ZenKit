@@ -343,10 +343,10 @@ private enum GridMetricContentMode {
 
 #Preview {
     ZenMetricStrip(values: [
-        ZenMetricValue(label: "Clicks", value: "694", tint: .zenAccent, iconSource: .asset("CursorClick"), comparisonValue: "+120", comparisonDetail: "(+20%)", trend: .up),
-        ZenMetricValue(label: "Impressions", value: "17.8K", tint: .zenSuccess, iconSource: .asset("ChartBar"), comparisonValue: "-2.1K", comparisonDetail: "(-12%)", trend: .down),
+        ZenMetricValue(label: "Clicks", value: "694", tint: .zenAccent, iconSource: .asset("CursorClick", renderingMode: .template), comparisonValue: "+120", comparisonDetail: "(+20%)", trend: .up),
+        ZenMetricValue(label: "Impressions", value: "17.8K", tint: .zenSuccess, iconSource: .asset("ChartBar", renderingMode: .template), comparisonValue: "-2.1K", comparisonDetail: "(-12%)", trend: .down),
         ZenMetricValue(label: "CTR", value: "4%", iconSource: .system("percent"), comparisonValue: "+0.5%", comparisonDetail: "(+15%)", trend: .up),
-        ZenMetricValue(label: "Position", value: "16", tint: .zenWarning, iconSource: .asset("TrendUp"), comparisonValue: "-2.2", comparisonDetail: "(-13%)", trend: .up, comparisonLogic: .lessIsBetter),
+        ZenMetricValue(label: "Position", value: "16", tint: .zenWarning, iconSource: .asset("TrendUp", renderingMode: .template), comparisonValue: "-2.2", comparisonDetail: "(-13%)", trend: .up, comparisonLogic: .lessIsBetter),
     ])
     .padding()
     .background(Color.zenBackground)

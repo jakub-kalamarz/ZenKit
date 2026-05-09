@@ -81,13 +81,13 @@ struct ZenKitDashboardComponentTests {
     @Test
     func metricStripSupportsPerMetricIcons() {
         let values = [
-            ZenMetricValue(label: "Clicks", value: "694", tint: .zenAccent, iconSource: .asset("CursorClick")),
+            ZenMetricValue(label: "Clicks", value: "694", tint: .zenAccent, iconSource: .asset("CursorClick", renderingMode: .template)),
             ZenMetricValue(label: "CTR", value: "4%", iconSource: .system("percent")),
         ]
 
         let view = ZenMetricStrip(values: values)
 
-        #expect(values[0].iconSource == .asset("CursorClick"))
+        #expect(values[0].iconSource == .asset("CursorClick", renderingMode: .template))
         #expect(values[1].iconSource == .system("percent"))
         _ = view
     }
@@ -109,7 +109,7 @@ struct ZenKitDashboardComponentTests {
     func metricStripSupportsConfigurableStyleAndLayout() {
         let gridStrip = ZenMetricStrip(
             values: [
-                ZenMetricValue(label: "Clicks", value: "694", tint: .zenAccent, iconSource: .asset("CursorClick"))
+                ZenMetricValue(label: "Clicks", value: "694", tint: .zenAccent, iconSource: .asset("CursorClick", renderingMode: .template))
             ]
         )
         let compactRowStrip = ZenMetricStrip(
@@ -257,7 +257,7 @@ struct ZenKitDashboardComponentTests {
         ) { value, isSelected in
             HStack(spacing: 6) {
                 if isSelected {
-                    ZenIcon(assetName: "Check", size: 12)
+                    ZenIcon(assetName: "Check", size: 12, renderingMode: .template)
                 }
 
                 Text(value.rawValue)
@@ -271,10 +271,10 @@ struct ZenKitDashboardComponentTests {
     func metricsTableCardSupportsIconHeaderAndSegmentedLabels() {
         let view = ZenMetricsTable(
             title: "Queries",
-            icon: .asset("MagnifyingGlass"),
+            icon: .asset("MagnifyingGlass", renderingMode: .template),
             segments: [
-                .init(id: "all", count: 12, icon: .asset("Hash"), title: "All"),
-                .init(id: "growing", count: 4, icon: .asset("TrendUp"), title: "Growing"),
+                .init(id: "all", count: 12, icon: .asset("Hash", renderingMode: .template), title: "All"),
+                .init(id: "growing", count: 4, icon: .asset("TrendUp", renderingMode: .template), title: "Growing"),
             ],
             selection: .constant("all")
         ) {
@@ -282,7 +282,7 @@ struct ZenKitDashboardComponentTests {
             ZenMetricsTableRow(
                 title: "best query",
                 leadingAccessory: {
-                    ZenIcon(assetName: "Star", size: 12)
+                    ZenIcon(assetName: "Star", size: 12, renderingMode: .template)
                 },
                 values: .init(clicks: "120", impressions: "4.2K", ctr: "2.9%", position: "3.1")
             )

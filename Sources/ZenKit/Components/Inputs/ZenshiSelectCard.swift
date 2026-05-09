@@ -296,7 +296,7 @@ private struct ZenSelectCardIndicator: View {
                 ZenSelectCard(
                     title: "Visa ending in 4242",
                     subtitle: "Expires 12/26",
-                    leadingIconSource: .asset("CreditCard"),
+                    leadingIconSource: .asset("CreditCard", renderingMode: .template),
                     iconColor: .blue,
                     isSelected: selectedMethod == "Visa"
                 ) {
@@ -305,7 +305,7 @@ private struct ZenSelectCardIndicator: View {
 
                 ZenSelectCard(
                     title: "Add new payment method",
-                    leadingIconSource: .asset("Plus"),
+                    leadingIconSource: .asset("Plus", renderingMode: .template),
                     variant: .inline,
                     isSelected: false
                 ) {}

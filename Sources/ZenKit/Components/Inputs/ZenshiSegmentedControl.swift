@@ -99,7 +99,7 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
                 .background(Color.clear.matchedGeometryEffect(id: value, in: selectionAnimation))
                 .contentShape(RoundedRectangle(cornerRadius: segmentCornerRadius, style: .continuous))
         }
-        .buttonStyle(.plain)
+        .buttonStyle(ZenSegmentedControlButtonStyle())
         .disabled(isDisabled)
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }
@@ -135,6 +135,12 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
         return isDisabled ? Color.zenTextMuted.opacity(0.5) : Color.zenTextMuted
     }
 
+}
+
+private struct ZenSegmentedControlButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+    }
 }
 
 public extension ZenSegmentedControl where Label == AnyView {
@@ -200,9 +206,9 @@ private struct ZenSegmentIcon: View {
 
     var body: some View {
         switch source {
-        case .asset(let name):
+        case .asset(let name, let renderingMode):
             Image(name)
-                .renderingMode(.template)
+                .renderingMode(renderingMode.imageRenderingMode)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 16, height: 16)

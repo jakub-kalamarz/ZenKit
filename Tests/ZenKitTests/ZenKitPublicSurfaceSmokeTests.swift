@@ -48,7 +48,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                         }
                     }
 
-                    ZenNavigationRow(title: "Notifications", subtitle: "Configure alerts", leadingIcon: .asset("Bell"))
+                    ZenNavigationRow(title: "Notifications", subtitle: "Configure alerts", leadingIcon: .asset("Bell", renderingMode: .template))
                     ZenToggle("Biometric unlock", isOn: .constant(true), subtitle: "Use Face ID when available")
                     ZenProgressBar(progress: 0.4)
                     ZenStatusBanner(message: "All good")
@@ -59,7 +59,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                 ZenEmpty {
                         ZenEmptyHeader {
                             ZenEmptyMedia(variant: .icon) {
-                                ZenIcon(assetName: "Tray", size: 24)
+                                ZenIcon(assetName: "Tray", size: 24, renderingMode: .template)
                         }
                         ZenEmptyTitle {
                             Text("No sessions")
@@ -99,7 +99,7 @@ struct ZenKitPublicSurfaceSmokeTests {
 
     @Test
     func zenIconSupportsAssetBackedRendering() {
-        let view = ZenIcon(assetName: "Envelope", size: 18)
+        let view = ZenIcon(assetName: "Envelope", size: 18, renderingMode: .template)
 
         _ = view
     }
@@ -140,7 +140,7 @@ struct ZenKitPublicSurfaceSmokeTests {
             ZenButton("Link", variant: .link) {}
             ZenButton(variant: .default, size: .icon) {
             } label: {
-                ZenIcon(assetName: "Plus", size: 17)
+                ZenIcon(assetName: "Plus", size: 17, renderingMode: .template)
             }
             ZenButton("Full Width", isLoading: true, fullWidth: true) {}
         }
@@ -231,14 +231,14 @@ struct ZenKitPublicSurfaceSmokeTests {
             ZenSelectCard(
                 title: "Visa ending in 4242",
                 subtitle: "Expires 12/26",
-                leadingIconSource: .asset("CreditCard"),
+                leadingIconSource: .asset("CreditCard", renderingMode: .template),
                 iconColor: .blue,
                 isSelected: false
             ) {}
 
             ZenSelectCard(
                 title: "Add new payment method",
-                leadingIconSource: .asset("Plus"),
+                leadingIconSource: .asset("Plus", renderingMode: .template),
                 variant: .inline,
                 isSelected: false
             ) {}
@@ -395,7 +395,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                 ZenNavigationRow(
                     title: "Members",
                     subtitle: "Manage access",
-                    leadingIcon: .asset("UsersThree")
+                    leadingIcon: .asset("UsersThree", renderingMode: .template)
                 )
             } header: {
                 ZenSectionHeader {
@@ -518,8 +518,8 @@ struct ZenKitPublicSurfaceSmokeTests {
                 navigationTitle: ZenScreenTitle(
                     "Dashboard",
                     subheadline: "Workspace overview",
-                    leadingIcon: .asset("ChartBar"),
-                    trailingIcon: .asset("Lightning")
+                    leadingIcon: .asset("ChartBar", renderingMode: .template),
+                    trailingIcon: .asset("Lightning", renderingMode: .template)
                 ),
                 navigationBarTitleDisplayMode: .inline,
                 backButton: ZenScreenBackButton("Overview"),
@@ -532,10 +532,10 @@ struct ZenKitPublicSurfaceSmokeTests {
                     }
                 },
                 toolbarLeading: {
-                    ZenIcon(assetName: "Sidebar", size: 18)
+                    ZenIcon(assetName: "Sidebar", size: 18, renderingMode: .template)
                 },
                 toolbarTrailing: {
-                    ZenIcon(assetName: "UserCircle", size: 18)
+                    ZenIcon(assetName: "UserCircle", size: 18, renderingMode: .template)
                 }
             ) {
                 ZenStatusBanner(message: "Ready")
@@ -558,7 +558,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                     Text("Zen")
                 },
                 toolbarTrailing: {
-                    ZenIcon(assetName: "UserCircle", size: 18)
+                    ZenIcon(assetName: "UserCircle", size: 18, renderingMode: .template)
                 }
             ) {
                 ZenStatusBanner(message: "Ready")
@@ -601,7 +601,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                     EmptyView()
                 },
                 toolbarTrailing: {
-                    ZenIcon(assetName: "DotsThree", size: 18)
+                    ZenIcon(assetName: "DotsThree", size: 18, renderingMode: .template)
                 }
             ) {
                 ZenStatusBanner(message: "Ready")
@@ -635,7 +635,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                     EmptyView()
                 },
                 toolbarTrailing: {
-                    ZenIcon(assetName: "UserCircle", size: 18)
+                    ZenIcon(assetName: "UserCircle", size: 18, renderingMode: .template)
                 }
             ) {
                 ZenStatusBanner(message: "Ready")
@@ -658,7 +658,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                     ZenNavigationRow(
                         title: "Members",
                         subtitle: "Manage access",
-                        leadingIcon: .asset("UsersThree")
+                        leadingIcon: .asset("UsersThree", renderingMode: .template)
                     )
                 }
             }
@@ -753,7 +753,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                     ZenNavigationRow(
                         title: "Members",
                         subtitle: "Manage access",
-                        leadingIcon: .asset("UsersThree")
+                        leadingIcon: .asset("UsersThree", renderingMode: .template)
                     )
                 }
             }
@@ -791,7 +791,7 @@ struct ZenKitPublicSurfaceSmokeTests {
         let view = ZenEmpty {
                 ZenEmptyHeader {
                     ZenEmptyMedia(variant: .icon) {
-                        ZenIcon(assetName: "Tray", size: 24)
+                        ZenIcon(assetName: "Tray", size: 24, renderingMode: .template)
                     }
                 ZenEmptyTitle {
                     Text("Nothing here yet")
@@ -896,7 +896,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                     ZenNavigationRow(
                         title: "Review Components",
                         subtitle: "Cards, buttons and text fields",
-                        leadingIcon: .asset("Swatches")
+                        leadingIcon: .asset("Swatches", renderingMode: .template)
                     )
                 }
             }
@@ -911,7 +911,7 @@ struct ZenKitPublicSurfaceSmokeTests {
         let view = Label {
             Text("Toggle Favorite")
         } icon: {
-            ZenIcon(assetName: iconAsset, size: 16)
+            ZenIcon(assetName: iconAsset, size: 16, renderingMode: .template)
         }
             .zenSymbolReplaceTransition()
 
@@ -934,7 +934,7 @@ struct ZenKitPublicSurfaceSmokeTests {
         let host = NSHostingView(
             rootView: ZenButton(variant: .secondary, size: .iconSm, isLoading: true) {
             } label: {
-                ZenIcon(assetName: "ArrowsClockwise", size: 14)
+                ZenIcon(assetName: "ArrowsClockwise", size: 14, renderingMode: .template)
             }
         )
         let size = host.fittingSize
@@ -976,7 +976,7 @@ struct ZenKitPublicSurfaceSmokeTests {
         let segment = ZenMetricsTableSegment(
             id: "all",
             count: 3,
-            icon: .asset("Hash"),
+            icon: .asset("Hash", renderingMode: .template),
             title: "All"
         )
         let values = ZenMetricsTableValues(
@@ -1031,7 +1031,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                     ZenNavigationRow(
                         title: "Members",
                         subtitle: "Manage access",
-                        leadingIcon: .asset("UsersThree")
+                        leadingIcon: .asset("UsersThree", renderingMode: .template)
                     )
                 }
             }
