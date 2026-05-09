@@ -55,7 +55,7 @@ public struct ZenButtonLabel<Label: View>: View {
                 .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         }
         }
-        .fixedSize(horizontal: !fullWidth, vertical: true)
+        .zenContentHugging(horizontal: !fullWidth, vertical: true)
     }
 }
 

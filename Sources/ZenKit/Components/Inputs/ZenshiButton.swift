@@ -291,7 +291,7 @@ public struct ZenButton<Label: View>: View {
             }
         }
         .disabled(isLoading)
-        .fixedSize(horizontal: !fullWidth, vertical: true)
+        .zenContentHugging(horizontal: !fullWidth, vertical: true)
     }
 }
 
