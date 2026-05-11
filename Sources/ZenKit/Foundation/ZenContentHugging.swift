@@ -6,10 +6,14 @@ struct ZenContentHugging: Layout {
 
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
         guard let child = subviews.first else { return .zero }
-        let ideal = child.sizeThatFits(.unspecified)
+        let measurementProposal = ProposedViewSize(
+            width: horizontal ? nil : proposal.width,
+            height: vertical ? nil : proposal.height
+        )
+        let ideal = child.sizeThatFits(measurementProposal)
         return CGSize(
             width: horizontal ? min(ideal.width, proposal.width ?? .infinity) : (proposal.width ?? ideal.width),
-            height: vertical ? min(ideal.height, proposal.height ?? .infinity) : (proposal.height ?? ideal.height)
+            height: vertical ? ideal.height : (proposal.height ?? ideal.height)
         )
     }
 

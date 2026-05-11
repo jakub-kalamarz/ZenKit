@@ -47,12 +47,14 @@ public struct ZenButtonLabel<Label: View>: View {
                 )
                 .padding(.horizontal, size.horizontalPadding)
                 .padding(.vertical, size.verticalPadding)
-                .background(ZenButtonBackground(palette: palette, isPressed: false, cornerRadius: cornerRadius))
-                .overlay(
-                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .strokeBorder(palette.borderColor, lineWidth: palette.borderWidth)
+                .modifier(
+                    ZenButtonSurfaceModifier(
+                        palette: palette,
+                        isPressed: false,
+                        cornerRadius: cornerRadius,
+                        glassTint: nil
+                    )
                 )
-                .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         }
         }
         .zenContentHugging(horizontal: !fullWidth, vertical: true)

@@ -99,19 +99,46 @@ public struct ZenControlGroup<Content: View, Label: View>: View {
     }
 
     public var body: some View {
-        ControlGroup {
-            content()
-        } label: {
-            label()
+        VStack(alignment: .leading, spacing: spacing) {
+            if showsLabel {
+                label()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+
+            groupContent(content())
         }
-        .controlGroupStyle(
-            ZenControlGroupStyle(
-                layout: layout.resolvedLayout(forWidth: availableWidth),
-                spacing: spacing,
-                showsLabel: showsLabel
-            )
-        )
         .background(widthReader)
+    }
+
+    @ViewBuilder
+    private func groupContent<C: View>(_ content: C) -> some View {
+        #if os(iOS)
+        if #available(iOS 26, *) {
+            GlassEffectContainer(spacing: spacing) {
+                layoutContent(content)
+            }
+        } else {
+            layoutContent(content)
+        }
+        #else
+        layoutContent(content)
+        #endif
+    }
+
+    @ViewBuilder
+    private func layoutContent<C: View>(_ content: C) -> some View {
+        switch layout.resolvedLayout(forWidth: availableWidth) {
+        case .horizontal:
+            HStack(spacing: spacing) {
+                content
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        case .vertical, .adaptive:
+            VStack(alignment: .leading, spacing: spacing) {
+                content
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
     }
 
     private var widthReader: some View {

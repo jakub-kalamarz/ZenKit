@@ -6,6 +6,15 @@ enum ZenButtonBackgroundStyle: Equatable {
     case glassProminent
     case muted
     case transparent
+
+    var usesNativeGlassEffect: Bool {
+        switch self {
+        case .glass, .glassProminent:
+            return true
+        case .filled, .muted, .transparent:
+            return false
+        }
+    }
 }
 
 enum ZenButtonForegroundStyle: Equatable {
@@ -195,9 +204,14 @@ struct ZenSemanticButtonStyle: ButtonStyle {
             )
             .padding(.horizontal, size.horizontalPadding)
             .padding(.vertical, size.verticalPadding)
-            .background(background(for: palette, isPressed: configuration.isPressed, cornerRadius: cornerRadius))
-            .overlay(border(for: palette, cornerRadius: cornerRadius))
-            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+            .modifier(
+                ZenButtonSurfaceModifier(
+                    palette: palette,
+                    isPressed: configuration.isPressed && !isLoading,
+                    cornerRadius: cornerRadius,
+                    glassTint: glassTint
+                )
+            )
             .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
             .opacity(opacity(for: configuration))
             .scaleEffect(configuration.isPressed && !isLoading ? 0.985 : 1)
@@ -264,29 +278,82 @@ struct ZenSemanticButtonStyle: ButtonStyle {
         return .scale(scale: 0.94).combined(with: .opacity)
     }
 
-    private func background(
-        for palette: ZenButtonResolvedStyle,
-        isPressed: Bool,
-        cornerRadius: CGFloat
-    ) -> some View {
-        ZenButtonBackground(
-            palette: palette,
-            isPressed: isPressed && !isLoading,
-            cornerRadius: cornerRadius,
-            glassTint: glassTint
-        )
-    }
-
-    private func border(for palette: ZenButtonResolvedStyle, cornerRadius: CGFloat) -> some View {
-        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-            .strokeBorder(palette.borderColor, lineWidth: palette.borderWidth)
-    }
-
     private func opacity(for configuration: Configuration) -> Double {
         if isLoading {
             return 0.78
         }
         return 1
+    }
+}
+
+struct ZenButtonSurfaceModifier: ViewModifier {
+    let palette: ZenButtonResolvedStyle
+    let isPressed: Bool
+    let cornerRadius: CGFloat
+    let glassTint: Color?
+
+    func body(content: Content) -> some View {
+        let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+
+        #if os(iOS)
+        if #available(iOS 26, *), palette.backgroundStyle.usesNativeGlassEffect {
+            nativeGlassSurface(content: content, shape: shape)
+        } else {
+            fallbackSurface(content: content, shape: shape)
+        }
+        #else
+        fallbackSurface(content: content, shape: shape)
+        #endif
+    }
+
+    @available(iOS 26, *)
+    @ViewBuilder
+    private func nativeGlassSurface(
+        content: Content,
+        shape: RoundedRectangle
+    ) -> some View {
+        switch palette.backgroundStyle {
+        case .glass:
+            if let glassTint {
+                content
+                    .glassEffect(.regular.tint(glassTint).interactive(), in: shape)
+                    .overlay(border(shape: shape))
+                    .clipShape(shape)
+            } else {
+                content
+                    .glassEffect(.regular.interactive(), in: shape)
+                    .overlay(border(shape: shape))
+                    .clipShape(shape)
+            }
+        case .glassProminent:
+            content
+                .glassEffect(.regular.tint((glassTint ?? .zenPrimary).opacity(0.5)).interactive(), in: shape)
+                .overlay(border(shape: shape))
+                .clipShape(shape)
+        case .filled, .muted, .transparent:
+            fallbackSurface(content: content, shape: shape)
+        }
+    }
+
+    private func fallbackSurface(
+        content: Content,
+        shape: RoundedRectangle
+    ) -> some View {
+        content
+            .background(
+                ZenButtonBackground(
+                    palette: palette,
+                    isPressed: isPressed,
+                    cornerRadius: cornerRadius,
+                    glassTint: glassTint
+                )
+            )
+            .overlay(border(shape: shape))
+            .clipShape(shape)
+    }
+
+    private func border(shape: RoundedRectangle) -> some View {
+        shape.strokeBorder(palette.borderColor, lineWidth: palette.borderWidth)
     }
 }
 
