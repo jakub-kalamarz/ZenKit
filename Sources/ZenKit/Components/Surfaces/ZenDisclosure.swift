@@ -4,14 +4,14 @@ public struct ZenDisclosure<Content: View>: View {
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
     @State private var isExpanded: Bool
 
-    private let title: String
-    private let subtitle: String?
+    private let title: LocalizedStringKey
+    private let subtitle: LocalizedStringKey?
     private let leadingIcon: ZenIconSource?
     private let content: () -> Content
 
     public init(
-        _ title: String,
-        subtitle: String? = nil,
+        _ title: LocalizedStringKey,
+        subtitle: LocalizedStringKey? = nil,
         leadingIcon: ZenIconSource? = nil,
         leadingIconSystemName: String? = nil,
         isExpanded: Bool = false,

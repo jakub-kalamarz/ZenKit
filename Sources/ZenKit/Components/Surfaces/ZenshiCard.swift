@@ -3,8 +3,8 @@ import SwiftUI
 public struct ZenCard<Content: View, Footer: View, Background: ShapeStyle>: View {
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
 
-    private let title: String?
-    private let subtitle: String?
+    private let title: LocalizedStringKey?
+    private let subtitle: LocalizedStringKey?
     private let contentPadding: CGFloat?
     private let customCornerRadius: CGFloat?
     private let background: Background
@@ -13,8 +13,8 @@ public struct ZenCard<Content: View, Footer: View, Background: ShapeStyle>: View
     private let showsFooter: Bool
 
     public init(
-        title: String? = nil,
-        subtitle: String? = nil,
+        title: LocalizedStringKey? = nil,
+        subtitle: LocalizedStringKey? = nil,
         padding: CGFloat? = nil,
         cornerRadius: CGFloat? = nil,
         background: Background,
@@ -31,8 +31,8 @@ public struct ZenCard<Content: View, Footer: View, Background: ShapeStyle>: View
     }
 
     public init(
-        title: String? = nil,
-        subtitle: String? = nil,
+        title: LocalizedStringKey? = nil,
+        subtitle: LocalizedStringKey? = nil,
         padding: CGFloat? = nil,
         cornerRadius: CGFloat? = nil,
         background: Background,
@@ -50,8 +50,8 @@ public struct ZenCard<Content: View, Footer: View, Background: ShapeStyle>: View
     }
 
     public init(
-        title: String? = nil,
-        subtitle: String? = nil,
+        title: LocalizedStringKey? = nil,
+        subtitle: LocalizedStringKey? = nil,
         padding: CGFloat? = nil,
         cornerRadius: CGFloat? = nil,
         @ViewBuilder content: @escaping () -> Content
@@ -67,8 +67,8 @@ public struct ZenCard<Content: View, Footer: View, Background: ShapeStyle>: View
     }
 
     public init(
-        title: String? = nil,
-        subtitle: String? = nil,
+        title: LocalizedStringKey? = nil,
+        subtitle: LocalizedStringKey? = nil,
         padding: CGFloat? = nil,
         cornerRadius: CGFloat? = nil,
         @ViewBuilder content: @escaping () -> Content,

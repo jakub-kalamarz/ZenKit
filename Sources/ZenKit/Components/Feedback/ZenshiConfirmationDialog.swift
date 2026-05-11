@@ -43,8 +43,8 @@ public struct ZenConfirmationDialogAction {
 }
 
 public struct ZenConfirmationDialog<Content: View>: View {
-    private let title: String
-    private let message: String?
+    private let title: LocalizedStringKey
+    private let message: LocalizedStringKey?
     @Binding private var isPresented: Bool
     private let actions: [ZenConfirmationDialogAction]
     private let content: () -> Content
@@ -52,8 +52,8 @@ public struct ZenConfirmationDialog<Content: View>: View {
     @State private var dialogID = UUID()
 
     public init(
-        title: String,
-        message: String? = nil,
+        title: LocalizedStringKey,
+        message: LocalizedStringKey? = nil,
         isPresented: Binding<Bool>,
         actions: [ZenConfirmationDialogAction],
         @ViewBuilder content: @escaping () -> Content

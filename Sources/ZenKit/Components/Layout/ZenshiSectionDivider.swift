@@ -1,9 +1,9 @@
 import SwiftUI
 
 public struct ZenSectionDivider: View {
-    private let label: String
+    private let label: LocalizedStringKey
 
-    public init(_ label: String) {
+    public init(_ label: LocalizedStringKey) {
         self.label = label
     }
 

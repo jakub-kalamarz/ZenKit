@@ -24,8 +24,8 @@ public struct ZenSelectCard: View {
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
 
-    private let title: String
-    private let subtitle: String?
+    private let title: LocalizedStringKey
+    private let subtitle: LocalizedStringKey?
     private let leadingIconSource: ZenIconSource?
     private let iconColor: Color?
     private let iconSize: CGFloat
@@ -34,8 +34,8 @@ public struct ZenSelectCard: View {
     private let action: () -> Void
 
     public init(
-        title: String,
-        subtitle: String? = nil,
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey? = nil,
         leadingIconSource: ZenIconSource? = nil,
         iconColor: Color? = nil,
         iconSize: CGFloat = 40,
@@ -205,7 +205,7 @@ public struct ZenSelectCard: View {
             .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private func subtitleView(_ subtitle: String) -> some View {
+    private func subtitleView(_ subtitle: LocalizedStringKey) -> some View {
         Text(subtitle)
             .font(.zenBody2)
             .foregroundStyle(Color.zenTextMuted)

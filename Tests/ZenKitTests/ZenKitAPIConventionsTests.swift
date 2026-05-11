@@ -51,6 +51,56 @@ struct ZenKitAPIConventionsTests {
     }
 
     @Test
+    func staticUIComponentCopyUsesLocalizedStringKey() throws {
+        let sourceRoot = try zenKitSourceRoot()
+        let checkedFiles = [
+            "Components/Surfaces/ZenshiField.swift",
+            "Components/Inputs/ZenshiTextInput.swift",
+            "Components/Inputs/ZenSearchBar.swift",
+            "Components/Inputs/ZenInputBar.swift",
+            "Components/Inputs/ZenshiSelectCard.swift",
+            "Components/Surfaces/ZenshiCard.swift",
+            "Components/Surfaces/ZenshiCardSection.swift",
+            "Components/Layout/ZenshiScreenConfiguration.swift",
+            "Components/Feedback/ZenshiConfirmationDialog.swift",
+            "Components/Feedback/ZenshiStatusBanner.swift",
+            "Components/Feedback/ZenshiCallout.swift",
+            "Components/Feedback/ZenshiLoadingStateView.swift",
+            "Components/Surfaces/ZenshiSettingRow.swift",
+            "Components/Navigation/ZenshiNavigationRow.swift",
+            "Components/Surfaces/ZenDisclosure.swift",
+            "Components/Surfaces/ZenshiSheetContainer.swift",
+            "Components/Inputs/ZenDatePicker.swift",
+            "Components/Inputs/ZenStepper.swift",
+            "Components/Inputs/ZenshiPickerRow.swift",
+            "Components/Inputs/ZenshiSegmentedControl.swift",
+        ]
+        let forbiddenFragments = [
+            "let title: String",
+            "let subtitle: String?",
+            "let message: String",
+            "let prompt: String",
+            "let label: String",
+            "title: String",
+            "subtitle: String?",
+            "message: String",
+            "prompt: String",
+            "label: String",
+        ]
+
+        let matches = try checkedFiles.flatMap { relativePath -> [String] in
+            let fileURL = sourceRoot.appendingPathComponent(relativePath)
+            let source = try String(contentsOf: fileURL)
+
+            return forbiddenFragments.compactMap { fragment in
+                source.contains(fragment) ? "\(relativePath):\(fragment)" : nil
+            }
+        }
+
+        #expect(matches.isEmpty, "Static UI copy should use LocalizedStringKey: \(matches.joined(separator: ", "))")
+    }
+
+    @Test
     func statusComponentsExposeSemanticToneCases() {
         let tones: [ZenSemanticTone] = [.neutral, .success, .warning, .critical]
 

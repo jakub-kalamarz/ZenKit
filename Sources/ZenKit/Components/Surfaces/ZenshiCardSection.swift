@@ -1,17 +1,22 @@
 import SwiftUI
 
 public struct ZenCardSection<Content: View>: View {
-    private let title: String
+    private let title: Text
     private let content: Content
 
-    public init(_ title: String, @ViewBuilder content: () -> Content) {
+    public init(_ title: LocalizedStringKey, @ViewBuilder content: () -> Content) {
+        self.title = Text(title)
+        self.content = content()
+    }
+
+    public init(_ title: Text, @ViewBuilder content: () -> Content) {
         self.title = title
         self.content = content()
     }
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(title)
+            title
                 .font(.zen(.group, weight: .bold))
                 .foregroundStyle(Color.zenTextMuted)
                 .textCase(.uppercase)

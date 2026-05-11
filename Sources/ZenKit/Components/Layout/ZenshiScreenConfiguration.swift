@@ -6,9 +6,9 @@ public enum ZenNavigationBarTitleDisplayMode {
     case large
 }
 
-public struct ZenScreenTitle: Equatable, Sendable {
-    public let text: String
-    public let subheadline: String?
+public struct ZenScreenTitle {
+    public let text: LocalizedStringKey
+    public let subheadline: LocalizedStringKey?
     public let leadingIcon: ZenIconSource?
     public let trailingIcon: ZenIconSource?
 
@@ -23,8 +23,8 @@ public struct ZenScreenTitle: Equatable, Sendable {
     }
 
     public init(
-        _ text: String,
-        subheadline: String? = nil,
+        _ text: LocalizedStringKey,
+        subheadline: LocalizedStringKey? = nil,
         leadingIcon: ZenIconSource? = nil,
         trailingIcon: ZenIconSource? = nil,
         leadingIconAsset: String? = nil,
@@ -38,10 +38,10 @@ public struct ZenScreenTitle: Equatable, Sendable {
 }
 
 public struct ZenScreenBackButton {
-    public let text: String?
+    public let text: LocalizedStringKey?
     public let action: (() -> Void)?
 
-    public init(_ text: String? = nil, action: (() -> Void)? = nil) {
+    public init(_ text: LocalizedStringKey? = nil, action: (() -> Void)? = nil) {
         self.text = text
         self.action = action
     }

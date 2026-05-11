@@ -33,8 +33,8 @@ public struct ZenMultiSelect<Option, OptionLabel: View, SummaryLabel: View>: Vie
     @State private var isPresented = false
     @State private var draftSelection: Set<Option>
 
-    private let title: String
-    private let placeholder: String
+    private let title: LocalizedStringKey
+    private let placeholder: LocalizedStringKey
     @Binding private var selection: Set<Option>
     private let options: [Option]
     private let mode: ZenMultiSelectMode
@@ -42,8 +42,8 @@ public struct ZenMultiSelect<Option, OptionLabel: View, SummaryLabel: View>: Vie
     private let summaryLabel: ([Option]) -> SummaryLabel
 
     public init(
-        title: String,
-        placeholder: String = "Select options",
+        title: LocalizedStringKey,
+        placeholder: LocalizedStringKey = "Select options",
         selection: Binding<Set<Option>>,
         options: [Option],
         mode: ZenMultiSelectMode = .immediate,
@@ -206,8 +206,8 @@ public extension ZenMultiSelect where Option == String, SummaryLabel == Text {
         @ViewBuilder optionLabel: @escaping (String) -> OptionLabel
     ) {
         self.init(
-            title: title,
-            placeholder: placeholder,
+            title: LocalizedStringKey(title),
+            placeholder: LocalizedStringKey(placeholder),
             selection: selection,
             options: options,
             mode: mode,
@@ -233,8 +233,8 @@ public extension ZenMultiSelect where Option: RawRepresentable, Option.RawValue 
         @ViewBuilder optionLabel: @escaping (Option) -> OptionLabel
     ) {
         self.init(
-            title: title,
-            placeholder: placeholder,
+            title: LocalizedStringKey(title),
+            placeholder: LocalizedStringKey(placeholder),
             selection: selection,
             options: options,
             mode: mode,

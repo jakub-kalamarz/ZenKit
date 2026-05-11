@@ -1,9 +1,9 @@
 import SwiftUI
 
 public struct ZenFieldLabel: View {
-    private let text: String
+    private let text: LocalizedStringKey
 
-    public init(_ text: String) {
+    public init(_ text: LocalizedStringKey) {
         self.text = text
     }
 
@@ -15,10 +15,10 @@ public struct ZenFieldLabel: View {
 }
 
 public struct ZenFieldMessage: View {
-    private let text: String
+    private let text: LocalizedStringKey
     private let state: ZenControlState
 
-    public init(_ text: String, state: ZenControlState = .normal) {
+    public init(_ text: LocalizedStringKey, state: ZenControlState = .normal) {
         self.text = text
         self.state = state
     }
@@ -42,14 +42,14 @@ public struct ZenFieldMessage: View {
 }
 
 public struct ZenField<Content: View>: View {
-    private let label: String?
-    private let message: String?
+    private let label: LocalizedStringKey?
+    private let message: LocalizedStringKey?
     private let state: ZenControlState
     private let content: () -> Content
 
     public init(
-        label: String? = nil,
-        message: String? = nil,
+        label: LocalizedStringKey? = nil,
+        message: LocalizedStringKey? = nil,
         state: ZenControlState = .normal,
         @ViewBuilder content: @escaping () -> Content
     ) {
@@ -91,13 +91,13 @@ public struct ZenFieldGroup<Content: View>: View {
 }
 
 public struct ZenFieldSection<Content: View>: View {
-    private let title: String?
-    private let subtitle: String?
+    private let title: LocalizedStringKey?
+    private let subtitle: LocalizedStringKey?
     private let content: () -> Content
 
     public init(
-        title: String? = nil,
-        subtitle: String? = nil,
+        title: LocalizedStringKey? = nil,
+        subtitle: LocalizedStringKey? = nil,
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.title = title

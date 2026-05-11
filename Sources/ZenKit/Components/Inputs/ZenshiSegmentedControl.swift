@@ -10,7 +10,7 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
     @Environment(\.colorScheme) private var colorScheme
 
-    private let title: String?
+    private let title: LocalizedStringKey?
     @Binding private var selection: Value
     private let segments: [Value]
     private let disabledSegments: Set<Value>
@@ -18,7 +18,7 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
     @Namespace private var selectionAnimation
 
     public init(
-        title: String? = nil,
+        title: LocalizedStringKey? = nil,
         selection: Binding<Value>,
         segments: [Value],
         disabledSegments: Set<Value> = [],
@@ -153,19 +153,19 @@ public extension ZenSegmentedControl where Label == AnyView {
         icon: @escaping (Value) -> ZenIconSource,
         segmentTitle: @escaping (Value) -> String
     ) {
-        self.init(title: title, selection: selection, segments: segments, disabledSegments: disabledSegments) { value, _ in
+        self.init(title: title.map { LocalizedStringKey($0) }, selection: selection, segments: segments, disabledSegments: disabledSegments) { value, _ in
             AnyView(
                 Group {
                     switch layout {
                     case .horizontal(let spacing):
                         HStack(spacing: spacing) {
                             ZenSegmentIcon(source: icon(value))
-                            Text(segmentTitle(value))
+                            Text(LocalizedStringKey(segmentTitle(value)))
                         }
                     case .vertical(let spacing):
                         VStack(spacing: spacing) {
                             ZenSegmentIcon(source: icon(value))
-                            Text(segmentTitle(value))
+                            Text(LocalizedStringKey(segmentTitle(value)))
                         }
                     }
                 }
@@ -182,8 +182,8 @@ public extension ZenSegmentedControl where Value == String, Label == Text {
         segments: [String],
         disabledSegments: Set<String> = []
     ) {
-        self.init(title: title, selection: selection, segments: segments, disabledSegments: disabledSegments) { value, _ in
-            Text(value)
+        self.init(title: title.map { LocalizedStringKey($0) }, selection: selection, segments: segments, disabledSegments: disabledSegments) { value, _ in
+            Text(LocalizedStringKey(value))
         }
     }
 }
@@ -195,8 +195,8 @@ public extension ZenSegmentedControl where Value: RawRepresentable, Value.RawVal
         segments: [Value],
         disabledSegments: Set<Value> = []
     ) {
-        self.init(title: title, selection: selection, segments: segments, disabledSegments: disabledSegments) { value, _ in
-            Text(value.rawValue)
+        self.init(title: title.map { LocalizedStringKey($0) }, selection: selection, segments: segments, disabledSegments: disabledSegments) { value, _ in
+            Text(LocalizedStringKey(value.rawValue))
         }
     }
 }

@@ -12,15 +12,15 @@ public struct ZenNavigationRow: View {
 
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
 
-    private let title: String
-    private let subtitle: String?
+    private let title: LocalizedStringKey
+    private let subtitle: LocalizedStringKey?
     private let leadingIconSource: ZenIconSource?
     private let iconColor: Color?
     private let accessory: ZenNavigationAccessory
 
     public init(
-        title: String,
-        subtitle: String? = nil,
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey? = nil,
         leadingIcon: ZenIconSource? = nil,
         leadingIconAsset: String? = nil,
         leadingIconSystemName: String? = nil,

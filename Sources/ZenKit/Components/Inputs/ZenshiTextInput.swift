@@ -17,25 +17,25 @@ public struct ZenTextInput: View {
     @Binding private var text: String
     @FocusState private var isFocused: Bool
 
-    private let prompt: String
+    private let prompt: LocalizedStringKey
     private let leadingIcon: ZenIconSource?
     private let trailingIcon: ZenIconSource?
     private let kind: ZenTextInputKind
     private let state: ZenControlState
-    private let message: String?
+    private let message: LocalizedStringKey?
     private let submitLabel: SubmitLabel
     private let accessibilityIdentifier: String?
 
     public init(
         text: Binding<String>,
-        prompt: String,
+        prompt: LocalizedStringKey,
         leadingIcon: ZenIconSource? = nil,
         trailingIcon: ZenIconSource? = nil,
         leadingIconAsset: String? = nil,
         trailingIconAsset: String? = nil,
         kind: ZenTextInputKind = .plain,
         state: ZenControlState = .normal,
-        message: String? = nil,
+        message: LocalizedStringKey? = nil,
         submitLabel: SubmitLabel = .done,
         accessibilityIdentifier: String? = nil
     ) {
@@ -107,11 +107,11 @@ public struct ZenTextInput: View {
         case .plain:
             TextField(prompt, text: $text)
                 .submitLabel(submitLabel)
-                .accessibilityIdentifier(accessibilityIdentifier ?? prompt)
+                .zenAccessibilityIdentifierIfPresent(accessibilityIdentifier)
         case .secure:
             SecureField(prompt, text: $text)
                 .submitLabel(submitLabel)
-                .accessibilityIdentifier(accessibilityIdentifier ?? prompt)
+                .zenAccessibilityIdentifierIfPresent(accessibilityIdentifier)
         }
     }
 
@@ -139,6 +139,17 @@ public struct ZenTextInput: View {
             return colors.criticalBorder.color
         case .disabled:
             return controlStyle.borderColor
+        }
+    }
+}
+
+private extension View {
+    @ViewBuilder
+    func zenAccessibilityIdentifierIfPresent(_ identifier: String?) -> some View {
+        if let identifier {
+            accessibilityIdentifier(identifier)
+        } else {
+            self
         }
     }
 }

@@ -1,12 +1,12 @@
 import SwiftUI
 
 public struct ZenScreenHeader: View {
-    private let title: String
-    private let subtitle: String?
+    private let title: LocalizedStringKey
+    private let subtitle: LocalizedStringKey?
 
     public init(
-        title: String,
-        subtitle: String? = nil
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey? = nil
     ) {
         self.title = title
         self.subtitle = subtitle

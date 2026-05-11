@@ -189,11 +189,11 @@ private struct ZenStepperNumpadSheet: View {
     @StateObject private var model: ZenStepperInputModel
     @Binding var value: Double
     @Environment(\.dismiss) private var dismiss
-    let title: String
+    let title: LocalizedStringKey
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 8), count: 3)
 
-    init(title: String, value: Binding<Double>, range: ClosedRange<Double>, step: Double, format: @escaping (Double) -> String) {
+    init(title: LocalizedStringKey, value: Binding<Double>, range: ClosedRange<Double>, step: Double, format: @escaping (Double) -> String) {
         self.title = title
         _value = value
         _model = StateObject(wrappedValue: ZenStepperInputModel(
@@ -275,8 +275,8 @@ public struct ZenStepper: View {
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
     @State private var isEditingValue = false
 
-    private let title: String
-    private let subtitle: String?
+    private let title: LocalizedStringKey
+    private let subtitle: LocalizedStringKey?
     private let leadingIconSource: ZenIconSource?
     @Binding private var value: Double
     private let range: ClosedRange<Double>
@@ -284,8 +284,8 @@ public struct ZenStepper: View {
     private let format: (Double) -> String
 
     public init(
-        _ title: String,
-        subtitle: String? = nil,
+        _ title: LocalizedStringKey,
+        subtitle: LocalizedStringKey? = nil,
         leadingIconSource: ZenIconSource? = nil,
         value: Binding<Double>,
         in range: ClosedRange<Double> = 0...100,
@@ -397,8 +397,8 @@ public struct ZenStepper: View {
 
 public extension ZenStepper {
     init(
-        _ title: String,
-        subtitle: String? = nil,
+        _ title: LocalizedStringKey,
+        subtitle: LocalizedStringKey? = nil,
         value: Binding<Int>,
         in range: ClosedRange<Int> = 0...100,
         step: Int = 1

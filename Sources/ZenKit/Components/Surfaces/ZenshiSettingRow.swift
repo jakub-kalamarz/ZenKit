@@ -3,16 +3,16 @@ import SwiftUI
 public struct ZenSettingRow<Trailing: View>: View {
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
 
-    private let title: String
-    private let subtitle: String?
+    private let title: LocalizedStringKey
+    private let subtitle: LocalizedStringKey?
     private let leadingIcon: ZenIconSource?
     private let iconColor: Color?
     private let accessory: ZenNavigationAccessory
     private let trailing: () -> Trailing
 
     public init(
-        title: String,
-        subtitle: String? = nil,
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey? = nil,
         leadingIcon: ZenIconSource? = nil,
         leadingIconSystemName: String? = nil,
         iconColor: Color? = nil,
@@ -80,8 +80,8 @@ public struct ZenSettingRow<Trailing: View>: View {
 
 public extension ZenSettingRow where Trailing == EmptyView {
     init(
-        title: String,
-        subtitle: String? = nil,
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey? = nil,
         leadingIcon: ZenIconSource? = nil,
         leadingIconSystemName: String? = nil,
         iconColor: Color? = nil,

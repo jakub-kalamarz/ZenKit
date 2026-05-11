@@ -168,9 +168,13 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
             ScrollView { scrollScreenContent }
                 .onScrollGeometryChange(for: CGFloat.self) { $0.contentOffset.y } action: { _, y in
                     onScroll?(y)
+                    #if os(iOS)
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                    #endif
                 }
         } else {
             ScrollView { scrollScreenContent }
+                .scrollDismissesKeyboard(.interactively)
         }
     }
 
@@ -194,6 +198,7 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
             content()
                 .listRowInsets(ZenScreenMetrics.listRowInsets)
         }
+        .scrollDismissesKeyboard(.immediately)
     }
 }
 
@@ -465,7 +470,7 @@ public extension ZenScreen where Header == EmptyView, ToolbarLeading == EmptyVie
     ) {
         self.init(
             containerStyle: containerStyle,
-            navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
+            navigationTitle: navigationTitle.map { ZenScreenTitle(LocalizedStringKey($0)) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
             backButton: backButton,
@@ -488,7 +493,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarTrailing ==
     ) {
         self.init(
             containerStyle: containerStyle,
-            navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
+            navigationTitle: navigationTitle.map { ZenScreenTitle(LocalizedStringKey($0)) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
             backButton: backButton,
@@ -514,7 +519,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView {
     ) {
         self.init(
             containerStyle: containerStyle,
-            navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
+            navigationTitle: navigationTitle.map { ZenScreenTitle(LocalizedStringKey($0)) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
             backButton: backButton,
@@ -540,7 +545,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarPrincipal =
     ) {
         self.init(
             containerStyle: containerStyle,
-            navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
+            navigationTitle: navigationTitle.map { ZenScreenTitle(LocalizedStringKey($0)) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
             backButton: backButton,
@@ -564,7 +569,7 @@ public extension ZenScreen where ToolbarLeading == EmptyView, ToolbarPrincipal =
     ) {
         self.init(
             containerStyle: containerStyle,
-            navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
+            navigationTitle: navigationTitle.map { ZenScreenTitle(LocalizedStringKey($0)) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
             backButton: backButton,
@@ -589,7 +594,7 @@ public extension ZenScreen where ToolbarPrincipal == EmptyView, ToolbarTrailing 
     ) {
         self.init(
             containerStyle: containerStyle,
-            navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
+            navigationTitle: navigationTitle.map { ZenScreenTitle(LocalizedStringKey($0)) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
             backButton: backButton,
@@ -614,7 +619,7 @@ public extension ZenScreen where Header == EmptyView, ToolbarPrincipal == EmptyV
     ) {
         self.init(
             containerStyle: containerStyle,
-            navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
+            navigationTitle: navigationTitle.map { ZenScreenTitle(LocalizedStringKey($0)) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
             backButton: backButton,
@@ -638,7 +643,7 @@ public extension ZenScreen where ToolbarPrincipal == EmptyView {
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.init(
-            navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
+            navigationTitle: navigationTitle.map { ZenScreenTitle(LocalizedStringKey($0)) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
             backButton: backButton,

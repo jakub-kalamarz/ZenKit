@@ -197,7 +197,7 @@ struct ZenNavigationBackButtonView: View {
                 Image(systemName: "chevron.left")
                     .font(.system(size: 14, weight: .semibold))
 
-                if let text = backButton.text, !text.isEmpty {
+                if let text = backButton.text {
                     Text(text)
                         .lineLimit(1)
                 }
@@ -236,13 +236,21 @@ private extension View {
     func applyZenNavigationSubtitle(_ title: ZenScreenTitle) -> some View {
         #if os(iOS)
         if #available(iOS 26.0, *), ZenNavigationChrome.shouldUseNativeNavigationSubtitle(title) {
-            navigationSubtitle(Text(title.subheadline ?? ""))
+            if let subheadline = title.subheadline {
+                navigationSubtitle(Text(subheadline))
+            } else {
+                self
+            }
         } else {
             self
         }
         #elseif os(macOS)
         if ZenNavigationChrome.shouldUseNativeNavigationSubtitle(title) {
-            navigationSubtitle(Text(title.subheadline ?? ""))
+            if let subheadline = title.subheadline {
+                navigationSubtitle(Text(subheadline))
+            } else {
+                self
+            }
         } else {
             self
         }

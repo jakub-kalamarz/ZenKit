@@ -1,10 +1,10 @@
 import SwiftUI
 
 public struct ZenLoading: View {
-    private let title: String?
-    private let message: String?
+    private let title: LocalizedStringKey?
+    private let message: LocalizedStringKey?
 
-    public init(title: String? = nil, message: String? = nil) {
+    public init(title: LocalizedStringKey? = nil, message: LocalizedStringKey? = nil) {
         self.title = title
         self.message = message
     }

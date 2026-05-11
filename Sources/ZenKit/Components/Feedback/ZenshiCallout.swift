@@ -11,10 +11,10 @@ public struct ZenshiCallout: View {
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
 
     private let icon: String?
-    private let message: String
+    private let message: LocalizedStringKey
     private let tone: ZenCalloutTone
 
-    public init(icon: String? = nil, message: String, tone: ZenCalloutTone = .info) {
+    public init(icon: String? = nil, message: LocalizedStringKey, tone: ZenCalloutTone = .info) {
         self.icon = icon
         self.message = message
         self.tone = tone

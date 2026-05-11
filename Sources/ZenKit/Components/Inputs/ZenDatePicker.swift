@@ -3,11 +3,11 @@ import SwiftUI
 public struct ZenDatePicker: View {
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
 
-    private let title: String
+    private let title: LocalizedStringKey
     @Binding private var selection: Date
     private let displayedComponents: DatePickerComponents
 
-    public init(_ title: String, selection: Binding<Date>, displayedComponents: DatePickerComponents = .date) {
+    public init(_ title: LocalizedStringKey, selection: Binding<Date>, displayedComponents: DatePickerComponents = .date) {
         self.title = title
         _selection = selection
         self.displayedComponents = displayedComponents

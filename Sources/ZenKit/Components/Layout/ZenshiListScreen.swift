@@ -179,7 +179,7 @@ public extension ZenListScreen where ToolbarLeading == EmptyView, ToolbarPrincip
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.init(
-            navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
+            navigationTitle: navigationTitle.map { ZenScreenTitle(LocalizedStringKey($0)) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
             backButton: backButton,
@@ -201,7 +201,7 @@ public extension ZenListScreen where ToolbarLeading == EmptyView, ToolbarPrincip
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.init(
-            navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
+            navigationTitle: navigationTitle.map { ZenScreenTitle(LocalizedStringKey($0)) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
             backButton: backButton,
@@ -224,7 +224,7 @@ public extension ZenListScreen where ToolbarLeading == EmptyView, ToolbarTrailin
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.init(
-            navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
+            navigationTitle: navigationTitle.map { ZenScreenTitle(LocalizedStringKey($0)) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
             backButton: backButton,
@@ -248,7 +248,7 @@ public extension ZenListScreen where ToolbarPrincipal == EmptyView {
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.init(
-            navigationTitle: navigationTitle.map { ZenScreenTitle($0) },
+            navigationTitle: navigationTitle.map { ZenScreenTitle(LocalizedStringKey($0)) },
             navigationBarTitleDisplayMode: navigationBarTitleDisplayMode,
             hidesSharedToolbarBackground: hidesSharedToolbarBackground,
             backButton: backButton,

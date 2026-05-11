@@ -29,9 +29,13 @@ final class ZenOverlayPresenter: ObservableObject {
 
     struct ConfirmationDialogState: Equatable, Identifiable {
         let id: UUID
-        let title: String
-        let message: String?
+        let title: LocalizedStringKey
+        let message: LocalizedStringKey?
         let actions: [ConfirmationDialogActionState]
+
+        static func == (lhs: ConfirmationDialogState, rhs: ConfirmationDialogState) -> Bool {
+            lhs.id == rhs.id && lhs.actions == rhs.actions
+        }
     }
 
     struct ConfirmationDialogActionState: Equatable, Identifiable {
@@ -47,8 +51,8 @@ final class ZenOverlayPresenter: ObservableObject {
 
     func presentConfirmationDialog(
         id: UUID,
-        title: String,
-        message: String?,
+        title: LocalizedStringKey,
+        message: LocalizedStringKey?,
         actions: [ZenConfirmationDialogAction]
     ) {
         confirmationDialog = ConfirmationDialogState(

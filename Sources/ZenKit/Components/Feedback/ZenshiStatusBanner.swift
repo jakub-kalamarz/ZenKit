@@ -10,9 +10,9 @@ public struct ZenStatusBanner: View {
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
 
     private let tone: ZenBannerTone
-    private let message: String
+    private let message: LocalizedStringKey
 
-    public init(tone: ZenBannerTone = .critical, message: String) {
+    public init(tone: ZenBannerTone = .critical, message: LocalizedStringKey) {
         self.tone = tone
         self.message = message
     }

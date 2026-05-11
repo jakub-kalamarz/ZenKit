@@ -1,8 +1,8 @@
 import SwiftUI
 
 public struct ZenPickerRow<Option: Hashable & Sendable, OptionLabel: View>: View {
-    private let title: String
-    private let subtitle: String?
+    private let title: LocalizedStringKey
+    private let subtitle: LocalizedStringKey?
     private let leadingIcon: ZenIconSource?
     private let iconColor: Color?
     @Binding private var selection: Option
@@ -10,8 +10,8 @@ public struct ZenPickerRow<Option: Hashable & Sendable, OptionLabel: View>: View
     private let optionLabel: (Option) -> OptionLabel
 
     public init(
-        title: String,
-        subtitle: String? = nil,
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey? = nil,
         leadingIcon: ZenIconSource? = nil,
         leadingIconSystemName: String? = nil,
         iconColor: Color? = nil,

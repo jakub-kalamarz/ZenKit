@@ -1,12 +1,15 @@
 import SwiftUI
+#if os(iOS)
 import UIKit
+#endif
 
 public struct ZenInputBar: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Binding private var text: String
     @FocusState private var internalFocus: Bool
 
-    private let prompt: String
+    private let prompt: LocalizedStringKey
+    private let promptPlaceholder: String
     private let isLoading: Bool
     private let lineLimit: ClosedRange<Int>
     private let submitsOnReturn: Bool
@@ -16,7 +19,8 @@ public struct ZenInputBar: View {
 
     public init(
         text: Binding<String>,
-        prompt: String,
+        prompt: LocalizedStringKey,
+        promptPlaceholder: String = "",
         isFocused: FocusState<Bool>.Binding? = nil,
         isLoading: Bool = false,
         lineLimit: ClosedRange<Int> = 1...4,
@@ -26,6 +30,7 @@ public struct ZenInputBar: View {
     ) {
         _text = text
         self.prompt = prompt
+        self.promptPlaceholder = promptPlaceholder
         self.externalFocus = isFocused
         self.isLoading = isLoading
         self.lineLimit = lineLimit
@@ -54,8 +59,9 @@ public struct ZenInputBar: View {
 
     @ViewBuilder
     private var textField: some View {
+        #if os(iOS)
         if submitsOnReturn && keepsFocusAfterSubmit {
-            NonDismissingTextField(text: $text, prompt: prompt, onSubmit: submitIfPossible)
+            NonDismissingTextField(text: $text, placeholder: promptPlaceholder, onSubmit: submitIfPossible)
                 .frame(height: 22)
                 .accessibilityLabel(prompt)
         } else {
@@ -71,6 +77,19 @@ public struct ZenInputBar: View {
                 field.focused($internalFocus)
             }
         }
+        #else
+        let field = inputField
+            .font(.zenBody2)
+            .foregroundStyle(Color.zenTextPrimary)
+            .textFieldStyle(.plain)
+            .accessibilityLabel(prompt)
+
+        if let externalFocus {
+            field.focused(externalFocus)
+        } else {
+            field.focused($internalFocus)
+        }
+        #endif
     }
 
     @ViewBuilder
@@ -142,14 +161,15 @@ public struct ZenInputBar: View {
 
 // MARK: - Non-dismissing UIKit TextField
 
+#if os(iOS)
 private struct NonDismissingTextField: UIViewRepresentable {
     @Binding var text: String
-    let prompt: String
+    let placeholder: String
     let onSubmit: () -> Void
 
     func makeUIView(context: Context) -> UITextField {
         let tf = UITextField()
-        tf.placeholder = prompt
+        tf.placeholder = placeholder
         tf.returnKeyType = .default
         tf.font = .preferredFont(forTextStyle: .body)
         tf.delegate = context.coordinator
@@ -159,7 +179,7 @@ private struct NonDismissingTextField: UIViewRepresentable {
 
     func updateUIView(_ uiView: UITextField, context: Context) {
         if uiView.text != text { uiView.text = text }
-        uiView.placeholder = prompt
+        uiView.placeholder = placeholder
     }
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
@@ -183,6 +203,7 @@ private struct NonDismissingTextField: UIViewRepresentable {
         }
     }
 }
+#endif
 
 private struct ZenInputBarPreview: View {
     @State private var text = ""

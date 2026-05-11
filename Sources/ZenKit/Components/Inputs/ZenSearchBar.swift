@@ -4,10 +4,10 @@ public struct ZenSearchBar: View {
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
     @FocusState private var isFocused: Bool
 
-    private let prompt: String
+    private let prompt: LocalizedStringKey
     @Binding private var text: String
 
-    public init(text: Binding<String>, prompt: String = "Search") {
+    public init(text: Binding<String>, prompt: LocalizedStringKey = "Search") {
         _text = text
         self.prompt = prompt
     }

@@ -3,11 +3,11 @@ import SwiftUI
 public struct ZenToggle: View {
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
 
-    private let title: String
-    private let subtitle: String?
+    private let title: LocalizedStringKey
+    private let subtitle: LocalizedStringKey?
     @Binding private var isOn: Bool
 
-    public init(_ title: String, isOn: Binding<Bool>, subtitle: String? = nil) {
+    public init(_ title: LocalizedStringKey, isOn: Binding<Bool>, subtitle: LocalizedStringKey? = nil) {
         self.title = title
         self.subtitle = subtitle
         _isOn = isOn

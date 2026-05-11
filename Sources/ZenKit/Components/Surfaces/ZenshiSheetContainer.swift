@@ -1,8 +1,13 @@
 import SwiftUI
 
 public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Content: View, Footer: View>: View {
-    private let title: String
-    private let subtitle: String?
+    private static var navigationBarHeight: CGFloat { 56 }
+
+    @Environment(\.zenSheetSizingCallback) private var sizingCallback
+    @State private var footerHeight: CGFloat = 0
+
+    private let title: Text
+    private let subtitle: Text?
     private let toolbarLeading: () -> ToolbarLeading
     private let toolbarTrailing: () -> ToolbarTrailing
     private let content: () -> Content
@@ -10,15 +15,15 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
     private let showsFooter: Bool
 
     public init(
-        title: String,
-        subtitle: String? = nil,
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey? = nil,
         @ViewBuilder toolbarLeading: @escaping () -> ToolbarLeading,
         @ViewBuilder toolbarTrailing: @escaping () -> ToolbarTrailing,
         @ViewBuilder content: @escaping () -> Content,
         @ViewBuilder footer: @escaping () -> Footer
     ) {
-        self.title = title
-        self.subtitle = subtitle
+        self.title = Text(title)
+        self.subtitle = subtitle.map { key in Text(key) }
         self.toolbarLeading = toolbarLeading
         self.toolbarTrailing = toolbarTrailing
         self.content = content
@@ -27,14 +32,14 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
     }
 
     public init(
-        title: String,
-        subtitle: String? = nil,
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey? = nil,
         @ViewBuilder toolbarLeading: @escaping () -> ToolbarLeading,
         @ViewBuilder toolbarTrailing: @escaping () -> ToolbarTrailing,
         @ViewBuilder content: @escaping () -> Content
     ) where Footer == EmptyView {
-        self.title = title
-        self.subtitle = subtitle
+        self.title = Text(title)
+        self.subtitle = subtitle.map { key in Text(key) }
         self.toolbarLeading = toolbarLeading
         self.toolbarTrailing = toolbarTrailing
         self.content = content
@@ -43,13 +48,13 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
     }
 
     public init(
-        title: String,
-        subtitle: String? = nil,
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey? = nil,
         @ViewBuilder toolbarTrailing: @escaping () -> ToolbarTrailing,
         @ViewBuilder content: @escaping () -> Content
     ) where ToolbarLeading == EmptyView, Footer == EmptyView {
-        self.title = title
-        self.subtitle = subtitle
+        self.title = Text(title)
+        self.subtitle = subtitle.map { key in Text(key) }
         self.toolbarLeading = { EmptyView() }
         self.toolbarTrailing = toolbarTrailing
         self.content = content
@@ -58,13 +63,13 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
     }
 
     public init(
-        title: String,
-        subtitle: String? = nil,
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey? = nil,
         @ViewBuilder content: @escaping () -> Content,
         @ViewBuilder footer: @escaping () -> Footer
     ) where ToolbarLeading == EmptyView, ToolbarTrailing == EmptyView {
-        self.title = title
-        self.subtitle = subtitle
+        self.title = Text(title)
+        self.subtitle = subtitle.map { key in Text(key) }
         self.toolbarLeading = { EmptyView() }
         self.toolbarTrailing = { EmptyView() }
         self.content = content
@@ -73,8 +78,22 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
     }
 
     public init(
-        title: String,
-        subtitle: String? = nil,
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey? = nil,
+        @ViewBuilder content: @escaping () -> Content
+    ) where ToolbarLeading == EmptyView, ToolbarTrailing == EmptyView, Footer == EmptyView {
+        self.title = Text(title)
+        self.subtitle = subtitle.map { key in Text(key) }
+        self.toolbarLeading = { EmptyView() }
+        self.toolbarTrailing = { EmptyView() }
+        self.content = content
+        self.footer = { EmptyView() }
+        self.showsFooter = false
+    }
+
+    public init(
+        title: Text,
+        subtitle: Text? = nil,
         @ViewBuilder content: @escaping () -> Content
     ) where ToolbarLeading == EmptyView, ToolbarTrailing == EmptyView, Footer == EmptyView {
         self.title = title
@@ -111,9 +130,9 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
 
     private var scrollableContent: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: ZenSpacing.medium) {
+            VStack(alignment: .leading, spacing: ZenSpacing.medium) {
                 if let subtitle {
-                    Text(subtitle)
+                    subtitle
                         .font(.zen(.eyebrow, weight: .bold))
                         .foregroundStyle(Color.zenPrimary)
                         .textCase(.uppercase)
@@ -125,6 +144,10 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
             .padding(.horizontal, ZenSpacing.medium)
             .padding(.top, ZenSpacing.small)
             .padding(.bottom, ZenSpacing.large)
+            .zenReadSize { size in
+                let totalHeight = size.height + Self.navigationBarHeight + footerHeight
+                sizingCallback?(CGSize(width: size.width, height: totalHeight))
+            }
         }
     }
 
@@ -135,6 +158,9 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
                 .padding(.vertical, ZenSpacing.small)
         }
         .background(Color.zenBackground)
+        .zenReadSize { size in
+            footerHeight = size.height
+        }
     }
 }
 
