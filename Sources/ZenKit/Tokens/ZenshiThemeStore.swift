@@ -29,6 +29,8 @@ enum ZenThemeStore {
 
     private static func applyUIKitAppearance(_ theme: ZenTheme) {
 #if canImport(UIKit)
+        let colors = theme.resolvedColors
+
         let appearance = UINavigationBarAppearance()
         appearance.configureWithDefaultBackground()
         appearance.titleTextAttributes = [.font: theme.resolvedTypography.fontSpec(for: .stat).uiFont]
@@ -41,8 +43,65 @@ enum ZenThemeStore {
         navigationBar.compactScrollEdgeAppearance = appearance
         navigationBar.titleTextAttributes = appearance.titleTextAttributes
         navigationBar.largeTitleTextAttributes = appearance.largeTitleTextAttributes
+
+        let tabBarAppearance = UITabBarAppearance()
+        tabBarAppearance.configureWithOpaqueBackground()
+        tabBarAppearance.backgroundColor = colors.surface.uiColor
+
+        let tabFont = theme.resolvedTypography.fontSpec(for: .tab).uiFont
+        let selectedAttributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: colors.primary.uiColor,
+            .font: tabFont,
+        ]
+        let normalAttributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: colors.textMuted.uiColor,
+            .font: tabFont,
+        ]
+
+        applyTabItemAppearance(
+            tabBarAppearance.stackedLayoutAppearance,
+            selectedAttributes: selectedAttributes,
+            normalAttributes: normalAttributes,
+            selectedColor: colors.primary.uiColor,
+            normalColor: colors.textMuted.uiColor
+        )
+        applyTabItemAppearance(
+            tabBarAppearance.inlineLayoutAppearance,
+            selectedAttributes: selectedAttributes,
+            normalAttributes: normalAttributes,
+            selectedColor: colors.primary.uiColor,
+            normalColor: colors.textMuted.uiColor
+        )
+        applyTabItemAppearance(
+            tabBarAppearance.compactInlineLayoutAppearance,
+            selectedAttributes: selectedAttributes,
+            normalAttributes: normalAttributes,
+            selectedColor: colors.primary.uiColor,
+            normalColor: colors.textMuted.uiColor
+        )
+
+        let tabBar = UITabBar.appearance()
+        tabBar.standardAppearance = tabBarAppearance
+        tabBar.scrollEdgeAppearance = tabBarAppearance
+        tabBar.tintColor = colors.primary.uiColor
+        tabBar.unselectedItemTintColor = colors.textMuted.uiColor
 #endif
     }
+
+#if canImport(UIKit)
+    private static func applyTabItemAppearance(
+        _ itemAppearance: UITabBarItemAppearance,
+        selectedAttributes: [NSAttributedString.Key: Any],
+        normalAttributes: [NSAttributedString.Key: Any],
+        selectedColor: UIColor,
+        normalColor: UIColor
+    ) {
+        itemAppearance.selected.iconColor = selectedColor
+        itemAppearance.selected.titleTextAttributes = selectedAttributes
+        itemAppearance.normal.iconColor = normalColor
+        itemAppearance.normal.titleTextAttributes = normalAttributes
+    }
+#endif
 }
 
 private extension NSLock {
@@ -54,6 +113,30 @@ private extension NSLock {
 }
 
 #if canImport(UIKit)
+private extension ZenDynamicColor {
+    var uiColor: UIColor {
+        UIColor { traits in
+            switch traits.userInterfaceStyle {
+            case .dark:
+                return dark.uiColor
+            default:
+                return light.uiColor
+            }
+        }
+    }
+}
+
+private extension ZenColorComponents {
+    var uiColor: UIColor {
+        UIColor(
+            red: CGFloat(red),
+            green: CGFloat(green),
+            blue: CGFloat(blue),
+            alpha: 1
+        )
+    }
+}
+
 private struct ZenThemeStorePreview: View {
     @State private var useCustomTheme = false
 
