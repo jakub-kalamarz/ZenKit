@@ -1,7 +1,4 @@
 import SwiftUI
-#if os(iOS)
-import UIKit
-#endif
 
 public struct ZenInputBar: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -59,25 +56,6 @@ public struct ZenInputBar: View {
 
     @ViewBuilder
     private var textField: some View {
-        #if os(iOS)
-        if submitsOnReturn && keepsFocusAfterSubmit {
-            NonDismissingTextField(text: $text, placeholder: promptPlaceholder, onSubmit: submitIfPossible)
-                .frame(height: 22)
-                .accessibilityLabel(prompt)
-        } else {
-            let field = inputField
-                .font(.zenBody2)
-                .foregroundStyle(Color.zenTextPrimary)
-                .textFieldStyle(.plain)
-                .accessibilityLabel(prompt)
-
-            if let externalFocus {
-                field.focused(externalFocus)
-            } else {
-                field.focused($internalFocus)
-            }
-        }
-        #else
         let field = inputField
             .font(.zenBody2)
             .foregroundStyle(Color.zenTextPrimary)
@@ -89,17 +67,16 @@ public struct ZenInputBar: View {
         } else {
             field.focused($internalFocus)
         }
-        #endif
     }
 
     @ViewBuilder
     private var inputField: some View {
         if submitsOnReturn {
-            TextField(prompt, text: $text)
+            TextField(inputPrompt, text: $text)
                 .submitLabel(.send)
                 .onSubmit(submitIfPossible)
         } else {
-            TextField(prompt, text: $text, axis: .vertical)
+            TextField(inputPrompt, text: $text, axis: .vertical)
                 .lineLimit(lineLimit)
                 .submitLabel(.return)
         }
@@ -141,6 +118,10 @@ public struct ZenInputBar: View {
         externalFocus?.wrappedValue ?? internalFocus
     }
 
+    private var inputPrompt: LocalizedStringKey {
+        promptPlaceholder.isEmpty ? prompt : LocalizedStringKey(promptPlaceholder)
+    }
+
     private var borderColor: Color {
         if isFieldFocused {
             return Color.zenPrimary.opacity(0.75)
@@ -153,57 +134,24 @@ public struct ZenInputBar: View {
         Color.zenPrimary.opacity(0.10)
     }
 
+    private func setFieldFocused(_ isFocused: Bool) {
+        if let externalFocus {
+            externalFocus.wrappedValue = isFocused
+        } else {
+            internalFocus = isFocused
+        }
+    }
+
     private func submitIfPossible() {
         guard canSubmit else { return }
         onSubmit()
-    }
-}
-
-// MARK: - Non-dismissing UIKit TextField
-
-#if os(iOS)
-private struct NonDismissingTextField: UIViewRepresentable {
-    @Binding var text: String
-    let placeholder: String
-    let onSubmit: () -> Void
-
-    func makeUIView(context: Context) -> UITextField {
-        let tf = UITextField()
-        tf.placeholder = placeholder
-        tf.returnKeyType = .default
-        tf.font = .preferredFont(forTextStyle: .body)
-        tf.delegate = context.coordinator
-        tf.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        return tf
-    }
-
-    func updateUIView(_ uiView: UITextField, context: Context) {
-        if uiView.text != text { uiView.text = text }
-        uiView.placeholder = placeholder
-    }
-
-    func makeCoordinator() -> Coordinator { Coordinator(self) }
-
-    class Coordinator: NSObject, UITextFieldDelegate {
-        var parent: NonDismissingTextField
-
-        init(_ parent: NonDismissingTextField) { self.parent = parent }
-
-        func textField(_ tf: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-            let current = tf.text ?? ""
-            if let r = Range(range, in: current) {
-                parent.text = current.replacingCharacters(in: r, with: string)
-            }
-            return true
-        }
-
-        func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-            parent.onSubmit()
-            return false  // keeps keyboard visible
+        guard keepsFocusAfterSubmit else { return }
+        Task { @MainActor in
+            await Task.yield()
+            setFieldFocused(true)
         }
     }
 }
-#endif
 
 private struct ZenInputBarPreview: View {
     @State private var text = ""
