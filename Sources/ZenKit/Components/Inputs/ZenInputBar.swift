@@ -50,6 +50,8 @@ public struct ZenInputBar: View {
                 .strokeBorder(borderColor, lineWidth: isFieldFocused ? 1.5 : 1)
         )
         .shadow(color: shadowColor, radius: isFieldFocused ? 14 : 0, y: isFieldFocused ? 6 : 0)
+        .contentShape(Capsule())
+        .onTapGesture { setFieldFocused(true) }
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.18), value: isFieldFocused)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.18), value: canSubmit)
     }
