@@ -15,6 +15,7 @@ private enum ZenScreenMetrics {
 
 public enum ZenScreenContainerStyle: Sendable {
     case scroll
+    case scrollBottomAnchored
     case list
     case `static`
 }
@@ -130,6 +131,12 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
             } else {
                 scrollView
             }
+        case .scrollBottomAnchored:
+            if ignoresTopSafeArea {
+                bottomAnchoredScrollView.ignoresSafeArea(edges: .top)
+            } else {
+                bottomAnchoredScrollView
+            }
         case .list:
             if ignoresTopSafeArea {
                 listView
@@ -164,7 +171,7 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
 
     @ViewBuilder
     private var scrollView: some View {
-        if #available(iOS 18, *) {
+        if #available(iOS 18, macOS 15, *) {
             ScrollView { scrollScreenContent }
                 .onScrollGeometryChange(for: CGFloat.self) { $0.contentOffset.y } action: { _, y in
                     onScroll?(y)
@@ -174,6 +181,24 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
                 }
         } else {
             ScrollView { scrollScreenContent }
+                .scrollDismissesKeyboard(.interactively)
+        }
+    }
+
+    @ViewBuilder
+    private var bottomAnchoredScrollView: some View {
+        if #available(iOS 18, macOS 15, *) {
+            ScrollView { scrollScreenContent }
+                .defaultScrollAnchor(.bottom)
+                .onScrollGeometryChange(for: CGFloat.self) { $0.contentOffset.y } action: { _, y in
+                    onScroll?(y)
+                    #if os(iOS)
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                    #endif
+                }
+        } else {
+            ScrollView { scrollScreenContent }
+                .defaultScrollAnchor(.bottom)
                 .scrollDismissesKeyboard(.interactively)
         }
     }
