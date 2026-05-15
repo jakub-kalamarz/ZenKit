@@ -300,7 +300,7 @@ struct ZenKitThemeTests {
         #expect(theme.resolvedCornerRadius(for: .container) == theme.resolvedCornerRadius)
         #expect(theme.resolvedCornerRadius(for: .nestedContainer) == theme.resolvedCornerRadius)
         #expect(theme.resolvedCornerRadius(for: .control) == ZenRadius.small)
-        #expect(theme.resolvedCornerRadius(for: .nestedControl) == ZenRadius.small)
+        #expect(theme.resolvedCornerRadius(for: .nestedControl) == theme.resolvedCornerRadius)
     }
 
     @Test

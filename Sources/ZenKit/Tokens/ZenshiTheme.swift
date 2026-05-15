@@ -183,7 +183,7 @@ public struct ZenTheme: Equatable, Sendable {
             return resolvedCornerRadius(for: ZenRadius.small)
         case .nestedControl:
             guard let parentRadius else {
-                return resolvedCornerRadius(for: ZenRadius.small)
+                return resolvedCornerRadius
             }
             return resolvedNestedCornerRadius(inside: parentRadius, inset: 4)
         }
