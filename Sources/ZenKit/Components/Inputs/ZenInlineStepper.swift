@@ -18,6 +18,7 @@ private struct ButtonShape: InsettableShape {
 
 public struct ZenInlineStepper: View {
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
+    @Environment(\.zenHapticsOverride) private var hapticsOverride
     @Binding private var value: Int
     private let range: ClosedRange<Int>
     private let label: (Int) -> String
@@ -39,7 +40,7 @@ public struct ZenInlineStepper: View {
 
         return HStack(spacing: ZenSpacing.xSmall) {
             stepButton(systemName: "minus", disabled: value <= range.lowerBound, cornerRadius: buttonRadius) {
-                value = max(range.lowerBound, value - 1)
+                decrement()
             }
 
             Text(label(value))
@@ -50,7 +51,7 @@ public struct ZenInlineStepper: View {
                 .animation(.snappy(duration: 0.25), value: value)
 
             stepButton(systemName: "plus", disabled: value >= range.upperBound, cornerRadius: buttonRadius) {
-                value = min(range.upperBound, value + 1)
+                increment()
             }
         }
         .padding(ZenSpacing.xSmall)
@@ -75,6 +76,26 @@ public struct ZenInlineStepper: View {
         }
         .buttonStyle(.plain)
         .disabled(disabled)
+    }
+
+    private func increment() {
+        guard value < range.upperBound else {
+            ZenHapticEngine.perform(.limitReached, haptics: hapticsOverride)
+            return
+        }
+
+        ZenHapticEngine.perform(.valueChange, haptics: hapticsOverride)
+        value = min(range.upperBound, value + 1)
+    }
+
+    private func decrement() {
+        guard value > range.lowerBound else {
+            ZenHapticEngine.perform(.limitReached, haptics: hapticsOverride)
+            return
+        }
+
+        ZenHapticEngine.perform(.valueChange, haptics: hapticsOverride)
+        value = max(range.lowerBound, value - 1)
     }
 }
 

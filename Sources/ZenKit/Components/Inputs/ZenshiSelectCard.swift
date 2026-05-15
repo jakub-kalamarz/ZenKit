@@ -23,6 +23,7 @@ enum ZenSelectCardMetrics {
 public struct ZenSelectCard: View {
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
+    @Environment(\.zenHapticsOverride) private var hapticsOverride
 
     private let title: LocalizedStringKey
     private let subtitle: LocalizedStringKey?
@@ -58,7 +59,7 @@ public struct ZenSelectCard: View {
         let cornerRadius = theme.resolvedCornerRadius(for: cornerRole, parentRadius: parentCornerRadius)
         let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
 
-        Button(action: action) {
+        Button(action: performAction) {
             content
                 .opacity(isEnabled ? 1 : 0.55)
                 .padding(.horizontal, ZenSelectCardMetrics.horizontalPadding)
@@ -81,6 +82,11 @@ public struct ZenSelectCard: View {
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
+    }
+
+    private func performAction() {
+        ZenHapticEngine.perform(.selectionChange, haptics: hapticsOverride)
+        action()
     }
 
     @ViewBuilder

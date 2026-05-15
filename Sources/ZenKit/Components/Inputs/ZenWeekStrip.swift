@@ -19,6 +19,21 @@ public struct ZenWeekStrip: View {
         let controlCornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
         let cellCornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: controlCornerRadius)
 
+        if #available(iOS 17, macOS 14, *) {
+            modernWeekStrip(
+                controlCornerRadius: controlCornerRadius,
+                cellCornerRadius: cellCornerRadius
+            )
+        } else {
+            fallbackWeekStrip(
+                controlCornerRadius: controlCornerRadius,
+                cellCornerRadius: cellCornerRadius
+            )
+        }
+    }
+
+    @available(iOS 17, macOS 14, *)
+    private func modernWeekStrip(controlCornerRadius: CGFloat, cellCornerRadius: CGFloat) -> some View {
         ScrollViewReader { proxy in
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: 0) {
@@ -35,7 +50,30 @@ public struct ZenWeekStrip: View {
             .onAppear {
                 proxy.scrollTo(weekContaining(selection), anchor: .center)
             }
-            .onChange(of: selection) { _, newValue in
+            .onChange(of: selection) { newValue in
+                withAnimation(selectionAnimationStyle) {
+                    proxy.scrollTo(weekContaining(newValue), anchor: .center)
+                }
+            }
+        }
+        .padding(ZenSpacing.xSmall)
+        .contentShape(RoundedRectangle(cornerRadius: controlCornerRadius, style: .continuous))
+    }
+
+    private func fallbackWeekStrip(controlCornerRadius: CGFloat, cellCornerRadius: CGFloat) -> some View {
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(spacing: 0) {
+                    ForEach(allWeeks, id: \.self) { week in
+                        weekRow(week, cellCornerRadius: cellCornerRadius)
+                            .id(week)
+                    }
+                }
+            }
+            .onAppear {
+                proxy.scrollTo(weekContaining(selection), anchor: .center)
+            }
+            .onChange(of: selection) { newValue in
                 withAnimation(selectionAnimationStyle) {
                     proxy.scrollTo(weekContaining(newValue), anchor: .center)
                 }

@@ -43,13 +43,13 @@ struct ZenKitFoundationTests {
 
     @Test
     func shimmerProvidesThemeAwareDefaultGradient() {
-        #expect(ZenshiShimmer.defaultGradient(for: .light).stops.count == 3)
-        #expect(ZenshiShimmer.defaultGradient(for: .dark).stops.count == 3)
+        #expect(ZenShimmer.defaultGradient(for: .light).stops.count == 3)
+        #expect(ZenShimmer.defaultGradient(for: .dark).stops.count == 3)
     }
 
     @Test
     func shimmerStillAcceptsCustomGradients() {
-        let shimmer = ZenshiShimmer(gradient: Gradient(colors: [.clear, .white, .clear]), mode: .overlay())
+        let shimmer = ZenShimmer(gradient: Gradient(colors: [.clear, .white, .clear]), mode: .overlay())
 
         _ = shimmer
     }

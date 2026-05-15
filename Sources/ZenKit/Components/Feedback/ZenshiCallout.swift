@@ -7,7 +7,7 @@ public enum ZenCalloutTone {
     case critical
 }
 
-public struct ZenshiCallout: View {
+public struct ZenCallout: View {
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
 
     private let icon: String?
@@ -79,11 +79,11 @@ public struct ZenshiCallout: View {
 
 #Preview {
     VStack(spacing: ZenSpacing.medium) {
-        ZenshiCallout(icon: "person.2", message: "Members can edit plans and check off items. Only admins can remove people.")
-        ZenshiCallout(message: "Your household has been created.")
-        ZenshiCallout(icon: "checkmark.circle", message: "All changes saved.", tone: .success)
-        ZenshiCallout(icon: "exclamationmark.triangle", message: "You're approaching your weekly limit.", tone: .warning)
-        ZenshiCallout(icon: "xmark.octagon", message: "This action cannot be undone.", tone: .critical)
+        ZenCallout(icon: "person.2", message: "Members can edit plans and check off items. Only admins can remove people.")
+        ZenCallout(message: "Your household has been created.")
+        ZenCallout(icon: "checkmark.circle", message: "All changes saved.", tone: .success)
+        ZenCallout(icon: "exclamationmark.triangle", message: "You're approaching your weekly limit.", tone: .warning)
+        ZenCallout(icon: "xmark.octagon", message: "This action cannot be undone.", tone: .critical)
     }
     .padding()
     .background(Color.zenBackground)

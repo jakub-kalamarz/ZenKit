@@ -2,6 +2,7 @@ import SwiftUI
 
 public struct ZenToggle: View {
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
+    @Environment(\.zenHapticsOverride) private var hapticsOverride
 
     private let title: LocalizedStringKey
     private let subtitle: LocalizedStringKey?
@@ -17,7 +18,7 @@ public struct ZenToggle: View {
         let theme = ZenTheme.current
         let cornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
 
-        Toggle(isOn: $isOn) {
+        Toggle(isOn: hapticBinding) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(.zen(.body2, weight: .medium))
@@ -39,6 +40,18 @@ public struct ZenToggle: View {
                 .strokeBorder(Color.zenBorder, lineWidth: 1)
         )
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+    }
+
+    private var hapticBinding: Binding<Bool> {
+        Binding(
+            get: { isOn },
+            set: { newValue in
+                guard isOn != newValue else { return }
+
+                ZenHapticEngine.perform(.toggleChange, haptics: hapticsOverride)
+                isOn = newValue
+            }
+        )
     }
 }
 

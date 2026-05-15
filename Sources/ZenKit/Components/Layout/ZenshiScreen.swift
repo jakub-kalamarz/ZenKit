@@ -173,11 +173,9 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
     private var scrollView: some View {
         if #available(iOS 18, macOS 15, *) {
             ScrollView { scrollScreenContent }
+                .scrollDismissesKeyboard(.interactively)
                 .onScrollGeometryChange(for: CGFloat.self) { $0.contentOffset.y } action: { _, y in
                     onScroll?(y)
-                    #if os(iOS)
-                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                    #endif
                 }
         } else {
             ScrollView { scrollScreenContent }
@@ -190,16 +188,19 @@ public struct ZenScreen<Header: View, ToolbarLeading: View, ToolbarPrincipal: Vi
         if #available(iOS 18, macOS 15, *) {
             ScrollView { scrollScreenContent }
                 .defaultScrollAnchor(.bottom)
+                .scrollDismissesKeyboard(.interactively)
                 .onScrollGeometryChange(for: CGFloat.self) { $0.contentOffset.y } action: { _, y in
                     onScroll?(y)
-                    #if os(iOS)
-                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                    #endif
                 }
         } else {
-            ScrollView { scrollScreenContent }
-                .defaultScrollAnchor(.bottom)
-                .scrollDismissesKeyboard(.interactively)
+            if #available(iOS 17, macOS 14, *) {
+                ScrollView { scrollScreenContent }
+                    .defaultScrollAnchor(.bottom)
+                    .scrollDismissesKeyboard(.interactively)
+            } else {
+                ScrollView { scrollScreenContent }
+                    .scrollDismissesKeyboard(.interactively)
+            }
         }
     }
 

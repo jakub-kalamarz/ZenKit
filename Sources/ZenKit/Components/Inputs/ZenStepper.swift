@@ -56,60 +56,66 @@ private final class ZenStepperInputModel: ObservableObject {
         validateInput()
     }
 
-    func handleKey(_ key: ZenNumpadKey) {
+    func handleKey(_ key: ZenNumpadKey, haptics: ZenHaptics?) {
         switch key {
-        case .digit(let n): handleDigit(n)
-        case .decimal: handleDecimal()
-        case .delete: handleDelete()
+        case .digit(let n): handleDigit(n, haptics: haptics)
+        case .decimal: handleDecimal(haptics: haptics)
+        case .delete: handleDelete(haptics: haptics)
         }
     }
 
-    func commit(to binding: Binding<Double>) {
-        guard isValid else { triggerError(); return }
+    func commit(to binding: Binding<Double>, haptics: ZenHaptics?) {
+        guard isValid else { triggerError(haptics: haptics); return }
         binding.wrappedValue = currentValue
     }
 
-    private func handleDigit(_ number: Int) {
+    private func handleDigit(_ number: Int, haptics: ZenHaptics?) {
         if number == 0 && inputArray.isEmpty {
             inputArray.append("0")
             validateInput()
+            ZenHapticEngine.perform(.valueChange, haptics: haptics)
             return
         }
         if inputArray == ["0"] && number != 0 {
             inputArray = [String(number)]
             validateInput()
+            ZenHapticEngine.perform(.valueChange, haptics: haptics)
             return
         }
         let hasDecimal = inputArray.contains(".")
         if hasDecimal {
             if let dotIndex = inputArray.firstIndex(of: ".") {
                 let decimalPlaces = inputArray.count - dotIndex - 1
-                if decimalPlaces >= 2 { triggerError(); return }
+                if decimalPlaces >= 2 { triggerError(haptics: haptics); return }
             }
-            if inputArray.filter({ $0 != "." }).count >= 6 { triggerError(); return }
+            if inputArray.filter({ $0 != "." }).count >= 6 { triggerError(haptics: haptics); return }
         } else {
-            if inputArray.count >= 4 { triggerError(); return }
+            if inputArray.count >= 4 { triggerError(haptics: haptics); return }
         }
         inputArray.append(String(number))
         validateInput()
+        ZenHapticEngine.perform(.valueChange, haptics: haptics)
     }
 
-    private func handleDecimal() {
-        guard allowsDecimal else { triggerError(); return }
-        if inputArray.contains(".") { triggerError(); return }
+    private func handleDecimal(haptics: ZenHaptics?) {
+        guard allowsDecimal else { triggerError(haptics: haptics); return }
+        if inputArray.contains(".") { triggerError(haptics: haptics); return }
         if inputArray.isEmpty {
             inputArray = ["0", "."]
             validateInput()
+            ZenHapticEngine.perform(.valueChange, haptics: haptics)
             return
         }
         inputArray.append(".")
         validateInput()
+        ZenHapticEngine.perform(.valueChange, haptics: haptics)
     }
 
-    private func handleDelete() {
-        guard !inputArray.isEmpty else { triggerError(); return }
+    private func handleDelete(haptics: ZenHaptics?) {
+        guard !inputArray.isEmpty else { triggerError(haptics: haptics); return }
         inputArray.removeLast()
         validateInput()
+        ZenHapticEngine.perform(.valueChange, haptics: haptics)
     }
 
     private func validateInput() {
@@ -123,11 +129,9 @@ private final class ZenStepperInputModel: ObservableObject {
         }
     }
 
-    private func triggerError() {
+    private func triggerError(haptics: ZenHaptics?) {
         shake.toggle()
-        #if canImport(UIKit)
-        UINotificationFeedbackGenerator().notificationOccurred(.error)
-        #endif
+        ZenHapticEngine.perform(.validationError, haptics: haptics)
     }
 }
 
@@ -189,6 +193,7 @@ private struct ZenStepperNumpadSheet: View {
     @StateObject private var model: ZenStepperInputModel
     @Binding var value: Double
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.zenHapticsOverride) private var hapticsOverride
     let title: LocalizedStringKey
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 8), count: 3)
@@ -231,13 +236,13 @@ private struct ZenStepperNumpadSheet: View {
 
                 LazyVGrid(columns: columns, spacing: 8) {
                     ForEach(1..<10) { n in
-                        ZenNumpadKeyView(key: .digit(n)) { model.handleKey(.digit(n)) }
+                        ZenNumpadKeyView(key: .digit(n)) { model.handleKey(.digit(n), haptics: hapticsOverride) }
                     }
-                    ZenNumpadKeyView(key: .decimal) { model.handleKey(.decimal) }
+                    ZenNumpadKeyView(key: .decimal) { model.handleKey(.decimal, haptics: hapticsOverride) }
                         .opacity(model.allowsDecimal ? 1 : 0.3)
                         .allowsHitTesting(model.allowsDecimal)
-                    ZenNumpadKeyView(key: .digit(0)) { model.handleKey(.digit(0)) }
-                    ZenNumpadKeyView(key: .delete) { model.handleKey(.delete) }
+                    ZenNumpadKeyView(key: .digit(0)) { model.handleKey(.digit(0), haptics: hapticsOverride) }
+                    ZenNumpadKeyView(key: .delete) { model.handleKey(.delete, haptics: hapticsOverride) }
                 }
                 .padding(.bottom, ZenSpacing.large)
             }
@@ -256,7 +261,7 @@ private struct ZenStepperNumpadSheet: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        model.commit(to: $value)
+                        model.commit(to: $value, haptics: hapticsOverride)
                         dismiss()
                     } label: {
                         Image(systemName: "checkmark")
@@ -273,6 +278,7 @@ private struct ZenStepperNumpadSheet: View {
 
 public struct ZenStepper: View {
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
+    @Environment(\.zenHapticsOverride) private var hapticsOverride
     @State private var isEditingValue = false
 
     private let title: LocalizedStringKey
@@ -334,7 +340,10 @@ public struct ZenStepper: View {
             HStack(spacing: ZenSpacing.xSmall) {
                 stepButton(systemName: "minus", action: decrement, disabled: value <= range.lowerBound, cornerRadius: buttonRadius)
 
-                Button { isEditingValue = true } label: {
+                Button {
+                    ZenHapticEngine.perform(.buttonPress, haptics: hapticsOverride)
+                    isEditingValue = true
+                } label: {
                     Text(format(value))
                         .font(.zen(.body, weight: .semibold))
                         .foregroundStyle(Color.zenTextPrimary)
@@ -387,10 +396,22 @@ public struct ZenStepper: View {
     }
 
     private func increment() {
+        guard value < range.upperBound else {
+            ZenHapticEngine.perform(.limitReached, haptics: hapticsOverride)
+            return
+        }
+
+        ZenHapticEngine.perform(.valueChange, haptics: hapticsOverride)
         value = min(range.upperBound, value + step)
     }
 
     private func decrement() {
+        guard value > range.lowerBound else {
+            ZenHapticEngine.perform(.limitReached, haptics: hapticsOverride)
+            return
+        }
+
+        ZenHapticEngine.perform(.valueChange, haptics: hapticsOverride)
         value = max(range.lowerBound, value - step)
     }
 }

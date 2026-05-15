@@ -306,7 +306,7 @@ struct ZenButtonSurfaceModifier: ViewModifier {
         #endif
     }
 
-    @available(iOS 26, *)
+    @available(iOS 26, macOS 26, *)
     @ViewBuilder
     private func nativeGlassSurface(
         content: Content,

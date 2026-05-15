@@ -1,6 +1,8 @@
 import SwiftUI
 
 public struct ZenRating: View {
+    @Environment(\.zenHapticsOverride) private var hapticsOverride
+
     @Binding private var value: Int
     private let maximum: Int
     private let isInteractive: Bool
@@ -22,7 +24,7 @@ public struct ZenRating: View {
             ForEach(1...maximum, id: \.self) { i in
                 if isInteractive {
                     Button {
-                        value = i
+                        setValue(i)
                     } label: {
                         starIcon(for: i)
                     }
@@ -32,6 +34,13 @@ public struct ZenRating: View {
                 }
             }
         }
+    }
+
+    private func setValue(_ newValue: Int) {
+        guard value != newValue else { return }
+
+        ZenHapticEngine.perform(.selectionChange, haptics: hapticsOverride)
+        value = newValue
     }
 
     @ViewBuilder

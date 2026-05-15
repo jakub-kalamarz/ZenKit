@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct ZenshiShimmer: ViewModifier {
+public struct ZenShimmer: ViewModifier {
     public enum Mode {
         case mask
         case overlay(blendMode: BlendMode = .sourceAtop)
@@ -95,12 +95,12 @@ public struct ZenshiShimmer: ViewModifier {
 public extension View {
     @ViewBuilder func zenShimmering(
         active: Bool = true,
-        animation: Animation = ZenshiShimmer.defaultAnimation,
+        animation: Animation = ZenShimmer.defaultAnimation,
         bandSize: CGFloat = 0.3,
-        mode: ZenshiShimmer.Mode = .mask
+        mode: ZenShimmer.Mode = .mask
     ) -> some View {
         if active {
-            modifier(ZenshiShimmer(animation: animation, bandSize: bandSize, mode: mode))
+            modifier(ZenShimmer(animation: animation, bandSize: bandSize, mode: mode))
         } else {
             self
         }
@@ -108,13 +108,13 @@ public extension View {
 
     @ViewBuilder func zenShimmering(
         active: Bool = true,
-        animation: Animation = ZenshiShimmer.defaultAnimation,
+        animation: Animation = ZenShimmer.defaultAnimation,
         gradient: Gradient,
         bandSize: CGFloat = 0.3,
-        mode: ZenshiShimmer.Mode = .mask
+        mode: ZenShimmer.Mode = .mask
     ) -> some View {
         if active {
-            modifier(ZenshiShimmer(animation: animation, gradient: gradient, bandSize: bandSize, mode: mode))
+            modifier(ZenShimmer(animation: animation, gradient: gradient, bandSize: bandSize, mode: mode))
         } else {
             self
         }

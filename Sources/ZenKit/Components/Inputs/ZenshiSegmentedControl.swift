@@ -8,6 +8,7 @@ public enum ZenSegmentedControlLabelLayout: Equatable, Sendable {
 public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
+    @Environment(\.zenHapticsOverride) private var hapticsOverride
     @Environment(\.colorScheme) private var colorScheme
 
     private let title: LocalizedStringKey?
@@ -89,6 +90,7 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
         return Button {
             guard selection != value else { return }
 
+            ZenHapticEngine.perform(.selectionChange, haptics: hapticsOverride)
             withAnimation(selectionAnimationStyle) {
                 selection = value
             }
@@ -145,27 +147,27 @@ private struct ZenSegmentedControlButtonStyle: ButtonStyle {
 
 public extension ZenSegmentedControl where Label == AnyView {
     init(
-        title: String? = nil,
+        title: LocalizedStringKey? = nil,
         selection: Binding<Value>,
         segments: [Value],
         disabledSegments: Set<Value> = [],
         layout: ZenSegmentedControlLabelLayout = .vertical(),
         icon: @escaping (Value) -> ZenIconSource,
-        segmentTitle: @escaping (Value) -> String
+        segmentTitle: @escaping (Value) -> LocalizedStringKey
     ) {
-        self.init(title: title.map { LocalizedStringKey($0) }, selection: selection, segments: segments, disabledSegments: disabledSegments) { value, _ in
+        self.init(title: title, selection: selection, segments: segments, disabledSegments: disabledSegments) { value, _ in
             AnyView(
                 Group {
                     switch layout {
                     case .horizontal(let spacing):
                         HStack(spacing: spacing) {
                             ZenSegmentIcon(source: icon(value))
-                            Text(LocalizedStringKey(segmentTitle(value)))
+                            Text(segmentTitle(value))
                         }
                     case .vertical(let spacing):
                         VStack(spacing: spacing) {
                             ZenSegmentIcon(source: icon(value))
-                            Text(LocalizedStringKey(segmentTitle(value)))
+                            Text(segmentTitle(value))
                         }
                     }
                 }
@@ -177,12 +179,12 @@ public extension ZenSegmentedControl where Label == AnyView {
 
 public extension ZenSegmentedControl where Value == String, Label == Text {
     init(
-        title: String? = nil,
+        title: LocalizedStringKey? = nil,
         selection: Binding<String>,
         segments: [String],
         disabledSegments: Set<String> = []
     ) {
-        self.init(title: title.map { LocalizedStringKey($0) }, selection: selection, segments: segments, disabledSegments: disabledSegments) { value, _ in
+        self.init(title: title, selection: selection, segments: segments, disabledSegments: disabledSegments) { value, _ in
             Text(LocalizedStringKey(value))
         }
     }
@@ -190,12 +192,12 @@ public extension ZenSegmentedControl where Value == String, Label == Text {
 
 public extension ZenSegmentedControl where Value: RawRepresentable, Value.RawValue == String, Label == Text {
     init(
-        title: String? = nil,
+        title: LocalizedStringKey? = nil,
         selection: Binding<Value>,
         segments: [Value],
         disabledSegments: Set<Value> = []
     ) {
-        self.init(title: title.map { LocalizedStringKey($0) }, selection: selection, segments: segments, disabledSegments: disabledSegments) { value, _ in
+        self.init(title: title, selection: selection, segments: segments, disabledSegments: disabledSegments) { value, _ in
             Text(LocalizedStringKey(value.rawValue))
         }
     }
@@ -253,7 +255,7 @@ private struct ZenSegmentedControlPreview: View {
                 segments: Segment.allCases,
                 layout: .horizontal(),
                 icon: { .system($0.systemImage) },
-                segmentTitle: { $0.rawValue }
+                segmentTitle: { LocalizedStringKey($0.rawValue) }
             )
 
             ZenSegmentedControl(
@@ -262,7 +264,7 @@ private struct ZenSegmentedControlPreview: View {
                 segments: Segment.allCases,
                 layout: .vertical(),
                 icon: { .system($0.systemImage) },
-                segmentTitle: { $0.rawValue }
+                segmentTitle: { LocalizedStringKey($0.rawValue) }
             )
         }
         .padding()

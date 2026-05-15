@@ -122,6 +122,7 @@ struct ZenKitAPIConventionsTests {
         #expect(theme.density == .comfortable)
         #expect(theme.cornerStyle == .rounded)
         #expect(theme.motion == .standard)
+        #expect(theme.haptics == .standard)
         #expect(theme.colors == nil)
         #expect(theme.typography.display.source == .system(.default))
         #expect(theme.typography.text.source == .system(.default))

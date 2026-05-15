@@ -42,6 +42,7 @@ public struct ZenTheme: Equatable, Sendable {
     public let density: ZenDensity
     public let cornerStyle: ZenCornerStyle
     public let motion: ZenMotion
+    public let haptics: ZenHaptics
     public let iconStyle: ZenIconStyle
     public let typography: ZenTypography
     public let accent: ZenDynamicColor?
@@ -51,6 +52,7 @@ public struct ZenTheme: Equatable, Sendable {
         density: ZenDensity = .comfortable,
         cornerStyle: ZenCornerStyle = .rounded,
         motion: ZenMotion = .standard,
+        haptics: ZenHaptics = .standard,
         iconStyle: ZenIconStyle = .simple,
         typography: ZenTypography = .default,
         accent: ZenDynamicColor? = nil,
@@ -59,6 +61,7 @@ public struct ZenTheme: Equatable, Sendable {
         self.density = density
         self.cornerStyle = cornerStyle
         self.motion = motion
+        self.haptics = haptics
         self.iconStyle = iconStyle
         self.typography = typography
         self.accent = accent
@@ -180,7 +183,7 @@ public struct ZenTheme: Equatable, Sendable {
             return resolvedCornerRadius(for: ZenRadius.small)
         case .nestedControl:
             guard let parentRadius else {
-                return resolvedCornerRadius
+                return resolvedCornerRadius(for: ZenRadius.small)
             }
             return resolvedNestedCornerRadius(inside: parentRadius, inset: 4)
         }

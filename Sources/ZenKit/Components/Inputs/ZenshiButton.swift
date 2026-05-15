@@ -240,6 +240,8 @@ public struct ZenButtonTextLabel: View {
 }
 
 public struct ZenButton<Label: View>: View {
+    @Environment(\.zenHapticsOverride) private var hapticsOverride
+
     private let variant: ZenButtonVariant
     private let size: ZenButtonSize
     private let isLoading: Bool
@@ -269,13 +271,13 @@ public struct ZenButton<Label: View>: View {
     public var body: some View {
         Group {
             if variant == .plain {
-                Button(action: action) {
+                Button(action: performAction) {
                     label()
                         .lineLimit(1)
                 }
                 .buttonStyle(.plain)
             } else {
-                Button(action: action) {
+                Button(action: performAction) {
                     label()
                         .lineLimit(1)
                 }
@@ -292,6 +294,13 @@ public struct ZenButton<Label: View>: View {
         }
         .disabled(isLoading)
         .zenContentHugging(horizontal: !fullWidth, vertical: true)
+    }
+
+    private func performAction() {
+        guard !isLoading else { return }
+
+        ZenHapticEngine.perform(.buttonPress, haptics: hapticsOverride)
+        action()
     }
 }
 

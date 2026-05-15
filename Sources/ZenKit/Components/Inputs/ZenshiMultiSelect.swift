@@ -30,6 +30,8 @@ struct ZenMultiSelectSummary: Equatable, Sendable {
 }
 
 public struct ZenMultiSelect<Option, OptionLabel: View, SummaryLabel: View>: View where Option: Hashable & Sendable {
+    @Environment(\.zenHapticsOverride) private var hapticsOverride
+
     @State private var isPresented = false
     @State private var draftSelection: Set<Option>
 
@@ -62,6 +64,7 @@ public struct ZenMultiSelect<Option, OptionLabel: View, SummaryLabel: View>: Vie
 
     public var body: some View {
         Button {
+            ZenHapticEngine.perform(.buttonPress, haptics: hapticsOverride)
             preparePresentation()
             isPresented = true
         } label: {
@@ -165,6 +168,8 @@ public struct ZenMultiSelect<Option, OptionLabel: View, SummaryLabel: View>: Vie
     }
 
     private func toggle(_ option: Option) {
+        ZenHapticEngine.perform(.selectionChange, haptics: hapticsOverride)
+
         switch mode {
         case .immediate:
             if selection.contains(option) {
@@ -184,13 +189,20 @@ public struct ZenMultiSelect<Option, OptionLabel: View, SummaryLabel: View>: Vie
     private func clearSelection() {
         switch mode {
         case .immediate:
+            guard !selection.isEmpty else { return }
+            ZenHapticEngine.perform(.selectionChange, haptics: hapticsOverride)
             selection.removeAll()
         case .deferred:
+            guard !draftSelection.isEmpty else { return }
+            ZenHapticEngine.perform(.selectionChange, haptics: hapticsOverride)
             draftSelection.removeAll()
         }
     }
 
     private func applyDraft() {
+        if selection != draftSelection {
+            ZenHapticEngine.perform(.selectionChange, haptics: hapticsOverride)
+        }
         selection = draftSelection
         isPresented = false
     }
