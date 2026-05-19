@@ -56,6 +56,27 @@ struct ZenKitPublicSurfaceSmokeTests {
                     ZenInlineAction("Learn more") {}
                 }
 
+                ZenSubscriptionCard(
+                    title: "Zenshi Pro",
+                    subtitle: "Unlimited sites and widgets are active.",
+                    statusText: "Pro active",
+                    statusTone: .success,
+                    details: [
+                        ZenSubscriptionCardDetail(
+                            id: "access",
+                            icon: .system("checkmark.seal.fill"),
+                            title: "Access",
+                            value: "Unlimited sites and widgets"
+                        ),
+                    ],
+                    primaryActionTitle: "Manage subscription",
+                    primaryActionIcon: .system("arrow.up.forward.app"),
+                    primaryAction: {},
+                    secondaryActionTitle: "Refresh",
+                    secondaryActionIcon: .system("arrow.clockwise"),
+                    secondaryAction: {}
+                )
+
                 ZenEmpty {
                         ZenEmptyHeader {
                             ZenEmptyMedia(variant: .icon) {
