@@ -78,6 +78,21 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
     }
 
     public init(
+        title: String,
+        subtitle: String? = nil,
+        @ViewBuilder content: @escaping () -> Content,
+        @ViewBuilder footer: @escaping () -> Footer
+    ) where ToolbarLeading == EmptyView, ToolbarTrailing == EmptyView {
+        self.title = Text(title)
+        self.subtitle = subtitle.map(Text.init)
+        self.toolbarLeading = { EmptyView() }
+        self.toolbarTrailing = { EmptyView() }
+        self.content = content
+        self.footer = footer
+        self.showsFooter = true
+    }
+
+    public init(
         title: LocalizedStringKey,
         subtitle: LocalizedStringKey? = nil,
         @ViewBuilder content: @escaping () -> Content
