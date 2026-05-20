@@ -17,6 +17,11 @@ public struct ZenStatusBanner: View {
         self.message = message
     }
 
+    public init(tone: ZenBannerTone = .critical, message: String) {
+        self.tone = tone
+        self.message = LocalizedStringKey(message)
+    }
+
     public var body: some View {
         let theme = ZenTheme.current
         let cornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
