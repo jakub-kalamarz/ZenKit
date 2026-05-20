@@ -45,7 +45,7 @@ public struct ZenScreenTitle {
         trailingIconAsset: String? = nil
     ) {
         self.text = LocalizedStringKey(text)
-        self.subheadline = subheadline.map(LocalizedStringKey.init)
+        self.subheadline = subheadline.map { LocalizedStringKey($0) }
         self.leadingIcon = leadingIcon ?? leadingIconAsset.map { .asset($0, renderingMode: .template) }
         self.trailingIcon = trailingIcon ?? trailingIconAsset.map { .asset($0, renderingMode: .template) }
     }

@@ -79,7 +79,7 @@ public struct ZenConfirmationDialog<Content: View>: View {
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.title = LocalizedStringKey(title)
-        self.message = message.map(LocalizedStringKey.init)
+        self.message = message.map { LocalizedStringKey($0) }
         _isPresented = isPresented
         self.actions = actions
         self.content = content
