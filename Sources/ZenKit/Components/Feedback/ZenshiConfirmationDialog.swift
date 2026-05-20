@@ -40,6 +40,12 @@ public struct ZenConfirmationDialogAction {
         self.role = role
         self.action = action
     }
+
+    public init(_ title: String, role: ButtonRole? = nil, action: @escaping () -> Void) {
+        self.title = LocalizedStringKey(title)
+        self.role = role
+        self.action = action
+    }
 }
 
 public struct ZenConfirmationDialog<Content: View>: View {
@@ -60,6 +66,20 @@ public struct ZenConfirmationDialog<Content: View>: View {
     ) {
         self.title = title
         self.message = message
+        _isPresented = isPresented
+        self.actions = actions
+        self.content = content
+    }
+
+    public init(
+        title: String,
+        message: String? = nil,
+        isPresented: Binding<Bool>,
+        actions: [ZenConfirmationDialogAction],
+        @ViewBuilder content: @escaping () -> Content
+    ) {
+        self.title = LocalizedStringKey(title)
+        self.message = message.map(LocalizedStringKey.init)
         _isPresented = isPresented
         self.actions = actions
         self.content = content
