@@ -6,11 +6,13 @@ public enum ZenNavigationBarTitleDisplayMode {
     case large
 }
 
-public struct ZenScreenTitle {
+public struct ZenScreenTitle: Equatable {
     public let text: LocalizedStringKey
     public let subheadline: LocalizedStringKey?
     public let leadingIcon: ZenIconSource?
     public let trailingIcon: ZenIconSource?
+    private let comparisonText: String
+    private let comparisonSubheadline: String?
 
     public var leadingIconAsset: String? {
         guard case .asset(let assetName, _)? = leadingIcon else { return nil }
@@ -32,6 +34,8 @@ public struct ZenScreenTitle {
     ) {
         self.text = text
         self.subheadline = subheadline
+        self.comparisonText = String(describing: text)
+        self.comparisonSubheadline = subheadline.map { String(describing: $0) }
         self.leadingIcon = leadingIcon ?? leadingIconAsset.map { .asset($0, renderingMode: .template) }
         self.trailingIcon = trailingIcon ?? trailingIconAsset.map { .asset($0, renderingMode: .template) }
     }
@@ -46,8 +50,17 @@ public struct ZenScreenTitle {
     ) {
         self.text = LocalizedStringKey(text)
         self.subheadline = subheadline.map { LocalizedStringKey($0) }
+        self.comparisonText = text
+        self.comparisonSubheadline = subheadline
         self.leadingIcon = leadingIcon ?? leadingIconAsset.map { .asset($0, renderingMode: .template) }
         self.trailingIcon = trailingIcon ?? trailingIconAsset.map { .asset($0, renderingMode: .template) }
+    }
+
+    public static func == (lhs: ZenScreenTitle, rhs: ZenScreenTitle) -> Bool {
+        lhs.comparisonText == rhs.comparisonText
+            && lhs.comparisonSubheadline == rhs.comparisonSubheadline
+            && lhs.leadingIcon == rhs.leadingIcon
+            && lhs.trailingIcon == rhs.trailingIcon
     }
 }
 
