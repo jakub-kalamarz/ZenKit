@@ -92,6 +92,20 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
     }
 
     public init(
+        title: String,
+        subtitle: String? = nil,
+        @ViewBuilder content: @escaping () -> Content
+    ) where ToolbarLeading == EmptyView, ToolbarTrailing == EmptyView, Footer == EmptyView {
+        self.title = Text(title)
+        self.subtitle = subtitle.map(Text.init)
+        self.toolbarLeading = { EmptyView() }
+        self.toolbarTrailing = { EmptyView() }
+        self.content = content
+        self.footer = { EmptyView() }
+        self.showsFooter = false
+    }
+
+    public init(
         title: Text,
         subtitle: Text? = nil,
         @ViewBuilder content: @escaping () -> Content

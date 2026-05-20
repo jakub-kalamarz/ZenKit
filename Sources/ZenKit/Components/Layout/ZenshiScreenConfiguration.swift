@@ -35,6 +35,20 @@ public struct ZenScreenTitle {
         self.leadingIcon = leadingIcon ?? leadingIconAsset.map { .asset($0, renderingMode: .template) }
         self.trailingIcon = trailingIcon ?? trailingIconAsset.map { .asset($0, renderingMode: .template) }
     }
+
+    public init(
+        _ text: String,
+        subheadline: String? = nil,
+        leadingIcon: ZenIconSource? = nil,
+        trailingIcon: ZenIconSource? = nil,
+        leadingIconAsset: String? = nil,
+        trailingIconAsset: String? = nil
+    ) {
+        self.text = LocalizedStringKey(text)
+        self.subheadline = subheadline.map(LocalizedStringKey.init)
+        self.leadingIcon = leadingIcon ?? leadingIconAsset.map { .asset($0, renderingMode: .template) }
+        self.trailingIcon = trailingIcon ?? trailingIconAsset.map { .asset($0, renderingMode: .template) }
+    }
 }
 
 public struct ZenScreenBackButton {
