@@ -1,66 +1,11 @@
 import SwiftUI
 
-struct ZenNavigationToolbarContent<Leading: View, Principal: View, Trailing: View>: ToolbarContent {
-    let hidesSharedBackground: Bool
-    let leadingPlacement: ToolbarItemPlacement
-    let trailingPlacement: ToolbarItemPlacement
-    let customBackButton: ZenScreenBackButton?
-    let navigationTitle: ZenScreenTitle?
-    let shouldUseInlineTitleToolbarItem: Bool
-    let isLoading: Bool
-    let toolbarLeading: (() -> Leading)?
-    let toolbarPrincipal: (() -> Principal)?
-    let toolbarTrailing: (() -> Trailing)?
-
-    var body: some ToolbarContent {
-        if let customBackButton {
-            zenToolbarItem(
-                placement: leadingPlacement,
-                hidesSharedBackground: hidesSharedBackground
-            ) {
-                ZenNavigationBackButtonView(backButton: customBackButton)
-            }
-        }
-
-        if let toolbarLeading {
-            zenToolbarItem(
-                placement: leadingPlacement,
-                hidesSharedBackground: hidesSharedBackground
-            ) {
-                toolbarLeading()
-            }
-        }
-
-        if let toolbarPrincipal {
-            zenPrincipalToolbarItem(hidesSharedBackground: hidesSharedBackground) {
-                toolbarPrincipal()
-            }
-        } else if shouldUseInlineTitleToolbarItem, let navigationTitle {
-            zenPrincipalToolbarItem(hidesSharedBackground: hidesSharedBackground) {
-                ZenNavigationInlineTitleView(title: navigationTitle, isLoading: isLoading)
-            }
-        }
-
-        if let toolbarTrailing {
-            zenToolbarItem(
-                placement: trailingPlacement,
-                hidesSharedBackground: hidesSharedBackground
-            ) {
-                toolbarTrailing()
-            }
-        }
-    }
-}
-
 enum ZenNavigationChrome {
     static func resolvedDisplayMode(
         navigationTitle: ZenScreenTitle?,
         navigationBarTitleDisplayMode: ZenNavigationBarTitleDisplayMode
     ) -> ZenNavigationBarTitleDisplayMode {
         guard navigationTitle != nil else { return .automatic }
-        if let navigationTitle, navigationTitle.subheadline != nil, !supportsNativeNavigationSubtitle {
-            return .inline
-        }
 
         switch navigationBarTitleDisplayMode {
         case .automatic:
@@ -84,26 +29,6 @@ enum ZenNavigationChrome {
         return ZenScreenBackButton(explicitBackButton.text, action: action)
     }
 
-    static func shouldUseInlineTitleToolbarItem(
-        navigationTitle: ZenScreenTitle?,
-        resolvedDisplayMode: ZenNavigationBarTitleDisplayMode,
-        isLoading: Bool = false
-    ) -> Bool {
-        guard navigationTitle != nil else { return false }
-        guard resolvedDisplayMode == .inline else { return false }
-        guard let navigationTitle else { return false }
-        return isLoading
-            || navigationTitle.leadingIcon != nil
-            || navigationTitle.trailingIcon != nil
-            || (navigationTitle.subheadline != nil && !shouldUseNativeNavigationSubtitle(navigationTitle))
-    }
-
-    static func shouldUseNativeNavigationSubtitle(_ navigationTitle: ZenScreenTitle?) -> Bool {
-        guard let navigationTitle, navigationTitle.subheadline != nil else { return false }
-        guard navigationTitle.leadingIcon == nil, navigationTitle.trailingIcon == nil else { return false }
-        return supportsNativeNavigationSubtitle
-    }
-
     static var leadingToolbarPlacement: ToolbarItemPlacement {
         #if os(macOS)
         return .navigation
@@ -118,73 +43,6 @@ enum ZenNavigationChrome {
         #else
         return .navigationBarTrailing
         #endif
-    }
-
-    private static var supportsNativeNavigationSubtitle: Bool {
-        #if os(iOS)
-        if #available(iOS 26.0, *) {
-            return true
-        } else {
-            return false
-        }
-        #elseif os(macOS)
-        return true
-        #else
-        return false
-        #endif
-    }
-}
-
-struct ZenNavigationInlineTitleView: View {
-    let title: ZenScreenTitle
-    var isLoading: Bool = false
-
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
-    var body: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: ZenSpacing.xSmall) {
-                if let leadingIcon = title.leadingIcon {
-                    ZenIcon(source: leadingIcon, size: 13)
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(Color.zenTextMuted)
-                }
-
-                Text(title.text)
-                    .font(.zenStat)
-                    .foregroundStyle(Color.zenTextPrimary)
-                    .lineLimit(1)
-
-                if isLoading {
-                    ZenSpinner(size: .small, tint: Color.zenTextMuted, showsTrack: false)
-                        .transition(
-                            reduceMotion
-                                ? .opacity
-                                : .scale(scale: 0.82).combined(with: .opacity)
-                        )
-                }
-
-                if let trailingIcon = title.trailingIcon {
-                    ZenIcon(source: trailingIcon, size: 13)
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(Color.zenTextMuted)
-                }
-            }
-            .animation(
-                reduceMotion
-                    ? .easeInOut(duration: 0.12)
-                    : .spring(response: 0.28, dampingFraction: 0.84),
-                value: isLoading
-            )
-
-            if let subheadline = title.subheadline {
-                Text(subheadline)
-                    .font(.zenGroup)
-                    .foregroundStyle(Color.zenTextMuted)
-                    .lineLimit(1)
-            }
-        }
-        .accessibilityElement(children: .combine)
     }
 }
 
@@ -234,66 +92,22 @@ extension View {
 private extension View {
     @ViewBuilder
     func applyZenNavigationSubtitle(_ title: ZenScreenTitle) -> some View {
-        #if os(iOS)
-        if #available(iOS 26.0, *), ZenNavigationChrome.shouldUseNativeNavigationSubtitle(title) {
-            if let subheadline = title.subheadline {
+        if let subheadline = title.subheadline {
+            #if os(iOS)
+            if #available(iOS 26.0, *) {
                 navigationSubtitle(Text(subheadline))
             } else {
                 self
             }
+            #elseif os(macOS)
+            navigationSubtitle(Text(subheadline))
+            #else
+            self
+            #endif
         } else {
             self
         }
-        #elseif os(macOS)
-        if ZenNavigationChrome.shouldUseNativeNavigationSubtitle(title) {
-            if let subheadline = title.subheadline {
-                navigationSubtitle(Text(subheadline))
-            } else {
-                self
-            }
-        } else {
-            self
-        }
-        #else
-        self
-        #endif
     }
-}
-
-@ToolbarContentBuilder
-func zenPrincipalToolbarItem<Content: View>(
-    hidesSharedBackground: Bool,
-    @ViewBuilder content: () -> Content
-) -> some ToolbarContent {
-    zenToolbarItem(
-        placement: .principal,
-        hidesSharedBackground: hidesSharedBackground,
-        content: content
-    )
-}
-
-@ToolbarContentBuilder
-func zenToolbarItem<Content: View>(
-    placement: ToolbarItemPlacement,
-    hidesSharedBackground: Bool,
-    @ViewBuilder content: () -> Content
-) -> some ToolbarContent {
-    #if os(iOS)
-    if #available(iOS 26.0, *), hidesSharedBackground {
-        ToolbarItem(placement: placement) {
-            content()
-        }
-        .sharedBackgroundVisibility(.hidden)
-    } else {
-        ToolbarItem(placement: placement) {
-            content()
-        }
-    }
-    #else
-    ToolbarItem(placement: placement) {
-        content()
-    }
-    #endif
 }
 
 #if !os(macOS)

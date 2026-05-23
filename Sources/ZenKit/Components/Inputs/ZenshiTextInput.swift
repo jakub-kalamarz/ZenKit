@@ -5,6 +5,18 @@ public enum ZenTextInputKind {
     case secure
 }
 
+public enum ZenTextInputAxis {
+    case horizontal
+    case vertical(ClosedRange<Int>)
+}
+
+public enum ZenTextInputKeyboardType: Sendable {
+    case `default`
+    case decimalPad
+    case url
+    case emailAddress
+}
+
 public enum ZenControlState {
     case normal
     case focused
@@ -21,9 +33,11 @@ public struct ZenTextInput: View {
     private let leadingIcon: ZenIconSource?
     private let trailingIcon: ZenIconSource?
     private let kind: ZenTextInputKind
+    private let axis: ZenTextInputAxis
     private let state: ZenControlState
     private let message: LocalizedStringKey?
     private let submitLabel: SubmitLabel
+    private let keyboardType: ZenTextInputKeyboardType
     private let accessibilityIdentifier: String?
 
     public init(
@@ -34,9 +48,11 @@ public struct ZenTextInput: View {
         leadingIconAsset: String? = nil,
         trailingIconAsset: String? = nil,
         kind: ZenTextInputKind = .plain,
+        axis: ZenTextInputAxis = .horizontal,
         state: ZenControlState = .normal,
         message: LocalizedStringKey? = nil,
         submitLabel: SubmitLabel = .done,
+        keyboardType: ZenTextInputKeyboardType = .default,
         accessibilityIdentifier: String? = nil
     ) {
         _text = text
@@ -44,9 +60,11 @@ public struct ZenTextInput: View {
         self.leadingIcon = leadingIcon ?? leadingIconAsset.map { .asset($0, renderingMode: .template) }
         self.trailingIcon = trailingIcon ?? trailingIconAsset.map { .asset($0, renderingMode: .template) }
         self.kind = kind
+        self.axis = axis
         self.state = state
         self.message = message
         self.submitLabel = submitLabel
+        self.keyboardType = keyboardType
         self.accessibilityIdentifier = accessibilityIdentifier
     }
 
@@ -81,8 +99,8 @@ public struct ZenTextInput: View {
             .padding(.horizontal, 12)
             .frame(
                 maxWidth: .infinity,
-                minHeight: theme.resolvedMetrics.controlHeight,
-                maxHeight: theme.resolvedMetrics.controlHeight,
+                minHeight: minControlHeight(theme: theme),
+                maxHeight: maxControlHeight(theme: theme),
                 alignment: .leading
             )
             .background(controlStyle.backgroundColor)
@@ -105,13 +123,49 @@ public struct ZenTextInput: View {
     private var field: some View {
         switch kind {
         case .plain:
-            TextField(prompt, text: $text)
-                .submitLabel(submitLabel)
-                .zenAccessibilityIdentifierIfPresent(accessibilityIdentifier)
+            plainField
         case .secure:
             SecureField(prompt, text: $text)
                 .submitLabel(submitLabel)
                 .zenAccessibilityIdentifierIfPresent(accessibilityIdentifier)
+        }
+    }
+
+    @ViewBuilder
+    private var plainField: some View {
+        switch axis {
+        case .horizontal:
+            configured(TextField(prompt, text: $text))
+        case .vertical(let lineLimit):
+            configured(
+                TextField(prompt, text: $text, axis: .vertical)
+                    .lineLimit(lineLimit)
+            )
+        }
+    }
+
+    private func configured<Field: View>(_ field: Field) -> some View {
+        field
+            .submitLabel(submitLabel)
+            .zenKeyboardType(keyboardType)
+            .zenAccessibilityIdentifierIfPresent(accessibilityIdentifier)
+    }
+
+    private func minControlHeight(theme: ZenTheme) -> CGFloat {
+        switch axis {
+        case .horizontal:
+            return theme.resolvedMetrics.controlHeight
+        case .vertical:
+            return max(theme.resolvedMetrics.controlHeight, 92)
+        }
+    }
+
+    private func maxControlHeight(theme: ZenTheme) -> CGFloat? {
+        switch axis {
+        case .horizontal:
+            return theme.resolvedMetrics.controlHeight
+        case .vertical:
+            return nil
         }
     }
 
@@ -144,6 +198,24 @@ public struct ZenTextInput: View {
 }
 
 private extension View {
+    @ViewBuilder
+    func zenKeyboardType(_ keyboardType: ZenTextInputKeyboardType) -> some View {
+        #if os(iOS)
+            switch keyboardType {
+            case .default:
+                self.keyboardType(.default)
+            case .decimalPad:
+                self.keyboardType(.decimalPad)
+            case .url:
+                self.keyboardType(.URL)
+            case .emailAddress:
+                self.keyboardType(.emailAddress)
+            }
+        #else
+            self
+        #endif
+    }
+
     @ViewBuilder
     func zenAccessibilityIdentifierIfPresent(_ identifier: String?) -> some View {
         if let identifier {
