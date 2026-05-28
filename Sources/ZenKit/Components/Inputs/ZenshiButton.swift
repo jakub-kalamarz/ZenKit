@@ -274,6 +274,8 @@ public struct ZenButton<Label: View>: View {
                 Button(action: performAction) {
                     label()
                         .lineLimit(1)
+                        .frame(minWidth: 44, minHeight: 44)
+                        .contentShape(.rect)
                 }
                 .buttonStyle(.plain)
             } else {
