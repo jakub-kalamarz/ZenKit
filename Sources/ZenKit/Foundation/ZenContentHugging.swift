@@ -19,7 +19,10 @@ struct ZenContentHugging: Layout {
 
     func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
         guard let child = subviews.first else { return }
-        child.place(at: bounds.origin, proposal: ProposedViewSize(bounds.size))
+        let childSize = child.sizeThatFits(ProposedViewSize(bounds.size))
+        let x = bounds.minX + (bounds.width - childSize.width) / 2
+        let y = bounds.minY + (bounds.height - childSize.height) / 2
+        child.place(at: CGPoint(x: x, y: y), proposal: ProposedViewSize(bounds.size))
     }
 }
 
