@@ -7,11 +7,17 @@ public struct ZenWeekStrip: View {
 
     @Binding private var selection: Date
     private let range: ClosedRange<Date>
+    private let horizontalInset: CGFloat
     @Namespace private var selectionAnimation
 
-    public init(selection: Binding<Date>, in range: ClosedRange<Date>) {
+    public init(
+        selection: Binding<Date>,
+        in range: ClosedRange<Date>,
+        horizontalInset: CGFloat = ZenSpacing.xSmall
+    ) {
         self._selection = selection
         self.range = range
+        self.horizontalInset = horizontalInset
     }
 
     public var body: some View {
@@ -79,7 +85,9 @@ public struct ZenWeekStrip: View {
                 }
             }
         }
-        .padding(ZenSpacing.xSmall)
+        .padding(.top, ZenSpacing.xSmall)
+        .padding(.bottom, ZenSpacing.small + ZenSpacing.xSmall)
+        .padding(.horizontal, horizontalInset)
         .contentShape(RoundedRectangle(cornerRadius: controlCornerRadius, style: .continuous))
     }
 
@@ -91,7 +99,7 @@ public struct ZenWeekStrip: View {
                 dayCell(date, cornerRadius: cellCornerRadius)
             }
         }
-        .padding(.horizontal, ZenSpacing.xSmall)
+        .padding(.horizontal, horizontalInset)
     }
 
     // MARK: - Day cell
@@ -208,11 +216,11 @@ public struct ZenWeekStrip: View {
 // MARK: - Convenience init (no range limit)
 
 public extension ZenWeekStrip {
-    init(selection: Binding<Date>) {
+    init(selection: Binding<Date>, horizontalInset: CGFloat = ZenSpacing.xSmall) {
         let cal = Calendar.current
         let start = cal.date(byAdding: .year, value: -1, to: .now) ?? .distantPast
         let end = cal.date(byAdding: .year, value: 1, to: .now) ?? .distantFuture
-        self.init(selection: selection, in: start...end)
+        self.init(selection: selection, in: start...end, horizontalInset: horizontalInset)
     }
 }
 
