@@ -9,11 +9,13 @@ public struct ZenWeekStrip: View {
     private let range: ClosedRange<Date>
     private let horizontalInset: CGFloat
     @Namespace private var selectionAnimation
+    @State private var visibleDay: Date?
+    private let visibleDayCount = 5
 
     public init(
         selection: Binding<Date>,
         in range: ClosedRange<Date>,
-        horizontalInset: CGFloat = ZenSpacing.xSmall
+        horizontalInset: CGFloat = 0
     ) {
         self._selection = selection
         self.range = range
@@ -25,16 +27,20 @@ public struct ZenWeekStrip: View {
         let controlCornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
         let cellCornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: controlCornerRadius)
 
-        if #available(iOS 17, macOS 14, *) {
-            modernWeekStrip(
-                controlCornerRadius: controlCornerRadius,
-                cellCornerRadius: cellCornerRadius
-            )
-        } else {
-            fallbackWeekStrip(
-                controlCornerRadius: controlCornerRadius,
-                cellCornerRadius: cellCornerRadius
-            )
+        VStack(spacing: ZenSpacing.xSmall) {
+            monthHeader
+
+            if #available(iOS 17, macOS 14, *) {
+                modernWeekStrip(
+                    controlCornerRadius: controlCornerRadius,
+                    cellCornerRadius: cellCornerRadius
+                )
+            } else {
+                fallbackWeekStrip(
+                    controlCornerRadius: controlCornerRadius,
+                    cellCornerRadius: cellCornerRadius
+                )
+            }
         }
     }
 
@@ -42,46 +48,31 @@ public struct ZenWeekStrip: View {
     private func modernWeekStrip(controlCornerRadius: CGFloat, cellCornerRadius: CGFloat) -> some View {
         ScrollViewReader { proxy in
             ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(spacing: 0) {
-                    ForEach(allWeeks, id: \.self) { week in
-                        weekRow(week, cellCornerRadius: cellCornerRadius)
-                            .id(week)
-                            .containerRelativeFrame(.horizontal)
+                LazyHStack(spacing: ZenSpacing.xSmall) {
+                    ForEach(allDays, id: \.self) { date in
+                        dayCell(date, cornerRadius: cellCornerRadius)
+                            .id(date)
+                            .containerRelativeFrame(
+                                .horizontal,
+                                count: visibleDayCount,
+                                span: 1,
+                                spacing: ZenSpacing.xSmall
+                            )
                     }
                 }
                 .scrollTargetLayout()
             }
             .scrollClipDisabled()
             .scrollTargetBehavior(.viewAligned)
+            .scrollPosition(id: $visibleDay)
             .onAppear {
-                proxy.scrollTo(weekContaining(selection), anchor: .center)
+                visibleDay = normalizedSelection
+                proxy.scrollTo(normalizedSelection, anchor: .center)
             }
             .onChange(of: selection) { newValue in
                 withAnimation(selectionAnimationStyle) {
-                    proxy.scrollTo(weekContaining(newValue), anchor: .center)
-                }
-            }
-        }
-        .padding(ZenSpacing.xSmall)
-        .contentShape(RoundedRectangle(cornerRadius: controlCornerRadius, style: .continuous))
-    }
-
-    private func fallbackWeekStrip(controlCornerRadius: CGFloat, cellCornerRadius: CGFloat) -> some View {
-        ScrollViewReader { proxy in
-            ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(spacing: 0) {
-                    ForEach(allWeeks, id: \.self) { week in
-                        weekRow(week, cellCornerRadius: cellCornerRadius)
-                            .id(week)
-                    }
-                }
-            }
-            .onAppear {
-                proxy.scrollTo(weekContaining(selection), anchor: .center)
-            }
-            .onChange(of: selection) { newValue in
-                withAnimation(selectionAnimationStyle) {
-                    proxy.scrollTo(weekContaining(newValue), anchor: .center)
+                    visibleDay = normalized(date: newValue)
+                    proxy.scrollTo(normalized(date: newValue), anchor: .center)
                 }
             }
         }
@@ -91,15 +82,33 @@ public struct ZenWeekStrip: View {
         .contentShape(RoundedRectangle(cornerRadius: controlCornerRadius, style: .continuous))
     }
 
-    // MARK: - Week row
-
-    private func weekRow(_ dates: [Date], cellCornerRadius: CGFloat) -> some View {
-        HStack(spacing: ZenSpacing.xSmall) {
-            ForEach(dates, id: \.self) { date in
-                dayCell(date, cornerRadius: cellCornerRadius)
+    private func fallbackWeekStrip(controlCornerRadius: CGFloat, cellCornerRadius: CGFloat) -> some View {
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(spacing: ZenSpacing.xSmall) {
+                    ForEach(allDays, id: \.self) { date in
+                        dayCell(date, cornerRadius: cellCornerRadius)
+                            .frame(width: 68)
+                            .id(date)
+                    }
+                }
+                .padding(.horizontal, horizontalInset)
+            }
+            .onAppear {
+                visibleDay = normalizedSelection
+                proxy.scrollTo(normalizedSelection, anchor: .center)
+            }
+            .onChange(of: selection) { newValue in
+                withAnimation(selectionAnimationStyle) {
+                    visibleDay = normalized(date: newValue)
+                    proxy.scrollTo(normalized(date: newValue), anchor: .center)
+                }
             }
         }
+        .padding(.top, ZenSpacing.xSmall)
+        .padding(.bottom, ZenSpacing.small + ZenSpacing.xSmall)
         .padding(.horizontal, horizontalInset)
+        .contentShape(RoundedRectangle(cornerRadius: controlCornerRadius, style: .continuous))
     }
 
     // MARK: - Day cell
@@ -154,43 +163,52 @@ public struct ZenWeekStrip: View {
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }
 
-    // MARK: - Date helpers
+    // MARK: - Month header
 
-    private var mondayCalendar: Calendar {
-        var cal = calendar
-        cal.firstWeekday = 2
-        return cal
+    private var monthHeader: some View {
+        let label = monthYearLabel(for: visibleDay ?? normalizedSelection)
+
+        return HStack {
+            Text(label)
+                .font(.zen(.body2, weight: .semibold))
+                .foregroundStyle(Color.zenTextPrimary)
+                .contentTransition(.numericText())
+                .animation(.easeInOut(duration: 0.2), value: label)
+
+            Spacer()
+        }
+        .padding(.horizontal, ZenSpacing.small + ZenSpacing.xSmall)
     }
 
-    private var allWeeks: [[Date]] {
-        let cal = mondayCalendar
+    // MARK: - Date helpers
+
+    private var normalizedSelection: Date {
+        normalized(date: selection)
+    }
+
+    private var allDays: [Date] {
+        let cal = calendar
         let rangeStart = cal.startOfDay(for: range.lowerBound)
         let rangeEnd = cal.startOfDay(for: range.upperBound)
 
-        guard let firstMonday = cal.dateInterval(of: .weekOfYear, for: rangeStart)?.start,
-              let lastWeekInterval = cal.dateInterval(of: .weekOfYear, for: rangeEnd)
-        else { return [] }
+        var dates: [Date] = []
+        var current = rangeStart
 
-        let lastMonday = lastWeekInterval.start
-        var weeks: [[Date]] = []
-        var current = firstMonday
-
-        while current <= lastMonday {
-            let week = (0..<7).compactMap { cal.date(byAdding: .day, value: $0, to: current) }
-            if week.count == 7 { weeks.append(week) }
-            guard let next = cal.date(byAdding: .weekOfYear, value: 1, to: current) else { break }
+        while current <= rangeEnd {
+            dates.append(current)
+            guard let next = cal.date(byAdding: .day, value: 1, to: current) else { break }
             current = next
         }
 
-        return weeks
+        return dates
     }
 
-    private func weekContaining(_ date: Date) -> [Date]? {
-        let cal = mondayCalendar
-        let dayStart = cal.startOfDay(for: date)
-        return allWeeks.first { week in
-            week.contains { cal.isDate($0, inSameDayAs: dayStart) }
-        }
+    private func normalized(date: Date) -> Date {
+        calendar.startOfDay(for: date)
+    }
+
+    private func monthYearLabel(for date: Date) -> String {
+        normalized(date: date).formatted(.dateTime.month(.wide).year())
     }
 
     private func weekdaySymbol(for date: Date) -> String {
@@ -216,7 +234,7 @@ public struct ZenWeekStrip: View {
 // MARK: - Convenience init (no range limit)
 
 public extension ZenWeekStrip {
-    init(selection: Binding<Date>, horizontalInset: CGFloat = ZenSpacing.xSmall) {
+    init(selection: Binding<Date>, horizontalInset: CGFloat = 0) {
         let cal = Calendar.current
         let start = cal.date(byAdding: .year, value: -1, to: .now) ?? .distantPast
         let end = cal.date(byAdding: .year, value: 1, to: .now) ?? .distantFuture
