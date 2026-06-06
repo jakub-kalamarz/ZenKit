@@ -10,7 +10,7 @@ public struct ZenWeekStrip: View {
     private let horizontalInset: CGFloat
     @Namespace private var selectionAnimation
     @State private var visibleDay: Date?
-    private let visibleDayCount = 5
+    @State private var containerWidth: CGFloat = 0
 
     public init(
         selection: Binding<Date>,
@@ -42,6 +42,14 @@ public struct ZenWeekStrip: View {
                 )
             }
         }
+    }
+
+    private static let minCellWidth: CGFloat = 56
+
+    private var visibleDayCount: Int {
+        let available = max(0, containerWidth - horizontalInset * 2)
+        let count = Int((available + ZenSpacing.xSmall) / (Self.minCellWidth + ZenSpacing.xSmall))
+        return max(5, count)
     }
 
     @available(iOS 17, macOS 14, *)
@@ -76,6 +84,12 @@ public struct ZenWeekStrip: View {
                 }
             }
         }
+        .background {
+            GeometryReader { geo in
+                Color.clear.preference(key: WidthPreferenceKey.self, value: geo.size.width)
+            }
+        }
+        .onPreferenceChange(WidthPreferenceKey.self) { containerWidth = $0 }
         .padding(.top, ZenSpacing.xSmall)
         .padding(.bottom, ZenSpacing.small + ZenSpacing.xSmall)
         .padding(.horizontal, horizontalInset)
@@ -228,6 +242,15 @@ public struct ZenWeekStrip: View {
             return .easeInOut(duration: 0.18)
         }
         return .spring(response: 0.28, dampingFraction: 0.84)
+    }
+}
+
+// MARK: - Width preference
+
+private struct WidthPreferenceKey: PreferenceKey {
+    static let defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
     }
 }
 
