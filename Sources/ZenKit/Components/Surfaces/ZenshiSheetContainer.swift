@@ -1,11 +1,6 @@
 import SwiftUI
 
 public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Content: View, Footer: View>: View {
-    private static var navigationBarHeight: CGFloat { 56 }
-
-    @Environment(\.zenSheetSizingCallback) private var sizingCallback
-    @State private var footerHeight: CGFloat = 0
-
     private let title: Text
     private let subtitle: Text?
     private let toolbarLeading: () -> ToolbarLeading
@@ -154,6 +149,7 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
                 }
                 .zenBackground()
         }
+        .zenSheetContentSize()
         .presentationDragIndicator(.visible)
     }
 
@@ -173,10 +169,6 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
             .padding(.horizontal, ZenSpacing.medium)
             .padding(.top, ZenSpacing.small)
             .padding(.bottom, ZenSpacing.large)
-            .zenReadSize { size in
-                let totalHeight = size.height + Self.navigationBarHeight + footerHeight
-                sizingCallback?(CGSize(width: size.width, height: totalHeight))
-            }
         }
     }
 
@@ -187,9 +179,6 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
                 .padding(.vertical, ZenSpacing.small)
         }
         .background(Color.zenBackground)
-        .zenReadSize { size in
-            footerHeight = size.height
-        }
     }
 }
 
