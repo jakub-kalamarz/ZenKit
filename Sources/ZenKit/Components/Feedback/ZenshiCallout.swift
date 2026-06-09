@@ -57,12 +57,11 @@ public struct ZenCallout: View {
     }
 
     private var backgroundColor: Color {
-        let colors = ZenTheme.current.resolvedColors
         switch tone {
-        case .info:     return colors.primarySubtle.color
-        case .success:  return colors.successSubtle.color
-        case .warning:  return colors.warningSubtle.color
-        case .critical: return colors.criticalSubtle.color
+        case .info:     return .zenInfoTint
+        case .success:  return .zenSuccessTint
+        case .warning:  return .zenWarningTint
+        case .critical: return .zenCriticalTint
         }
     }
 

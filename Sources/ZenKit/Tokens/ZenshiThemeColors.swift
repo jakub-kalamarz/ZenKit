@@ -50,9 +50,14 @@ public struct ZenThemeColors: Equatable, Sendable {
     public let background: ZenDynamicColor
     public let surface: ZenDynamicColor
     public let surfaceMuted: ZenDynamicColor
+    public let surfaceElevated: ZenDynamicColor
+    public let surfaceTint: ZenDynamicColor
     public let border: ZenDynamicColor
+    public let borderSubtle: ZenDynamicColor
     public let textPrimary: ZenDynamicColor
+    public let textStrong: ZenDynamicColor
     public let textMuted: ZenDynamicColor
+    public let textPlaceholder: ZenDynamicColor
     public let accent: ZenDynamicColor
     public let primary: ZenDynamicColor
     public let primaryPressed: ZenDynamicColor
@@ -62,21 +67,30 @@ public struct ZenThemeColors: Equatable, Sendable {
     public let success: ZenDynamicColor
     public let successSubtle: ZenDynamicColor
     public let successBorder: ZenDynamicColor
+    public let successTint: ZenDynamicColor
     public let warning: ZenDynamicColor
     public let warningSubtle: ZenDynamicColor
     public let warningBorder: ZenDynamicColor
+    public let warningTint: ZenDynamicColor
     public let critical: ZenDynamicColor
     public let criticalPressed: ZenDynamicColor
     public let criticalSubtle: ZenDynamicColor
     public let criticalBorder: ZenDynamicColor
+    public let criticalTint: ZenDynamicColor
+    public let infoTint: ZenDynamicColor
 
     public init(
         background: ZenDynamicColor,
         surface: ZenDynamicColor,
         surfaceMuted: ZenDynamicColor,
+        surfaceElevated: ZenDynamicColor? = nil,
+        surfaceTint: ZenDynamicColor? = nil,
         border: ZenDynamicColor,
+        borderSubtle: ZenDynamicColor? = nil,
         textPrimary: ZenDynamicColor,
+        textStrong: ZenDynamicColor? = nil,
         textMuted: ZenDynamicColor,
+        textPlaceholder: ZenDynamicColor? = nil,
         accent: ZenDynamicColor,
         primary: ZenDynamicColor,
         primaryPressed: ZenDynamicColor,
@@ -86,20 +100,29 @@ public struct ZenThemeColors: Equatable, Sendable {
         success: ZenDynamicColor,
         successSubtle: ZenDynamicColor,
         successBorder: ZenDynamicColor,
+        successTint: ZenDynamicColor? = nil,
         warning: ZenDynamicColor,
         warningSubtle: ZenDynamicColor,
         warningBorder: ZenDynamicColor,
+        warningTint: ZenDynamicColor? = nil,
         critical: ZenDynamicColor,
         criticalPressed: ZenDynamicColor,
         criticalSubtle: ZenDynamicColor,
-        criticalBorder: ZenDynamicColor
+        criticalBorder: ZenDynamicColor,
+        criticalTint: ZenDynamicColor? = nil,
+        infoTint: ZenDynamicColor? = nil
     ) {
         self.background = background
         self.surface = surface
         self.surfaceMuted = surfaceMuted
+        self.surfaceElevated = surfaceElevated ?? surface
+        self.surfaceTint = surfaceTint ?? surfaceMuted
         self.border = border
+        self.borderSubtle = borderSubtle ?? border
         self.textPrimary = textPrimary
+        self.textStrong = textStrong ?? textPrimary
         self.textMuted = textMuted
+        self.textPlaceholder = textPlaceholder ?? textMuted
         self.accent = accent
         self.primary = primary
         self.primaryPressed = primaryPressed
@@ -109,36 +132,47 @@ public struct ZenThemeColors: Equatable, Sendable {
         self.success = success
         self.successSubtle = successSubtle
         self.successBorder = successBorder
+        self.successTint = successTint ?? successSubtle
         self.warning = warning
         self.warningSubtle = warningSubtle
         self.warningBorder = warningBorder
+        self.warningTint = warningTint ?? warningSubtle
         self.critical = critical
         self.criticalPressed = criticalPressed
         self.criticalSubtle = criticalSubtle
         self.criticalBorder = criticalBorder
+        self.criticalTint = criticalTint ?? criticalSubtle
+        self.infoTint = infoTint ?? primarySubtle
     }
 
     public func applying(accent: ZenDynamicColor) -> ZenThemeColors {
         let white = ZenColorComponents.rgb(1, 1, 1)
         let black = ZenColorComponents.rgb(0, 0, 0)
 
+        let newPrimarySubtle = ZenDynamicColor(
+            light: accent.light.mixed(with: white, amount: ZenColorMixing.subtleLight),
+            dark: accent.dark.mixed(with: black, amount: ZenColorMixing.subtleDark)
+        )
+
         return ZenThemeColors(
             background: background,
             surface: surface,
             surfaceMuted: surfaceMuted,
+            surfaceElevated: surfaceElevated,
+            surfaceTint: surfaceTint,
             border: border,
+            borderSubtle: borderSubtle,
             textPrimary: textPrimary,
+            textStrong: textStrong,
             textMuted: textMuted,
+            textPlaceholder: textPlaceholder,
             accent: accent,
             primary: accent,
             primaryPressed: .init(
                 light: accent.light.mixed(with: black, amount: ZenColorMixing.pressedLight),
                 dark: accent.dark.mixed(with: black, amount: ZenColorMixing.pressedDark)
             ),
-            primarySubtle: .init(
-                light: accent.light.mixed(with: white, amount: ZenColorMixing.subtleLight),
-                dark: accent.dark.mixed(with: black, amount: ZenColorMixing.subtleDark)
-            ),
+            primarySubtle: newPrimarySubtle,
             primaryForeground: .init(
                 light: accent.light.accessibleForeground,
                 dark: accent.dark.accessibleForeground
@@ -150,13 +184,17 @@ public struct ZenThemeColors: Equatable, Sendable {
             success: success,
             successSubtle: successSubtle,
             successBorder: successBorder,
+            successTint: successTint,
             warning: warning,
             warningSubtle: warningSubtle,
             warningBorder: warningBorder,
+            warningTint: warningTint,
             critical: critical,
             criticalPressed: criticalPressed,
             criticalSubtle: criticalSubtle,
-            criticalBorder: criticalBorder
+            criticalBorder: criticalBorder,
+            criticalTint: criticalTint,
+            infoTint: newPrimarySubtle
         )
     }
 }
@@ -166,12 +204,14 @@ typealias ZenResolvedColors = ZenThemeColors
 enum ZenColorMixing {
     static let pressedLight: Double = 0.16
     static let pressedDark: Double = 0.22
-    static let subtleLight: Double = 0.88
+    static let subtleLight: Double = 0.90
     static let subtleDark: Double = 0.70
     static let borderLight: Double = 0.58
     static let borderDark: Double = 0.50
     static let focusLight: Double = 0.22
     static let focusDark: Double = 0.12
+    static let tintLight: Double = 0.93
+    static let tintDark: Double = 0.80
 }
 
 public struct ZenColorComponents: Equatable, Hashable, Sendable {
@@ -263,145 +303,152 @@ struct ZenNativeThemeTokens {
         let white = ZenColorComponents.rgb(1, 1, 1)
         let black = ZenColorComponents.rgb(0, 0, 0)
 
+        let primaryPressedColor = ZenDynamicColor(
+            light: accentLight.mixed(with: black, amount: ZenColorMixing.pressedLight),
+            dark: accentDark.mixed(with: black, amount: ZenColorMixing.pressedDark)
+        )
+        let primarySubtleColor = ZenDynamicColor(
+            light: accentLight.mixed(with: white, amount: ZenColorMixing.subtleLight),
+            dark: accentDark.mixed(with: black, amount: ZenColorMixing.subtleDark)
+        )
+        let primaryFgColor = ZenDynamicColor(
+            light: accentLight.accessibleForeground,
+            dark: accentDark.accessibleForeground
+        )
+        let focusRingColor = ZenDynamicColor(
+            light: accentLight.mixed(with: white, amount: ZenColorMixing.focusLight),
+            dark: accentDark.mixed(with: white, amount: ZenColorMixing.focusDark)
+        )
+        let infoTintColor = ZenDynamicColor(
+            light: accentLight.mixed(with: white, amount: ZenColorMixing.tintLight),
+            dark: accentDark.mixed(with: black, amount: ZenColorMixing.tintDark)
+        )
+
+        let successColor = ZenDynamicColor(light: greenLight, dark: greenDark)
+        let successSubtleColor = ZenDynamicColor(
+            light: greenLight.mixed(with: white, amount: ZenColorMixing.subtleLight),
+            dark: greenDark.mixed(with: black, amount: ZenColorMixing.subtleDark)
+        )
+        let successBorderColor = ZenDynamicColor(
+            light: greenLight.mixed(with: white, amount: ZenColorMixing.borderLight),
+            dark: greenDark.mixed(with: black, amount: ZenColorMixing.borderDark)
+        )
+        let successTintColor = ZenDynamicColor(
+            light: greenLight.mixed(with: white, amount: ZenColorMixing.tintLight),
+            dark: greenDark.mixed(with: black, amount: ZenColorMixing.tintDark)
+        )
+
+        let warningColor = ZenDynamicColor(light: amberLight, dark: amberDark)
+        let warningSubtleColor = ZenDynamicColor(
+            light: amberLight.mixed(with: white, amount: ZenColorMixing.subtleLight),
+            dark: amberDark.mixed(with: black, amount: ZenColorMixing.subtleDark)
+        )
+        let warningBorderColor = ZenDynamicColor(
+            light: amberLight.mixed(with: white, amount: ZenColorMixing.borderLight),
+            dark: amberDark.mixed(with: black, amount: ZenColorMixing.borderDark)
+        )
+        let warningTintColor = ZenDynamicColor(
+            light: amberLight.mixed(with: white, amount: ZenColorMixing.tintLight),
+            dark: amberDark.mixed(with: black, amount: ZenColorMixing.tintDark)
+        )
+
+        let criticalColor = ZenDynamicColor(light: redLight, dark: redDark)
+        let criticalPressedColor = ZenDynamicColor(
+            light: redLight.mixed(with: black, amount: ZenColorMixing.pressedLight),
+            dark: redDark.mixed(with: black, amount: ZenColorMixing.pressedDark)
+        )
+        let criticalSubtleColor = ZenDynamicColor(
+            light: redLight.mixed(with: white, amount: ZenColorMixing.subtleLight),
+            dark: redDark.mixed(with: black, amount: ZenColorMixing.subtleDark)
+        )
+        let criticalBorderColor = ZenDynamicColor(
+            light: redLight.mixed(with: white, amount: ZenColorMixing.borderLight),
+            dark: redDark.mixed(with: black, amount: ZenColorMixing.borderDark)
+        )
+        let criticalTintColor = ZenDynamicColor(
+            light: redLight.mixed(with: white, amount: ZenColorMixing.tintLight),
+            dark: redDark.mixed(with: black, amount: ZenColorMixing.tintDark)
+        )
+
         return ZenThemeColors(
-            background: .init(light: backgroundLight, dark: backgroundDark),
-            surface: .init(light: surfaceLight, dark: surfaceDark),
-            surfaceMuted: .init(light: surfaceMutedLight, dark: surfaceMutedDark),
-            border: .init(light: borderLight, dark: borderDark),
-            textPrimary: .init(light: labelLight, dark: labelDark),
-            textMuted: .init(light: mutedLabelLight, dark: mutedLabelDark),
-            accent: .init(light: accentLight, dark: accentDark),
-            primary: .init(light: accentLight, dark: accentDark),
-            primaryPressed: .init(
-                light: accentLight.mixed(with: black, amount: ZenColorMixing.pressedLight),
-                dark: accentDark.mixed(with: black, amount: ZenColorMixing.pressedDark)
-            ),
-            primarySubtle: .init(
-                light: accentLight.mixed(with: white, amount: ZenColorMixing.subtleLight),
-                dark: accentDark.mixed(with: black, amount: ZenColorMixing.subtleDark)
-            ),
-            primaryForeground: .init(
-                light: accentLight.accessibleForeground,
-                dark: accentDark.accessibleForeground
-            ),
-            focusRing: .init(
-                light: accentLight.mixed(with: white, amount: ZenColorMixing.focusLight),
-                dark: accentDark.mixed(with: white, amount: ZenColorMixing.focusDark)
-            ),
-            success: .init(light: greenLight, dark: greenDark),
-            successSubtle: .init(
-                light: greenLight.mixed(with: white, amount: ZenColorMixing.subtleLight),
-                dark: greenDark.mixed(with: black, amount: ZenColorMixing.subtleDark)
-            ),
-            successBorder: .init(
-                light: greenLight.mixed(with: white, amount: ZenColorMixing.borderLight),
-                dark: greenDark.mixed(with: black, amount: ZenColorMixing.borderDark)
-            ),
-            warning: .init(light: orangeLight, dark: orangeDark),
-            warningSubtle: .init(
-                light: orangeLight.mixed(with: white, amount: ZenColorMixing.subtleLight),
-                dark: orangeDark.mixed(with: black, amount: ZenColorMixing.subtleDark)
-            ),
-            warningBorder: .init(
-                light: orangeLight.mixed(with: white, amount: ZenColorMixing.borderLight),
-                dark: orangeDark.mixed(with: black, amount: ZenColorMixing.borderDark)
-            ),
-            critical: .init(light: redLight, dark: redDark),
-            criticalPressed: .init(
-                light: redLight.mixed(with: black, amount: ZenColorMixing.pressedLight),
-                dark: redDark.mixed(with: black, amount: ZenColorMixing.pressedDark)
-            ),
-            criticalSubtle: .init(
-                light: redLight.mixed(with: white, amount: ZenColorMixing.subtleLight),
-                dark: redDark.mixed(with: black, amount: ZenColorMixing.subtleDark)
-            ),
-            criticalBorder: .init(
-                light: redLight.mixed(with: white, amount: ZenColorMixing.borderLight),
-                dark: redDark.mixed(with: black, amount: ZenColorMixing.borderDark)
-            )
+            background: ZenDynamicColor(light: backgroundLight, dark: backgroundDark),
+            surface: ZenDynamicColor(light: surfaceLight, dark: surfaceDark),
+            surfaceMuted: ZenDynamicColor(light: surfaceMutedLight, dark: surfaceMutedDark),
+            surfaceElevated: ZenDynamicColor(light: surfaceElevatedLight, dark: surfaceElevatedDark),
+            surfaceTint: ZenDynamicColor(light: surfaceTintLight, dark: surfaceTintDark),
+            border: ZenDynamicColor(light: borderLight, dark: borderDark),
+            borderSubtle: ZenDynamicColor(light: borderSubtleLight, dark: borderSubtleDark),
+            textPrimary: ZenDynamicColor(light: labelLight, dark: labelDark),
+            textStrong: ZenDynamicColor(light: labelStrongLight, dark: labelStrongDark),
+            textMuted: ZenDynamicColor(light: mutedLabelLight, dark: mutedLabelDark),
+            textPlaceholder: ZenDynamicColor(light: placeholderLight, dark: placeholderDark),
+            accent: ZenDynamicColor(light: accentLight, dark: accentDark),
+            primary: ZenDynamicColor(light: accentLight, dark: accentDark),
+            primaryPressed: primaryPressedColor,
+            primarySubtle: primarySubtleColor,
+            primaryForeground: primaryFgColor,
+            focusRing: focusRingColor,
+            success: successColor,
+            successSubtle: successSubtleColor,
+            successBorder: successBorderColor,
+            successTint: successTintColor,
+            warning: warningColor,
+            warningSubtle: warningSubtleColor,
+            warningBorder: warningBorderColor,
+            warningTint: warningTintColor,
+            critical: criticalColor,
+            criticalPressed: criticalPressedColor,
+            criticalSubtle: criticalSubtleColor,
+            criticalBorder: criticalBorderColor,
+            criticalTint: criticalTintColor,
+            infoTint: infoTintColor
         )
     }()
 
-#if canImport(UIKit)
-    private static let backgroundLight = resolved(.systemGroupedBackground, style: .light)
-    private static let backgroundDark = resolved(.systemGroupedBackground, style: .dark)
-    private static let surfaceLight = resolved(.secondarySystemGroupedBackground, style: .light)
-    private static let surfaceDark = resolved(.secondarySystemGroupedBackground, style: .dark)
-    private static let surfaceMutedLight = ZenColorComponents.rgb(0.93, 0.93, 0.94)
-    private static let surfaceMutedDark = ZenColorComponents.rgb(0.180, 0.180, 0.192)
-    private static let borderLight = resolved(.systemGray5, style: .light)
-    private static let borderDark = resolved(.systemGray5, style: .dark)
-    private static let labelLight = resolved(.label, style: .light)
-    private static let labelDark = resolved(.label, style: .dark)
-    private static let mutedLabelLight = resolvedOpaque(.secondaryLabel, on: .secondarySystemGroupedBackground, style: .light)
-    private static let mutedLabelDark = resolvedOpaque(.secondaryLabel, on: .secondarySystemGroupedBackground, style: .dark)
-    private static let accentLight = resolved(.systemBlue, style: .light)
-    private static let accentDark = resolved(.systemBlue, style: .dark)
-    private static let greenLight = resolved(.systemGreen, style: .light)
-    private static let greenDark = resolved(.systemGreen, style: .dark)
-    private static let orangeLight = resolved(.systemOrange, style: .light)
-    private static let orangeDark = resolved(.systemOrange, style: .dark)
-    private static let redLight = resolved(.systemRed, style: .light)
-    private static let redDark = resolved(.systemRed, style: .dark)
+    // Kumo-derived neutral palette
+    private static let backgroundLight = ZenColorComponents(hex: "FBFBFC")!
+    private static let backgroundDark = ZenColorComponents(hex: "1A1A1A")!
+    private static let surfaceLight = ZenColorComponents.rgb(1, 1, 1)
+    private static let surfaceDark = ZenColorComponents(hex: "262626")!
+    private static let surfaceMutedLight = ZenColorComponents(hex: "F5F5F5")!
+    private static let surfaceMutedDark = ZenColorComponents(hex: "1F1F1F")!
+    private static let surfaceElevatedLight = ZenColorComponents(hex: "FAFAFA")!
+    private static let surfaceElevatedDark = ZenColorComponents(hex: "2A2A2A")!
+    private static let surfaceTintLight = ZenColorComponents(hex: "F7F7F7")!
+    private static let surfaceTintDark = ZenColorComponents(hex: "333333")!
+    private static let borderLight = ZenColorComponents(hex: "E0E0E0")!
+    private static let borderDark = ZenColorComponents(hex: "404040")!
+    private static let borderSubtleLight = ZenColorComponents(hex: "EBEBEB")!
+    private static let borderSubtleDark = ZenColorComponents(hex: "333333")!
+    private static let labelLight = ZenColorComponents(hex: "1A1A1A")!
+    private static let labelDark = ZenColorComponents(hex: "F5F5F5")!
+    private static let labelStrongLight = ZenColorComponents(hex: "0F0F0F")!
+    private static let labelStrongDark = ZenColorComponents(hex: "FAFAFA")!
+    private static let mutedLabelLight = ZenColorComponents(hex: "737373")!
+    private static let mutedLabelDark = ZenColorComponents(hex: "A0A0A0")!
+    private static let placeholderLight = ZenColorComponents(hex: "A0A0A0")!
+    private static let placeholderDark = ZenColorComponents(hex: "666666")!
 
-    private static func resolved(_ color: UIColor, style: UIUserInterfaceStyle) -> ZenColorComponents {
+    // Kumo brand blue
+    private static let accentLight = ZenColorComponents(hex: "3B82F6")!
+    private static let accentDark = ZenColorComponents(hex: "3B82F6")!
+
+    // Kumo semantic colors
+    private static let greenLight = ZenColorComponents(hex: "10B981")!
+    private static let greenDark = ZenColorComponents(hex: "34D399")!
+    private static let amberLight = ZenColorComponents(hex: "F59E0B")!
+    private static let amberDark = ZenColorComponents(hex: "FBBF24")!
+    private static let redLight = ZenColorComponents(hex: "EF4444")!
+    private static let redDark = ZenColorComponents(hex: "F87171")!
+
+#if canImport(UIKit)
+    // Keep UIKit helpers for custom theme consumers
+    static func resolved(_ color: UIColor, style: UIUserInterfaceStyle) -> ZenColorComponents {
         let traits = UITraitCollection(userInterfaceStyle: style)
         return ZenColorComponents(platformColor: color.resolvedColor(with: traits))
     }
-
-    private static func resolvedOpaque(
-        _ color: UIColor,
-        on background: UIColor,
-        style: UIUserInterfaceStyle
-    ) -> ZenColorComponents {
-        let traits = UITraitCollection(userInterfaceStyle: style)
-        let foregroundColor = color.resolvedColor(with: traits)
-        let backgroundColor = background.resolvedColor(with: traits)
-
-        var fgR: CGFloat = 0
-        var fgG: CGFloat = 0
-        var fgB: CGFloat = 0
-        var fgA: CGFloat = 0
-        foregroundColor.getRed(&fgR, green: &fgG, blue: &fgB, alpha: &fgA)
-
-        guard fgA < 1 else {
-            return ZenColorComponents(red: Double(fgR), green: Double(fgG), blue: Double(fgB))
-        }
-
-        var bgR: CGFloat = 0
-        var bgG: CGFloat = 0
-        var bgB: CGFloat = 0
-        var bgA: CGFloat = 0
-        backgroundColor.getRed(&bgR, green: &bgG, blue: &bgB, alpha: &bgA)
-
-        return ZenColorComponents(
-            red: Double(fgR * fgA + bgR * (1 - fgA)),
-            green: Double(fgG * fgA + bgG * (1 - fgA)),
-            blue: Double(fgB * fgA + bgB * (1 - fgA))
-        )
-    }
-#else
-    private static let backgroundLight = ZenColorComponents.rgb(1, 1, 1)
-    private static let backgroundDark = ZenColorComponents.rgb(0.118, 0.118, 0.118)
-    private static let surfaceLight = ZenColorComponents.rgb(0.961, 0.961, 0.969)
-    private static let surfaceDark = ZenColorComponents.rgb(0.165, 0.165, 0.173)
-    private static let surfaceMutedLight = ZenColorComponents.rgb(0.93, 0.93, 0.94)
-    private static let surfaceMutedDark = ZenColorComponents.rgb(0.180, 0.180, 0.192)
-    private static let borderLight = ZenColorComponents.rgb(0.898, 0.898, 0.918)
-    private static let borderDark = ZenColorComponents.rgb(0.227, 0.227, 0.243)
-    private static let labelLight = ZenColorComponents.rgb(0, 0, 0)
-    private static let labelDark = ZenColorComponents.rgb(1, 1, 1)
-    private static let mutedLabelLight = ZenColorComponents.rgb(0.541, 0.541, 0.557)
-    private static let mutedLabelDark = ZenColorComponents.rgb(0.597, 0.597, 0.624)
-    private static let accentLight = ZenColorComponents.rgb(0, 0.478, 1)
-    private static let accentDark = ZenColorComponents.rgb(0.039, 0.518, 1)
-    private static let greenLight = ZenColorComponents.rgb(0.204, 0.780, 0.349)
-    private static let greenDark = ZenColorComponents.rgb(0.188, 0.820, 0.345)
-    private static let orangeLight = ZenColorComponents.rgb(1, 0.584, 0)
-    private static let orangeDark = ZenColorComponents.rgb(1, 0.624, 0.039)
-    private static let redLight = ZenColorComponents.rgb(1, 0.231, 0.188)
-    private static let redDark = ZenColorComponents.rgb(1, 0.271, 0.227)
 #endif
+
 }
 
 extension ZenColorComponents {

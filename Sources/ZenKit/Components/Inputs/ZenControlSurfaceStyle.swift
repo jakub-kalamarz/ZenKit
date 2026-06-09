@@ -13,7 +13,7 @@ struct ZenControlSurfaceStyle {
 
         return ZenControlSurfaceStyle(
             backgroundToken: colors.surface,
-            borderToken: colors.border,
+            borderToken: colors.borderSubtle,
             borderWidth: 1
         )
     }
@@ -23,7 +23,7 @@ struct ZenControlSurfaceStyle {
 
         return ZenControlSurfaceStyle(
             backgroundToken: colors.surface,
-            borderToken: colors.border,
+            borderToken: colors.borderSubtle,
             borderWidth: 1
         )
     }
@@ -33,7 +33,7 @@ struct ZenControlSurfaceStyle {
 
         return ZenControlSurfaceStyle(
             backgroundToken: colors.surfaceMuted,
-            borderToken: colors.border,
+            borderToken: colors.borderSubtle,
             borderWidth: 1
         )
     }

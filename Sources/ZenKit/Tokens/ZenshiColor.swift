@@ -24,15 +24,24 @@ public extension Color {
     static var zenBackground: Color { ZenTheme.current.resolvedColors.background.color }
     static var zenSurface: Color { ZenTheme.current.resolvedColors.surface.color }
     static var zenSurfaceMuted: Color { ZenTheme.current.resolvedColors.surfaceMuted.color }
+    static var zenSurfaceElevated: Color { ZenTheme.current.resolvedColors.surfaceElevated.color }
+    static var zenSurfaceTint: Color { ZenTheme.current.resolvedColors.surfaceTint.color }
     static var zenBorder: Color { ZenTheme.current.resolvedColors.border.color }
+    static var zenBorderSubtle: Color { ZenTheme.current.resolvedColors.borderSubtle.color }
     static var zenTextPrimary: Color { ZenTheme.current.resolvedColors.textPrimary.color }
+    static var zenTextStrong: Color { ZenTheme.current.resolvedColors.textStrong.color }
     static var zenTextMuted: Color { ZenTheme.current.resolvedColors.textMuted.color }
+    static var zenTextPlaceholder: Color { ZenTheme.current.resolvedColors.textPlaceholder.color }
     static var zenPrimary: Color { ZenTheme.current.resolvedColors.primary.color }
     static var zenAccent: Color { ZenTheme.current.resolvedColors.accent.color }
     static var zenPrimaryForeground: Color { ZenTheme.current.resolvedColors.primaryForeground.color }
     static var zenSuccess: Color { ZenTheme.current.resolvedColors.success.color }
+    static var zenSuccessTint: Color { ZenTheme.current.resolvedColors.successTint.color }
     static var zenWarning: Color { ZenTheme.current.resolvedColors.warning.color }
+    static var zenWarningTint: Color { ZenTheme.current.resolvedColors.warningTint.color }
     static var zenCritical: Color { ZenTheme.current.resolvedColors.critical.color }
+    static var zenCriticalTint: Color { ZenTheme.current.resolvedColors.criticalTint.color }
+    static var zenInfoTint: Color { ZenTheme.current.resolvedColors.infoTint.color }
 
     // Metric colors — matches web oklch values
     static var zenMetricClicks: Color {

@@ -31,17 +31,17 @@ struct ButtonLabelShowcaseScreen: View {
                 VStack(alignment: .leading, spacing: ZenSpacing.medium) {
                     ZenButtonLabel(
                         "Leading Icon",
-                        leadingIcon: .init(assetName: "Plus")
+                        leadingIcon: .init(assetName: "Plus", renderingMode: .template)
                     )
                     ZenButtonLabel(
                         "Trailing Icon",
-                        trailingIcon: .init(assetName: "ArrowRight")
+                        trailingIcon: .init(assetName: "ArrowRight", renderingMode: .template)
                     )
                     ZenButtonLabel(
                         variant: .secondary,
                         size: .icon
                     ) {
-                        ZenIcon(assetName: "Plus")
+                        ZenIcon(assetName: "Plus", renderingMode: .template)
                     }
                 }
             }

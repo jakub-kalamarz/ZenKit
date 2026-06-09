@@ -117,7 +117,7 @@ public struct ZenCard<Content: View, Footer: View, Background: ShapeStyle>: View
         .background(background)
         .overlay(
             RoundedRectangle(cornerRadius: cornerRadius)
-                .strokeBorder(Color.zenBorder, lineWidth: 1)
+                .strokeBorder(Color.zenBorderSubtle, lineWidth: 1)
         )
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .zenContainerCornerRadius(cornerRadius)

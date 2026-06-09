@@ -15,7 +15,7 @@ struct SheetShowcaseScreen: View {
             ) {
                 VStack(alignment: .leading, spacing: ZenSpacing.small) {
                     Text("Open the sheet, then toggle the extra message field to watch the detent update.")
-                        .font(.zenTextBase)
+                        .font(.zenBody)
                         .foregroundStyle(Color.zenTextMuted)
 
                     ZenButton("Open auto-sizing sheet", fullWidth: true) {

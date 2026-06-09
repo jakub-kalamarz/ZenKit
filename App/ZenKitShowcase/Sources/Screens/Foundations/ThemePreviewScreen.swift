@@ -10,13 +10,13 @@ struct ThemePreviewScreen: View {
             ) {
                 VStack(alignment: .leading, spacing: ZenSpacing.small) {
                     Text("Density: \(description(for: ZenTheme.current.density))")
-                        .font(.zenTextBase)
+                        .font(.zenBody)
                         .foregroundStyle(Color.zenTextPrimary)
                     Text("Corner style: \(description(for: ZenTheme.current.cornerStyle))")
-                        .font(.zenTextBase)
+                        .font(.zenBody)
                         .foregroundStyle(Color.zenTextPrimary)
                     Text("Motion: \(description(for: ZenTheme.current.motion))")
-                        .font(.zenTextBase)
+                        .font(.zenBody)
                         .foregroundStyle(Color.zenTextPrimary)
                 }
             }
@@ -49,17 +49,17 @@ struct ThemePreviewScreen: View {
 
     private var scaleRows: [(name: String, font: Font)] {
         [
-            ("Text XS", .zenTextXS),
-            ("Text SM", .zenTextSM),
-            ("Text Base", .zenTextBase),
-            ("Text LG", .zenTextLG),
-            ("Text XL", .zenTextXL),
-            ("Display XS", .zenDisplayXS),
-            ("Display SM", .zenDisplaySM),
-            ("Display MD", .zenDisplayMD),
-            ("Display LG", .zenDisplayLG),
+            ("Tab", .zenTab),
+            ("Group", .zenGroup),
+            ("Eyebrow", .zenEyebrow),
+            ("Body 2", .zenBody2),
+            ("Body", .zenBody),
+            ("Intro", .zenIntro),
+            ("Button", .zenButton),
+            ("Display S", .zenDisplayS),
+            ("Display M", .zenDisplayM),
+            ("Display L", .zenDisplayL),
             ("Display XL", .zenDisplayXL),
-            ("Display 2XL", .zenDisplay2XL),
         ]
     }
 
@@ -74,7 +74,7 @@ struct ThemePreviewScreen: View {
                 )
 
             Text(title)
-                .font(.zenTextXS)
+                .font(.zenGroup)
                 .foregroundStyle(Color.zenTextMuted)
         }
         .frame(maxWidth: .infinity, alignment: .leading)

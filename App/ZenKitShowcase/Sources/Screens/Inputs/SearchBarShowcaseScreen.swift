@@ -22,7 +22,7 @@ struct SearchBarShowcaseScreen: View {
             if !globalQuery.isEmpty {
                 ZenCard(title: "Live Result", subtitle: "Reflects the first search field") {
                     Text("Query: \(globalQuery)")
-                        .font(.zenTextBase)
+                        .font(.zenBody)
                         .foregroundStyle(Color.zenTextMuted)
                 }
             }

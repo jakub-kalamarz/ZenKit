@@ -8,11 +8,11 @@ struct SectionShowcaseScreen: View {
         ShowcaseScreen(title: "Section") {
             VStack(alignment: .leading, spacing: ZenSpacing.small) {
                 Text("Muted Group")
-                    .font(.zenDisplayXS)
+                    .font(.zenDisplayS)
                     .foregroundStyle(Color.zenTextPrimary)
 
                 Text("Section acts as a softer container and holds stronger inner surfaces for rows and controls.")
-                    .font(.zenTextXS)
+                    .font(.zenGroup)
                     .foregroundStyle(Color.zenTextMuted)
             }
 
@@ -70,11 +70,11 @@ struct SectionShowcaseScreen: View {
             } header: {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Resources")
-                        .font(.zenDisplayXS)
+                        .font(.zenDisplayS)
                         .foregroundStyle(Color.zenTextPrimary)
 
                     Text("Custom header content built without a dedicated string initializer")
-                        .font(.zenTextXS)
+                        .font(.zenGroup)
                         .foregroundStyle(Color.zenTextMuted)
                 }
                 .textCase(nil)

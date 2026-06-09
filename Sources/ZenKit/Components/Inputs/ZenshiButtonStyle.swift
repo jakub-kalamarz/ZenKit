@@ -115,23 +115,23 @@ struct ZenButtonResolvedStyle {
             foregroundStyle = .primaryText
             isTextOnly = false
         case .secondary:
-            backgroundToken = colors.surfaceMuted
-            backgroundColor = .zenSurfaceMuted
-            pressedBackgroundColor = .zenBorder.opacity(0.45)
-            pressedBackgroundToken = nil
-            borderToken = colors.border
-            foregroundLight = colors.surfaceMuted.light.accessibleForeground
-            foregroundDark = colors.surfaceMuted.dark.accessibleForeground
+            backgroundToken = colors.surface
+            backgroundColor = .zenSurface
+            pressedBackgroundColor = .zenSurfaceTint
+            pressedBackgroundToken = colors.surfaceTint
+            borderToken = colors.borderSubtle
+            foregroundLight = colors.textPrimary.light
+            foregroundDark = colors.textPrimary.dark
             foregroundColor = ZenDynamicColor(light: foregroundLight, dark: foregroundDark).color
-            borderColor = .zenBorder.opacity(0.8)
+            borderColor = .zenBorderSubtle
             borderWidth = 1
-            backgroundStyle = .muted
+            backgroundStyle = .filled
             foregroundStyle = .primaryText
             isTextOnly = false
         case .ghost:
             backgroundToken = nil
             backgroundColor = .clear
-            pressedBackgroundColor = .zenSurfaceMuted.opacity(0.9)
+            pressedBackgroundColor = .zenSurfaceTint
             pressedBackgroundToken = nil
             borderToken = nil
             foregroundLight = colors.textPrimary.light
@@ -214,7 +214,7 @@ struct ZenSemanticButtonStyle: ButtonStyle {
             )
             .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
             .opacity(opacity(for: configuration))
-            .scaleEffect(configuration.isPressed && !isLoading ? 0.985 : 1)
+            .scaleEffect(configuration.isPressed && !isLoading ? 0.98 : 1)
             .animation(loadingAnimation, value: isLoading)
             .animation(.easeOut(duration: 0.16), value: configuration.isPressed)
     }
@@ -350,6 +350,13 @@ struct ZenButtonSurfaceModifier: ViewModifier {
             )
             .overlay(border(shape: shape))
             .clipShape(shape)
+            .shadow(
+                color: palette.backgroundStyle == .filled && palette.borderWidth > 0
+                    ? ZenShadow.xs.color : .clear,
+                radius: ZenShadow.xs.radius,
+                x: ZenShadow.xs.x,
+                y: ZenShadow.xs.y
+            )
     }
 
     private func border(shape: RoundedRectangle) -> some View {

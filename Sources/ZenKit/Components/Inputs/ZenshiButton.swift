@@ -110,15 +110,15 @@ public enum ZenButtonSize {
 
         switch self {
         case .default, .icon:
-            return buttonSpec.with(size: 14, weight: .semibold)
+            return buttonSpec.with(size: 14, weight: .medium)
         case .xs:
             return buttonSpec.with(size: 12, weight: .medium)
         case .sm, .iconXs, .iconSm:
             return buttonSpec.with(size: 13, weight: .medium)
         case .lg:
-            return buttonSpec.with(size: 15, weight: .semibold)
+            return buttonSpec.with(size: 14, weight: .medium)
         case .iconLg:
-            return buttonSpec.with(size: 14, weight: .semibold)
+            return buttonSpec.with(size: 14, weight: .medium)
         }
     }
 
@@ -158,15 +158,12 @@ public enum ZenButtonSize {
         }
 
         let controlCornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentRadius)
-        let expandedCornerRadius = parentRadius.map { min($0, controlCornerRadius + 2) } ?? (controlCornerRadius + 2)
 
         switch self {
-        case .xs, .iconXs:
-            return 8
-        case .default, .sm, .icon, .iconSm:
+        case .xs, .iconXs, .sm, .iconSm:
+            return 6
+        case .default, .icon, .lg, .iconLg:
             return controlCornerRadius
-        case .lg, .iconLg:
-            return expandedCornerRadius
         }
     }
 

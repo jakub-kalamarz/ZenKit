@@ -68,11 +68,11 @@ struct SettingsShowcaseScreen: View {
             } header: {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Resources")
-                        .font(.zenDisplayXS)
+                        .font(.zenDisplayS)
                         .foregroundStyle(Color.zenTextPrimary)
 
                     Text("Custom header content without a dedicated string API")
-                        .font(.zenTextXS)
+                        .font(.zenGroup)
                         .foregroundStyle(Color.zenTextMuted)
                 }
                 .textCase(nil)

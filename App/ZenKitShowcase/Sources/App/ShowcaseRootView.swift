@@ -47,6 +47,18 @@ struct ShowcaseRootView: View {
             TagInputShowcaseScreen()
         case .datePicker:
             DatePickerShowcaseScreen()
+        case .label:
+            LabelShowcaseScreen()
+        case .radioGroup:
+            RadioGroupShowcaseScreen()
+        case .sensitiveInput:
+            SensitiveInputShowcaseScreen()
+        case .inputGroup:
+            InputGroupShowcaseScreen()
+        case .autocomplete:
+            AutocompleteShowcaseScreen()
+        case .combobox:
+            ComboboxShowcaseScreen()
         // Feedback
         case .spinner:
             SpinnerShowcaseScreen()
@@ -58,6 +70,10 @@ struct ShowcaseRootView: View {
             SkeletonShowcaseScreen()
         case .emptyState:
             EmptyStateShowcaseScreen()
+        case .popover:
+            PopoverShowcaseScreen()
+        case .tooltip:
+            TooltipShowcaseScreen()
         // Navigation
         case .navigationRow:
             NavigationRowShowcaseScreen()
@@ -65,6 +81,20 @@ struct ShowcaseRootView: View {
             MenuShowcaseScreen()
         case .swipeRow:
             SwipeRowShowcaseScreen()
+        case .link:
+            LinkShowcaseScreen()
+        case .breadcrumbs:
+            BreadcrumbsShowcaseScreen()
+        case .pagination:
+            PaginationShowcaseScreen()
+        case .menubar:
+            MenubarShowcaseScreen()
+        case .sidebar:
+            SidebarShowcaseScreen()
+        case .commandPalette:
+            CommandPaletteShowcaseScreen()
+        case .tableOfContents:
+            TableOfContentsShowcaseScreen()
         // Surfaces
         case .card:
             CardShowcaseScreen()
@@ -78,6 +108,10 @@ struct ShowcaseRootView: View {
             DisclosureShowcaseScreen()
         case .sheet:
             SheetShowcaseScreen()
+        case .layerCard:
+            LayerCardShowcaseScreen()
+        case .grid:
+            GridShowcaseScreen()
         // Data Display
         case .badge:
             BadgeShowcaseScreen()
@@ -97,6 +131,16 @@ struct ShowcaseRootView: View {
             TimelineShowcaseScreen()
         case .buttonLabel:
             ButtonLabelShowcaseScreen()
+        case .text:
+            TextShowcaseScreen()
+        case .meter:
+            MeterShowcaseScreen()
+        case .clipboardText:
+            ClipboardTextShowcaseScreen()
+        case .codeBlock:
+            CodeBlockShowcaseScreen()
+        case .table:
+            TableShowcaseScreen()
         }
     }
 

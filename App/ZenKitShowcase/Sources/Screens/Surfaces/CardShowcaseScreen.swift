@@ -24,7 +24,7 @@ struct CardShowcaseScreen: View {
 
             ZenCard(title: "Basic Card", subtitle: "Title, subtitle, and content") {
                 Text("Card content goes here.")
-                    .font(.zenTextBase)
+                    .font(.zenBody)
                     .foregroundStyle(Color.zenTextPrimary)
             }
 
@@ -46,7 +46,7 @@ struct CardShowcaseScreen: View {
                     VStack(spacing: ZenSpacing.xSmall) {
                         ForEach(["Zenshi iOS", "Design System", "API Gateway"], id: \.self) { item in
                             Text(item)
-                                .font(.zenTextSM.weight(.medium))
+                                .font(.zenBody2.weight(.medium))
                                 .foregroundStyle(Color.zenTextPrimary)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.vertical, 8)

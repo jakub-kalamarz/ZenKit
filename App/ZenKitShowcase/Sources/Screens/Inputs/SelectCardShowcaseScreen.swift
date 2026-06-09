@@ -131,9 +131,9 @@ struct SelectCardShowcaseScreen: View {
                 LazyVGrid(columns: featureColumns, spacing: ZenSpacing.medium) {
                     ForEach(Feature.allCases, id: \.self) { feature in
                         ZenSelectCard(
-                            title: feature.rawValue,
-                            subtitle: feature.subtitle,
-                            leadingIconSource: .asset(feature.icon),
+                            title: LocalizedStringKey(feature.rawValue),
+                            subtitle: LocalizedStringKey(feature.subtitle),
+                            leadingIconSource: .asset(feature.icon, renderingMode: .template),
                             isSelected: selectedFeature == feature
                         ) {
                             selectedFeature = feature
@@ -146,8 +146,8 @@ struct SelectCardShowcaseScreen: View {
                 VStack(spacing: ZenSpacing.medium) {
                     ForEach(Plan.allCases, id: \.self) { plan in
                         ZenSelectCard(
-                            title: "\(plan.rawValue)  \(plan.price)",
-                            subtitle: plan.subtitle,
+                            title: LocalizedStringKey("\(plan.rawValue)  \(plan.price)"),
+                            subtitle: LocalizedStringKey(plan.subtitle),
                             isSelected: selectedPricingPlan == plan
                         ) {
                             selectedPricingPlan = plan
@@ -160,9 +160,9 @@ struct SelectCardShowcaseScreen: View {
                 VStack(spacing: ZenSpacing.medium) {
                     ForEach(PaymentMethod.allCases, id: \.self) { method in
                         ZenSelectCard(
-                            title: method.rawValue,
-                            subtitle: method.subtitle,
-                            leadingIconSource: .asset(method.icon),
+                            title: LocalizedStringKey(method.rawValue),
+                            subtitle: LocalizedStringKey(method.subtitle),
+                            leadingIconSource: .asset(method.icon, renderingMode: .template),
                             iconColor: method.iconColor,
                             isSelected: selectedPaymentMethod == method
                         ) {
@@ -172,7 +172,7 @@ struct SelectCardShowcaseScreen: View {
 
                     ZenSelectCard(
                         title: "Add new payment method",
-                        leadingIconSource: .asset("Plus"),
+                        leadingIconSource: .asset("Plus", renderingMode: .template),
                         variant: .inline,
                         isSelected: false
                     ) {}

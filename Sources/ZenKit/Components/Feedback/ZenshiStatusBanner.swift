@@ -70,15 +70,13 @@ public struct ZenStatusBanner: View {
     }
 
     private var backgroundColor: Color {
-        let colors = ZenTheme.current.resolvedColors
-
         switch tone {
         case .critical:
-            return colors.criticalSubtle.color
+            return .zenCriticalTint
         case .warning:
-            return colors.warningSubtle.color
+            return .zenWarningTint
         case .success:
-            return colors.successSubtle.color
+            return .zenSuccessTint
         }
     }
 

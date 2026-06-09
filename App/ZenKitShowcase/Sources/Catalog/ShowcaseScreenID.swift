@@ -14,16 +14,31 @@ enum ShowcaseScreenID: String, Equatable {
     case searchBar
     case tagInput
     case datePicker
+    case label
+    case radioGroup
+    case sensitiveInput
+    case inputGroup
+    case autocomplete
+    case combobox
     // Feedback
     case spinner
     case statusBanner
     case skeleton
     case emptyState
     case alert
+    case popover
+    case tooltip
     // Navigation
     case navigationRow
     case menu
     case swipeRow
+    case link
+    case breadcrumbs
+    case pagination
+    case menubar
+    case sidebar
+    case commandPalette
+    case tableOfContents
     // Surfaces
     case card
     case section
@@ -31,6 +46,8 @@ enum ShowcaseScreenID: String, Equatable {
     case settings
     case disclosure
     case sheet
+    case layerCard
+    case grid
     // Data Display
     case badge
     case progressBar
@@ -41,4 +58,9 @@ enum ShowcaseScreenID: String, Equatable {
     case colorSwatch
     case timeline
     case buttonLabel
+    case text
+    case meter
+    case clipboardText
+    case codeBlock
+    case table
 }

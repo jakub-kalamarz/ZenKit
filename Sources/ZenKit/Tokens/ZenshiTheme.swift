@@ -114,15 +114,15 @@ public struct ZenTheme: Equatable, Sendable {
             displayXL: makeResolvedFontSpec(role: .display, size: 30, weight: .semibold, leading: .tight),
             displayL: makeResolvedFontSpec(role: .display, size: 32, weight: .semibold, leading: .tight),
             displayM: makeResolvedFontSpec(role: .display, size: 22, weight: .semibold, leading: .tight),
-            displayS: makeResolvedFontSpec(role: .display, size: 16, weight: .semibold),
+            displayS: makeResolvedFontSpec(role: .display, size: 16, weight: .medium),
             stat: makeResolvedFontSpec(role: .display, size: 18, weight: .semibold),
-            body: makeResolvedFontSpec(role: .text, size: 16, weight: .medium),
-            body2: makeResolvedFontSpec(role: .text, size: 13, weight: .medium),
+            body: makeResolvedFontSpec(role: .text, size: 15, weight: .regular),
+            body2: makeResolvedFontSpec(role: .text, size: 13, weight: .regular),
             intro: makeResolvedFontSpec(role: .text, size: 15, weight: .regular),
-            button: makeResolvedFontSpec(role: .text, size: 16, weight: .bold),
-            tab: makeResolvedFontSpec(role: .text, size: 10, weight: .semibold),
-            eyebrow: makeResolvedFontSpec(role: .text, size: 11, weight: .bold),
-            group: makeResolvedFontSpec(role: .text, size: 12, weight: .semibold)
+            button: makeResolvedFontSpec(role: .text, size: 14, weight: .semibold),
+            tab: makeResolvedFontSpec(role: .text, size: 11, weight: .medium),
+            eyebrow: makeResolvedFontSpec(role: .text, size: 11, weight: .semibold),
+            group: makeResolvedFontSpec(role: .text, size: 12, weight: .medium)
         )
     }
 

@@ -199,35 +199,33 @@ public struct ZenBadge: View {
         if let tint {
             return tint.opacity(0.12)
         }
-        
-        let colors = ZenTheme.current.resolvedColors
-        
+
         switch tone {
         case .neutral:
-            return .zenSurfaceMuted
+            return .zenSurfaceTint
         case .success:
-            return colors.successSubtle.color
+            return .zenSuccessTint
         case .warning:
-            return colors.warningSubtle.color
+            return .zenWarningTint
         case .critical:
-            return colors.criticalSubtle.color
+            return .zenCriticalTint
         }
     }
-    
+
     private var borderColor: Color {
         if isSelected {
             return .zenPrimary
         }
-        
+
         if let tint {
             return tint.opacity(0.24)
         }
-        
+
         let colors = ZenTheme.current.resolvedColors
-        
+
         switch tone {
         case .neutral:
-            return .zenBorder
+            return .zenBorderSubtle
         case .success:
             return colors.successBorder.color
         case .warning:
