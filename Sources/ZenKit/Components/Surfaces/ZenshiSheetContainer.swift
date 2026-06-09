@@ -149,7 +149,6 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
                 }
                 .zenBackground()
         }
-        .zenSheetContentSize()
         .presentationDragIndicator(.visible)
     }
 
