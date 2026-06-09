@@ -1,4 +1,5 @@
 import SwiftUI
+import ZenKit
 
 struct ShowcaseRootView: View {
     var body: some View {
@@ -9,11 +10,17 @@ struct ShowcaseRootView: View {
                         NavigationLink(entry.title) {
                             destination(for: entry.screenID)
                         }
+                        .font(.zenBody)
+                        .foregroundStyle(Color.zenTextPrimary)
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.zenBackground)
             .navigationTitle("ZenKit")
+            .tint(Color.zenPrimary)
         }
+        .tint(Color.zenPrimary)
     }
 
     @ViewBuilder

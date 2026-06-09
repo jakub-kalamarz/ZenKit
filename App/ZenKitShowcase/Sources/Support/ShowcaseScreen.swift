@@ -1,4 +1,5 @@
 import SwiftUI
+import ZenKit
 
 struct ShowcaseScreen<Content: View>: View {
     let title: String
@@ -6,13 +7,13 @@ struct ShowcaseScreen<Content: View>: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: ZenSpacing.large) {
                 content
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(20)
+            .padding(ZenSpacing.large)
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.zenBackground)
         .navigationTitle(title)
     }
 }
