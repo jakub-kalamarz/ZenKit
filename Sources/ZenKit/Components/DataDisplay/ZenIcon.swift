@@ -51,7 +51,7 @@ public struct ZenIcon: View {
                     .scaledToFit()
             }
         }
-        .frame(width: size, height: size)
+        .frame(maxWidth: size, maxHeight: size)
     }
 }
 

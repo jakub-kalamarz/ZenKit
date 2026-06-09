@@ -5,6 +5,11 @@ public enum ZenSegmentedControlLabelLayout: Equatable, Sendable {
     case vertical(spacing: CGFloat = 4)
 }
 
+public enum ZenSegmentedControlVariant: Equatable, Sendable {
+    case `default`
+    case glass
+}
+
 public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
@@ -12,6 +17,7 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
     @Environment(\.colorScheme) private var colorScheme
 
     private let title: LocalizedStringKey?
+    private let variant: ZenSegmentedControlVariant
     @Binding private var selection: Value
     private let segments: [Value]
     private let disabledSegments: Set<Value>
@@ -20,12 +26,14 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
 
     public init(
         title: LocalizedStringKey? = nil,
+        variant: ZenSegmentedControlVariant = .default,
         selection: Binding<Value>,
         segments: [Value],
         disabledSegments: Set<Value> = [],
         @ViewBuilder label: @escaping (Value, Bool) -> Label
     ) {
         self.title = title
+        self.variant = variant
         self._selection = selection
         self.segments = segments
         self.disabledSegments = disabledSegments
@@ -35,8 +43,12 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
     public var body: some View {
         let theme = ZenTheme.current
         let metrics = theme.resolvedMetrics
-        let controlCornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
-        let segmentCornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: controlCornerRadius)
+        let controlCornerRadius = variant == .glass
+            ? 100.0
+            : theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
+        let segmentCornerRadius = variant == .glass
+            ? 100.0
+            : theme.resolvedCornerRadius(for: .nestedControl, parentRadius: controlCornerRadius)
 
         return VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
             if let title {
@@ -45,38 +57,76 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
                     .foregroundStyle(Color.zenTextMuted)
             }
 
-            ZStack(alignment: .topLeading) {
-                RoundedRectangle(cornerRadius: segmentCornerRadius, style: .continuous)
-                    .fill(Color.zenSurface)
-                    .shadow(color: selectedSegmentShadowColor, radius: 10, y: 3)
-                    .overlay {
-                        if colorScheme == .dark {
-                            RoundedRectangle(cornerRadius: segmentCornerRadius, style: .continuous)
-                                .strokeBorder(.white.opacity(0.08), lineWidth: 0.5)
-                        }
-                    }
-                    .matchedGeometryEffect(id: selection, in: selectionAnimation, isSource: false)
-                    .allowsHitTesting(false)
+            if variant == .glass {
+                glassBody(metrics: metrics, segmentCornerRadius: segmentCornerRadius)
+            } else {
+                defaultBody(
+                    metrics: metrics,
+                    controlCornerRadius: controlCornerRadius,
+                    segmentCornerRadius: segmentCornerRadius
+                )
+            }
+        }
+    }
 
-                HStack(spacing: ZenSpacing.xSmall) {
-                    ForEach(segments, id: \.self) { value in
-                        segmentButton(
-                            for: value,
-                            metrics: metrics,
-                            segmentCornerRadius: segmentCornerRadius
-                        )
+    @ViewBuilder
+    private func glassBody(metrics: ZenResolvedMetrics, segmentCornerRadius: CGFloat) -> some View {
+        let capsule = Capsule(style: .continuous)
+        let inner = HStack(spacing: 0) {
+            ForEach(segments, id: \.self) { value in
+                segmentButton(for: value, metrics: metrics, segmentCornerRadius: segmentCornerRadius)
+            }
+        }
+        .padding(3)
+
+        #if os(iOS)
+        if #available(iOS 26, *) {
+            inner
+                .glassEffect(.regular.interactive(), in: capsule)
+        } else {
+            inner
+                .background(capsule.fill(.ultraThinMaterial.opacity(0.5)))
+                .clipShape(capsule)
+        }
+        #else
+        inner
+            .background(capsule.fill(.ultraThinMaterial.opacity(0.5)))
+            .clipShape(capsule)
+        #endif
+    }
+
+    private func defaultBody(
+        metrics: ZenResolvedMetrics,
+        controlCornerRadius: CGFloat,
+        segmentCornerRadius: CGFloat
+    ) -> some View {
+        ZStack(alignment: .topLeading) {
+            RoundedRectangle(cornerRadius: segmentCornerRadius, style: .continuous)
+                .fill(Color.zenSurface)
+                .shadow(color: selectedSegmentShadowColor, radius: 10, y: 3)
+                .overlay {
+                    if colorScheme == .dark {
+                        RoundedRectangle(cornerRadius: segmentCornerRadius, style: .continuous)
+                            .strokeBorder(.white.opacity(0.08), lineWidth: 0.5)
                     }
                 }
+                .matchedGeometryEffect(id: selection, in: selectionAnimation, isSource: false)
+                .allowsHitTesting(false)
+
+            HStack(spacing: ZenSpacing.xSmall) {
+                ForEach(segments, id: \.self) { value in
+                    segmentButton(for: value, metrics: metrics, segmentCornerRadius: segmentCornerRadius)
+                }
             }
-            .padding(4)
-            .background(Color.zenSurfaceMuted)
-            .overlay(
-                RoundedRectangle(cornerRadius: controlCornerRadius, style: .continuous)
-                    .strokeBorder(Color.zenBorder, lineWidth: 1)
-            )
-            .clipShape(RoundedRectangle(cornerRadius: controlCornerRadius, style: .continuous))
-            .zenContainerCornerRadius(controlCornerRadius)
         }
+        .padding(4)
+        .background(Color.zenSurfaceMuted)
+        .overlay(
+            RoundedRectangle(cornerRadius: controlCornerRadius, style: .continuous)
+                .strokeBorder(Color.zenBorder, lineWidth: 1)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: controlCornerRadius, style: .continuous))
+        .zenContainerCornerRadius(controlCornerRadius)
     }
 
     private func segmentButton(
@@ -98,12 +148,26 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
             segmentLabel(for: value, isSelected: isSelected, isDisabled: isDisabled)
                 .frame(maxWidth: .infinity, minHeight: metrics.controlHeightSmall)
                 .padding(.horizontal, ZenSpacing.small)
-                .background(Color.clear.matchedGeometryEffect(id: value, in: selectionAnimation))
+                .background(
+                    variant == .glass
+                        ? AnyView(glassSegmentBackground(isSelected: isSelected, cornerRadius: segmentCornerRadius))
+                        : AnyView(Color.clear.matchedGeometryEffect(id: value, in: selectionAnimation))
+                )
                 .contentShape(RoundedRectangle(cornerRadius: segmentCornerRadius, style: .continuous))
         }
         .buttonStyle(ZenSegmentedControlButtonStyle())
         .disabled(isDisabled)
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
+    }
+
+    @ViewBuilder
+    private func glassSegmentBackground(isSelected: Bool, cornerRadius: CGFloat) -> some View {
+        if isSelected {
+            Capsule(style: .continuous)
+                .fill(.white.opacity(0.25))
+        } else {
+            Color.clear
+        }
     }
 
     private var selectionAnimationStyle: Animation {
@@ -130,6 +194,10 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
     }
 
     private func foregroundColor(isSelected: Bool, isDisabled: Bool) -> Color {
+        if variant == .glass {
+            return isDisabled ? .white.opacity(0.4) : .white
+        }
+
         if isSelected {
             return .zenPrimary
         }
@@ -148,6 +216,7 @@ private struct ZenSegmentedControlButtonStyle: ButtonStyle {
 public extension ZenSegmentedControl where Label == AnyView {
     init(
         title: LocalizedStringKey? = nil,
+        variant: ZenSegmentedControlVariant = .default,
         selection: Binding<Value>,
         segments: [Value],
         disabledSegments: Set<Value> = [],
@@ -155,7 +224,7 @@ public extension ZenSegmentedControl where Label == AnyView {
         icon: @escaping (Value) -> ZenIconSource,
         segmentTitle: @escaping (Value) -> LocalizedStringKey
     ) {
-        self.init(title: title, selection: selection, segments: segments, disabledSegments: disabledSegments) { value, _ in
+        self.init(title: title, variant: variant, selection: selection, segments: segments, disabledSegments: disabledSegments) { value, _ in
             AnyView(
                 Group {
                     switch layout {
@@ -180,11 +249,12 @@ public extension ZenSegmentedControl where Label == AnyView {
 public extension ZenSegmentedControl where Value == String, Label == Text {
     init(
         title: LocalizedStringKey? = nil,
+        variant: ZenSegmentedControlVariant = .default,
         selection: Binding<String>,
         segments: [String],
         disabledSegments: Set<String> = []
     ) {
-        self.init(title: title, selection: selection, segments: segments, disabledSegments: disabledSegments) { value, _ in
+        self.init(title: title, variant: variant, selection: selection, segments: segments, disabledSegments: disabledSegments) { value, _ in
             Text(LocalizedStringKey(value))
         }
     }
@@ -193,11 +263,12 @@ public extension ZenSegmentedControl where Value == String, Label == Text {
 public extension ZenSegmentedControl where Value: RawRepresentable, Value.RawValue == String, Label == Text {
     init(
         title: LocalizedStringKey? = nil,
+        variant: ZenSegmentedControlVariant = .default,
         selection: Binding<Value>,
         segments: [Value],
         disabledSegments: Set<Value> = []
     ) {
-        self.init(title: title, selection: selection, segments: segments, disabledSegments: disabledSegments) { value, _ in
+        self.init(title: title, variant: variant, selection: selection, segments: segments, disabledSegments: disabledSegments) { value, _ in
             Text(LocalizedStringKey(value.rawValue))
         }
     }
@@ -279,4 +350,46 @@ private struct ZenSegmentedControlPreview: View {
 #Preview("Dark") {
     ZenSegmentedControlPreview()
         .preferredColorScheme(.dark)
+}
+
+#Preview("Glass") {
+    ZenSegmentedControlGlassPreview()
+}
+
+private struct ZenSegmentedControlGlassPreview: View {
+    private enum Scope: String, CaseIterable {
+        case me = "Me"
+        case home = "Home"
+
+        var icon: String {
+            switch self {
+            case .me: "person.fill"
+            case .home: "house.fill"
+            }
+        }
+    }
+
+    @State private var selection: Scope = .me
+
+    var body: some View {
+        ZStack {
+            Color.black.ignoresSafeArea()
+
+            Image(systemName: "photo.artframe")
+                .font(.system(size: 120))
+                .foregroundStyle(.white.opacity(0.15))
+
+            VStack {
+                ZenSegmentedControl(
+                    variant: .glass,
+                    selection: $selection,
+                    segments: Scope.allCases,
+                    layout: .horizontal(),
+                    icon: { .system($0.icon) },
+                    segmentTitle: { LocalizedStringKey($0.rawValue) }
+                )
+                .fixedSize()
+            }
+        }
+    }
 }
