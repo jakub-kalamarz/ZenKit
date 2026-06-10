@@ -68,34 +68,34 @@ public enum ZenButtonSize {
     func minHeight(metrics: ZenResolvedMetrics) -> CGFloat {
         switch self {
         case .default:
-            return 36
+            return metrics.controlHeight
         case .xs:
-            return 20
+            return metrics.controlHeightSmall
         case .sm:
-            return 26
+            return metrics.controlHeightMedium - 8
         case .lg:
-            return 40
+            return metrics.controlHeightLarge
         case .icon:
-            return 36
+            return metrics.controlHeight
         case .iconXs:
-            return 14
+            return metrics.controlHeightSmall
         case .iconSm:
-            return 26
+            return metrics.controlHeightMedium - 8
         case .iconLg:
-            return 40
+            return metrics.controlHeightLarge
         }
     }
 
     var horizontalPadding: CGFloat {
         switch self {
         case .default:
-            return 12
-        case .xs:
-            return 6
-        case .sm:
-            return 8
-        case .lg:
             return 16
+        case .xs:
+            return 12
+        case .sm:
+            return 14
+        case .lg:
+            return 20
         case .icon, .iconXs, .iconSm, .iconLg:
             return 0
         }
@@ -110,11 +110,16 @@ public enum ZenButtonSize {
 
         switch self {
         case .xs, .sm, .iconXs, .iconSm:
-            return buttonSpec.with(size: 12, weight: .medium)
+            let size: CGFloat = switch self {
+            case .xs, .iconXs: 12
+            case .sm, .iconSm: 13
+            default: 12
+            }
+            return buttonSpec.with(size: size, weight: .medium)
         case .default, .icon:
-            return buttonSpec.with(size: 16, weight: .medium)
+            return buttonSpec.with(size: 14, weight: .semibold)
         case .lg, .iconLg:
-            return buttonSpec.with(size: 16, weight: .medium)
+            return buttonSpec.with(size: 15, weight: .semibold)
         }
     }
 
@@ -125,9 +130,9 @@ public enum ZenButtonSize {
     var iconSpacing: CGFloat {
         switch self {
         case .xs, .sm, .iconXs, .iconSm:
-            return 4
-        case .default, .icon:
             return 6
+        case .default, .icon:
+            return 8
         case .lg, .iconLg:
             return 8
         }
@@ -136,7 +141,7 @@ public enum ZenButtonSize {
     var iconSize: CGFloat {
         switch self {
         case .xs, .iconXs:
-            return 12
+            return 14
         case .sm, .iconSm:
             return 14
         case .default, .icon:
