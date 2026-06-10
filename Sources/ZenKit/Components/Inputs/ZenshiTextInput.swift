@@ -228,9 +228,9 @@ private extension View {
 
         var body: some View {
             VStack(spacing: ZenSpacing.medium) {
-                ZenTextInput(text: .constant("alex@example.com"), prompt: "Email", leadingIcon: .asset("Envelope", renderingMode: .template))
-                ZenTextInput(text: .constant(""), prompt: "Password", leadingIcon: .asset("Lock", renderingMode: .template), kind: .secure, state: .focused)
-                ZenTextInput(text: .constant(""), prompt: "Email", leadingIcon: .asset("Envelope", renderingMode: .template), state: .invalid, message: "Enter a valid email.")
+                ZenTextInput(text: .constant("alex@example.com"), prompt: "Email", leadingIcon: .system("envelope"))
+                ZenTextInput(text: .constant(""), prompt: "Password", leadingIcon: .system("lock"), kind: .secure, state: .focused)
+                ZenTextInput(text: .constant(""), prompt: "Email", leadingIcon: .system("envelope"), state: .invalid, message: "Enter a valid email.")
                 ZenTextInput(text: $multilineText, prompt: "Type a message...", axis: .vertical(1...6))
             }
             .padding()

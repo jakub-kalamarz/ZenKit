@@ -233,7 +233,7 @@ public struct ZenSelectCard: View {
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
         } else {
             ZStack {
-                RoundedRectangle(cornerRadius: ZenNavigationRow.leadingIconBadgeCornerRadius, style: .continuous)
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .fill(Color.zenSurfaceMuted)
                     .frame(width: effectiveIconSize, height: effectiveIconSize)
 

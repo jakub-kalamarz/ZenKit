@@ -5,67 +5,51 @@ public enum ZenNavigationAccessory {
     case chevron
 }
 
-public struct ZenNavigationRow: View {
-    @Environment(\.isEnabled) private var isEnabled
-    public static let leadingIconBadgeSize: CGFloat = ZenIconBadge.defaultSize
-    public static let leadingIconBadgeCornerRadius: CGFloat = 10
+public enum ZenNavigationRowIconStyle {
+    case bare
+    case badge
+}
 
-    @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
+public struct ZenNavigationRow<Trailing: View>: View {
+    @Environment(\.isEnabled) private var isEnabled
 
     private let title: LocalizedStringKey
     private let subtitle: LocalizedStringKey?
     private let leadingIconSource: ZenIconSource?
     private let iconColor: Color?
+    private let iconStyle: ZenNavigationRowIconStyle
     private let accessory: ZenNavigationAccessory
+    private let trailing: () -> Trailing
 
     public init(
         title: LocalizedStringKey,
         subtitle: LocalizedStringKey? = nil,
         leadingIcon: ZenIconSource? = nil,
-        leadingIconAsset: String? = nil,
-        leadingIconSystemName: String? = nil,
-        iconTint: Color? = nil,
         iconColor: Color? = nil,
-        accessory: ZenNavigationAccessory = .chevron
+        iconStyle: ZenNavigationRowIconStyle = .bare,
+        accessory: ZenNavigationAccessory = .chevron,
+        @ViewBuilder trailing: @escaping () -> Trailing
     ) {
         self.title = title
         self.subtitle = subtitle
-        if let leadingIcon {
-            self.leadingIconSource = leadingIcon
-        } else if let leadingIconSystemName {
-            self.leadingIconSource = .system(leadingIconSystemName)
-        } else if let leadingIconAsset {
-            self.leadingIconSource = .asset(leadingIconAsset, renderingMode: .template)
-        } else {
-            self.leadingIconSource = nil
-        }
-        self.iconColor = iconColor ?? iconTint
+        self.leadingIconSource = leadingIcon
+        self.iconColor = iconColor
+        self.iconStyle = iconStyle
         self.accessory = accessory
+        self.trailing = trailing
     }
 
     public var body: some View {
-        let theme = ZenTheme.current
-        let cornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
+        let cornerRadius = ZenTheme.current.resolvedCornerRadius
 
         HStack(spacing: ZenSpacing.small) {
             if let leadingIconSource {
-                if let iconColor {
-                    ZenIconBadge(source: leadingIconSource, color: iconColor)
-                } else {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: Self.leadingIconBadgeCornerRadius, style: .continuous)
-                            .fill(Color.zenSurfaceMuted)
-                            .frame(width: Self.leadingIconBadgeSize, height: Self.leadingIconBadgeSize)
-                        ZenIcon(source: leadingIconSource, size: 14)
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundStyle(Color.zenTextMuted)
-                    }
-                }
+                leadingIconView(leadingIconSource)
             }
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(title)
-                    .font(.zen(.body2, weight: .semibold))
+                    .font(.zen(.body2, weight: .medium))
                     .foregroundStyle(Color.zenTextPrimary)
 
                 if let subtitle {
@@ -77,26 +61,103 @@ public struct ZenNavigationRow: View {
 
             Spacer(minLength: ZenSpacing.small)
 
+            trailing()
+                .font(.zen(.body2, weight: .medium))
+                .foregroundStyle(Color.zenTextMuted)
+
             if accessory == .chevron {
-                ZenIcon(systemName: "chevron.right", size: 12)
+                Image(systemName: "chevron.right")
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(Color.zenTextMuted)
             }
         }
-        .opacity(contentOpacity)
-        .padding(.vertical, 12)
+        .opacity(isEnabled ? 1 : 0.55)
+        .padding(.vertical, 10)
         .padding(.horizontal, ZenSpacing.medium)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.zenSurface)
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: cornerRadius)
-                .strokeBorder(Color.zenBorder, lineWidth: 1)
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                .strokeBorder(Color.zenBorderSubtle, lineWidth: 1)
         )
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+        .contentShape(Rectangle())
     }
 
-    private var contentOpacity: Double {
-        isEnabled ? 1 : 0.55
+    @ViewBuilder
+    private func leadingIconView(_ source: ZenIconSource) -> some View {
+        if iconStyle == .badge, let iconColor {
+            ZenIconBadge(source: source, color: iconColor)
+        } else {
+            ZenIcon(source: source, size: 18)
+                .font(.system(size: 18, weight: .medium))
+                .foregroundStyle(iconColor ?? Color.zenTextMuted)
+                .frame(width: 24, height: 24)
+        }
+    }
+}
+
+// MARK: - Convenience (no trailing)
+
+public extension ZenNavigationRow where Trailing == EmptyView {
+    init(
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey? = nil,
+        leadingIcon: ZenIconSource? = nil,
+        iconColor: Color? = nil,
+        iconStyle: ZenNavigationRowIconStyle = .bare,
+        accessory: ZenNavigationAccessory = .chevron
+    ) {
+        self.init(
+            title: title,
+            subtitle: subtitle,
+            leadingIcon: leadingIcon,
+            iconColor: iconColor,
+            iconStyle: iconStyle,
+            accessory: accessory
+        ) {
+            EmptyView()
+        }
+    }
+}
+
+// MARK: - Deprecated compatibility
+
+public extension ZenNavigationRow where Trailing == EmptyView {
+    static var leadingIconBadgeSize: CGFloat { ZenIconBadge.defaultSize }
+    static var leadingIconBadgeCornerRadius: CGFloat { 10 }
+
+    @available(*, deprecated, message: "Use leadingIcon: parameter instead of leadingIconAsset/leadingIconSystemName")
+    init(
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey? = nil,
+        leadingIcon: ZenIconSource? = nil,
+        leadingIconAsset: String? = nil,
+        leadingIconSystemName: String? = nil,
+        iconTint: Color? = nil,
+        iconColor: Color? = nil,
+        accessory: ZenNavigationAccessory = .chevron
+    ) {
+        let resolvedIcon: ZenIconSource?
+        if let leadingIcon {
+            resolvedIcon = leadingIcon
+        } else if let leadingIconSystemName {
+            resolvedIcon = .system(leadingIconSystemName)
+        } else if let leadingIconAsset {
+            resolvedIcon = .asset(leadingIconAsset, renderingMode: .template)
+        } else {
+            resolvedIcon = nil
+        }
+        let resolvedColor = iconColor ?? iconTint
+
+        self.init(
+            title: title,
+            subtitle: subtitle,
+            leadingIcon: resolvedIcon,
+            iconColor: resolvedColor,
+            iconStyle: resolvedColor != nil ? .badge : .bare,
+            accessory: accessory
+        )
     }
 }
 
@@ -120,6 +181,12 @@ public struct ZenNavigationRow: View {
             leadingIcon: .system("shield.fill"),
             iconColor: .green
         )
+        ZenNavigationRow(
+            title: "Language",
+            leadingIcon: .system("globe")
+        ) {
+            Text("English")
+        }
         ZenNavigationRow(
             title: "Billing",
             subtitle: "Managed by workspace owner",

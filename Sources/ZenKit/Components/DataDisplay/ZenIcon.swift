@@ -83,7 +83,7 @@ public struct ZenMenuIcon: View {
 }
 
 #Preview {
-    ZenIcon(assetName: "Envelope", size: 18, renderingMode: .template)
+    ZenIcon(systemName: "envelope")
         .foregroundStyle(Color.zenPrimary)
         .padding()
 }

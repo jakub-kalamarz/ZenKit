@@ -48,7 +48,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                         }
                     }
 
-                    ZenNavigationRow(title: "Notifications", subtitle: "Configure alerts", leadingIcon: .asset("Bell", renderingMode: .template))
+                    ZenNavigationRow(title: "Notifications", subtitle: "Configure alerts", leadingIcon: .system("bell"))
                     ZenToggle("Biometric unlock", isOn: .constant(true), subtitle: "Use Face ID when available")
                     ZenProgressBar(progress: 0.4)
                     ZenStatusBanner(message: "All good")
@@ -252,14 +252,14 @@ struct ZenKitPublicSurfaceSmokeTests {
             ZenSelectCard(
                 title: "Visa ending in 4242",
                 subtitle: "Expires 12/26",
-                leadingIconSource: .asset("CreditCard", renderingMode: .template),
+                leadingIconSource: .system("creditcard"),
                 iconColor: .blue,
                 isSelected: false
             ) {}
 
             ZenSelectCard(
                 title: "Add new payment method",
-                leadingIconSource: .asset("Plus", renderingMode: .template),
+                leadingIconSource: .system("plus"),
                 variant: .inline,
                 isSelected: false
             ) {}
@@ -416,7 +416,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                 ZenNavigationRow(
                     title: "Members",
                     subtitle: "Manage access",
-                    leadingIcon: .asset("UsersThree", renderingMode: .template)
+                    leadingIcon: .system("person.2")
                 )
             } header: {
                 ZenSectionHeader {
@@ -539,8 +539,8 @@ struct ZenKitPublicSurfaceSmokeTests {
                 navigationTitle: ZenScreenTitle(
                     "Dashboard",
                     subheadline: "Workspace overview",
-                    leadingIcon: .asset("ChartBar", renderingMode: .template),
-                    trailingIcon: .asset("Lightning", renderingMode: .template)
+                    leadingIcon: .system("chart.bar"),
+                    trailingIcon: .system("bolt")
                 ),
                 navigationBarTitleDisplayMode: .inline,
                 backButton: ZenScreenBackButton("Overview"),
@@ -679,7 +679,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                     ZenNavigationRow(
                         title: "Members",
                         subtitle: "Manage access",
-                        leadingIcon: .asset("UsersThree", renderingMode: .template)
+                        leadingIcon: .system("person.2")
                     )
                 }
             }
@@ -774,7 +774,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                     ZenNavigationRow(
                         title: "Members",
                         subtitle: "Manage access",
-                        leadingIcon: .asset("UsersThree", renderingMode: .template)
+                        leadingIcon: .system("person.2")
                     )
                 }
             }
@@ -917,7 +917,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                     ZenNavigationRow(
                         title: "Review Components",
                         subtitle: "Cards, buttons and text fields",
-                        leadingIcon: .asset("Swatches", renderingMode: .template)
+                        leadingIcon: .system("paintpalette")
                     )
                 }
             }
@@ -997,7 +997,7 @@ struct ZenKitPublicSurfaceSmokeTests {
         let segment = ZenMetricsTableSegment(
             id: "all",
             count: 3,
-            icon: .asset("Hash", renderingMode: .template),
+            icon: .system("number"),
             title: "All"
         )
         let values = ZenMetricsTableValues(
@@ -1052,7 +1052,7 @@ struct ZenKitPublicSurfaceSmokeTests {
                     ZenNavigationRow(
                         title: "Members",
                         subtitle: "Manage access",
-                        leadingIcon: .asset("UsersThree", renderingMode: .template)
+                        leadingIcon: .system("person.2")
                     )
                 }
             }

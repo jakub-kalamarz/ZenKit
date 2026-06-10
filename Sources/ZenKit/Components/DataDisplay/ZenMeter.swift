@@ -59,18 +59,7 @@ public struct ZenMeter: View {
                 }
             }
 
-            GeometryReader { geometry in
-                ZStack(alignment: .leading) {
-                    Capsule()
-                        .fill(Color.zenSurfaceMuted)
-
-                    Capsule()
-                        .fill(tint ?? Color.zenPrimary)
-                        .frame(width: geometry.size.width * fraction)
-                        .animation(.easeOut(duration: 0.3), value: fraction)
-                }
-            }
-            .frame(height: 8)
+            ZenProgressBar(progress: fraction, tint: tint)
         }
     }
 }
