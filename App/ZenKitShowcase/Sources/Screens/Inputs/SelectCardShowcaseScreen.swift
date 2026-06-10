@@ -24,13 +24,13 @@ struct SelectCardShowcaseScreen: View {
         var icon: String {
             switch self {
             case .payments:
-                "CursorClick"
+                "cursorarrow.click.2"
             case .invoices:
-                "PaperPlane"
+                "paperplane"
             case .billing:
-                "CreditCard"
+                "creditcard"
             case .reports:
-                "ChartBar"
+                "chart.bar"
             }
         }
     }
@@ -79,9 +79,9 @@ struct SelectCardShowcaseScreen: View {
         var icon: String {
             switch self {
             case .visa:
-                "CreditCard"
+                "creditcard"
             case .mastercard:
-                "CreditCard"
+                "creditcard"
             }
         }
 
@@ -133,7 +133,7 @@ struct SelectCardShowcaseScreen: View {
                         ZenSelectCard(
                             title: LocalizedStringKey(feature.rawValue),
                             subtitle: LocalizedStringKey(feature.subtitle),
-                            leadingIconSource: .asset(feature.icon, renderingMode: .template),
+                            leadingIconSource: .system(feature.icon),
                             isSelected: selectedFeature == feature
                         ) {
                             selectedFeature = feature
@@ -162,7 +162,7 @@ struct SelectCardShowcaseScreen: View {
                         ZenSelectCard(
                             title: LocalizedStringKey(method.rawValue),
                             subtitle: LocalizedStringKey(method.subtitle),
-                            leadingIconSource: .asset(method.icon, renderingMode: .template),
+                            leadingIconSource: .system(method.icon),
                             iconColor: method.iconColor,
                             isSelected: selectedPaymentMethod == method
                         ) {
@@ -172,7 +172,7 @@ struct SelectCardShowcaseScreen: View {
 
                     ZenSelectCard(
                         title: "Add new payment method",
-                        leadingIconSource: .asset("Plus", renderingMode: .template),
+                        leadingIconSource: .system("plus"),
                         variant: .inline,
                         isSelected: false
                     ) {}

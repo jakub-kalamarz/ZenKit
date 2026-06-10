@@ -2,34 +2,144 @@ import SwiftUI
 import ZenKit
 
 struct ShowcaseRootView: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
     var body: some View {
-        NavigationStack {
-            List(ShowcaseSection.defaultSections) { section in
-                Section(section.title) {
-                    ForEach(section.entries) { entry in
-                        NavigationLink(entry.title) {
-                            destination(for: entry.screenID)
-                        }
-                        .font(.zenBody)
-                        .foregroundStyle(Color.zenTextPrimary)
+        if horizontalSizeClass == .regular {
+            ShowcaseSidebarLayout()
+        } else {
+            ShowcaseListLayout()
+        }
+    }
+}
+
+// MARK: - iPad Sidebar Layout
+
+private struct ShowcaseSidebarLayout: View {
+    @State private var selectedId: String?
+    @State private var isCollapsed = false
+
+    private var sidebarGroups: [ZenSidebarGroup] {
+        ShowcaseSection.defaultSections.map { section in
+            ZenSidebarGroup(
+                id: section.id,
+                label: section.title,
+                items: section.entries.map { entry in
+                    ZenSidebarItem(
+                        id: entry.screenID.rawValue,
+                        label: entry.title
+                    )
+                }
+            )
+        }
+    }
+
+    private var selectedScreenID: ShowcaseScreenID? {
+        guard let selectedId else { return nil }
+        return ShowcaseScreenID(rawValue: selectedId)
+    }
+
+    var body: some View {
+        HStack(spacing: 0) {
+            ZenSidebar(
+                groups: sidebarGroups,
+                selectedId: $selectedId,
+                isCollapsed: $isCollapsed
+            ) {
+                HStack {
+                    if !isCollapsed {
+                        Text("ZenKit")
+                            .font(.zen(.body, weight: .semibold))
+                            .foregroundStyle(Color.zenTextStrong)
                     }
+                    Spacer()
+                    ZenSidebarToggle(isCollapsed: $isCollapsed)
+                }
+            } footer: {
+                EmptyView()
+            }
+
+            NavigationStack {
+                if let screenID = selectedScreenID {
+                    ShowcaseDestination(screenID: screenID)
+                } else {
+                    ContentUnavailableView(
+                        "Select a Component",
+                        systemImage: "square.grid.2x2",
+                        description: Text("Choose a component from the sidebar")
+                    )
+                    .foregroundStyle(Color.zenTextMuted)
                 }
             }
-            .scrollContentBackground(.hidden)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .background(Color.zenBackground)
+        .tint(Color.zenPrimary)
+    }
+}
+
+// MARK: - iPhone List Layout
+
+private struct ShowcaseListLayout: View {
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: ZenSpacing.medium) {
+                    ForEach(ShowcaseSection.defaultSections) { section in
+                        ZenLayerCard {
+                            VStack(spacing: 0) {
+                                ForEach(Array(section.entries.enumerated()), id: \.element.id) { index, entry in
+                                    NavigationLink {
+                                        ShowcaseDestination(screenID: entry.screenID)
+                                    } label: {
+                                        HStack {
+                                            Text(entry.title)
+                                                .font(.zenBody)
+                                                .foregroundStyle(Color.zenTextPrimary)
+                                            Spacer()
+                                            Image(systemName: "chevron.right")
+                                                .font(.zen(.group, weight: .semibold))
+                                                .foregroundStyle(Color.zenTextMuted)
+                                        }
+                                        .padding(.horizontal, ZenSpacing.medium)
+                                        .padding(.vertical, 12)
+                                        .contentShape(Rectangle())
+                                    }
+                                    .buttonStyle(.plain)
+
+                                    if index < section.entries.count - 1 {
+                                        Divider()
+                                            .foregroundStyle(Color.zenBorderSubtle)
+                                            .padding(.leading, ZenSpacing.medium)
+                                    }
+                                }
+                            }
+                        } secondary: {
+                            Text(section.title)
+                                .font(.zen(.body2, weight: .medium))
+                                .foregroundStyle(Color.zenTextMuted)
+                        }
+                    }
+                }
+                .padding(ZenSpacing.medium)
+            }
             .background(Color.zenBackground)
             .navigationTitle("ZenKit")
             .tint(Color.zenPrimary)
         }
         .tint(Color.zenPrimary)
     }
+}
 
-    @ViewBuilder
-    func destination(for screenID: ShowcaseScreenID) -> some View {
+// MARK: - Shared Destination
+
+struct ShowcaseDestination: View {
+    let screenID: ShowcaseScreenID
+
+    var body: some View {
         switch screenID {
-        // Foundations
         case .theme:
             ThemePreviewScreen()
-        // Inputs
         case .buttons:
             ButtonShowcaseScreen()
         case .login:
@@ -66,7 +176,6 @@ struct ShowcaseRootView: View {
             AutocompleteShowcaseScreen()
         case .combobox:
             ComboboxShowcaseScreen()
-        // Feedback
         case .spinner:
             SpinnerShowcaseScreen()
         case .statusBanner:
@@ -81,7 +190,6 @@ struct ShowcaseRootView: View {
             PopoverShowcaseScreen()
         case .tooltip:
             TooltipShowcaseScreen()
-        // Navigation
         case .navigationRow:
             NavigationRowShowcaseScreen()
         case .menu:
@@ -102,7 +210,6 @@ struct ShowcaseRootView: View {
             CommandPaletteShowcaseScreen()
         case .tableOfContents:
             TableOfContentsShowcaseScreen()
-        // Surfaces
         case .card:
             CardShowcaseScreen()
         case .section:
@@ -119,7 +226,6 @@ struct ShowcaseRootView: View {
             LayerCardShowcaseScreen()
         case .grid:
             GridShowcaseScreen()
-        // Data Display
         case .badge:
             BadgeShowcaseScreen()
         case .progressBar:
@@ -150,5 +256,4 @@ struct ShowcaseRootView: View {
             TableShowcaseScreen()
         }
     }
-
 }

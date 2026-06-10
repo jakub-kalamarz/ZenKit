@@ -319,9 +319,10 @@ struct ZenNativeThemeTokens {
             light: accentLight.mixed(with: white, amount: ZenColorMixing.focusLight),
             dark: accentDark.mixed(with: white, amount: ZenColorMixing.focusDark)
         )
+        // Kumo info-tint: blue-100 / blue-900
         let infoTintColor = ZenDynamicColor(
-            light: accentLight.mixed(with: white, amount: ZenColorMixing.tintLight),
-            dark: accentDark.mixed(with: black, amount: ZenColorMixing.tintDark)
+            light: ZenColorComponents(hex: "DBEAFE")!,
+            dark: ZenColorComponents(hex: "1E3A8A")!
         )
 
         let successColor = ZenDynamicColor(light: greenLight, dark: greenDark)
@@ -333,9 +334,10 @@ struct ZenNativeThemeTokens {
             light: greenLight.mixed(with: white, amount: ZenColorMixing.borderLight),
             dark: greenDark.mixed(with: black, amount: ZenColorMixing.borderDark)
         )
+        // Kumo success-tint: emerald-100 / emerald-900
         let successTintColor = ZenDynamicColor(
-            light: greenLight.mixed(with: white, amount: ZenColorMixing.tintLight),
-            dark: greenDark.mixed(with: black, amount: ZenColorMixing.tintDark)
+            light: ZenColorComponents(hex: "D1FAE5")!,
+            dark: ZenColorComponents(hex: "064E3B")!
         )
 
         let warningColor = ZenDynamicColor(light: amberLight, dark: amberDark)
@@ -347,9 +349,10 @@ struct ZenNativeThemeTokens {
             light: amberLight.mixed(with: white, amount: ZenColorMixing.borderLight),
             dark: amberDark.mixed(with: black, amount: ZenColorMixing.borderDark)
         )
+        // Kumo warning-tint: yellow-100 / yellow-700
         let warningTintColor = ZenDynamicColor(
-            light: amberLight.mixed(with: white, amount: ZenColorMixing.tintLight),
-            dark: amberDark.mixed(with: black, amount: ZenColorMixing.tintDark)
+            light: ZenColorComponents(hex: "FEF3C7")!,
+            dark: ZenColorComponents(hex: "A16207")!
         )
 
         let criticalColor = ZenDynamicColor(light: redLight, dark: redDark)
@@ -365,9 +368,10 @@ struct ZenNativeThemeTokens {
             light: redLight.mixed(with: white, amount: ZenColorMixing.borderLight),
             dark: redDark.mixed(with: black, amount: ZenColorMixing.borderDark)
         )
+        // Kumo danger-tint: red-100 / red-900
         let criticalTintColor = ZenDynamicColor(
-            light: redLight.mixed(with: white, amount: ZenColorMixing.tintLight),
-            dark: redDark.mixed(with: black, amount: ZenColorMixing.tintDark)
+            light: ZenColorComponents(hex: "FEE2E2")!,
+            dark: ZenColorComponents(hex: "7F1D1D")!
         )
 
         return ZenThemeColors(
@@ -405,39 +409,53 @@ struct ZenNativeThemeTokens {
         )
     }()
 
-    // Kumo-derived neutral palette
-    private static let backgroundLight = ZenColorComponents(hex: "FBFBFC")!
-    private static let backgroundDark = ZenColorComponents(hex: "1A1A1A")!
+    // Kumo neutral palette — oklch values from theme-kumo.css
+    // canvas: oklch(98.75% / 10%)
+    private static let backgroundLight = ZenColorComponents(hex: "FBFBFB")!
+    private static let backgroundDark = ZenColorComponents(hex: "030303")!
+    // base: white / oklch(17%)
     private static let surfaceLight = ZenColorComponents.rgb(1, 1, 1)
-    private static let surfaceDark = ZenColorComponents(hex: "262626")!
-    private static let surfaceMutedLight = ZenColorComponents(hex: "F5F5F5")!
-    private static let surfaceMutedDark = ZenColorComponents(hex: "1F1F1F")!
-    private static let surfaceElevatedLight = ZenColorComponents(hex: "FAFAFA")!
-    private static let surfaceElevatedDark = ZenColorComponents(hex: "2A2A2A")!
-    private static let surfaceTintLight = ZenColorComponents(hex: "F7F7F7")!
-    private static let surfaceTintDark = ZenColorComponents(hex: "333333")!
-    private static let borderLight = ZenColorComponents(hex: "E0E0E0")!
-    private static let borderDark = ZenColorComponents(hex: "404040")!
-    private static let borderSubtleLight = ZenColorComponents(hex: "EBEBEB")!
-    private static let borderSubtleDark = ZenColorComponents(hex: "333333")!
-    private static let labelLight = ZenColorComponents(hex: "1A1A1A")!
+    private static let surfaceDark = ZenColorComponents(hex: "0F0F0F")!
+    // recessed: oklch(96% / 15%)
+    private static let surfaceMutedLight = ZenColorComponents(hex: "F2F2F2")!
+    private static let surfaceMutedDark = ZenColorComponents(hex: "0B0B0B")!
+    // elevated: oklch(98% / 12%)
+    private static let surfaceElevatedLight = ZenColorComponents(hex: "F8F8F8")!
+    private static let surfaceElevatedDark = ZenColorComponents(hex: "060606")!
+    // tint: neutral-100 / neutral-800
+    private static let surfaceTintLight = ZenColorComponents(hex: "F5F5F5")!
+    private static let surfaceTintDark = ZenColorComponents(hex: "262626")!
+    // line: neutral-200 solid approx / oklch(32%)
+    private static let borderLight = ZenColorComponents(hex: "E5E5E5")!
+    private static let borderDark = ZenColorComponents(hex: "333333")!
+    // hairline: oklch(93.5%) / neutral-800
+    private static let borderSubtleLight = ZenColorComponents(hex: "E9E9E9")!
+    private static let borderSubtleDark = ZenColorComponents(hex: "262626")!
+    // text-default: neutral-900 / neutral-100
+    private static let labelLight = ZenColorComponents(hex: "18181B")!
     private static let labelDark = ZenColorComponents(hex: "F5F5F5")!
-    private static let labelStrongLight = ZenColorComponents(hex: "0F0F0F")!
+    // text-strong: neutral-950 / neutral-50
+    private static let labelStrongLight = ZenColorComponents(hex: "0A0A0A")!
     private static let labelStrongDark = ZenColorComponents(hex: "FAFAFA")!
+    // text-subtle: neutral-500 / neutral-400
     private static let mutedLabelLight = ZenColorComponents(hex: "737373")!
-    private static let mutedLabelDark = ZenColorComponents(hex: "A0A0A0")!
-    private static let placeholderLight = ZenColorComponents(hex: "A0A0A0")!
-    private static let placeholderDark = ZenColorComponents(hex: "666666")!
+    private static let mutedLabelDark = ZenColorComponents(hex: "A3A3A3")!
+    // text-placeholder: neutral-400 / neutral-500
+    private static let placeholderLight = ZenColorComponents(hex: "A3A3A3")!
+    private static let placeholderDark = ZenColorComponents(hex: "737373")!
 
-    // Kumo brand blue
-    private static let accentLight = ZenColorComponents(hex: "3B82F6")!
-    private static let accentDark = ZenColorComponents(hex: "3B82F6")!
+    // Kumo brand — oklch(57.72% 0.2324 260)
+    private static let accentLight = ZenColorComponents(hex: "056DFF")!
+    private static let accentDark = ZenColorComponents(hex: "056DFF")!
 
     // Kumo semantic colors
-    private static let greenLight = ZenColorComponents(hex: "10B981")!
+    // success: emerald-600 / emerald-400
+    private static let greenLight = ZenColorComponents(hex: "059669")!
     private static let greenDark = ZenColorComponents(hex: "34D399")!
-    private static let amberLight = ZenColorComponents(hex: "F59E0B")!
-    private static let amberDark = ZenColorComponents(hex: "FBBF24")!
+    // warning: yellow-500 / yellow-400
+    private static let amberLight = ZenColorComponents(hex: "EAB308")!
+    private static let amberDark = ZenColorComponents(hex: "FACC15")!
+    // danger: red-500 / red-400
     private static let redLight = ZenColorComponents(hex: "EF4444")!
     private static let redDark = ZenColorComponents(hex: "F87171")!
 
@@ -467,7 +485,9 @@ extension ZenColorComponents {
         let white = ZenColorComponents.rgb(1, 1, 1)
         let black = ZenColorComponents.rgb(0, 0, 0)
 
-        return contrastRatio(with: white) >= contrastRatio(with: black) ? white : black
+        // Bias toward white — on saturated colors white reads better even
+        // when contrast ratios are close. Only pick black when it wins by ≥1.5:1.
+        return contrastRatio(with: black) > contrastRatio(with: white) * 1.5 ? black : white
     }
 
     func contrastRatio(with other: ZenColorComponents) -> Double {

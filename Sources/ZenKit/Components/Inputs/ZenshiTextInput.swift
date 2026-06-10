@@ -77,7 +77,7 @@ public struct ZenTextInput: View {
             HStack(spacing: ZenSpacing.small) {
                 if let leadingIcon {
                     ZenIcon(source: leadingIcon, size: 15)
-                        .font(.system(size: 15, weight: .medium))
+                        .font(.zenBody)
                         .foregroundStyle(Color.zenTextMuted)
                         .frame(width: 16, height: 16)
                 }
@@ -91,7 +91,7 @@ public struct ZenTextInput: View {
 
                 if let trailingIcon {
                     ZenIcon(source: trailingIcon, size: 15)
-                        .font(.system(size: 15, weight: .medium))
+                        .font(.zenBody)
                         .foregroundStyle(Color.zenTextMuted)
                 }
             }
@@ -109,6 +109,7 @@ public struct ZenTextInput: View {
                     .strokeBorder(borderColor(controlStyle: controlStyle), lineWidth: controlStyle.borderWidth)
             )
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+            .animation(.easeOut(duration: 0.2), value: text)
             .opacity(state == .disabled ? 0.6 : 1)
 
             if let message {
@@ -152,12 +153,7 @@ public struct ZenTextInput: View {
     }
 
     private func minControlHeight(theme: ZenTheme) -> CGFloat {
-        switch axis {
-        case .horizontal:
-            return theme.resolvedMetrics.controlHeight
-        case .vertical:
-            return max(theme.resolvedMetrics.controlHeight, 92)
-        }
+        theme.resolvedMetrics.controlHeight
     }
 
     private func maxControlHeight(theme: ZenTheme) -> CGFloat? {
@@ -227,11 +223,20 @@ private extension View {
 }
 
 #Preview {
-    VStack(spacing: ZenSpacing.medium) {
-        ZenTextInput(text: .constant("alex@example.com"), prompt: "Email", leadingIcon: .asset("Envelope", renderingMode: .template))
-        ZenTextInput(text: .constant(""), prompt: "Password", leadingIcon: .asset("Lock", renderingMode: .template), kind: .secure, state: .focused)
-        ZenTextInput(text: .constant(""), prompt: "Email", leadingIcon: .asset("Envelope", renderingMode: .template), state: .invalid, message: "Enter a valid email.")
+    struct TextInputPreview: View {
+        @State private var multilineText = ""
+
+        var body: some View {
+            VStack(spacing: ZenSpacing.medium) {
+                ZenTextInput(text: .constant("alex@example.com"), prompt: "Email", leadingIcon: .asset("Envelope", renderingMode: .template))
+                ZenTextInput(text: .constant(""), prompt: "Password", leadingIcon: .asset("Lock", renderingMode: .template), kind: .secure, state: .focused)
+                ZenTextInput(text: .constant(""), prompt: "Email", leadingIcon: .asset("Envelope", renderingMode: .template), state: .invalid, message: "Enter a valid email.")
+                ZenTextInput(text: $multilineText, prompt: "Type a message...", axis: .vertical(1...6))
+            }
+            .padding()
+            .background(Color.zenBackground)
+        }
     }
-    .padding()
-    .background(Color.zenBackground)
+
+    return TextInputPreview()
 }

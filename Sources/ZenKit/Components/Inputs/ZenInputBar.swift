@@ -36,21 +36,26 @@ public struct ZenInputBar: View {
         self.onSubmit = onSubmit
     }
 
+    private let cornerRadius: CGFloat = 22
+
     public var body: some View {
-        HStack(spacing: ZenSpacing.small) {
+        HStack(alignment: .bottom, spacing: ZenSpacing.small) {
             textField
+                .frame(minHeight: 34)
             submitButton
         }
         .padding(.leading, ZenSpacing.medium)
-        .padding(.trailing, ZenSpacing.xSmall)
-        .padding(.vertical, ZenSpacing.xSmall)
-        .background(Capsule().fill(Color.zenSurface))
+        .padding(.trailing, ZenSpacing.small)
+        .padding(.vertical, ZenSpacing.small)
+        .background(
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                .fill(Color.zenSurface)
+        )
         .overlay(
-            Capsule()
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                 .strokeBorder(borderColor, lineWidth: isFieldFocused ? 1.5 : 1)
         )
-        .shadow(color: shadowColor, radius: isFieldFocused ? 14 : 0, y: isFieldFocused ? 6 : 0)
-        .contentShape(Capsule())
+        .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         .onTapGesture { setFieldFocused(true) }
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.18), value: isFieldFocused)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.18), value: canSubmit)
@@ -59,7 +64,7 @@ public struct ZenInputBar: View {
     @ViewBuilder
     private var textField: some View {
         let field = inputField
-            .font(.zenBody2)
+            .font(.zenBody)
             .foregroundStyle(Color.zenTextPrimary)
             .textFieldStyle(.plain)
             .accessibilityLabel(prompt)
@@ -92,8 +97,8 @@ public struct ZenInputBar: View {
                     .controlSize(.small)
             } else {
                 Image(systemName: "arrow.up")
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(Color.zenPrimaryForeground)
+                    .font(.zen(.body2, weight: .bold))
+                    .foregroundStyle(isSubmitControlActive ? Color.zenPrimaryForeground : Color.zenTextPlaceholder)
             }
         }
         .frame(width: 34, height: 34)
@@ -101,11 +106,8 @@ public struct ZenInputBar: View {
             Circle()
                 .fill(isSubmitControlActive ? Color.zenPrimary : Color.zenSurfaceMuted)
         )
-        .scaleEffect(isSubmitControlActive ? 1 : 0.92)
-        .opacity(isSubmitControlActive ? 1 : 0.72)
         .disabled(!canSubmit)
         .accessibilityLabel("Send")
-        .accessibilityHint(submitsOnReturn ? "Sends the message. Return also sends." : "Sends the message.")
     }
 
     private var isSubmitControlActive: Bool {
@@ -125,15 +127,7 @@ public struct ZenInputBar: View {
     }
 
     private var borderColor: Color {
-        if isFieldFocused {
-            return Color.zenPrimary.opacity(0.75)
-        }
-
-        return Color.zenBorder
-    }
-
-    private var shadowColor: Color {
-        Color.zenPrimary.opacity(0.10)
+        isFieldFocused ? Color.zenTextStrong.opacity(0.5) : Color.zenBorder
     }
 
     private func setFieldFocused(_ isFocused: Bool) {
@@ -157,13 +151,13 @@ public struct ZenInputBar: View {
 
 private struct ZenInputBarPreview: View {
     @State private var text = ""
-    @State private var isLoading = false
+    @State private var multiText = "Hello, this is a longer message that wraps, demonstrating the multiline capabilities of the input bar. Try resizing the preview to see how it adapts!"
 
     var body: some View {
         VStack(spacing: ZenSpacing.medium) {
             ZenInputBar(text: $text, prompt: "Ask anything...", submitsOnReturn: true, onSubmit: {})
             ZenInputBar(text: $text, prompt: "Ask anything...", isLoading: true, onSubmit: {})
-            ZenInputBar(text: .constant("Some text"), prompt: "Ask anything...", onSubmit: {})
+            ZenInputBar(text: $multiText, prompt: "Message...", keepsFocusAfterSubmit: true, onSubmit: {})
         }
         .padding()
         .background(Color.zenBackground)

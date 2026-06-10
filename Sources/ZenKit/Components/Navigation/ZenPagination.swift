@@ -11,6 +11,8 @@ public struct ZenPagination: View {
     private let style: ZenPaginationStyle
     private let onPageChange: ((Int) -> Void)?
 
+    @Namespace private var selectionNamespace
+
     public init(
         currentPage: Binding<Int>,
         totalPages: Int,
@@ -35,6 +37,7 @@ public struct ZenPagination: View {
                 Text("Page \(currentPage) of \(totalPages)")
                     .font(.zenBody2)
                     .foregroundStyle(Color.zenTextMuted)
+                    .contentTransition(.numericText())
             }
 
             navButton(systemName: "chevron.right", enabled: currentPage < totalPages) {
@@ -48,7 +51,7 @@ public struct ZenPagination: View {
         let pages = visiblePages()
         ForEach(pages, id: \.self) { page in
             if page == -1 {
-                Text("...")
+                Text("\u{2026}")
                     .font(.zenBody2)
                     .foregroundStyle(Color.zenTextMuted)
                     .frame(width: 32, height: 32)
@@ -60,13 +63,15 @@ public struct ZenPagination: View {
                         .font(.zenBody2)
                         .fontWeight(page == currentPage ? .semibold : .regular)
                         .foregroundStyle(page == currentPage ? Color.zenPrimary : Color.zenTextPrimary)
+                        .contentTransition(.numericText())
                         .frame(width: 32, height: 32)
-                        .background(
-                            page == currentPage
-                                ? Color.zenPrimary.opacity(0.1)
-                                : Color.clear
-                        )
-                        .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+                        .background {
+                            if page == currentPage {
+                                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                    .fill(Color.zenPrimary.opacity(0.1))
+                                    .matchedGeometryEffect(id: "selection", in: selectionNamespace)
+                            }
+                        }
                 }
                 .buttonStyle(.plain)
             }
@@ -76,7 +81,7 @@ public struct ZenPagination: View {
     private func navButton(systemName: String, enabled: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: systemName)
-                .font(.system(size: 12, weight: .semibold))
+                .font(.zen(.group, weight: .semibold))
                 .foregroundStyle(enabled ? Color.zenTextPrimary : Color.zenTextMuted.opacity(0.5))
                 .frame(width: 32, height: 32)
                 .background(Color.zenSurface)
@@ -92,7 +97,9 @@ public struct ZenPagination: View {
 
     private func setPage(_ page: Int) {
         let clamped = min(max(page, 1), totalPages)
-        currentPage = clamped
+        withAnimation(.easeInOut(duration: 0.25)) {
+            currentPage = clamped
+        }
         onPageChange?(clamped)
     }
 

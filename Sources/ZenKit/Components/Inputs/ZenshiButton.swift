@@ -68,34 +68,34 @@ public enum ZenButtonSize {
     func minHeight(metrics: ZenResolvedMetrics) -> CGFloat {
         switch self {
         case .default:
-            return 44
+            return 36
         case .xs:
-            return 32
+            return 20
         case .sm:
-            return 36
+            return 26
         case .lg:
-            return 52
+            return 40
         case .icon:
-            return 44
-        case .iconXs:
-            return 32
-        case .iconSm:
             return 36
+        case .iconXs:
+            return 14
+        case .iconSm:
+            return 26
         case .iconLg:
-            return 52
+            return 40
         }
     }
 
     var horizontalPadding: CGFloat {
         switch self {
         case .default:
-            return ZenSpacing.medium
-        case .xs:
             return 12
+        case .xs:
+            return 6
         case .sm:
-            return 14
+            return 8
         case .lg:
-            return 20
+            return 16
         case .icon, .iconXs, .iconSm, .iconLg:
             return 0
         }
@@ -109,16 +109,12 @@ public enum ZenButtonSize {
         let buttonSpec = theme.resolvedTypography.fontSpec(for: .body2)
 
         switch self {
-        case .default, .icon:
-            return buttonSpec.with(size: 14, weight: .medium)
-        case .xs:
+        case .xs, .sm, .iconXs, .iconSm:
             return buttonSpec.with(size: 12, weight: .medium)
-        case .sm, .iconXs, .iconSm:
-            return buttonSpec.with(size: 13, weight: .medium)
-        case .lg:
-            return buttonSpec.with(size: 14, weight: .medium)
-        case .iconLg:
-            return buttonSpec.with(size: 14, weight: .medium)
+        case .default, .icon:
+            return buttonSpec.with(size: 16, weight: .medium)
+        case .lg, .iconLg:
+            return buttonSpec.with(size: 16, weight: .medium)
         }
     }
 
@@ -129,25 +125,23 @@ public enum ZenButtonSize {
     var iconSpacing: CGFloat {
         switch self {
         case .xs, .sm, .iconXs, .iconSm:
+            return 4
+        case .default, .icon:
             return 6
-        case .default, .icon, .lg, .iconLg:
+        case .lg, .iconLg:
             return 8
         }
     }
 
     var iconSize: CGFloat {
         switch self {
-        case .xs, .sm:
+        case .xs, .iconXs:
+            return 12
+        case .sm, .iconSm:
             return 14
-        case .default:
+        case .default, .icon:
             return 16
-        case .lg:
-            return 18
-        case .iconXs:
-            return 14
-        case .icon, .iconSm:
-            return 16
-        case .iconLg:
+        case .lg, .iconLg:
             return 18
         }
     }
@@ -160,7 +154,9 @@ public enum ZenButtonSize {
         let controlCornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentRadius)
 
         switch self {
-        case .xs, .iconXs, .sm, .iconSm:
+        case .xs, .iconXs:
+            return 2
+        case .sm, .iconSm:
             return 6
         case .default, .icon, .lg, .iconLg:
             return controlCornerRadius
@@ -392,10 +388,10 @@ public extension ZenButton where Label == ZenButtonTextLabel {
 
         HStack(spacing: ZenSpacing.small) {
             ZenButton(variant: .default, size: .icon) {} label: {
-                ZenIcon(assetName: "Plus", size: 17, renderingMode: .template)
+                ZenIcon(systemName: "plus")
             }
             ZenButton(variant: .secondary, size: .iconSm, isLoading: true) {} label: {
-                ZenIcon(assetName: "ArrowsClockwise", size: 14, renderingMode: .template)
+                ZenIcon(systemName: "arrow.clockwise")
             }
             ZenButton("Large", size: .lg) {}
         }

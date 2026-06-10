@@ -4,23 +4,32 @@ import ZenKit
 struct MeterShowcaseScreen: View {
     var body: some View {
         ShowcaseScreen(title: "Meter") {
-            ZenCard(title: "Basic", subtitle: "Progress with label and value") {
+            ZenCard(title: "Basic", subtitle: "Displays percentage by default") {
                 VStack(spacing: ZenSpacing.medium) {
-                    ZenMeter(value: 42, total: 100, label: "API Requests")
-                    ZenMeter(value: 7, total: 10, label: "Team Members")
+                    ZenMeter(value: 65, label: "Storage used")
+                    ZenMeter(value: 15, label: "Memory usage")
                 }
             }
 
-            ZenCard(title: "Threshold Colors", subtitle: "Auto-colors at 75% and 90%") {
+            ZenCard(title: "Custom Value", subtitle: "Formatted value text instead of percentage") {
                 VStack(spacing: ZenSpacing.medium) {
-                    ZenMeter(value: 50, total: 100, label: "Storage (50%)")
-                    ZenMeter(value: 80, total: 100, label: "Storage (80%)")
-                    ZenMeter(value: 95, total: 100, label: "Storage (95%)")
+                    ZenMeter(value: 75, label: "API requests", customValue: "750 / 1,000")
+                    ZenMeter(value: 70, label: "Team members", customValue: "7 / 10")
                 }
             }
 
-            ZenCard(title: "Custom Tint", subtitle: "Without value display") {
-                ZenMeter(value: 0.6, label: "Upload progress", showValue: false, tint: .zenSuccess)
+            ZenCard(title: "Full & Hidden Value", subtitle: "100% reached and value hidden") {
+                VStack(spacing: ZenSpacing.medium) {
+                    ZenMeter(value: 100, label: "Quota reached")
+                    ZenMeter(value: 40, label: "Progress", showValue: false)
+                }
+            }
+
+            ZenCard(title: "Custom Tint", subtitle: "Override indicator color") {
+                VStack(spacing: ZenSpacing.medium) {
+                    ZenMeter(value: 80, label: "Upload progress", tint: .zenSuccess)
+                    ZenMeter(value: 60, label: "Warning level", tint: .zenWarning)
+                }
             }
         }
     }
