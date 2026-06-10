@@ -66,8 +66,7 @@ public struct ZenNavigationRow<Trailing: View>: View {
                 .foregroundStyle(Color.zenTextMuted)
 
             if accessory == .chevron {
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 12, weight: .semibold))
+                ZenIcon(systemName: "chevron.right", size: 12)
                     .foregroundStyle(Color.zenTextMuted)
             }
         }
@@ -89,10 +88,11 @@ public struct ZenNavigationRow<Trailing: View>: View {
         if iconStyle == .badge, let iconColor {
             ZenIconBadge(source: source, color: iconColor)
         } else {
-            ZenIcon(source: source, size: 18)
-                .font(.system(size: 18, weight: .medium))
+            ZenIcon(source: source, size: 14)
                 .foregroundStyle(iconColor ?? Color.zenTextMuted)
-                .frame(width: 24, height: 24)
+                .frame(width: 28, height: 28)
+                .background(Color.zenSurfaceMuted)
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         }
     }
 }
