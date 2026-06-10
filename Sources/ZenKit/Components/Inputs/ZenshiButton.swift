@@ -218,6 +218,9 @@ public struct ZenButtonTextLabel: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         HStack(spacing: size.iconSpacing) {
             if let leadingIcon {
                 decorativeIcon(leadingIcon)
@@ -267,6 +270,9 @@ public struct ZenButton<Label: View>: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         Group {
             if variant == .plain {
                 Button(action: performAction) {
@@ -293,7 +299,6 @@ public struct ZenButton<Label: View>: View {
             }
         }
         .disabled(isLoading)
-        .zenContentHugging(horizontal: !fullWidth, vertical: true)
     }
 
     private func performAction() {

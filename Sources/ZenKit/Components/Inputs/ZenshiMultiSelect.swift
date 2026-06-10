@@ -63,6 +63,9 @@ public struct ZenMultiSelect<Option, OptionLabel: View, SummaryLabel: View>: Vie
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         Button {
             ZenHapticEngine.perform(.buttonPress, haptics: hapticsOverride)
             preparePresentation()

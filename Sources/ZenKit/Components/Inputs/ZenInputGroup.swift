@@ -23,6 +23,9 @@ public struct ZenInputGroup<Leading: View, Trailing: View>: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
             if let label {
                 ZenLabel(label)

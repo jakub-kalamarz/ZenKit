@@ -34,6 +34,9 @@ public struct ZenInlineStepper: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         let theme = ZenTheme.current
         let containerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
         let buttonRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: containerRadius)

@@ -26,6 +26,9 @@ public struct ZenPagination: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         HStack(spacing: ZenSpacing.small) {
             navButton(systemName: "chevron.left", enabled: currentPage > 1) {
                 setPage(currentPage - 1)

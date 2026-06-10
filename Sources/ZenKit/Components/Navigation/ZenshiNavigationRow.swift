@@ -40,6 +40,9 @@ public struct ZenNavigationRow<Trailing: View>: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         let cornerRadius = ZenTheme.current.resolvedCornerRadius
 
         HStack(spacing: ZenSpacing.small) {
@@ -73,7 +76,6 @@ public struct ZenNavigationRow<Trailing: View>: View {
         .opacity(isEnabled ? 1 : 0.55)
         .padding(.vertical, 10)
         .padding(.horizontal, ZenSpacing.medium)
-        .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.zenSurface)
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         .overlay(

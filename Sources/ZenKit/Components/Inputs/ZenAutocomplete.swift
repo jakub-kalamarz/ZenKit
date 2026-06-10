@@ -39,6 +39,9 @@ public struct ZenAutocomplete: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         VStack(alignment: .leading, spacing: 0) {
             if let label {
                 ZenLabel(label)

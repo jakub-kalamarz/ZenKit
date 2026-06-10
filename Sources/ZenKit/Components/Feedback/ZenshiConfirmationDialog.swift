@@ -86,6 +86,9 @@ public struct ZenConfirmationDialog<Content: View>: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         content()
             .task(id: isPresented) {
                 syncPresentation(isPresented)

@@ -37,6 +37,9 @@ public struct ZenMenu<Label: View, Content: View>: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         Menu {
             content()
         } label: {
@@ -53,6 +56,9 @@ public struct ZenMenuTrigger<Label: View>: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         label()
             .accessibilityElement(children: .combine)
             .accessibilityAddTraits(.isButton)
@@ -67,6 +73,9 @@ public struct ZenMenuContent<Content: View>: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         content()
     }
 }
@@ -90,6 +99,9 @@ public struct ZenMenuItem<Label: View>: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         Button(role: role, action: action) {
             label()
         }
@@ -123,6 +135,9 @@ public struct ZenMenuSeparator: View {
     public init() {}
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         Divider()
     }
 }

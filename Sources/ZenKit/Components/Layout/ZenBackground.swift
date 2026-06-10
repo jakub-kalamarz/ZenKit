@@ -6,6 +6,9 @@ public struct ZenBackgroundView: View {
     public init() {}
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         if let customBackground {
             customBackground
                 .ignoresSafeArea()
@@ -24,6 +27,9 @@ public struct ZenBackground<Content: View>: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         ZStack {
             ZenBackgroundView()
             content

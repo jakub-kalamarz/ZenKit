@@ -165,6 +165,9 @@ public struct ZenOverlayRoot<Content: View>: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         ZenOverlayHost(
             configuration: .centeredModal(
                 scrimTransition: ZenConfirmationDialogMotion.backdropTransition,

@@ -22,6 +22,9 @@ public struct ZenBreadcrumbs: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         HStack(spacing: ZenSpacing.xSmall) {
             ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
                 if index > 0 {

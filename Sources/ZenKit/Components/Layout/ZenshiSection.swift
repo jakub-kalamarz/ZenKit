@@ -18,6 +18,9 @@ public struct ZenSection<Content: View, Header: View, Footer: View>: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         let theme = ZenTheme.current
         let cornerRadius = theme.resolvedCornerRadius(for: .nestedContainer, parentRadius: parentCornerRadius)
 

@@ -136,6 +136,9 @@ public struct ZenBadge: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         let shape = RoundedRectangle(
             cornerRadius: resolvedCornerRadius,
             style: .continuous
@@ -167,7 +170,7 @@ public struct ZenBadge: View {
         )
         .clipShape(shape)
         .contentShape(shape)
-        .zenContentHugging(horizontal: true, vertical: false)
+        .fixedSize(horizontal: true, vertical: false)
     }
     
     private var foregroundColor: Color {

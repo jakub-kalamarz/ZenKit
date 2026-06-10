@@ -19,6 +19,9 @@ public struct ZenLabel: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         HStack(spacing: 4) {
             Text(text)
                 .font(.zenBody2)

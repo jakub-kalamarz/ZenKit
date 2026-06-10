@@ -28,6 +28,9 @@ public struct ZenTableOfContents: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         VStack(alignment: .leading, spacing: 0) {
             ForEach(items) { item in
                 let isActive = item.id == activeId

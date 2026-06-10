@@ -63,6 +63,9 @@ public struct ZenPageIndicator: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         switch mode {
         case let .manual(pageCount, currentPage):
             interactiveIndicator(

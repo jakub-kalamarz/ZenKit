@@ -32,6 +32,9 @@ public struct ZenListScreen<ToolbarLeading: View, ToolbarPrincipal: View, Toolba
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         ZenScreen(
             containerStyle: .list,
             navigationTitle: navigationTitle,

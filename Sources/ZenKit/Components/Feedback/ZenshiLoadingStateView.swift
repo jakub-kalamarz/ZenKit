@@ -10,6 +10,9 @@ public struct ZenLoadingStateView: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         ZenLoading(title: title, message: message)
     }
 }

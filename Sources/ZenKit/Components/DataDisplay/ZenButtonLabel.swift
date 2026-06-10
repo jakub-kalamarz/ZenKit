@@ -21,6 +21,9 @@ public struct ZenButtonLabel<Label: View>: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         Group {
         if variant == .plain {
             label()
@@ -57,7 +60,7 @@ public struct ZenButtonLabel<Label: View>: View {
                 )
         }
         }
-        .zenContentHugging(horizontal: !fullWidth, vertical: true)
+        .fixedSize(horizontal: !fullWidth, vertical: true)
     }
 }
 

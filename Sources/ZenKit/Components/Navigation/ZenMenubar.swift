@@ -24,6 +24,9 @@ public struct ZenMenubar: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         HStack(spacing: 2) {
             ForEach(items) { item in
                 Button(action: item.action) {

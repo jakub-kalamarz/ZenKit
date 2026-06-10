@@ -37,6 +37,9 @@ public struct ZenIcon: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         Group {
             switch source {
             case .asset(let assetName, let renderingMode):
@@ -71,6 +74,9 @@ public struct ZenMenuIcon: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         switch source {
         case .asset(let assetName, let renderingMode):
             Image(assetName)

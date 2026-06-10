@@ -37,6 +37,9 @@ public struct ZenTimelineItem: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         HStack(alignment: .top, spacing: ZenSpacing.small) {
             VStack(spacing: 0) {
                 indicator

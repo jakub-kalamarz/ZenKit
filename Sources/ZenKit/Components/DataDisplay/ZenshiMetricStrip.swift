@@ -80,6 +80,9 @@ public struct ZenMetricStrip: View {
     }
     
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         let theme = ZenTheme.current
         let tileCornerRadius = theme.resolvedCornerRadius(for: .nestedContainer, parentRadius: parentCornerRadius)
 

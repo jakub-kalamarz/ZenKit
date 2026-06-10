@@ -39,6 +39,9 @@ public struct ZenInputBar: View {
     private let cornerRadius: CGFloat = 22
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         HStack(alignment: .bottom, spacing: ZenSpacing.small) {
             textField
                 .frame(minHeight: 34)

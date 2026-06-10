@@ -36,6 +36,9 @@ public struct ZenIconBadge: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         let cornerRadius = ZenTheme.current.resolvedCornerRadius(for: ZenRadius.small)
         let style = ZenTheme.current.iconStyle
 

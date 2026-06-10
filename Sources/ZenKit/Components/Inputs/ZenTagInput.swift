@@ -20,6 +20,9 @@ public struct ZenTagInput: View {
     }
 
     public var body: some View {
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         let theme = ZenTheme.current
         let cornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
         let controlStyle = ZenControlSurfaceStyle.field(theme: theme)
