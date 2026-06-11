@@ -183,7 +183,7 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
 
     private var selectedSegmentShadowColor: Color {
         if colorScheme == .dark {
-            return .white.opacity(0.06)
+            return .clear
         }
         return .black.opacity(0.06)
     }
