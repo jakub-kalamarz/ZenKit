@@ -143,13 +143,13 @@ struct ZenButtonResolvedStyle {
             foregroundStyle = .primaryText
             isTextOnly = false
         case .destructive:
-            backgroundToken = colors.critical
-            backgroundColor = .zenCritical
-            pressedBackgroundColor = colors.criticalPressed.color
-            pressedBackgroundToken = colors.criticalPressed
+            backgroundToken = colors.criticalTint
+            backgroundColor = .zenCriticalTint
+            pressedBackgroundColor = colors.criticalSubtle.color
+            pressedBackgroundToken = colors.criticalSubtle
             borderToken = nil
-            foregroundLight = colors.critical.light.accessibleForeground
-            foregroundDark = colors.critical.dark.accessibleForeground
+            foregroundLight = colors.critical.light
+            foregroundDark = colors.critical.dark
             foregroundColor = ZenDynamicColor(light: foregroundLight, dark: foregroundDark).color
             borderColor = .clear
             borderWidth = 0

@@ -48,6 +48,41 @@ public enum ZenSystemFontDesign: Sendable, Equatable {
     }
 }
 
+public enum ZenFontWidth: Sendable, Equatable {
+    case compressed
+    case condensed
+    case standard
+    case expanded
+
+    var swiftUIWidth: Font.Width {
+        switch self {
+        case .compressed:
+            return .compressed
+        case .condensed:
+            return .condensed
+        case .standard:
+            return .standard
+        case .expanded:
+            return .expanded
+        }
+    }
+
+#if canImport(UIKit)
+    var uiKitWidth: UIFont.Width {
+        switch self {
+        case .compressed:
+            return .compressed
+        case .condensed:
+            return .condensed
+        case .standard:
+            return .standard
+        case .expanded:
+            return .expanded
+        }
+    }
+#endif
+}
+
 public struct ZenFontFamily: Equatable, Sendable {
     public let regular: String
     public let medium: String?
@@ -250,9 +285,13 @@ public enum ZenFontWeight: Sendable, Equatable {
 public struct ZenTypographyFamily: Equatable, Sendable {
     public let source: ZenFontSource
     public let fallback: ZenSystemFontDesign
+    /// Width applied to system fonts (SF Pro supports compressed/condensed/expanded;
+    /// other designs like serif/rounded ignore unsupported widths).
+    public let width: ZenFontWidth?
 
-    public init(source: ZenFontSource, fallback: ZenSystemFontDesign? = nil) {
+    public init(source: ZenFontSource, fallback: ZenSystemFontDesign? = nil, width: ZenFontWidth? = nil) {
         self.source = source
+        self.width = width
 
         switch source {
         case let .system(design):
@@ -322,6 +361,7 @@ public struct ZenResolvedFontSpec: Equatable, Sendable {
     public let size: CGFloat
     public let weight: ZenFontWeight
     public let leading: Font.Leading?
+    public let width: ZenFontWidth?
 
     public init(
         familyRole: ZenTypographyFamilyRole,
@@ -331,7 +371,8 @@ public struct ZenResolvedFontSpec: Equatable, Sendable {
         resolvedVariableAxes: ZenVariableFontAxes? = nil,
         size: CGFloat,
         weight: ZenFontWeight,
-        leading: Font.Leading? = nil
+        leading: Font.Leading? = nil,
+        width: ZenFontWidth? = nil
     ) {
         self.familyRole = familyRole
         self.source = source
@@ -341,6 +382,7 @@ public struct ZenResolvedFontSpec: Equatable, Sendable {
         self.size = size
         self.weight = weight
         self.leading = leading
+        self.width = width
     }
 
     var font: Font {
@@ -349,6 +391,9 @@ public struct ZenResolvedFontSpec: Equatable, Sendable {
         switch resolvedSource {
         case let .system(design):
             result = .system(size: size, weight: weight.swiftUIWeight, design: design.swiftUIDesign)
+            if let width {
+                result = result.width(width.swiftUIWidth)
+            }
         case .custom, .variable:
             #if canImport(UIKit)
             if let platformFont = resolvedUIFont {
@@ -378,6 +423,9 @@ public struct ZenResolvedFontSpec: Equatable, Sendable {
     var uiFont: UIFont {
         switch resolvedSource {
         case .system:
+            if let width {
+                return .systemFont(ofSize: size, weight: weight.uiKitWeight, width: width.uiKitWidth)
+            }
             return .systemFont(ofSize: size, weight: weight.uiKitWeight)
         case .custom, .variable:
             if let resolvedUIFont {
@@ -442,7 +490,8 @@ public struct ZenResolvedFontSpec: Equatable, Sendable {
             resolvedVariableAxes: resolved.variableAxes,
             size: size,
             weight: resolvedWeight,
-            leading: resolvedLeading
+            leading: resolvedLeading,
+            width: self.width
         )
     }
 

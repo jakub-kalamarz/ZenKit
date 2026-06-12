@@ -143,7 +143,8 @@ public struct ZenTheme: Equatable, Sendable {
             resolvedVariableAxes: resolved.resolvedVariableAxes,
             size: size,
             weight: weight,
-            leading: leading
+            leading: leading,
+            width: family.width
         )
     }
 
