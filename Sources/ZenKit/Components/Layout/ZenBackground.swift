@@ -7,7 +7,6 @@ public struct ZenBackgroundView: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         if let customBackground {
             customBackground
@@ -28,7 +27,6 @@ public struct ZenBackground<Content: View>: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         ZStack {
             ZenBackgroundView()

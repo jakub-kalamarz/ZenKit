@@ -16,7 +16,6 @@ public struct ZenCardSection<Content: View>: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         VStack(alignment: .leading, spacing: 8) {
             title

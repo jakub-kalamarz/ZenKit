@@ -58,7 +58,6 @@ public struct ZenScreen<Header: View, Content: View>: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         screenContainer
             .zenBackground()

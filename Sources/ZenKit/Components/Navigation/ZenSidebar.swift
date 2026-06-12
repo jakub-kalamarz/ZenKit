@@ -66,7 +66,6 @@ public struct ZenSidebar<Header: View, Footer: View>: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         VStack(spacing: 0) {
             if let header {
@@ -282,7 +281,6 @@ public struct ZenSidebarToggle: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         Button {
             withAnimation(.easeInOut(duration: 0.25)) {

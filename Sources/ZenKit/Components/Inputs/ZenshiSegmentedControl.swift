@@ -42,7 +42,6 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         let theme = ZenTheme.current
         let metrics = theme.resolvedMetrics

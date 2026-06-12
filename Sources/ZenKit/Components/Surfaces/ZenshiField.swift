@@ -9,7 +9,6 @@ public struct ZenFieldLabel: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         Text(text)
             .font(.zen(.body2, weight: .medium))
@@ -28,7 +27,6 @@ public struct ZenFieldMessage: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         Text(text)
             .font(.zenGroup)
@@ -67,7 +65,6 @@ public struct ZenField<Content: View>: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
             if let label {
@@ -94,7 +91,6 @@ public struct ZenFieldGroup<Content: View>: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         VStack(alignment: .leading, spacing: ZenSpacing.medium) {
             content()
@@ -119,7 +115,6 @@ public struct ZenFieldSection<Content: View>: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         VStack(alignment: .leading, spacing: ZenSpacing.small) {
             if title != nil || subtitle != nil {

@@ -15,7 +15,6 @@ public struct ZenSkeleton: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         RoundedRectangle(cornerRadius: ZenTheme.current.resolvedCornerRadius(for: cornerRadius), style: .continuous)
             .fill(baseGradient)

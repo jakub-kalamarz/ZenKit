@@ -14,7 +14,6 @@ public struct ZenLayerCard<Secondary: View, Primary: View>: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         let cornerRadius = ZenTheme.current.resolvedCornerRadius
 

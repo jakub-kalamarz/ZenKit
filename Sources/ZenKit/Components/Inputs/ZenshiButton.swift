@@ -219,7 +219,6 @@ public struct ZenButtonTextLabel: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         HStack(spacing: size.iconSpacing) {
             if let leadingIcon {
@@ -271,7 +270,6 @@ public struct ZenButton<Label: View>: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         Group {
             if variant == .plain {

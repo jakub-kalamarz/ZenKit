@@ -9,7 +9,6 @@ public struct ZenTimeline: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         VStack(alignment: .leading, spacing: 0) {
             content
@@ -26,7 +25,6 @@ public struct ZenTimelineHeader: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         HStack(alignment: .firstTextBaseline, spacing: ZenSpacing.small) {
             content
@@ -46,7 +44,6 @@ public struct ZenTimelineIndicator: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         let style = ZenTimelineIndicatorResolvedStyle()
 
@@ -68,7 +65,6 @@ public struct ZenTimelineSeparator: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         let style = ZenTimelineSeparatorResolvedStyle()
 
@@ -128,7 +124,6 @@ public struct ZenTimelineContent: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
             content
@@ -146,7 +141,6 @@ public struct ZenTimelineTitle: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         Text(title)
             .font(.zen(.body2, weight: .medium))
@@ -164,7 +158,6 @@ public struct ZenTimelineDate: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         Text(value)
             .font(.zenGroup)

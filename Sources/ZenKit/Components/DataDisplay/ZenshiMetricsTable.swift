@@ -121,7 +121,6 @@ public struct ZenMetricsTable<ID: Hashable & Sendable, Content: View>: View {
     
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         VStack(alignment: .leading, spacing: ZenSpacing.medium) {
             HStack(spacing: ZenSpacing.small) {
@@ -197,7 +196,6 @@ public struct ZenMetricsTableHeader: View {
     
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         VStack(alignment: .leading, spacing: ZenSpacing.small) {
             HStack(spacing: ZenSpacing.small) {
@@ -242,7 +240,6 @@ public struct ZenMetricsTableRow<LeadingAccessory: View>: View {
     
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         VStack(alignment: .leading, spacing: ZenSpacing.small) {
             Color.clear

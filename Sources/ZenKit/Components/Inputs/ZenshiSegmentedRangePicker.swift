@@ -13,7 +13,6 @@ public struct ZenSegmentedRangePicker: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         ZenSegmentedControl(
             title: title,

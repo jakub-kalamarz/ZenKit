@@ -16,7 +16,6 @@ public struct ZenEmpty<Content: View>: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         container
     }
@@ -38,7 +37,6 @@ public struct ZenEmptyHeader<Content: View>: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         VStack(spacing: ZenSpacing.medium) {
             content()
@@ -61,7 +59,6 @@ public struct ZenEmptyMedia<Content: View>: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         Group {
             switch variant {
@@ -86,7 +83,6 @@ public struct ZenEmptyTitle<Content: View>: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         content()
             .font(.zenStat)
@@ -104,7 +100,6 @@ public struct ZenEmptyDescription<Content: View>: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         content()
             .font(.zenGroup)
@@ -122,7 +117,6 @@ public struct ZenEmptyContent<Content: View>: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         VStack(spacing: ZenSpacing.small) {
             content()

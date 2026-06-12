@@ -30,7 +30,6 @@ public struct ZenPickerRow<Option: Hashable & Sendable, OptionLabel: View>: View
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         Menu {
             ForEach(options, id: \.self) { option in

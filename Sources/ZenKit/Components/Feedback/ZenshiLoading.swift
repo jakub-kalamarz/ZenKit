@@ -11,7 +11,6 @@ public struct ZenLoading: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         VStack(spacing: ZenSpacing.medium) {
             ZenSpinner(size: .large)

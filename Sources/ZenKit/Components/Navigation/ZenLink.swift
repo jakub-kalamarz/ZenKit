@@ -23,7 +23,6 @@ public struct ZenLink<Label: View>: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         Button(action: action) {
             label

@@ -128,7 +128,6 @@ public struct ZenTrendChartCard: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         let theme = ZenTheme.current
         let scale = Self.resolveScale(for: points)

@@ -22,7 +22,6 @@ public struct ZenRadioGroup<Value: Hashable>: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         VStack(spacing: appearance == .card ? ZenSpacing.small : ZenSpacing.xSmall) {
             ForEach(options) { option in

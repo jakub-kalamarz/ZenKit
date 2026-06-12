@@ -34,7 +34,6 @@ public struct ZenGrid<Data: RandomAccessCollection, Content: View>: View where D
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         LazyVGrid(columns: columns.gridItems, spacing: spacing) {
             ForEach(data) { item in

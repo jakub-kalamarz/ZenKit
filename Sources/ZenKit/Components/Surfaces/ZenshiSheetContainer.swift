@@ -131,7 +131,6 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         NavigationStack {
             scrollableContent

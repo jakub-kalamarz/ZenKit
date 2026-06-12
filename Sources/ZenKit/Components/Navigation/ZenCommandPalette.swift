@@ -65,7 +65,6 @@ public struct ZenCommandPalette: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         ZStack {
             Color.black.opacity(0.3)

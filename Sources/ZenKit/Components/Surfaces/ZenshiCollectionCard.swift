@@ -20,7 +20,6 @@ public struct ZenCollectionCard<Content: View>: View {
     
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         VStack(alignment: .leading, spacing: ZenSpacing.medium) {
             HStack(alignment: .top, spacing: ZenSpacing.small) {

@@ -22,7 +22,6 @@ public struct ZenCardHeader: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         HStack(alignment: .top, spacing: ZenSpacing.small) {
             if let leadingIcon, let iconColor {

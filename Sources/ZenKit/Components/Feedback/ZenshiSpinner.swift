@@ -50,7 +50,6 @@ public struct ZenSpinner: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         let spinnerCornerRadius = size.diameter / 2
 

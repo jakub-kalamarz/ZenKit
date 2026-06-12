@@ -16,7 +16,6 @@ public struct ZenNavigationLink<Destination: View, Label: View>: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         NavigationLink {
             destination()

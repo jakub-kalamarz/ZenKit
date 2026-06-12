@@ -24,7 +24,6 @@ public struct ZenToastHost: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         GeometryReader { proxy in
             let layout = Layout(edge: edge, size: proxy.size)

@@ -9,7 +9,6 @@ public struct ZenSectionDivider: View {
 
     public var body: some View {
         #if DEBUG
-        let _ = Self._printChanges()
         #endif
         HStack(spacing: 12) {
             Rectangle()
