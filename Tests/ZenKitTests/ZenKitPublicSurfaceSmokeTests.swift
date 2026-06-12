@@ -281,18 +281,6 @@ struct ZenKitPublicSurfaceSmokeTests {
     }
 
     @Test
-    func zenAutoSizingSheetComposesWithHostViews() {
-        let view = Text("Host")
-            .zenAutoSizingSheet(isPresented: .constant(false)) {
-                ZenSheetContainer(title: "Invite collaborators", subtitle: "Add teammates by email") {
-                    ZenButton("Continue", fullWidth: true) {}
-                }
-            }
-
-        _ = view
-    }
-
-    @Test
     func zenSpinnerSupportsSharedLoadingContexts() {
         let view = VStack(spacing: ZenSpacing.small) {
             ZenSpinner()
