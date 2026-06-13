@@ -19,7 +19,7 @@ public struct ZenLoading: View {
                 VStack(spacing: 4) {
                     if let title {
                         Text(title)
-                            .font(.zenStat)
+                            .font(.zenTitle)
                             .foregroundStyle(Color.zenTextPrimary)
                     }
 

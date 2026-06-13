@@ -213,7 +213,7 @@ private struct ZenThemeColorWorkbenchPreview: View {
         VStack(alignment: .leading, spacing: ZenSpacing.medium) {
             HStack {
                 Text(title)
-                    .font(.zenStat)
+                    .font(.zenTitle)
                     .foregroundStyle(Color.zenTextPrimary)
 
                 Spacer()

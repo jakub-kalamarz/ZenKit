@@ -121,7 +121,7 @@ public struct ZenFieldSection<Content: View>: View {
                 VStack(alignment: .leading, spacing: 4) {
                     if let title {
                         Text(title)
-                            .font(.zenStat)
+                            .font(.zenTitle)
                             .foregroundStyle(Color.zenTextPrimary)
                     }
 

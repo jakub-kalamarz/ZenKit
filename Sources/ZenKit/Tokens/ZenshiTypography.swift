@@ -19,6 +19,7 @@ public enum ZenTypographyToken: String, CaseIterable, Sendable {
     case displayM
     case displayS
     case stat
+    case title
     case body
     case body2
     case intro
@@ -312,13 +313,19 @@ public struct ZenTypography: Equatable, Sendable {
 
     public let display: ZenTypographyFamily
     public let text: ZenTypographyFamily
+    /// Optional family backing the `.stat` token. Falls back to `display` when nil.
+    /// Use a width-capable design (`.system(.default)`) to render condensed stats —
+    /// serif/rounded designs ignore width.
+    public let stat: ZenTypographyFamily?
 
     public init(
         display: ZenTypographyFamily = .init(source: .system(.default)),
-        text: ZenTypographyFamily = .init(source: .system(.default))
+        text: ZenTypographyFamily = .init(source: .system(.default)),
+        stat: ZenTypographyFamily? = nil
     ) {
         self.display = display
         self.text = text
+        self.stat = stat
     }
 
     func family(for role: ZenTypographyFamilyRole) -> ZenTypographyFamily {
@@ -329,15 +336,22 @@ public struct ZenTypography: Equatable, Sendable {
             return text
         }
     }
+
+    /// Family used for the `.stat` token, falling back to `display`.
+    var statFamily: ZenTypographyFamily { stat ?? display }
 }
 
 public enum ZenFontRegistry {
     private static let lock = NSLock()
     private static var typography: ZenTypography?
 
-    public static func register(display: ZenTypographyFamily, text: ZenTypographyFamily) {
+    public static func register(
+        display: ZenTypographyFamily,
+        text: ZenTypographyFamily,
+        stat: ZenTypographyFamily? = nil
+    ) {
         lock.withLock {
-            typography = ZenTypography(display: display, text: text)
+            typography = ZenTypography(display: display, text: text, stat: stat)
         }
     }
 
@@ -528,6 +542,7 @@ public struct ZenResolvedTypography: Equatable, Sendable {
     public let displayM: ZenResolvedFontSpec
     public let displayS: ZenResolvedFontSpec
     public let stat: ZenResolvedFontSpec
+    public let title: ZenResolvedFontSpec
     public let body: ZenResolvedFontSpec
     public let body2: ZenResolvedFontSpec
     public let intro: ZenResolvedFontSpec
@@ -542,6 +557,7 @@ public struct ZenResolvedTypography: Equatable, Sendable {
         displayM: ZenResolvedFontSpec,
         displayS: ZenResolvedFontSpec,
         stat: ZenResolvedFontSpec,
+        title: ZenResolvedFontSpec,
         body: ZenResolvedFontSpec,
         body2: ZenResolvedFontSpec,
         intro: ZenResolvedFontSpec,
@@ -555,6 +571,7 @@ public struct ZenResolvedTypography: Equatable, Sendable {
         self.displayM = displayM
         self.displayS = displayS
         self.stat = stat
+        self.title = title
         self.body = body
         self.body2 = body2
         self.intro = intro
@@ -571,6 +588,7 @@ public struct ZenResolvedTypography: Equatable, Sendable {
         case .displayM: return displayM
         case .displayS: return displayS
         case .stat: return stat
+        case .title: return title
         case .body: return body
         case .body2: return body2
         case .intro: return intro
@@ -597,6 +615,7 @@ public extension Font {
     static var zenDisplayM: Font { ZenTheme.current.resolvedTypography.font(for: .displayM) }
     static var zenDisplayS: Font { ZenTheme.current.resolvedTypography.font(for: .displayS) }
     static var zenStat: Font { ZenTheme.current.resolvedTypography.font(for: .stat) }
+    static var zenTitle: Font { ZenTheme.current.resolvedTypography.font(for: .title) }
     static var zenBody: Font { ZenTheme.current.resolvedTypography.font(for: .body) }
     static var zenBody2: Font { ZenTheme.current.resolvedTypography.font(for: .body2) }
     static var zenIntro: Font { ZenTheme.current.resolvedTypography.font(for: .intro) }

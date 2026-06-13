@@ -115,7 +115,8 @@ public struct ZenTheme: Equatable, Sendable {
             displayL: makeResolvedFontSpec(role: .display, size: 32, weight: .semibold, leading: .tight),
             displayM: makeResolvedFontSpec(role: .display, size: 22, weight: .semibold, leading: .tight),
             displayS: makeResolvedFontSpec(role: .display, size: 16, weight: .medium),
-            stat: makeResolvedFontSpec(role: .display, size: 18, weight: .semibold),
+            stat: makeResolvedFontSpec(role: .display, size: 18, weight: .semibold, family: typography.statFamily),
+            title: makeResolvedFontSpec(role: .display, size: 18, weight: .semibold),
             body: makeResolvedFontSpec(role: .text, size: 15, weight: .regular),
             body2: makeResolvedFontSpec(role: .text, size: 13, weight: .regular),
             intro: makeResolvedFontSpec(role: .text, size: 15, weight: .regular),
@@ -130,9 +131,10 @@ public struct ZenTheme: Equatable, Sendable {
         role: ZenTypographyFamilyRole,
         size: CGFloat,
         weight: ZenFontWeight,
-        leading: Font.Leading? = nil
+        leading: Font.Leading? = nil,
+        family familyOverride: ZenTypographyFamily? = nil
     ) -> ZenResolvedFontSpec {
-        let family = typography.family(for: role)
+        let family = familyOverride ?? typography.family(for: role)
         let resolved = family.resolvedSource(for: weight)
 
         return ZenResolvedFontSpec(

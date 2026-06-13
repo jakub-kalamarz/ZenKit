@@ -95,7 +95,7 @@ public struct ZenCard<Content: View, Footer: View, Background: ShapeStyle>: View
                 VStack(alignment: .leading, spacing: 4) {
                     if let title {
                         Text(title)
-                            .font(.zenStat)
+                            .font(.zenTitle)
                             .foregroundStyle(Color.zenTextPrimary)
                     }
 

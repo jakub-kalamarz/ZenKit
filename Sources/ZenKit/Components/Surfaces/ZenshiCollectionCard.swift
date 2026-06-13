@@ -25,7 +25,7 @@ public struct ZenCollectionCard<Content: View>: View {
             HStack(alignment: .top, spacing: ZenSpacing.small) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(title)
-                        .font(.zenStat)
+                        .font(.zenTitle)
                         .foregroundStyle(Color.zenTextPrimary)
                     
                     if let subtitle {

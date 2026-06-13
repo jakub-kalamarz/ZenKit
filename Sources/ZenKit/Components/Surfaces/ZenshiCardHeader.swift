@@ -30,7 +30,7 @@ public struct ZenCardHeader: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.zenStat)
+                    .font(.zenTitle)
                     .foregroundStyle(Color.zenTextPrimary)
 
                 if let subtitle {

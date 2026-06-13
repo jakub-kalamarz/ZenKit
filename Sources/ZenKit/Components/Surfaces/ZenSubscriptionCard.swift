@@ -103,7 +103,7 @@ public struct ZenSubscriptionCard: View {
                 ZenBadge(statusText, tone: statusTone, size: .small, variant: .filled)
 
                 Text(title)
-                    .font(.zenStat.weight(.semibold))
+                    .font(.zenTitle.weight(.semibold))
                     .foregroundStyle(Color.zenTextPrimary)
                     .fixedSize(horizontal: false, vertical: true)
 

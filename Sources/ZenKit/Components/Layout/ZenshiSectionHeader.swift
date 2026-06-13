@@ -19,7 +19,7 @@ public struct ZenSectionHeader<Title: View, Subtitle: View>: View {
         #endif
         VStack(alignment: .leading, spacing: 4) {
             title()
-                .font(.zenStat)
+                .font(.zenTitle)
                 .foregroundStyle(Color.zenTextPrimary)
 
             if showsSubtitle {

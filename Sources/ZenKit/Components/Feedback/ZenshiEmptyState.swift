@@ -85,7 +85,7 @@ public struct ZenEmptyTitle<Content: View>: View {
         #if DEBUG
         #endif
         content()
-            .font(.zenStat)
+            .font(.zenTitle)
             .foregroundStyle(Color.zenTextPrimary)
             .multilineTextAlignment(.center)
     }
