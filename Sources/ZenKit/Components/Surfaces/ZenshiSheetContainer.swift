@@ -133,25 +133,39 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
         #if DEBUG
         #endif
         NavigationStack {
-            scrollableContent
-                .navigationTitle(title)
-                .zenInlineNavigationTitle()
-                .toolbar {
-                    ToolbarItem(placement: ZenNavigationChrome.leadingToolbarPlacement) {
-                        toolbarLeading()
+            if #available(iOS 26, *) {
+                sheetContent
+                    .safeAreaBar(edge: .bottom) {
+                        if showsFooter {
+                            footerBlock
+                        }
                     }
-                    ToolbarItem(placement: ZenNavigationChrome.trailingToolbarPlacement) {
-                        toolbarTrailing()
+            } else {
+                sheetContent
+                    .safeAreaInset(edge: .bottom) {
+                        if showsFooter {
+                            footerBlock
+                                .background(Color.zenBackground)
+                        }
                     }
-                }
-                .safeAreaInset(edge: .bottom) {
-                    if showsFooter {
-                        footerBlock
-                    }
-                }
-                .zenBackground()
+            }
         }
         .presentationDragIndicator(.visible)
+    }
+
+    private var sheetContent: some View {
+        scrollableContent
+            .navigationTitle(title)
+            .zenInlineNavigationTitle()
+            .toolbar {
+                ToolbarItem(placement: ZenNavigationChrome.leadingToolbarPlacement) {
+                    toolbarLeading()
+                }
+                ToolbarItem(placement: ZenNavigationChrome.trailingToolbarPlacement) {
+                    toolbarTrailing()
+                }
+            }
+            .zenBackground()
     }
 
     private var scrollableContent: some View {
@@ -179,7 +193,6 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
                 .padding(.horizontal, ZenSpacing.medium)
                 .padding(.vertical, ZenSpacing.small)
         }
-        .background(Color.zenBackground)
     }
 }
 
