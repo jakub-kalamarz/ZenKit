@@ -41,12 +41,22 @@ public struct ZenRadioOption<Value: Hashable>: Identifiable {
     public let value: Value
     public let label: String
     public let description: String?
+    public let imageURL: URL?
+    public let trailingText: String?
 
-    public init(value: Value, label: String, description: String? = nil) {
+    public init(
+        value: Value,
+        label: String,
+        description: String? = nil,
+        imageURL: URL? = nil,
+        trailingText: String? = nil
+    ) {
         self.id = value
         self.value = value
         self.label = label
         self.description = description
+        self.imageURL = imageURL
+        self.trailingText = trailingText
     }
 }
 
@@ -61,19 +71,32 @@ private struct ZenRadioRow<Value: Hashable>: View {
             HStack(spacing: ZenSpacing.small) {
                 radioIndicator
 
+                if let imageURL = option.imageURL {
+                    thumbnail(imageURL)
+                }
+
                 VStack(alignment: .leading, spacing: 2) {
                     Text(option.label)
                         .font(.zenBody)
                         .foregroundStyle(Color.zenTextPrimary)
+                        .lineLimit(1)
 
                     if let description = option.description {
                         Text(description)
                             .font(.zenBody2)
                             .foregroundStyle(Color.zenTextMuted)
+                            .lineLimit(1)
                     }
                 }
 
-                Spacer()
+                Spacer(minLength: ZenSpacing.small)
+
+                if let trailingText = option.trailingText {
+                    Text(trailingText)
+                        .font(.zenBody2)
+                        .foregroundStyle(Color.zenTextMuted)
+                        .lineLimit(1)
+                }
             }
             .padding(appearance == .card ? ZenSpacing.medium : ZenSpacing.xSmall)
             .background(cardBackground)
@@ -88,6 +111,27 @@ private struct ZenRadioRow<Value: Hashable>: View {
             .strokeBorder(isSelected ? Color.zenPrimary : Color.zenBorderSubtle, lineWidth: isSelected ? 5 : 1.5)
             .frame(width: 18, height: 18)
             .animation(.easeOut(duration: 0.15), value: isSelected)
+    }
+
+    private func thumbnail(_ url: URL) -> some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: ZenRadius.small, style: .continuous)
+                .fill(Color.zenSurfaceMuted)
+
+            AsyncImage(url: url) { phase in
+                switch phase {
+                case .success(let image):
+                    image
+                        .resizable()
+                        .scaledToFill()
+                default:
+                    ZenIcon(systemName: "photo", size: 16)
+                        .foregroundStyle(Color.zenTextMuted)
+                }
+            }
+        }
+        .frame(width: 40, height: 40)
+        .clipShape(RoundedRectangle(cornerRadius: ZenRadius.small, style: .continuous))
     }
 
     @ViewBuilder

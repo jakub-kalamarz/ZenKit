@@ -51,6 +51,10 @@ public struct ZenSearchBar: View {
                 .strokeBorder(borderColor(theme: theme, controlStyle: controlStyle), lineWidth: borderWidth(controlStyle: controlStyle))
         )
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+        .contentShape(RoundedRectangle(cornerRadius: cornerRadius))
+        .onTapGesture {
+            isFocused = true
+        }
     }
 
     private func borderWidth(controlStyle: ZenControlSurfaceStyle) -> CGFloat {

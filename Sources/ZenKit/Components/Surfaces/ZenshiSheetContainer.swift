@@ -183,7 +183,7 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
             }
             .padding(.horizontal, ZenSpacing.medium)
             .padding(.top, ZenSpacing.small)
-            .padding(.bottom, ZenSpacing.large)
+            .padding(.bottom, ZenSpacing.small)
         }
     }
 
@@ -191,7 +191,7 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
         VStack(spacing: 0) {
             footer()
                 .padding(.horizontal, ZenSpacing.medium)
-                .padding(.vertical, ZenSpacing.small)
+                .padding(.vertical, ZenSpacing.xSmall)
         }
     }
 }

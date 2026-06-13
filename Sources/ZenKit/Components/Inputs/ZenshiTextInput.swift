@@ -111,6 +111,12 @@ public struct ZenTextInput: View {
                     .strokeBorder(borderColor(controlStyle: controlStyle), lineWidth: controlStyle.borderWidth)
             )
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+            .contentShape(RoundedRectangle(cornerRadius: cornerRadius))
+            .onTapGesture {
+                if state != .disabled {
+                    isFocused = true
+                }
+            }
             .animation(.easeOut(duration: 0.2), value: text)
             .opacity(state == .disabled ? 0.6 : 1)
 
