@@ -33,7 +33,7 @@ enum ZenThemeStore {
 
         let appearance = UINavigationBarAppearance()
         appearance.configureWithDefaultBackground()
-        appearance.titleTextAttributes = [.font: theme.resolvedTypography.fontSpec(for: .stat).uiFont]
+        appearance.titleTextAttributes = [.font: theme.resolvedTypography.fontSpec(for: .title).uiFont]
         appearance.largeTitleTextAttributes = [.font: theme.resolvedTypography.fontSpec(for: .displayXL).uiFont]
 
         let navigationBar = UINavigationBar.appearance()

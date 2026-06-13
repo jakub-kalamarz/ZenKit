@@ -47,6 +47,26 @@ public enum ZenSystemFontDesign: Sendable, Equatable {
             return .monospaced
         }
     }
+
+#if canImport(UIKit)
+    fileprivate var uiKitDesign: UIFontDescriptor.SystemDesign {
+        switch self {
+        case .default: return .default
+        case .rounded: return .rounded
+        case .serif: return .serif
+        case .monospaced: return .monospaced
+        }
+    }
+#elseif canImport(AppKit)
+    fileprivate var appKitDesign: NSFontDescriptor.SystemDesign {
+        switch self {
+        case .default: return .default
+        case .rounded: return .rounded
+        case .serif: return .serif
+        case .monospaced: return .monospaced
+        }
+    }
+#endif
 }
 
 public enum ZenFontWidth: Sendable, Equatable {
@@ -436,11 +456,16 @@ public struct ZenResolvedFontSpec: Equatable, Sendable {
 #if canImport(UIKit)
     var uiFont: UIFont {
         switch resolvedSource {
-        case .system:
-            if let width {
-                return .systemFont(ofSize: size, weight: weight.uiKitWeight, width: width.uiKitWidth)
+        case let .system(design):
+            let base: UIFont = width.map {
+                .systemFont(ofSize: size, weight: weight.uiKitWeight, width: $0.uiKitWidth)
+            } ?? .systemFont(ofSize: size, weight: weight.uiKitWeight)
+            // `.systemFont` always yields SF Pro; reapply the requested design
+            // (rounded/serif/monospaced) via the descriptor.
+            guard let descriptor = base.fontDescriptor.withDesign(design.uiKitDesign) else {
+                return base
             }
-            return .systemFont(ofSize: size, weight: weight.uiKitWeight)
+            return UIFont(descriptor: descriptor, size: size)
         case .custom, .variable:
             if let resolvedUIFont {
                 return resolvedUIFont
@@ -452,8 +477,10 @@ public struct ZenResolvedFontSpec: Equatable, Sendable {
 #elseif canImport(AppKit)
     var nsFont: NSFont {
         switch resolvedSource {
-        case .system:
-            return .systemFont(ofSize: size, weight: weight.appKitWeight)
+        case let .system(design):
+            let base = NSFont.systemFont(ofSize: size, weight: weight.appKitWeight)
+            let descriptor = base.fontDescriptor.withDesign(design.appKitDesign)
+            return descriptor.flatMap { NSFont(descriptor: $0, size: size) } ?? base
         case .custom, .variable:
             if let resolvedNSFont {
                 return resolvedNSFont
