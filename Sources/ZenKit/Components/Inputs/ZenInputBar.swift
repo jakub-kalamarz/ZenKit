@@ -36,7 +36,7 @@ public struct ZenInputBar: View {
         self.onSubmit = onSubmit
     }
 
-    private let cornerRadius: CGFloat = 22
+    private let shape = Capsule(style: .continuous)
 
     public var body: some View {
         #if DEBUG
@@ -50,14 +50,12 @@ public struct ZenInputBar: View {
         .padding(.trailing, ZenSpacing.small)
         .padding(.vertical, ZenSpacing.small)
         .background(
-            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                .fill(Color.zenSurface)
+            shape.fill(Color.zenSurface)
         )
         .overlay(
-            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                .strokeBorder(borderColor, lineWidth: isFieldFocused ? 1.5 : 1)
+            shape.strokeBorder(borderColor, lineWidth: isFieldFocused ? 1.5 : 1)
         )
-        .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+        .contentShape(shape)
         .onTapGesture { setFieldFocused(true) }
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.18), value: isFieldFocused)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.18), value: canSubmit)

@@ -177,6 +177,7 @@ struct ZenButtonResolvedStyle {
 struct ZenSemanticButtonStyle: ButtonStyle {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
+    @Environment(\.zenButtonShape) private var buttonShape
 
     let variant: ZenButtonVariant
     let size: ZenButtonSize
@@ -188,7 +189,11 @@ struct ZenSemanticButtonStyle: ButtonStyle {
         let theme = ZenTheme.current
         let metrics = theme.resolvedMetrics
         let palette = ZenButtonResolvedStyle(variant: variant)
-        let cornerRadius = size.cornerRadius(theme: theme, parentRadius: parentCornerRadius)
+        // A capsule is a rounded rect with radius = half the control height
+        // (SwiftUI clamps to the shorter side, giving fully rounded ends).
+        let cornerRadius = buttonShape == .capsule
+            ? size.minHeight(metrics: metrics) / 2
+            : size.cornerRadius(theme: theme, parentRadius: parentCornerRadius)
         let frame = size.resolvedFrame(metrics: metrics, fullWidth: fullWidth)
 
         buttonContent(configuration: configuration, palette: palette)

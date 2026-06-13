@@ -12,6 +12,31 @@ public enum ZenButtonVariant {
     case link
 }
 
+public enum ZenButtonShape: Equatable, Sendable {
+    /// Theme-derived rounded rectangle (default).
+    case automatic
+    /// Fully rounded pill, regardless of size.
+    case capsule
+}
+
+private struct ZenButtonShapeKey: EnvironmentKey {
+    static let defaultValue: ZenButtonShape = .automatic
+}
+
+public extension EnvironmentValues {
+    var zenButtonShape: ZenButtonShape {
+        get { self[ZenButtonShapeKey.self] }
+        set { self[ZenButtonShapeKey.self] = newValue }
+    }
+}
+
+public extension View {
+    /// Overrides the corner shape of every `ZenButton` in this subtree.
+    func zenButtonShape(_ shape: ZenButtonShape) -> some View {
+        environment(\.zenButtonShape, shape)
+    }
+}
+
 public enum ZenButtonDecorativeIconPlacement: Equatable, Sendable {
     case leading
     case trailing
