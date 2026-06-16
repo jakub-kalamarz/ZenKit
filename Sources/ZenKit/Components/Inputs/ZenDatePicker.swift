@@ -41,6 +41,7 @@ public struct ZenDatePicker: View {
                 .strokeBorder(controlStyle.borderColor, lineWidth: controlStyle.borderWidth)
         )
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+        .zenControlSurfaceShadow()
     }
 }
 

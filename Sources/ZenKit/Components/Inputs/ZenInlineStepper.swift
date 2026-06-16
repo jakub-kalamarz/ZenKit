@@ -63,6 +63,7 @@ public struct ZenInlineStepper: View {
                 .strokeBorder(Color.zenBorder, lineWidth: 1)
         )
         .clipShape(RoundedRectangle(cornerRadius: containerRadius, style: .continuous))
+        .zenControlSurfaceShadow()
     }
 
     private func stepButton(systemName: String, disabled: Bool, cornerRadius: CGFloat, action: @escaping () -> Void) -> some View {

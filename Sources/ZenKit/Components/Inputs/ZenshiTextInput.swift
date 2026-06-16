@@ -111,6 +111,7 @@ public struct ZenTextInput: View {
                     .strokeBorder(borderColor(controlStyle: controlStyle), lineWidth: controlStyle.borderWidth)
             )
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+            .zenControlSurfaceShadow()
             .contentShape(RoundedRectangle(cornerRadius: cornerRadius))
             .onTapGesture {
                 if state != .disabled {

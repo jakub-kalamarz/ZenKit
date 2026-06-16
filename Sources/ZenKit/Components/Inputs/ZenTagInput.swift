@@ -57,6 +57,7 @@ public struct ZenTagInput: View {
                 .strokeBorder(borderColor, lineWidth: controlStyle.borderWidth)
         )
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+        .zenControlSurfaceShadow()
         .contentShape(Rectangle())
         .onTapGesture {
             isFocused = true

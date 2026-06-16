@@ -368,6 +368,7 @@ public struct ZenStepper: View {
                 .strokeBorder(controlStyle.borderColor, lineWidth: controlStyle.borderWidth)
         )
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+        .zenControlSurfaceShadow()
         .sheet(isPresented: $isEditingValue) {
             ZenStepperNumpadSheet(
                 title: title,

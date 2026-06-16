@@ -79,6 +79,7 @@ public struct ZenSelectCard: View {
                     }
                 }
                 .clipShape(shape)
+                .zenControlSurfaceShadow()
                 .contentShape(shape)
         }
         .buttonStyle(.plain)

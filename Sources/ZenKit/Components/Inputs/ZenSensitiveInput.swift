@@ -55,6 +55,7 @@ public struct ZenSensitiveInput: View {
                 RoundedRectangle(cornerRadius: ZenRadius.small, style: .continuous)
                     .strokeBorder(isFocused ? Color.zenPrimary : Color.zenBorderSubtle, lineWidth: isFocused ? 1.5 : 1)
             )
+            .zenControlSurfaceShadow()
             .contentShape(RoundedRectangle(cornerRadius: ZenRadius.small, style: .continuous))
             .onTapGesture {
                 isFocused = true

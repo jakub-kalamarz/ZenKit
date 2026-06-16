@@ -68,10 +68,10 @@ public struct ZenCombobox: View {
                     .strokeBorder(isFocused ? Color.zenPrimary : Color.zenBorderSubtle, lineWidth: isFocused ? 1.5 : 1)
             )
             .shadow(
-                color: isExpanded ? ZenShadow.sm.color : .clear,
-                radius: ZenShadow.sm.radius,
-                x: ZenShadow.sm.x,
-                y: ZenShadow.sm.y
+                color: isExpanded ? ZenShadow.sm.color : ZenShadow.xs.color,
+                radius: isExpanded ? ZenShadow.sm.radius : ZenShadow.xs.radius,
+                x: isExpanded ? ZenShadow.sm.x : ZenShadow.xs.x,
+                y: isExpanded ? ZenShadow.sm.y : ZenShadow.xs.y
             )
         }
     }

@@ -42,6 +42,7 @@ public struct ZenToggle: View {
                 .strokeBorder(Color.zenBorder, lineWidth: 1)
         )
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+        .zenControlSurfaceShadow()
     }
 
     private var hapticBinding: Binding<Bool> {

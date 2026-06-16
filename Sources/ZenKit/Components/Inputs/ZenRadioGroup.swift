@@ -107,6 +107,7 @@ private struct ZenRadioRow<Value: Hashable>: View {
             .background(cardBackground)
             .clipShape(RoundedRectangle(cornerRadius: appearance == .card ? ZenRadius.small : 0, style: .continuous))
             .overlay(cardBorder)
+            .modifier(ZenConditionalControlShadow(isEnabled: appearance == .card))
         }
         .buttonStyle(.plain)
     }

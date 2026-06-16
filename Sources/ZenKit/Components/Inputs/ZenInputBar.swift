@@ -55,6 +55,7 @@ public struct ZenInputBar: View {
         .overlay(
             shape.strokeBorder(borderColor, lineWidth: isFieldFocused ? 1.5 : 1)
         )
+        .zenControlSurfaceShadow()
         .contentShape(shape)
         .onTapGesture { setFieldFocused(true) }
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.18), value: isFieldFocused)

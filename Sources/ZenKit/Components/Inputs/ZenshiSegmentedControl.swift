@@ -128,6 +128,7 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
                 .strokeBorder(Color.zenBorder, lineWidth: 1)
         )
         .clipShape(RoundedRectangle(cornerRadius: controlCornerRadius, style: .continuous))
+        .zenControlSurfaceShadow()
         .zenContainerCornerRadius(controlCornerRadius)
     }
 

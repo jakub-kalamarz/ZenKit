@@ -355,13 +355,7 @@ struct ZenButtonSurfaceModifier: ViewModifier {
             )
             .overlay(border(shape: shape))
             .clipShape(shape)
-            .shadow(
-                color: palette.backgroundStyle == .filled && palette.borderWidth > 0
-                    ? ZenShadow.xs.color : .clear,
-                radius: ZenShadow.xs.radius,
-                x: ZenShadow.xs.x,
-                y: ZenShadow.xs.y
-            )
+            .modifier(ZenConditionalControlShadow(isEnabled: palette.backgroundStyle == .filled))
     }
 
     private func border(shape: RoundedRectangle) -> some View {

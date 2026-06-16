@@ -218,6 +218,7 @@ public struct ZenWeekStrip: View {
         } else {
             RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                 .fill(Color.zenSurface)
+                .zenControlSurfaceShadow()
         }
     }
 
