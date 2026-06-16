@@ -42,6 +42,7 @@ public struct ZenRadioOption<Value: Hashable>: Identifiable {
     public let label: String
     public let description: String?
     public let imageURL: URL?
+    public let placeholderSystemIcon: String?
     public let trailingText: String?
 
     public init(
@@ -49,6 +50,7 @@ public struct ZenRadioOption<Value: Hashable>: Identifiable {
         label: String,
         description: String? = nil,
         imageURL: URL? = nil,
+        placeholderSystemIcon: String? = nil,
         trailingText: String? = nil
     ) {
         self.id = value
@@ -56,6 +58,7 @@ public struct ZenRadioOption<Value: Hashable>: Identifiable {
         self.label = label
         self.description = description
         self.imageURL = imageURL
+        self.placeholderSystemIcon = placeholderSystemIcon
         self.trailingText = trailingText
     }
 }
@@ -73,6 +76,8 @@ private struct ZenRadioRow<Value: Hashable>: View {
 
                 if let imageURL = option.imageURL {
                     thumbnail(imageURL)
+                } else if let icon = option.placeholderSystemIcon {
+                    iconThumbnail(icon)
                 }
 
                 VStack(alignment: .leading, spacing: 2) {
@@ -129,6 +134,20 @@ private struct ZenRadioRow<Value: Hashable>: View {
                         .foregroundStyle(Color.zenTextMuted)
                 }
             }
+        }
+        .frame(width: 40, height: 40)
+        .clipShape(RoundedRectangle(cornerRadius: ZenRadius.small, style: .continuous))
+    }
+
+    /// Placeholder thumbnail for rows without an image (e.g. curated generic foods): a tinted
+    /// surface with a centered icon, matching the dimensions of the image thumbnail.
+    private func iconThumbnail(_ systemName: String) -> some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: ZenRadius.small, style: .continuous)
+                .fill(Color.zenSurfaceMuted)
+
+            ZenIcon(systemName: systemName, size: 18)
+                .foregroundStyle(Color.zenTextMuted)
         }
         .frame(width: 40, height: 40)
         .clipShape(RoundedRectangle(cornerRadius: ZenRadius.small, style: .continuous))

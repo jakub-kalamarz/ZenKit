@@ -65,7 +65,7 @@ public struct ZenSelectCard: View {
             content
                 .opacity(isEnabled ? 1 : 0.55)
                 .padding(.horizontal, ZenSelectCardMetrics.horizontalPadding)
-                .padding(.vertical, verticalPadding)
+                .padding(.vertical, ZenSelectCardMetrics.horizontalPadding)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(backgroundColor)
                 .overlay(
