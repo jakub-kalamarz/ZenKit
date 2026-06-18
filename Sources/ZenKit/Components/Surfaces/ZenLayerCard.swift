@@ -1,6 +1,11 @@
 import SwiftUI
 
+/// A card whose primary surface overlaps a muted secondary panel,
+/// leaving a thin strip of the secondary peeking out below.
 public struct ZenLayerCard<Secondary: View, Primary: View>: View {
+    /// How far the secondary panel peeks out beneath the primary surface.
+    private static var peek: CGFloat { ZenSpacing.large + 4 }
+
     private let secondary: Secondary?
     private let primary: Primary
 
@@ -13,31 +18,36 @@ public struct ZenLayerCard<Secondary: View, Primary: View>: View {
     }
 
     public var body: some View {
-        #if DEBUG
-        #endif
-        let cornerRadius = ZenTheme.current.resolvedCornerRadius
-
         VStack(spacing: 0) {
             if let secondary {
                 secondary
                     .padding(ZenSpacing.medium)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color.zenSurfaceMuted)
-
-                Divider()
-                    .foregroundStyle(Color.zenBorderSubtle)
+                    .padding(.bottom, Self.peek)
+                    .zenLayerSurface(Color.zenSurfaceMuted)
             }
 
             primary
                 .padding(ZenSpacing.medium)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .zenLayerSurface(Color.zenSurface)
+                .padding(.top, secondary == nil ? 0 : -Self.peek)
         }
-        .background(Color.zenSurface)
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                .strokeBorder(Color.zenBorderSubtle, lineWidth: 1)
+    }
+}
+
+private extension View {
+    /// Fills the view with `background`, clips it to the themed corner radius,
+    /// and draws the subtle border used by layered card surfaces.
+    func zenLayerSurface(_ background: Color) -> some View {
+        let shape = RoundedRectangle(
+            cornerRadius: ZenTheme.current.resolvedCornerRadius,
+            style: .continuous
         )
+        return self
+            .background(background)
+            .clipShape(shape)
+            .overlay(shape.strokeBorder(Color.zenBorderSubtle, lineWidth: 1))
     }
 }
 
