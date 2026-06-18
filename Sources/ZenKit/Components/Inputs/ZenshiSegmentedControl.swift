@@ -8,6 +8,9 @@ public enum ZenSegmentedControlLabelLayout: Equatable, Sendable {
 public enum ZenSegmentedControlVariant: Equatable, Sendable {
     case `default`
     case glass
+    /// Horizontally scrollable, underlined tabs (left-aligned, no segment fill).
+    /// Suited to many segments with long labels, e.g. a section tab bar.
+    case tabs
 }
 
 public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
@@ -59,9 +62,12 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
                     .foregroundStyle(Color.zenTextMuted)
             }
 
-            if variant == .glass {
+            switch variant {
+            case .glass:
                 glassBody(metrics: metrics, segmentCornerRadius: segmentCornerRadius)
-            } else {
+            case .tabs:
+                tabsBody(metrics: metrics)
+            case .default:
                 defaultBody(
                     metrics: metrics,
                     controlCornerRadius: controlCornerRadius,
@@ -69,6 +75,74 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
                 )
             }
         }
+    }
+
+    @ViewBuilder
+    private func tabsBody(metrics: ZenResolvedMetrics) -> some View {
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: ZenSpacing.large) {
+                    ForEach(segments, id: \.self) { value in
+                        tabButton(for: value).id(value)
+                    }
+                }
+                .padding(.horizontal, ZenSpacing.xSmall)
+            }
+            .onChange(of: selection) { newValue in
+                withAnimation(selectionAnimationStyle) {
+                    proxy.scrollTo(newValue, anchor: .center)
+                }
+            }
+        }
+        .overlay(alignment: .bottom) {
+            Rectangle()
+                .fill(Color.zenBorderSubtle)
+                .frame(height: 1)
+        }
+    }
+
+    private func tabButton(for value: Value) -> some View {
+        let isSelected = selection == value
+        let isDisabled = disabledSegments.contains(value)
+
+        return Button {
+            guard selection != value else { return }
+            ZenHapticEngine.perform(.selectionChange, haptics: hapticsOverride)
+            withAnimation(selectionAnimationStyle) { selection = value }
+        } label: {
+            VStack(spacing: ZenSpacing.xSmall) {
+                ZStack {
+                    // Invisible semibold copy reserves the selected width so the
+                    // tab doesn't resize when its weight changes on selection.
+                    label(value, true)
+                        .lineLimit(1)
+                        .font(.zen(.body2, weight: .semibold))
+                        .opacity(0)
+                        .accessibilityHidden(true)
+
+                    label(value, isSelected)
+                        .lineLimit(1)
+                        .font(.zen(.body2, weight: isSelected ? .semibold : .regular))
+                        .foregroundStyle(
+                            isDisabled ? Color.zenTextMuted.opacity(0.5)
+                                : (isSelected ? Color.zenTextPrimary : Color.zenTextMuted)
+                        )
+                }
+                ZStack {
+                    Rectangle().fill(Color.clear).frame(height: 2)
+                    if isSelected {
+                        Rectangle()
+                            .fill(Color.zenTextPrimary)
+                            .frame(height: 2)
+                            .matchedGeometryEffect(id: "zenTabUnderline", in: selectionAnimation)
+                    }
+                }
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(ZenSegmentedControlButtonStyle())
+        .disabled(isDisabled)
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }
 
     @ViewBuilder

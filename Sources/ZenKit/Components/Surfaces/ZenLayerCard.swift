@@ -21,14 +21,16 @@ public struct ZenLayerCard<Secondary: View, Primary: View>: View {
         VStack(spacing: 0) {
             if let secondary {
                 secondary
-                    .padding(ZenSpacing.medium)
+                    .padding(.horizontal, ZenSpacing.medium)
+                    .padding(.top, ZenSpacing.small + 2)
+                    .padding(.bottom, ZenSpacing.small + Self.peek)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.bottom, Self.peek)
                     .zenLayerSurface(Color.zenSurfaceMuted)
             }
 
             primary
-                .padding(ZenSpacing.medium)
+                .padding(.horizontal, ZenSpacing.medium)
+                .padding(.vertical, ZenSpacing.xSmall)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .zenLayerSurface(Color.zenSurface)
                 .padding(.top, secondary == nil ? 0 : -Self.peek)
