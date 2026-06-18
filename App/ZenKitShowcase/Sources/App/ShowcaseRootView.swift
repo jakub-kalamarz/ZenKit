@@ -254,6 +254,8 @@ struct ShowcaseDestination: View {
             CodeBlockShowcaseScreen()
         case .table:
             TableShowcaseScreen()
+        case .globe:
+            GlobeShowcaseScreen()
         }
     }
 }

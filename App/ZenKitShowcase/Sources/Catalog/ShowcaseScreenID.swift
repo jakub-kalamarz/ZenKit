@@ -63,4 +63,5 @@ enum ShowcaseScreenID: String, Equatable {
     case clipboardText
     case codeBlock
     case table
+    case globe
 }

@@ -95,7 +95,8 @@ struct ShowcaseSection: Identifiable, Equatable {
                 .init(id: "meter", title: "Meter", screenID: .meter),
                 .init(id: "clipboard-text", title: "Clipboard Text", screenID: .clipboardText),
                 .init(id: "code-block", title: "Code Block", screenID: .codeBlock),
-                .init(id: "table", title: "Table", screenID: .table)
+                .init(id: "table", title: "Table", screenID: .table),
+                .init(id: "globe", title: "Globe", screenID: .globe)
             ]
         )
     ]
