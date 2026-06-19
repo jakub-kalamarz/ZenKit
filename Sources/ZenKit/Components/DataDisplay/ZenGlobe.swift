@@ -51,6 +51,8 @@ public struct ZenGlobeTap {
     /// Geographic coordinates in degrees.
     public let latitude: Double
     public let longitude: Double
+    /// ISO 3166-1 alpha-2 code of the country under the touch, or nil over open ocean.
+    public let countryISO: String?
 }
 
 /// A selected location on the globe. Bind it to ``ZenGlobe``'s `selection` to fly the globe to
@@ -293,7 +295,11 @@ public struct ZenGlobe: View {
             .modifier(TapLocationModifier(enabled: onTapLocation != nil || selection != nil) { point in
                 guard let tap = hitTest(point, in: geo.size) else { return }
                 onTapLocation?(tap)
-                selection?.wrappedValue = ZenGlobeSelection(latitude: tap.latitude, longitude: tap.longitude)
+                // Only select when the tap landed on a country — a tap on open
+                // ocean shouldn't drop a pin or clear an existing selection.
+                if tap.countryISO != nil {
+                    selection?.wrappedValue = ZenGlobeSelection(latitude: tap.latitude, longitude: tap.longitude)
+                }
             })
             .onAppear { flyTo(selection?.wrappedValue) }
             .onChange(of: selection?.wrappedValue) { newValue in flyTo(newValue) }
@@ -371,7 +377,8 @@ public struct ZenGlobe: View {
         var lon = (lonRad + .pi) * 180 / .pi
         if lon > 180 { lon -= 360 }
         if lon < -180 { lon += 360 }
-        return ZenGlobeTap(latitude: lat, longitude: lon)
+        let iso = ZenGlobeCountryMap.iso(latitude: lat, longitude: lon)
+        return ZenGlobeTap(latitude: lat, longitude: lon, countryISO: iso)
     }
 
     /// Anchors each marker's label at its projected screen position (cobe's CSS anchors),

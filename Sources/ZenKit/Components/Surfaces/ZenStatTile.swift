@@ -55,23 +55,12 @@ public struct ZenStatTile: View {
                         .foregroundStyle(Color.zenTextPrimary)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
-                    if let deltaPercent { deltaLabel(deltaPercent) }
+                    if let deltaPercent { ZenDelta(percent: deltaPercent) }
                 }
 
                 sparkline
             }
         }
-    }
-
-    private func deltaLabel(_ delta: Double) -> some View {
-        let up = delta >= 0
-        return HStack(spacing: 1) {
-            Image(systemName: up ? "arrow.up" : "arrow.down")
-                .font(.system(size: 9, weight: .bold))
-            Text(String(format: "%.1f%%", abs(delta)))
-                .font(.zenGroup)
-        }
-        .foregroundStyle(up ? Color.zenSuccess : Color.zenCritical)
     }
 
     @ViewBuilder

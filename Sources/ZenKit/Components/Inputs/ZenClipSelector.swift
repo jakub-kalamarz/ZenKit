@@ -20,7 +20,7 @@ public struct ZenClipSelector: View {
     private let edgeInset: CGFloat = 26
     private let trackHeight: CGFloat = 44
     private let gripWidth: CGFloat = 16
-    private let grabThreshold: CGFloat = 32
+    private let grabThreshold: CGFloat = 44
 
     private enum DragState { case lower, upper, move(startX: CGFloat, startLower: Int, startUpper: Int) }
 
