@@ -13,12 +13,26 @@ public struct ZenChartPoint: Identifiable, Equatable, Sendable {
     }
 }
 
+/// Visual weight of a `ZenAreaChartCard`. `.hero` enlarges the headline and the
+/// chart so a single card can anchor a screen; `.standard` is the dashboard-grid size.
+public enum ZenAreaChartProminence: Sendable {
+    case standard
+    case hero
+
+    var titleFont: Font { self == .hero ? .zenEyebrow : .zen(.body2) }
+    var totalFont: Font { .zen(self == .hero ? .displayL : .displayS, weight: .bold) }
+    var chartMinHeight: CGFloat { self == .hero ? 200 : 132 }
+    /// Header column width — clamped narrow for the grid size, unconstrained when hero.
+    var headerWidth: CGFloat? { self == .hero ? nil : 96 }
+}
+
 /// A Cloudflare-dashboard–style metric card: a title and big total on the left,
 /// and a filled area + line chart with dashed gridlines on the right.
 public struct ZenAreaChartCard: View {
     private let title: String
     private let total: String
     private let points: [ZenChartPoint]
+    private let prominence: ZenAreaChartProminence
     private let yLabel: (Double) -> String
 
     @State private var selectedDate: Date?
@@ -27,16 +41,19 @@ public struct ZenAreaChartCard: View {
     ///   - title: Metric name (e.g. "Total Requests").
     ///   - total: Formatted headline value (e.g. "10.84k").
     ///   - points: Time series.
+    ///   - prominence: Visual weight; `.hero` makes the card a screen anchor.
     ///   - yLabel: Formats a y-axis value into a short label (e.g. "1k", "60%", "10 MB").
     public init(
         title: String,
         total: String,
         points: [ZenChartPoint],
+        prominence: ZenAreaChartProminence = .standard,
         yLabel: @escaping (Double) -> String = { $0.formatted(.number.notation(.compactName)) }
     ) {
         self.title = title
         self.total = total
         self.points = points
+        self.prominence = prominence
         self.yLabel = yLabel
     }
 
@@ -51,11 +68,11 @@ public struct ZenAreaChartCard: View {
         ZenCard {
             VStack(alignment: .leading, spacing: ZenSpacing.small) {
                 VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
-                    Text(title)
-                        .font(.zen(.body2))
+                    Text(prominence == .hero ? title.uppercased() : title)
+                        .font(prominence.titleFont)
                         .foregroundStyle(Color.zenTextMuted)
                     Text(selectedPoint.map { yLabel($0.value) } ?? total)
-                        .font(.zen(.displayS, weight: .bold))
+                        .font(prominence.totalFont)
                         .foregroundStyle(Color.zenTextPrimary)
                         .contentTransition(.numericText())
                     // Reserve the line so scrubbing doesn't shift layout.
@@ -63,7 +80,7 @@ public struct ZenAreaChartCard: View {
                         .font(.zenEyebrow)
                         .foregroundStyle(Color.zenTextMuted)
                 }
-                .frame(width: 96, alignment: .leading)
+                .frame(width: prominence.headerWidth, alignment: .leading)
 
                 chart
             }
@@ -76,7 +93,7 @@ public struct ZenAreaChartCard: View {
             Text("No data")
                 .font(.zenGroup)
                 .foregroundStyle(Color.zenTextMuted)
-                .frame(maxWidth: .infinity, minHeight: 132)
+                .frame(maxWidth: .infinity, minHeight: prominence.chartMinHeight)
         } else {
             Chart {
                 ForEach(points) { point in
@@ -141,7 +158,7 @@ public struct ZenAreaChartCard: View {
                         )
                 }
             }
-            .frame(minHeight: 132)
+            .frame(minHeight: prominence.chartMinHeight)
             // Smoothly interpolate the line/area between old and new values when the
             // series updates. Mark identity is stable (ForEach keyed on date), so Charts
             // morphs the y-values rather than snapping.

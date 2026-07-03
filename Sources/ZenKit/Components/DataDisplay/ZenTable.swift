@@ -25,30 +25,33 @@ public struct ZenTableColumn<Row> {
 public enum ZenTableColumnWidth {
     case flexible
     case fixed(CGFloat)
-    case fraction(CGFloat)
 }
 
 public struct ZenTable<Row: Identifiable>: View {
     private let rows: [Row]
     private let columns: [ZenTableColumn<Row>]
     private let selectable: Bool
+    private let maxHeight: CGFloat?
     @Binding private var selection: Set<Row.ID>
 
+    /// - Parameter maxHeight: When set, rows scroll internally above this height;
+    ///   when `nil` (default) the table sizes to its content and the enclosing
+    ///   scroll view handles overflow.
     public init(
         rows: [Row],
         columns: [ZenTableColumn<Row>],
         selectable: Bool = false,
-        selection: Binding<Set<Row.ID>> = .constant([])
+        selection: Binding<Set<Row.ID>> = .constant([]),
+        maxHeight: CGFloat? = nil
     ) {
         self.rows = rows
         self.columns = columns
         self.selectable = selectable
+        self.maxHeight = maxHeight
         self._selection = selection
     }
 
     public var body: some View {
-        #if DEBUG
-        #endif
         let cornerRadius = ZenTheme.current.resolvedCornerRadius
 
         VStack(spacing: 0) {
@@ -57,17 +60,11 @@ public struct ZenTable<Row: Identifiable>: View {
             Divider()
                 .foregroundStyle(Color.zenBorderSubtle)
 
-            ScrollView {
-                LazyVStack(spacing: 0) {
-                    ForEach(rows) { row in
-                        VStack(spacing: 0) {
-                            dataRow(row)
-
-                            Divider()
-                                .foregroundStyle(Color.zenBorderSubtle)
-                        }
-                    }
-                }
+            if maxHeight != nil {
+                ScrollView { rowsStack }
+                    .frame(maxHeight: maxHeight)
+            } else {
+                rowsStack
             }
         }
         .background(Color.zenSurface)
@@ -76,6 +73,19 @@ public struct ZenTable<Row: Identifiable>: View {
             RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                 .strokeBorder(Color.zenBorderSubtle, lineWidth: 1)
         )
+    }
+
+    private var rowsStack: some View {
+        LazyVStack(spacing: 0) {
+            ForEach(rows) { row in
+                VStack(spacing: 0) {
+                    dataRow(row)
+
+                    Divider()
+                        .foregroundStyle(Color.zenBorderSubtle)
+                }
+            }
+        }
     }
 
     private var headerRow: some View {
@@ -163,8 +173,6 @@ public struct ZenTable<Row: Identifiable>: View {
             return .infinity
         case .fixed(let w):
             return w
-        case .fraction:
-            return .infinity
         }
     }
 }

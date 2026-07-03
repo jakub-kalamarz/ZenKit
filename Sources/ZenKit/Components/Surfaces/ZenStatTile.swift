@@ -1,5 +1,4 @@
 import SwiftUI
-import Charts
 
 /// A compact stat tile: a title (with optional menu), a headline value and a
 /// signed delta, and a sparkline. Sized for a dashboard grid.
@@ -58,25 +57,9 @@ public struct ZenStatTile: View {
                     if let deltaPercent { ZenDelta(percent: deltaPercent) }
                 }
 
-                sparkline
+                ZenSparkline(points: points)
+                    .frame(height: 36)
             }
-        }
-    }
-
-    @ViewBuilder
-    private var sparkline: some View {
-        if points.count < 2 {
-            Color.clear.frame(height: 36)
-        } else {
-            Chart(Array(points.enumerated()), id: \.offset) { index, value in
-                LineMark(x: .value("i", index), y: .value("v", value))
-                    .foregroundStyle(Color.zenPrimary)
-                    .lineStyle(StrokeStyle(lineWidth: 1.5))
-                    .interpolationMethod(.monotone)
-            }
-            .chartXAxis(.hidden)
-            .chartYAxis(.hidden)
-            .frame(height: 36)
         }
     }
 }

@@ -25,6 +25,11 @@ public struct ZenBarPoint: Identifiable, Equatable, Sendable {
         self.date = date
         self.segments = segments
     }
+
+    /// A single-segment bar — the common case for a plain volume series.
+    public static func single(date: Date, value: Double, id: String = "Requests", color: Color = .zenPrimary) -> ZenBarPoint {
+        ZenBarPoint(date: date, segments: [ZenBarSegment(id: id, value: value, color: color)])
+    }
 }
 
 /// A bar chart of stacked, time-bucketed values with tappable bars.
