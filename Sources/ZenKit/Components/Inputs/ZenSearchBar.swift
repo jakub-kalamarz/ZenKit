@@ -5,11 +5,13 @@ public struct ZenSearchBar: View {
     @FocusState private var isFocused: Bool
 
     private let prompt: LocalizedStringKey
+    private let focusOnAppear: Bool
     @Binding private var text: String
 
-    public init(text: Binding<String>, prompt: LocalizedStringKey = "Search") {
+    public init(text: Binding<String>, prompt: LocalizedStringKey = "Search", focusOnAppear: Bool = false) {
         _text = text
         self.prompt = prompt
+        self.focusOnAppear = focusOnAppear
     }
 
     public var body: some View {
@@ -55,6 +57,11 @@ public struct ZenSearchBar: View {
         .contentShape(RoundedRectangle(cornerRadius: cornerRadius))
         .onTapGesture {
             isFocused = true
+        }
+        .onAppear {
+            if focusOnAppear {
+                isFocused = true
+            }
         }
     }
 
