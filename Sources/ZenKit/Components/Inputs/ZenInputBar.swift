@@ -79,7 +79,12 @@ public struct ZenInputBar: View {
 
     @ViewBuilder
     private var inputField: some View {
-        if submitsOnReturn {
+        if submitsOnReturn && keepsFocusAfterSubmit {
+            TextField(inputPrompt, text: $text, axis: .vertical)
+                .lineLimit(1)
+                .submitLabel(.send)
+                .onChange(of: text, submitWhenReturnIsInserted)
+        } else if submitsOnReturn {
             TextField(inputPrompt, text: $text)
                 .submitLabel(.send)
                 .onSubmit(submitIfPossible)
@@ -142,12 +147,12 @@ public struct ZenInputBar: View {
     private func submitIfPossible() {
         guard canSubmit else { return }
         onSubmit()
-        guard keepsFocusAfterSubmit else { return }
-        setFieldFocused(false)
-        Task { @MainActor in
-            await Task.yield()
-            setFieldFocused(true)
-        }
+    }
+
+    private func submitWhenReturnIsInserted(_ oldValue: String, _ newValue: String) {
+        guard newValue.contains(where: \.isNewline) else { return }
+        text = newValue.filter { !$0.isNewline }
+        submitIfPossible()
     }
 }
 
