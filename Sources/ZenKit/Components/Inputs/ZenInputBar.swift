@@ -1,4 +1,7 @@
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 public struct ZenInputBar: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -64,6 +67,37 @@ public struct ZenInputBar: View {
 
     @ViewBuilder
     private var textField: some View {
+        #if canImport(UIKit)
+        if submitsOnReturn && keepsFocusAfterSubmit {
+            // A UITextField lets us submit on return WITHOUT resigning first
+            // responder (`textFieldShouldReturn` returns false), so the keyboard
+            // never dips out and back in. The SwiftUI `.onSubmit` path always
+            // resigns, which forced a hide/show flicker even when refocused.
+            ZenReturnSubmitTextField(
+                text: $text,
+                isFocused: focusBinding,
+                onSubmit: submitIfPossible
+            )
+            .frame(minHeight: 34)
+            .overlay(alignment: .leading) {
+                if text.isEmpty {
+                    Text(inputPrompt)
+                        .font(.zenBody)
+                        .foregroundStyle(Color.zenTextPlaceholder)
+                        .allowsHitTesting(false)
+                }
+            }
+            .accessibilityLabel(prompt)
+        } else {
+            focusableSwiftUIField
+        }
+        #else
+        focusableSwiftUIField
+        #endif
+    }
+
+    @ViewBuilder
+    private var focusableSwiftUIField: some View {
         let field = inputField
             .font(.zenBody)
             .foregroundStyle(Color.zenTextPrimary)
@@ -77,14 +111,22 @@ public struct ZenInputBar: View {
         }
     }
 
+    /// Bridges the component's `@FocusState` (external or internal) to a plain
+    /// `Binding<Bool>` so the UIKit-backed field can drive/report first-responder
+    /// state and keep the border/focus styling in sync.
+    private var focusBinding: Binding<Bool> {
+        if let externalFocus {
+            return Binding(get: { externalFocus.wrappedValue },
+                           set: { externalFocus.wrappedValue = $0 })
+        } else {
+            return Binding(get: { internalFocus },
+                           set: { internalFocus = $0 })
+        }
+    }
+
     @ViewBuilder
     private var inputField: some View {
-        if submitsOnReturn && keepsFocusAfterSubmit {
-            TextField(inputPrompt, text: $text, axis: .vertical)
-                .lineLimit(1)
-                .submitLabel(.send)
-                .onChange(of: text, submitWhenReturnIsInserted)
-        } else if submitsOnReturn {
+        if submitsOnReturn {
             TextField(inputPrompt, text: $text)
                 .submitLabel(.send)
                 .onSubmit(submitIfPossible)
@@ -148,13 +190,83 @@ public struct ZenInputBar: View {
         guard canSubmit else { return }
         onSubmit()
     }
+}
 
-    private func submitWhenReturnIsInserted(_ oldValue: String, _ newValue: String) {
-        guard newValue.contains(where: \.isNewline) else { return }
-        text = newValue.filter { !$0.isNewline }
-        submitIfPossible()
+#if canImport(UIKit)
+/// A single-line `UITextField` wrapper that submits on return while keeping the
+/// keyboard up. `textFieldShouldReturn` returns `false`, so the field never
+/// resigns first responder — eliminating the keyboard hide/show flicker that
+/// SwiftUI's `.onSubmit` (or the newline-insertion workaround) produces.
+private struct ZenReturnSubmitTextField: UIViewRepresentable {
+    @Binding var text: String
+    var isFocused: Binding<Bool>
+    let onSubmit: () -> Void
+
+    func makeUIView(context: Context) -> UITextField {
+        let field = UITextField()
+        field.delegate = context.coordinator
+        field.returnKeyType = .send
+        field.enablesReturnKeyAutomatically = true
+        field.borderStyle = .none
+        field.backgroundColor = .clear
+        field.font = ZenTheme.current.resolvedTypography.fontSpec(for: .body).uiFont
+        field.textColor = UIColor(Color.zenTextPrimary)
+        field.tintColor = UIColor(Color.zenPrimary)
+        field.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        field.addTarget(
+            context.coordinator,
+            action: #selector(Coordinator.editingChanged(_:)),
+            for: .editingChanged
+        )
+        return field
+    }
+
+    func updateUIView(_ field: UITextField, context: Context) {
+        context.coordinator.onSubmit = onSubmit
+        if field.text != text { field.text = text }
+
+        let wantsFocus = isFocused.wrappedValue
+        if wantsFocus, !field.isFirstResponder {
+            DispatchQueue.main.async { field.becomeFirstResponder() }
+        } else if !wantsFocus, field.isFirstResponder {
+            DispatchQueue.main.async { field.resignFirstResponder() }
+        }
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(text: $text, isFocused: isFocused, onSubmit: onSubmit)
+    }
+
+    final class Coordinator: NSObject, UITextFieldDelegate {
+        @Binding private var text: String
+        private let isFocused: Binding<Bool>
+        var onSubmit: () -> Void
+
+        init(text: Binding<String>, isFocused: Binding<Bool>, onSubmit: @escaping () -> Void) {
+            _text = text
+            self.isFocused = isFocused
+            self.onSubmit = onSubmit
+        }
+
+        @objc func editingChanged(_ field: UITextField) {
+            text = field.text ?? ""
+        }
+
+        func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+            onSubmit()
+            return false
+        }
+
+        func textFieldDidBeginEditing(_ textField: UITextField) {
+            if !isFocused.wrappedValue { isFocused.wrappedValue = true }
+        }
+
+        func textFieldDidEndEditing(_ textField: UITextField) {
+            if isFocused.wrappedValue { isFocused.wrappedValue = false }
+        }
     }
 }
+#endif
 
 private struct ZenInputBarPreview: View {
     @State private var text = ""
