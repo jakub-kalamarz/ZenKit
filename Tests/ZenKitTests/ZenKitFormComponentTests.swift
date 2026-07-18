@@ -34,7 +34,8 @@ struct ZenKitFormComponentTests {
             ZenInputBar(
                 text: .constant("Draft message"),
                 prompt: "Ask anything",
-                submitsOnReturn: true
+                submitsOnReturn: true,
+                keepsFocusAfterSubmit: true
             ) {}
 
             ZenInputBar(

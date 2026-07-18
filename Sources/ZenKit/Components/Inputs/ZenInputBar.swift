@@ -143,6 +143,7 @@ public struct ZenInputBar: View {
         guard canSubmit else { return }
         onSubmit()
         guard keepsFocusAfterSubmit else { return }
+        setFieldFocused(false)
         Task { @MainActor in
             await Task.yield()
             setFieldFocused(true)
