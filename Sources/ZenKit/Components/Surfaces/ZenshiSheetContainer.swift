@@ -133,7 +133,7 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
         #if DEBUG
         #endif
         NavigationStack {
-            if #available(iOS 26, *) {
+            if #available(iOS 26, macOS 26, *) {
                 sheetContent
                     .safeAreaBar(edge: .bottom) {
                         if showsFooter {
