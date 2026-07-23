@@ -322,6 +322,7 @@ public struct ZenButton<Label: View>: View {
             }
         }
         .disabled(isLoading)
+        .modifier(ZenIconButtonShape(isIconOnly: size.isIconOnly))
     }
 
     private func performAction() {
@@ -329,6 +330,22 @@ public struct ZenButton<Label: View>: View {
 
         ZenHapticEngine.perform(.buttonPress, haptics: hapticsOverride)
         action()
+    }
+}
+
+/// For icon-only buttons, requests a circular border shape so that any
+/// system-provided container (e.g. the iOS 26 Liquid Glass toolbar background
+/// placed behind a `ToolbarItem`) renders as a circle rather than a capsule.
+/// No effect on the custom `ZenSemanticButtonStyle`, which clips its own shape.
+private struct ZenIconButtonShape: ViewModifier {
+    let isIconOnly: Bool
+
+    func body(content: Content) -> some View {
+        if isIconOnly {
+            content.buttonBorderShape(.circle)
+        } else {
+            content
+        }
     }
 }
 
