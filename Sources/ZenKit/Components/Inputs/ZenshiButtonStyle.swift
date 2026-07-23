@@ -178,6 +178,7 @@ struct ZenSemanticButtonStyle: ButtonStyle {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
     @Environment(\.zenButtonShape) private var buttonShape
+    @Environment(\.isEnabled) private var isEnabled
 
     let variant: ZenButtonVariant
     let size: ZenButtonSize
@@ -218,10 +219,12 @@ struct ZenSemanticButtonStyle: ButtonStyle {
                 )
             )
             .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+            .saturation(isDisabled ? 0.4 : 1)
             .opacity(opacity(for: configuration))
             .scaleEffect(configuration.isPressed && !isLoading ? 0.98 : 1)
             .animation(loadingAnimation, value: isLoading)
             .animation(.easeOut(duration: 0.16), value: configuration.isPressed)
+            .animation(.easeOut(duration: 0.16), value: isDisabled)
     }
 
     @ViewBuilder
@@ -283,7 +286,16 @@ struct ZenSemanticButtonStyle: ButtonStyle {
         return .scale(scale: 0.94).combined(with: .opacity)
     }
 
+    /// Disabled by the consumer via `.disabled(_:)`, as opposed to the internal
+    /// `.disabled(isLoading)` that `ZenButton` applies while a spinner is shown.
+    private var isDisabled: Bool {
+        !isEnabled && !isLoading
+    }
+
     private func opacity(for configuration: Configuration) -> Double {
+        if isDisabled {
+            return 0.5
+        }
         if isLoading {
             return 0.78
         }

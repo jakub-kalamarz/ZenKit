@@ -451,6 +451,15 @@ public extension ZenButton where Label == ZenButtonTextLabel {
             ZenButton("Outline", variant: .outline, isLoading: true) {}
         }
 
+        HStack(spacing: ZenSpacing.small) {
+            ZenButton("Disabled") {}
+                .disabled(true)
+            ZenButton("Destructive", variant: .destructive) {}
+                .disabled(true)
+            ZenButton("Outline", variant: .outline) {}
+                .disabled(true)
+        }
+
         ZenButton("Full Width", fullWidth: true) {}
     }
     .padding()
