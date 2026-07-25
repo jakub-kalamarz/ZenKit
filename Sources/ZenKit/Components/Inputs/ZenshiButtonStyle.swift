@@ -428,14 +428,9 @@ struct ZenButtonBackground: View {
 }
 
 extension ZenButtonSize {
+    /// Matches the loader to the button's own icon metrics so a loading button
+    /// keeps the same footprint as its idle state.
     var spinnerSize: ZenSpinnerSize {
-        switch self {
-        case .xs, .iconXs:
-            return .small
-        case .sm, .iconSm, .default, .icon:
-            return .medium
-        case .lg, .iconLg:
-            return .large
-        }
+        .custom(diameter: iconSize)
     }
 }

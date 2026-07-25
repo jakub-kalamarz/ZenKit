@@ -4,6 +4,9 @@ public enum ZenSpinnerSize {
     case small
     case medium
     case large
+    /// Exact diameter in points; the stroke width is derived to match the
+    /// small/medium/large ramp.
+    case custom(diameter: CGFloat)
 
     fileprivate var diameter: CGFloat {
         switch self {
@@ -13,6 +16,8 @@ public enum ZenSpinnerSize {
             return 18
         case .large:
             return 28
+        case .custom(let diameter):
+            return diameter
         }
     }
 
@@ -24,6 +29,8 @@ public enum ZenSpinnerSize {
             return 2.5
         case .large:
             return 3
+        case .custom(let diameter):
+            return min(3, max(2, diameter * 0.14))
         }
     }
 }
