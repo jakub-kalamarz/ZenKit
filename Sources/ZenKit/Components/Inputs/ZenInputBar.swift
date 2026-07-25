@@ -17,6 +17,16 @@ public struct ZenInputBar: View {
     private let onSubmit: () -> Void
     private let externalFocus: FocusState<Bool>.Binding?
 
+    #if canImport(UIKit)
+    /// First-responder state for the UIKit-backed field. A SwiftUI `@FocusState`
+    /// only keeps a value while a SwiftUI view claims focus, so writing the
+    /// external binding from `textFieldDidBeginEditing` made SwiftUI reset it to
+    /// `false` — which resigned the field again and closed the keyboard the
+    /// instant it opened. On this path the external binding is a focus *request*
+    /// channel only; this state is the source of truth.
+    @State private var uiKitFocus = false
+    #endif
+
     public init(
         text: Binding<String>,
         prompt: LocalizedStringKey,
@@ -42,8 +52,6 @@ public struct ZenInputBar: View {
     private let shape = Capsule(style: .continuous)
 
     public var body: some View {
-        #if DEBUG
-        #endif
         HStack(alignment: .bottom, spacing: ZenSpacing.small) {
             textField
                 .frame(minHeight: 34)
@@ -68,17 +76,16 @@ public struct ZenInputBar: View {
     @ViewBuilder
     private var textField: some View {
         #if canImport(UIKit)
-        if submitsOnReturn && keepsFocusAfterSubmit {
+        if usesUIKitField {
             // A UITextField lets us submit on return WITHOUT resigning first
             // responder (`textFieldShouldReturn` returns false), so the keyboard
             // never dips out and back in. The SwiftUI `.onSubmit` path always
             // resigns, which forced a hide/show flicker even when refocused.
             ZenReturnSubmitTextField(
                 text: $text,
-                isFocused: focusBinding,
+                isFocused: $uiKitFocus,
                 onSubmit: submitIfPossible
             )
-            .frame(minHeight: 34)
             .overlay(alignment: .leading) {
                 if text.isEmpty {
                     Text(inputPrompt)
@@ -88,6 +95,11 @@ public struct ZenInputBar: View {
                 }
             }
             .accessibilityLabel(prompt)
+            .onChange(of: externalFocus?.wrappedValue ?? false) { _, requested in
+                // Only honour focus requests — a `false` here is usually SwiftUI
+                // dropping the unclaimed @FocusState, not the user dismissing.
+                if requested { uiKitFocus = true }
+            }
         } else {
             focusableSwiftUIField
         }
@@ -111,17 +123,10 @@ public struct ZenInputBar: View {
         }
     }
 
-    /// Bridges the component's `@FocusState` (external or internal) to a plain
-    /// `Binding<Bool>` so the UIKit-backed field can drive/report first-responder
-    /// state and keep the border/focus styling in sync.
-    private var focusBinding: Binding<Bool> {
-        if let externalFocus {
-            return Binding(get: { externalFocus.wrappedValue },
-                           set: { externalFocus.wrappedValue = $0 })
-        } else {
-            return Binding(get: { internalFocus },
-                           set: { internalFocus = $0 })
-        }
+    /// The UIKit-backed field is only used when a submit must not resign the
+    /// keyboard; every other configuration stays on the SwiftUI `TextField`.
+    private var usesUIKitField: Bool {
+        submitsOnReturn && keepsFocusAfterSubmit
     }
 
     @ViewBuilder
@@ -167,7 +172,10 @@ public struct ZenInputBar: View {
     }
 
     private var isFieldFocused: Bool {
-        externalFocus?.wrappedValue ?? internalFocus
+        #if canImport(UIKit)
+        if usesUIKitField { return uiKitFocus }
+        #endif
+        return externalFocus?.wrappedValue ?? internalFocus
     }
 
     private var inputPrompt: LocalizedStringKey {
@@ -179,6 +187,12 @@ public struct ZenInputBar: View {
     }
 
     private func setFieldFocused(_ isFocused: Bool) {
+        #if canImport(UIKit)
+        if usesUIKitField {
+            uiKitFocus = isFocused
+            return
+        }
+        #endif
         if let externalFocus {
             externalFocus.wrappedValue = isFocused
         } else {
@@ -231,6 +245,17 @@ private struct ZenReturnSubmitTextField: UIViewRepresentable {
         } else if !wantsFocus, field.isFirstResponder {
             DispatchQueue.main.async { field.resignFirstResponder() }
         }
+    }
+
+    /// Without this the representable accepts whatever height SwiftUI proposes
+    /// and the input bar grows to fill the screen — a single-line field must
+    /// report its intrinsic height instead.
+    func sizeThatFits(_ proposal: ProposedViewSize, uiView: UITextField, context: Context) -> CGSize? {
+        let intrinsic = uiView.intrinsicContentSize
+        return CGSize(
+            width: proposal.width ?? intrinsic.width,
+            height: max(intrinsic.height, uiView.font?.lineHeight ?? 0)
+        )
     }
 
     func makeCoordinator() -> Coordinator {
