@@ -68,7 +68,13 @@ public struct ZenInputBar: View {
         )
         .zenControlSurfaceShadow()
         .contentShape(shape)
-        .onTapGesture { setFieldFocused(true) }
+        .onTapGesture {
+            // Only a *request* to focus. Re-asserting focus while the field is
+            // already focused fights app-level dismiss gestures, which run
+            // simultaneously with this recogniser.
+            guard !isFieldFocused else { return }
+            setFieldFocused(true)
+        }
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.18), value: isFieldFocused)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.18), value: canSubmit)
     }
@@ -239,11 +245,24 @@ private struct ZenReturnSubmitTextField: UIViewRepresentable {
         context.coordinator.onSubmit = onSubmit
         if field.text != text { field.text = text }
 
-        let wantsFocus = isFocused.wrappedValue
+        // `isFocused` lags the actual first-responder state by one runloop turn:
+        // an app-level `endEditing(true)` resigns the field synchronously, while
+        // the matching `false` only arrives via `textFieldDidEndEditing`. Any
+        // re-render landing in that window would otherwise read a stale `true`
+        // and re-open the keyboard the user just dismissed — hence the re-read
+        // of the binding inside the async hop instead of trusting `wantsFocus`.
+        let focus = isFocused
+        let wantsFocus = focus.wrappedValue
         if wantsFocus, !field.isFirstResponder {
-            DispatchQueue.main.async { field.becomeFirstResponder() }
+            DispatchQueue.main.async {
+                guard focus.wrappedValue, !field.isFirstResponder else { return }
+                field.becomeFirstResponder()
+            }
         } else if !wantsFocus, field.isFirstResponder {
-            DispatchQueue.main.async { field.resignFirstResponder() }
+            DispatchQueue.main.async {
+                guard !focus.wrappedValue, field.isFirstResponder else { return }
+                field.resignFirstResponder()
+            }
         }
     }
 
