@@ -27,7 +27,10 @@ public struct ZenNavigationButtonRow<Trailing: View>: View {
     }
 
     public var body: some View {
+        Button(action: action) {
             row
+        }
+        .buttonStyle(.plain)
     }
 }
 
