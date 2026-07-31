@@ -82,31 +82,17 @@ public struct ZenButtonDecorativeIcon: Equatable, Sendable {
 
 public enum ZenButtonSize {
     case `default`
-    case xs
     case sm
     case lg
     case icon
-    case iconXs
-    case iconSm
-    case iconLg
 
     func minHeight(metrics: ZenResolvedMetrics) -> CGFloat {
         switch self {
         case .default:
             return metrics.controlHeight
-        case .xs:
-            return metrics.controlHeightSmall
-        case .sm:
+        case .sm, .icon:
             return metrics.controlHeightMedium - 8
         case .lg:
-            return metrics.controlHeightLarge
-        case .icon:
-            return metrics.controlHeight
-        case .iconXs:
-            return metrics.controlHeightSmall
-        case .iconSm:
-            return metrics.controlHeightMedium - 8
-        case .iconLg:
             return metrics.controlHeightLarge
         }
     }
@@ -115,13 +101,11 @@ public enum ZenButtonSize {
         switch self {
         case .default:
             return 16
-        case .xs:
-            return 12
         case .sm:
             return 14
         case .lg:
             return 20
-        case .icon, .iconXs, .iconSm, .iconLg:
+        case .icon:
             return 0
         }
     }
@@ -134,16 +118,11 @@ public enum ZenButtonSize {
         let buttonSpec = theme.resolvedTypography.fontSpec(for: .body2)
 
         switch self {
-        case .xs, .sm, .iconXs, .iconSm:
-            let size: CGFloat = switch self {
-            case .xs, .iconXs: 12
-            case .sm, .iconSm: 13
-            default: 12
-            }
-            return buttonSpec.with(size: size, weight: .medium)
-        case .default, .icon:
+        case .sm, .icon:
+            return buttonSpec.with(size: 12, weight: .medium)
+        case .default:
             return buttonSpec.with(size: 14, weight: .semibold)
-        case .lg, .iconLg:
+        case .lg:
             return buttonSpec.with(size: 15, weight: .semibold)
         }
     }
@@ -154,24 +133,20 @@ public enum ZenButtonSize {
 
     var iconSpacing: CGFloat {
         switch self {
-        case .xs, .sm, .iconXs, .iconSm:
+        case .sm, .icon:
             return 6
-        case .default, .icon:
-            return 8
-        case .lg, .iconLg:
+        case .default, .lg:
             return 8
         }
     }
 
     var iconSize: CGFloat {
         switch self {
-        case .xs, .iconXs:
+        case .sm, .icon:
             return 14
-        case .sm, .iconSm:
-            return 14
-        case .default, .icon:
+        case .default:
             return 16
-        case .lg, .iconLg:
+        case .lg:
             return 18
         }
     }
@@ -184,22 +159,15 @@ public enum ZenButtonSize {
         let controlCornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentRadius)
 
         switch self {
-        case .xs, .iconXs:
-            return 2
-        case .sm, .iconSm:
+        case .sm, .icon:
             return 6
-        case .default, .icon, .lg, .iconLg:
+        case .default, .lg:
             return controlCornerRadius
         }
     }
 
     var isIconOnly: Bool {
-        switch self {
-        case .icon, .iconXs, .iconSm, .iconLg:
-            return true
-        default:
-            return false
-        }
+        self == .icon
     }
 
     var supportsDecorativeIcons: Bool {
@@ -297,11 +265,25 @@ public struct ZenButton<Label: View>: View {
         #if DEBUG
         #endif
         Group {
-            if variant == .plain {
+            if variant == .plain, size.isIconOnly {
+                // No explicit button style: system containers (e.g. the iOS 26
+                // Liquid Glass toolbar) keep their native treatment, which the
+                // circular border shape below turns into the standard circle.
+                // The automatic style would tint the glyph with the app accent,
+                // so default to the primary text color; labels that set their
+                // own foreground style still win.
                 Button(action: performAction) {
                     label()
                         .lineLimit(1)
-                        .frame(minWidth: 44, minHeight: 44)
+                        .frame(minWidth: 34, minHeight: 34)
+                        .contentShape(.rect)
+                        .foregroundStyle(Color.zenTextPrimary)
+                }
+            } else if variant == .plain {
+                Button(action: performAction) {
+                    label()
+                        .lineLimit(1)
+                        .frame(minWidth: 34, minHeight: 34)
                         .contentShape(.rect)
                 }
                 .buttonStyle(.plain)
@@ -336,6 +318,8 @@ public struct ZenButton<Label: View>: View {
 /// For icon-only buttons, requests a circular border shape so that any
 /// system-provided container (e.g. the iOS 26 Liquid Glass toolbar background
 /// placed behind a `ToolbarItem`) renders as a circle rather than a capsule.
+/// Takes effect for the `.plain` icon variant, which keeps the automatic
+/// button style precisely so the system container can apply this shape.
 /// No effect on the custom `ZenSemanticButtonStyle`, which clips its own shape.
 private struct ZenIconButtonShape: ViewModifier {
     let isIconOnly: Bool
@@ -440,7 +424,7 @@ public extension ZenButton where Label == ZenButtonTextLabel {
             ZenButton(variant: .default, size: .icon) {} label: {
                 ZenIcon(systemName: "plus")
             }
-            ZenButton(variant: .secondary, size: .iconSm, isLoading: true) {} label: {
+            ZenButton(variant: .secondary, size: .icon, isLoading: true) {} label: {
                 ZenIcon(systemName: "arrow.clockwise")
             }
             ZenButton("Large", size: .lg) {}

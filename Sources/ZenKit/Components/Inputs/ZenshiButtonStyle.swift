@@ -187,6 +187,42 @@ struct ZenSemanticButtonStyle: ButtonStyle {
     let glassTint: Color?
 
     func makeBody(configuration: Configuration) -> some View {
+        if size.isIconOnly {
+            iconOnlyBody(configuration: configuration)
+        } else {
+            labelledBody(configuration: configuration)
+        }
+    }
+
+    /// Icon-only buttons are rendered as a bare icon: no background, border,
+    /// shape or shadow, just the glyph in a 44pt-friendly hit area. Any shape
+    /// would fight the surrounding container (a sheet toolbar, a card header),
+    /// so the variant only contributes the icon's tint.
+    private func iconOnlyBody(configuration: Configuration) -> some View {
+        let theme = ZenTheme.current
+        let metrics = theme.resolvedMetrics
+        let palette = ZenButtonResolvedStyle(variant: variant)
+        let side = size.minHeight(metrics: metrics)
+
+        return buttonContent(configuration: configuration, palette: palette)
+            .font(size.font)
+            .foregroundStyle(iconTint(palette: palette))
+            .frame(width: side, height: side)
+            .contentShape(.rect)
+            .opacity(opacity(for: configuration))
+            .scaleEffect(configuration.isPressed && !isLoading ? 0.92 : 1)
+            .animation(loadingAnimation, value: isLoading)
+            .animation(.easeOut(duration: 0.16), value: configuration.isPressed)
+            .animation(.easeOut(duration: 0.16), value: isDisabled)
+    }
+
+    /// The variant's own foreground, except where it assumes a filled surface
+    /// behind the glyph — without a background an inverse tint would vanish.
+    private func iconTint(palette: ZenButtonResolvedStyle) -> Color {
+        palette.foregroundStyle == .inverse ? .zenTextPrimary : palette.foregroundColor
+    }
+
+    private func labelledBody(configuration: Configuration) -> some View {
         let theme = ZenTheme.current
         let metrics = theme.resolvedMetrics
         let palette = ZenButtonResolvedStyle(variant: variant)
@@ -197,7 +233,7 @@ struct ZenSemanticButtonStyle: ButtonStyle {
             : size.cornerRadius(theme: theme, parentRadius: parentCornerRadius)
         let frame = size.resolvedFrame(metrics: metrics, fullWidth: fullWidth)
 
-        buttonContent(configuration: configuration, palette: palette)
+        return buttonContent(configuration: configuration, palette: palette)
             .font(size.font)
             .foregroundStyle(palette.foregroundColor)
             .frame(
