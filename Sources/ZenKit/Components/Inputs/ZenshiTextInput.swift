@@ -135,20 +135,27 @@ public struct ZenTextInput: View {
         case .plain:
             plainField
         case .secure:
-            SecureField(prompt, text: $text)
+            SecureField(text: $text, prompt: promptText) { Text(prompt) }
                 .submitLabel(submitLabel)
                 .zenAccessibilityIdentifierIfPresent(accessibilityIdentifier)
         }
+    }
+
+    // Explicitly styled prompt: a bare LocalizedStringKey placeholder goes
+    // through markdown data detection, so email/URL-shaped prompts (e.g.
+    // "name@email.com") render as tinted links instead of placeholder gray.
+    private var promptText: Text {
+        Text(prompt).foregroundStyle(Color.zenTextMuted)
     }
 
     @ViewBuilder
     private var plainField: some View {
         switch axis {
         case .horizontal:
-            configured(TextField(prompt, text: $text))
+            configured(TextField(text: $text, prompt: promptText) { Text(prompt) })
         case .vertical(let lineLimit):
             configured(
-                TextField(prompt, text: $text, axis: .vertical)
+                TextField(text: $text, prompt: promptText, axis: .vertical) { Text(prompt) }
                     .lineLimit(lineLimit)
             )
         }
@@ -238,6 +245,7 @@ private extension View {
         var body: some View {
             VStack(spacing: ZenSpacing.medium) {
                 ZenTextInput(text: .constant("alex@example.com"), prompt: "Email", leadingIcon: .system("envelope"))
+                ZenTextInput(text: .constant(""), prompt: "name@email.com", leadingIcon: .system("envelope"), keyboardType: .emailAddress)
                 ZenTextInput(text: .constant(""), prompt: "Password", leadingIcon: .system("lock"), kind: .secure, state: .focused)
                 ZenTextInput(text: .constant(""), prompt: "Email", leadingIcon: .system("envelope"), state: .invalid, message: "Enter a valid email.")
                 ZenTextInput(text: $multilineText, prompt: "Type a message...", axis: .vertical(1...6))
