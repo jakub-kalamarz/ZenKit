@@ -44,6 +44,7 @@ public struct ZenMenu<Label: View, Content: View>: View {
         } label: {
             label()
         }
+        .tint(Color.zenPrimary)
     }
 }
 
