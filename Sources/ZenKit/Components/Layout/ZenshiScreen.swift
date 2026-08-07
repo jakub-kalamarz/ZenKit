@@ -122,7 +122,7 @@ public struct ZenScreen<Header: View, Content: View>: View {
     }
 
     private var scrollScreenContent: some View {
-        LazyVStack(alignment: .leading, spacing: ZenSpacing.medium) {
+        LazyVStack(alignment: .leading, spacing: .zero) {
             if let header {
                 header()
                     .frame(maxWidth: .infinity)
@@ -188,6 +188,7 @@ public struct ZenScreen<Header: View, Content: View>: View {
                 .listRowInsets(ZenScreenMetrics.listRowInsets)
         }
         .scrollDismissesKeyboard(.immediately)
+        .listRowSpacing(.zero)
     }
 }
 

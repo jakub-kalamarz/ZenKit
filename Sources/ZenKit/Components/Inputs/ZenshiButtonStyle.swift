@@ -198,22 +198,49 @@ struct ZenSemanticButtonStyle: ButtonStyle {
     /// shape or shadow, just the glyph in a 44pt-friendly hit area. Any shape
     /// would fight the surrounding container (a sheet toolbar, a card header),
     /// so the variant only contributes the icon's tint.
+    ///
+    /// The glass variants are the exception: asking for glass is asking for a
+    /// surface, and an icon-only glass button next to a labelled one (a bottom
+    /// action bar) has to read as the same control.
     private func iconOnlyBody(configuration: Configuration) -> some View {
-        let theme = ZenTheme.current
-        let metrics = theme.resolvedMetrics
-        let palette = ZenButtonResolvedStyle(variant: variant)
-        let side = size.minHeight(metrics: metrics)
-
-        return buttonContent(configuration: configuration, palette: palette)
-            .font(size.font)
-            .foregroundStyle(iconTint(palette: palette))
-            .frame(width: side, height: side)
+        surfacedIcon(configuration: configuration)
             .contentShape(.rect)
             .opacity(opacity(for: configuration))
             .scaleEffect(configuration.isPressed && !isLoading ? 0.92 : 1)
             .animation(loadingAnimation, value: isLoading)
             .animation(.easeOut(duration: 0.16), value: configuration.isPressed)
             .animation(.easeOut(duration: 0.16), value: isDisabled)
+    }
+
+    @ViewBuilder
+    private func surfacedIcon(configuration: Configuration) -> some View {
+        let theme = ZenTheme.current
+        let metrics = theme.resolvedMetrics
+        let palette = ZenButtonResolvedStyle(variant: variant)
+        let side = size.minHeight(metrics: metrics)
+        let glyph = buttonContent(configuration: configuration, palette: palette)
+            .font(size.font)
+            .frame(width: side, height: side)
+
+        if palette.backgroundStyle.usesNativeGlassEffect {
+            // Square frame, so a half-side radius resolves to a circle — the
+            // right sibling for the capsule the labelled buttons wear.
+            glyph
+                .foregroundStyle(palette.foregroundColor)
+                .modifier(
+                    ZenButtonSurfaceModifier(
+                        palette: palette,
+                        isPressed: configuration.isPressed && !isLoading,
+                        cornerRadius: buttonShape == .capsule
+                            ? side / 2
+                            : size.cornerRadius(theme: theme, parentRadius: parentCornerRadius),
+                        glassTint: glassTint
+                    )
+                )
+                .saturation(isDisabled ? 0.4 : 1)
+        } else {
+            glyph.foregroundStyle(iconTint(palette: palette))
+        }
     }
 
     /// The variant's own foreground, except where it assumes a filled surface

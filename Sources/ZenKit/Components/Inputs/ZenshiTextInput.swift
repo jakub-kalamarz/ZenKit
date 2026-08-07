@@ -13,6 +13,7 @@ public enum ZenTextInputAxis {
 public enum ZenTextInputKeyboardType: Sendable {
     case `default`
     case decimalPad
+    case numberPad
     case url
     case emailAddress
 }
@@ -218,6 +219,8 @@ private extension View {
                 self.keyboardType(.default)
             case .decimalPad:
                 self.keyboardType(.decimalPad)
+            case .numberPad:
+                self.keyboardType(.numberPad)
             case .url:
                 self.keyboardType(.URL)
             case .emailAddress:
