@@ -4,6 +4,11 @@ import UIKit
 #endif
 
 public struct ZenInputBar: View {
+    public enum Appearance: Sendable {
+        case standard
+        case glass
+    }
+
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Binding private var text: String
     @FocusState private var internalFocus: Bool
@@ -14,6 +19,7 @@ public struct ZenInputBar: View {
     private let lineLimit: ClosedRange<Int>
     private let submitsOnReturn: Bool
     private let keepsFocusAfterSubmit: Bool
+    private let appearance: Appearance
     private let onSubmit: () -> Void
     private let externalFocus: FocusState<Bool>.Binding?
 
@@ -36,6 +42,7 @@ public struct ZenInputBar: View {
         lineLimit: ClosedRange<Int> = 1...4,
         submitsOnReturn: Bool = false,
         keepsFocusAfterSubmit: Bool = false,
+        appearance: Appearance = .standard,
         onSubmit: @escaping () -> Void
     ) {
         _text = text
@@ -46,27 +53,35 @@ public struct ZenInputBar: View {
         self.lineLimit = lineLimit
         self.submitsOnReturn = submitsOnReturn
         self.keepsFocusAfterSubmit = keepsFocusAfterSubmit
+        self.appearance = appearance
         self.onSubmit = onSubmit
     }
 
     private let shape = Capsule(style: .continuous)
 
     public var body: some View {
-        HStack(alignment: .bottom, spacing: ZenSpacing.small) {
+        let inputContent = HStack(alignment: .center, spacing: ZenSpacing.xSmall) {
             textField
                 .frame(minHeight: 34)
             submitButton
         }
         .padding(.leading, ZenSpacing.medium)
-        .padding(.trailing, ZenSpacing.small)
-        .padding(.vertical, ZenSpacing.small)
-        .background(
-            shape.fill(Color.zenSurface)
-        )
-        .overlay(
-            shape.strokeBorder(borderColor, lineWidth: isFieldFocused ? 1.5 : 1)
-        )
-        .zenControlSurfaceShadow()
+        .padding(.trailing, ZenSpacing.xSmall)
+        .padding(.vertical, ZenSpacing.xSmall)
+
+        Group {
+            if #available(iOS 26, macOS 26, tvOS 26, watchOS 26, visionOS 26, *), appearance == .glass {
+                inputContent
+                    .glassEffect(.regular.interactive(), in: shape)
+            } else {
+                inputContent
+                    .background(shape.fill(Color.zenSurface))
+                    .overlay {
+                        shape.strokeBorder(borderColor, lineWidth: isFieldFocused ? 1.5 : 1)
+                    }
+                    .zenControlSurfaceShadow()
+            }
+        }
         .contentShape(shape)
         .onTapGesture {
             // Only a *request* to focus. Re-asserting focus while the field is
@@ -150,21 +165,26 @@ public struct ZenInputBar: View {
 
     private var submitButton: some View {
         Button(action: submitIfPossible) {
-            if isLoading {
-                ProgressView()
-                    .tint(Color.zenPrimaryForeground)
-                    .controlSize(.small)
-            } else {
-                Image(systemName: "arrow.up")
-                    .font(.zen(.body2, weight: .bold))
-                    .foregroundStyle(isSubmitControlActive ? Color.zenPrimaryForeground : Color.zenTextPlaceholder)
+            Group {
+                if isLoading {
+                    ProgressView()
+                        .tint(Color.zenPrimaryForeground)
+                        .controlSize(.small)
+                } else {
+                    Image(systemName: "arrow.up")
+                        .font(.zen(.body2, weight: .bold))
+                        .foregroundStyle(isSubmitControlActive ? Color.zenPrimaryForeground : Color.zenTextPlaceholder)
+                }
             }
+            .frame(width: 34, height: 34)
+            .background(
+                Circle()
+                    .fill(isSubmitControlActive ? Color.zenPrimary : Color.clear)
+            )
         }
-        .frame(width: 34, height: 34)
-        .background(
-            Circle()
-                .fill(isSubmitControlActive ? Color.zenPrimary : Color.zenSurfaceMuted)
-        )
+        .buttonStyle(.plain)
+        .frame(width: 44, height: 44)
+        .contentShape(.rect)
         .disabled(!canSubmit)
         .accessibilityLabel("Send")
     }
