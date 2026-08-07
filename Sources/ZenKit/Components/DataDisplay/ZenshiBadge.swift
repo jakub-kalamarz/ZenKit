@@ -17,7 +17,6 @@ enum ZenBadgeStyleMetrics {
     static let verticalPadding: CGFloat = 6
     static let labelSpacing: CGFloat = 4
     static let removeButtonWidth: CGFloat = 24
-    static let removeDividerVerticalInset: CGFloat = 5
     static let iconSize: CGFloat = 10
     static let removeIconSize: CGFloat = 10
 
@@ -147,11 +146,9 @@ public struct ZenBadge: View {
             mainContent
 
             if let onRemove {
-                removeDivider
-
                 Button(action: onRemove) {
                     ZenIcon(source: .system("xmark"), size: ZenBadgeStyleMetrics.removeIconSize)
-                        .font(.system(size: ZenBadgeStyleMetrics.removeIconSize, weight: .bold))
+                        .font(.system(size: ZenBadgeStyleMetrics.removeIconSize, weight: .semibold))
                         .frame(
                             width: ZenBadgeStyleMetrics.removeButtonWidth,
                             height: size == .small ? ZenBadgeStyleMetrics.smallHeight : ZenBadgeStyleMetrics.height
@@ -159,7 +156,7 @@ public struct ZenBadge: View {
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .foregroundStyle(foregroundColor)
+                .foregroundStyle(foregroundColor.opacity(0.55))
                 .accessibilityLabel("Remove badge")
             }
         }
@@ -260,11 +257,14 @@ public struct ZenBadge: View {
         let font: Font = isFilled ? .zen(.body2, weight: .semibold) : (isSmall ? .caption2.weight(.medium) : .zen(.group, weight: .semibold))
 
         return HStack(spacing: ZenBadgeStyleMetrics.labelSpacing) {
-            if isSelected {
-                ZenIcon(source: .system("checkmark"), size: iconSz)
-                    .font(.system(size: iconSz, weight: .bold))
-            } else if let iconSource {
+            // An explicit icon always wins: a selected badge that already carries a
+            // meaningful glyph (a filter icon, a cuisine icon) should keep it rather
+            // than swapping in a generic checkmark.
+            if let iconSource {
                 ZenIcon(source: iconSource, size: iconSz)
+                    .font(.system(size: iconSz, weight: .bold))
+            } else if isSelected {
+                ZenIcon(source: .system("checkmark"), size: iconSz)
                     .font(.system(size: iconSz, weight: .bold))
             }
 
@@ -274,17 +274,11 @@ public struct ZenBadge: View {
         .font(font)
         .foregroundStyle(foregroundColor)
         .padding(.leading, hPad)
-        .padding(.trailing, onRemove == nil ? hPad : 8)
+        .padding(.trailing, onRemove == nil ? hPad : 0)
         .padding(.vertical, vPad)
         .frame(minHeight: isFilled ? 0 : minH)
     }
     
-    private var removeDivider: some View {
-        Rectangle()
-            .fill(foregroundColor.opacity(isSelected ? 0.2 : 0.14))
-            .frame(width: 1)
-            .padding(.vertical, ZenBadgeStyleMetrics.removeDividerVerticalInset)
-    }
 }
 
 #Preview {
