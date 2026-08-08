@@ -6,3 +6,5 @@ ZenKit.xcodeproj
 ZenKit.xcworkspace
 
 .DS_Store
+
+.claude/settings.local.json
