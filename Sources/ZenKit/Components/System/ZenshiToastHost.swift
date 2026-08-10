@@ -59,6 +59,7 @@ public struct ZenToastHost: View {
                     onDismiss: { dismissToast(toast) }
                 )
                 .frame(maxWidth: maxWidth(for: size), alignment: layout.cardAlignment)
+                .zenToastHitRegion(id: toast.id)
                 .offset(y: layout.verticalOffset(for: depth, expanded: isReviewingStack))
                 .scaleEffect(scale(for: depth, expanded: isReviewingStack), anchor: layout.cardAnchor)
                 .zIndex(Double(displayedToasts.count - depth))
