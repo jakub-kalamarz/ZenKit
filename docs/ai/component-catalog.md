@@ -778,9 +778,9 @@ Each entry uses the same schema:
 - `use_when`: defining an action that appears inside a toast
 - `avoid_when`: standard on-screen buttons
 - `pairs_with`: `ZenToastItem`, `ZenToastHost`
-- `required_state`: title and handler
+- `required_state`: label and handler, optional button variant
 - `example_paths`: `Sources/ZenKit/Components/System/ZenshiToast.swift`
-- `notes`: toast model type
+- `notes`: toast model type; a toast may carry several, rendered as `ZenButton`s
 
 ### `ZenToastID`
 - `category`: System
@@ -796,7 +796,7 @@ Each entry uses the same schema:
 - `use_when`: creating a toast payload for the host/center infrastructure
 - `avoid_when`: inline banner or alert modeling
 - `pairs_with`: `ZenToastAction`, `ZenToastTone`, `ZenToastHost`
-- `required_state`: id, tone, message, optional action
+- `required_state`: id, tone, message, optional actions
 - `example_paths`: `Sources/ZenKit/Components/System/ZenshiToast.swift`
 - `notes`: model type consumed by toast infrastructure
 

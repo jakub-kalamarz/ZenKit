@@ -8,27 +8,45 @@ public enum ZenToastTone: Sendable, Equatable {
     case `default`
     case success
     case error
+    case warning
+    case info
+    /// ZenKit extension over the reference toast set: pairs a spinner with an
+    /// indefinite lifetime so progress work can own a toast until it resolves.
     case loading
 }
 
-public struct ZenToastAction {
+public struct ZenToastAction: Identifiable {
+    public let id: UUID
     public let label: String
+    public let variant: ZenButtonVariant
+    public let dismissesToast: Bool
     public let handler: @MainActor () -> Void
 
-    public init(_ label: String, handler: @escaping @MainActor () -> Void) {
+    public init(
+        _ label: String,
+        variant: ZenButtonVariant = .secondary,
+        dismissesToast: Bool = true,
+        handler: @escaping @MainActor () -> Void
+    ) {
+        self.id = UUID()
         self.label = label
+        self.variant = variant
+        self.dismissesToast = dismissesToast
         self.handler = handler
     }
 }
 
 public struct ZenToastItem: Identifiable {
+    /// Matches the reference toast's 5s timeout.
+    public static let defaultDuration: TimeInterval = 5
+
     public let id: ZenToastID
     public var title: String
     public var message: String?
     public var tone: ZenToastTone
     public var duration: TimeInterval?
     public var progress: Double?
-    public var action: ZenToastAction?
+    public var actions: [ZenToastAction]
     public let createdAt: Date
 
     public init(
@@ -36,9 +54,9 @@ public struct ZenToastItem: Identifiable {
         title: String,
         message: String? = nil,
         tone: ZenToastTone = .default,
-        duration: TimeInterval? = 4,
+        duration: TimeInterval? = ZenToastItem.defaultDuration,
         progress: Double? = nil,
-        action: ZenToastAction? = nil,
+        actions: [ZenToastAction] = [],
         createdAt: Date = .now
     ) {
         self.id = id
@@ -47,7 +65,7 @@ public struct ZenToastItem: Identifiable {
         self.tone = tone
         self.duration = duration
         self.progress = progress.map(Self.clampedProgressValue)
-        self.action = action
+        self.actions = actions
         self.createdAt = createdAt
     }
 
@@ -80,9 +98,9 @@ public final class ZenToastCenter: ObservableObject {
         _ title: String,
         message: String? = nil,
         tone: ZenToastTone = .default,
-        duration: TimeInterval? = 4,
+        duration: TimeInterval? = ZenToastItem.defaultDuration,
         progress: Double? = nil,
-        action: ZenToastAction? = nil
+        actions: [ZenToastAction] = []
     ) -> ZenToastID {
         let toast = ZenToastItem(
             title: title,
@@ -90,7 +108,7 @@ public final class ZenToastCenter: ObservableObject {
             tone: tone,
             duration: tone == .loading ? nil : duration,
             progress: progress,
-            action: action
+            actions: actions
         )
         append(toast)
         return toast.id
@@ -100,22 +118,44 @@ public final class ZenToastCenter: ObservableObject {
     public func success(
         _ title: String,
         message: String? = nil,
-        duration: TimeInterval? = 4,
+        duration: TimeInterval? = ZenToastItem.defaultDuration,
         progress: Double? = nil,
-        action: ZenToastAction? = nil
+        actions: [ZenToastAction] = []
     ) -> ZenToastID {
-        show(title, message: message, tone: .success, duration: duration, progress: progress, action: action)
+        show(title, message: message, tone: .success, duration: duration, progress: progress, actions: actions)
     }
 
     @discardableResult
     public func error(
         _ title: String,
         message: String? = nil,
-        duration: TimeInterval? = 4,
+        duration: TimeInterval? = ZenToastItem.defaultDuration,
         progress: Double? = nil,
-        action: ZenToastAction? = nil
+        actions: [ZenToastAction] = []
     ) -> ZenToastID {
-        show(title, message: message, tone: .error, duration: duration, progress: progress, action: action)
+        show(title, message: message, tone: .error, duration: duration, progress: progress, actions: actions)
+    }
+
+    @discardableResult
+    public func warning(
+        _ title: String,
+        message: String? = nil,
+        duration: TimeInterval? = ZenToastItem.defaultDuration,
+        progress: Double? = nil,
+        actions: [ZenToastAction] = []
+    ) -> ZenToastID {
+        show(title, message: message, tone: .warning, duration: duration, progress: progress, actions: actions)
+    }
+
+    @discardableResult
+    public func info(
+        _ title: String,
+        message: String? = nil,
+        duration: TimeInterval? = ZenToastItem.defaultDuration,
+        progress: Double? = nil,
+        actions: [ZenToastAction] = []
+    ) -> ZenToastID {
+        show(title, message: message, tone: .info, duration: duration, progress: progress, actions: actions)
     }
 
     @discardableResult
@@ -123,9 +163,9 @@ public final class ZenToastCenter: ObservableObject {
         _ title: String,
         message: String? = nil,
         progress: Double? = nil,
-        action: ZenToastAction? = nil
+        actions: [ZenToastAction] = []
     ) -> ZenToastID {
-        show(title, message: message, tone: .loading, duration: nil, progress: progress, action: action)
+        show(title, message: message, tone: .loading, duration: nil, progress: progress, actions: actions)
     }
 
     public func update(
@@ -135,7 +175,7 @@ public final class ZenToastCenter: ObservableObject {
         tone: ZenToastTone? = nil,
         duration: TimeInterval? = nil,
         progress: Double? = nil,
-        action: ZenToastAction? = nil
+        actions: [ZenToastAction]? = nil
     ) {
         if let index = visibleToasts.firstIndex(where: { $0.id == id }) {
             visibleToasts[index] = updatedToast(
@@ -145,7 +185,7 @@ public final class ZenToastCenter: ObservableObject {
                 tone: tone,
                 duration: duration,
                 progress: progress,
-                action: action
+                actions: actions
             )
             remainingDismissDurations[id] = visibleToasts[index].duration
             scheduleDismissalIfNeeded(for: visibleToasts[index])
@@ -160,7 +200,7 @@ public final class ZenToastCenter: ObservableObject {
                 tone: tone,
                 duration: duration,
                 progress: progress,
-                action: action
+                actions: actions
             )
         }
     }
@@ -259,7 +299,7 @@ public final class ZenToastCenter: ObservableObject {
         tone: ZenToastTone?,
         duration: TimeInterval?,
         progress: Double?,
-        action: ZenToastAction?
+        actions: [ZenToastAction]?
     ) -> ZenToastItem {
         var updated = toast
         if let title {
@@ -279,8 +319,8 @@ public final class ZenToastCenter: ObservableObject {
         if let progress {
             updated.progress = min(max(progress, 0), 1)
         }
-        if let action {
-            updated.action = action
+        if let actions {
+            updated.actions = actions
         }
         if updated.tone == .loading {
             updated.duration = nil
@@ -348,33 +388,55 @@ public final class ZenToastClient {
     public func callAsFunction(
         _ title: String,
         message: String? = nil,
-        action: ZenToastAction? = nil,
-        duration: TimeInterval? = 4,
+        actions: [ZenToastAction] = [],
+        duration: TimeInterval? = ZenToastItem.defaultDuration,
         progress: Double? = nil
     ) -> ZenToastID {
-        center.show(title, message: message, duration: duration, progress: progress, action: action)
+        center.show(title, message: message, duration: duration, progress: progress, actions: actions)
     }
 
     @discardableResult
     public func success(
         _ title: String,
         message: String? = nil,
-        action: ZenToastAction? = nil,
-        duration: TimeInterval? = 4,
+        actions: [ZenToastAction] = [],
+        duration: TimeInterval? = ZenToastItem.defaultDuration,
         progress: Double? = nil
     ) -> ZenToastID {
-        center.success(title, message: message, duration: duration, progress: progress, action: action)
+        center.success(title, message: message, duration: duration, progress: progress, actions: actions)
     }
 
     @discardableResult
     public func error(
         _ title: String,
         message: String? = nil,
-        action: ZenToastAction? = nil,
-        duration: TimeInterval? = 4,
+        actions: [ZenToastAction] = [],
+        duration: TimeInterval? = ZenToastItem.defaultDuration,
         progress: Double? = nil
     ) -> ZenToastID {
-        center.error(title, message: message, duration: duration, progress: progress, action: action)
+        center.error(title, message: message, duration: duration, progress: progress, actions: actions)
+    }
+
+    @discardableResult
+    public func warning(
+        _ title: String,
+        message: String? = nil,
+        actions: [ZenToastAction] = [],
+        duration: TimeInterval? = ZenToastItem.defaultDuration,
+        progress: Double? = nil
+    ) -> ZenToastID {
+        center.warning(title, message: message, duration: duration, progress: progress, actions: actions)
+    }
+
+    @discardableResult
+    public func info(
+        _ title: String,
+        message: String? = nil,
+        actions: [ZenToastAction] = [],
+        duration: TimeInterval? = ZenToastItem.defaultDuration,
+        progress: Double? = nil
+    ) -> ZenToastID {
+        center.info(title, message: message, duration: duration, progress: progress, actions: actions)
     }
 
     @discardableResult
@@ -382,9 +444,9 @@ public final class ZenToastClient {
         _ title: String,
         message: String? = nil,
         progress: Double? = nil,
-        action: ZenToastAction? = nil
+        actions: [ZenToastAction] = []
     ) -> ZenToastID {
-        center.loading(title, message: message, progress: progress, action: action)
+        center.loading(title, message: message, progress: progress, actions: actions)
     }
 
     public func update(
@@ -394,9 +456,9 @@ public final class ZenToastClient {
         tone: ZenToastTone? = nil,
         duration: TimeInterval? = nil,
         progress: Double? = nil,
-        action: ZenToastAction? = nil
+        actions: [ZenToastAction]? = nil
     ) {
-        center.update(id, title: title, message: message, tone: tone, duration: duration, progress: progress, action: action)
+        center.update(id, title: title, message: message, tone: tone, duration: duration, progress: progress, actions: actions)
     }
 
     public func dismiss(_ id: ZenToastID? = nil) {
@@ -418,7 +480,7 @@ private func zenToastPreviewCenter() -> ZenToastCenter {
         "Exporting previews",
         message: "Compressing assets",
         progress: 0.58,
-        action: ZenToastAction("View queue", handler: {})
+        actions: [ZenToastAction("View queue", handler: {})]
     )
     _ = center.error(
         "Sync failed",

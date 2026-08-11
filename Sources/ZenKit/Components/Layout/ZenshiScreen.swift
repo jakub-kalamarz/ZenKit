@@ -188,7 +188,9 @@ public struct ZenScreen<Header: View, Content: View>: View {
                 .listRowInsets(ZenScreenMetrics.listRowInsets)
         }
         .scrollDismissesKeyboard(.immediately)
+        #if !os(macOS)
         .listRowSpacing(.zero)
+        #endif
     }
 }
 

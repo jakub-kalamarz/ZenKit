@@ -9,7 +9,9 @@ public struct ZenToastHost: View {
     @ObservedObject private var center: ZenToastCenter
     private let edge: ZenToastHostEdge
 
-    @GestureState private var isReviewingStack = false
+    @GestureState private var isPressingStack = false
+    @State private var isPointerOverStack = false
+    @State private var naturalHeights: [ZenToastID: CGFloat] = [:]
 
     public init(center: ZenToastCenter, edge: ZenToastHostEdge = .bottom) {
         self.center = center
@@ -31,58 +33,93 @@ public struct ZenToastHost: View {
             ZenOverlayHost(
                 configuration: .edgeStack(
                     alignment: layout.hostAlignment,
+                    horizontalPadding: layout.viewportInset,
+                    verticalPadding: layout.viewportInset,
                     allowsHitTesting: !center.visibleToasts.isEmpty,
-                    overlayTransition: layout.transition,
-                    animation: .spring(response: 0.38, dampingFraction: 0.84)
+                    overlayTransition: .identity,
+                    animation: Layout.transformAnimation
                 )
             ) {
                 Color.clear
             } overlay: {
-                overlayContent(for: proxy.size, layout: layout)
+                overlayContent(layout: layout)
             }
                 .accessibilityIdentifier(ZenAccessibilityID.Toast.host)
         }
     }
 
     @ViewBuilder
-    private func overlayContent(for size: CGSize, layout: Layout) -> some View {
+    private func overlayContent(layout: Layout) -> some View {
+        // Depth 0 is the newest toast: it sits frontmost and owns the collapsed
+        // stack's height, exactly like the reference viewport.
         let displayedToasts = Array(center.visibleToasts.reversed())
+        let isExpanded = isStackExpanded
+        let stackHeight = displayedToasts.first.flatMap { naturalHeights[$0.id] } ?? Layout.estimatedCardHeight
 
         ZStack(alignment: layout.stackAlignment) {
             ForEach(Array(displayedToasts.enumerated()), id: \.element.id) { depth, toast in
+                let measuredHeight = naturalHeights[toast.id]
+                let cardHeight = measuredHeight ?? stackHeight
+
                 ZenToastCard(
                     toast: toast,
                     edge: edge,
-                    depth: depth,
-                    isExpanded: isReviewingStack,
-                    onAction: { handleAction(for: toast) },
+                    isFrontmost: depth == 0,
+                    isExpanded: isExpanded,
+                    // Collapsed, every card is squashed to the frontmost card's
+                    // height so the peeking slivers line up. Left unconstrained
+                    // until it has been measured, so nothing snaps on insertion.
+                    displayHeight: measuredHeight.map { isExpanded ? $0 : stackHeight },
+                    isInteractive: isExpanded || depth == 0,
+                    onAction: { handleAction($0, on: toast) },
                     onDismiss: { dismissToast(toast) }
                 )
-                .frame(maxWidth: maxWidth(for: size), alignment: layout.cardAlignment)
+                .frame(maxWidth: layout.cardWidth, alignment: layout.cardAlignment)
                 .zenToastHitRegion(id: toast.id)
-                .offset(y: layout.verticalOffset(for: depth, expanded: isReviewingStack))
-                .scaleEffect(scale(for: depth, expanded: isReviewingStack), anchor: layout.cardAnchor)
-                .zIndex(Double(displayedToasts.count - depth))
-                .transition(layout.transition)
-                .accessibilityHidden(!isReviewingStack && depth > 0)
+                // Scale first, then offset: the offset must not be scaled down
+                // for cards deeper in the stack.
+                .scaleEffect(isExpanded ? 1 : Layout.scale(for: depth), anchor: layout.cardAnchor)
+                .offset(
+                    y: isExpanded
+                        ? layout.expandedOffset(
+                            for: depth,
+                            precedingHeight: precedingHeight(before: depth, in: displayedToasts)
+                        )
+                        : layout.collapsedOffset(for: depth, stackHeight: stackHeight)
+                )
+                .zIndex(Double(Layout.baseZIndex - depth))
+                .transition(layout.transition(cardHeight: cardHeight))
+                .accessibilityHidden(!isExpanded && depth > 0)
             }
         }
         .frame(maxWidth: .infinity, alignment: layout.hostAlignment)
+        .onPreferenceChange(ZenToastCardHeightPreferenceKey.self) { heights in
+            naturalHeights = heights
+        }
         .simultaneousGesture(stackReviewGesture)
-        .onChange(of: isReviewingStack) { isReviewingStack in
-            if isReviewingStack {
+        .onHover { isInside in
+            isPointerOverStack = isInside
+        }
+        .onChange(of: isExpanded) { isExpanded in
+            if isExpanded {
                 center.pauseAutoDismiss()
             } else {
                 center.resumeAutoDismiss()
             }
         }
-        .animation(.spring(response: 0.38, dampingFraction: 0.84), value: stackAnimationSignature)
-        .animation(.spring(response: 0.28, dampingFraction: 0.82), value: isReviewingStack)
+        .animation(Layout.transformAnimation, value: stackAnimationSignature)
+        .animation(Layout.transformAnimation, value: isExpanded)
+    }
+
+    /// The stack fans out on hover, matching the reference. Touch platforms have
+    /// no hover, so a press on the stack stands in for it.
+    private var isStackExpanded: Bool {
+        (isPressingStack || isPointerOverStack) && center.visibleToasts.count > 1
     }
 
     private var stackReviewGesture: some Gesture {
         DragGesture(minimumDistance: 0)
-            .updating($isReviewingStack) { _, state, _ in
+            .updating($isPressingStack) { _, state, _ in
                 state = center.visibleToasts.count > 1
             }
     }
@@ -99,18 +136,19 @@ public struct ZenToastHost: View {
         }
     }
 
-    private func maxWidth(for size: CGSize) -> CGFloat {
-        size.width >= 700 ? 360 : min(size.width - (ZenSpacing.medium * 2), 520)
-    }
-
-    private func scale(for depth: Int, expanded: Bool) -> CGFloat {
-        expanded ? 1 : max(0.9, 1 - (CGFloat(depth) * 0.04))
+    private func precedingHeight(before depth: Int, in toasts: [ZenToastItem]) -> CGFloat {
+        toasts.prefix(depth).reduce(into: CGFloat.zero) { total, toast in
+            total += naturalHeights[toast.id] ?? Layout.estimatedCardHeight
+        }
     }
 
     @MainActor
-    private func handleAction(for toast: ZenToastItem) {
-        toast.action?.handler()
-        center.dismiss(toast.id)
+    private func handleAction(_ action: ZenToastAction, on toast: ZenToastItem) {
+        action.handler()
+
+        if action.dismissesToast {
+            center.dismiss(toast.id)
+        }
     }
 
     @MainActor
@@ -121,8 +159,34 @@ public struct ZenToastHost: View {
 
 extension ZenToastHost {
     struct Layout {
+        /// Vertical sliver of each card left visible behind the frontmost one.
+        static let peek: CGFloat = 12
+        /// Spacing between cards once the stack is fanned out.
+        static let gap: CGFloat = 12
+        /// Each step back in the stack shrinks the card by this fraction.
+        static let scaleStep: CGFloat = 0.1
+        /// Stand-in height used before a card has reported its measured size.
+        static let estimatedCardHeight: CGFloat = 88
+        /// Width the viewport pins to once there is room for it.
+        static let wideViewportWidth: CGFloat = 340
+        static let wideViewportBreakpoint: CGFloat = 640
+        static let compactViewportInset: CGFloat = 16
+        static let wideViewportInset: CGFloat = 32
+        static let swipeDismissThreshold: CGFloat = 96
+        static let baseZIndex = 1000
+        /// Enter/exit travel as a multiple of the card's own height.
+        static let transitionTravelRatio: CGFloat = 1.5
+
+        static let transformAnimation: Animation = .timingCurve(0.22, 1, 0.36, 1, duration: 0.5)
+        static let heightAnimation: Animation = .easeOut(duration: 0.15)
+        static let contentFadeAnimation: Animation = .easeInOut(duration: 0.25)
+
         let edge: ZenToastHostEdge
         let size: CGSize
+
+        static func scale(for depth: Int) -> CGFloat {
+            max(0, 1 - (CGFloat(depth) * scaleStep))
+        }
 
         var hostAlignment: Alignment {
             switch (edge, isWide) {
@@ -154,42 +218,63 @@ extension ZenToastHost {
             }
         }
 
-        var insertionOffsetY: CGFloat {
+        var cardWidth: CGFloat {
+            isWide ? Self.wideViewportWidth : max(0, size.width - (Self.compactViewportInset * 2))
+        }
+
+        var viewportInset: CGFloat {
+            isWide ? Self.wideViewportInset : Self.compactViewportInset
+        }
+
+        /// `+1` when the stack grows downwards from the top edge, `-1` upwards
+        /// from the bottom edge.
+        var stackDirection: CGFloat {
             switch edge {
             case .top:
-                return -88
+                return 1
             case .bottom:
-                return 88
+                return -1
             }
         }
 
-        var removalOffsetY: CGFloat {
-            insertionOffsetY
+        /// Collapsed, cards are scaled about the anchored edge. The extra
+        /// `shrink * stackHeight` term cancels the scale so the *outer* edges
+        /// end up exactly `peek` apart instead of converging.
+        func collapsedOffset(for depth: Int, stackHeight: CGFloat) -> CGFloat {
+            let shrink = 1 - Self.scale(for: depth)
+            return stackDirection * ((CGFloat(depth) * Self.peek) + (shrink * stackHeight))
         }
 
-        var transition: AnyTransition {
-            .asymmetric(
-                insertion: .offset(y: insertionOffsetY).combined(with: .opacity),
-                removal: .offset(y: removalOffsetY).combined(with: .opacity)
+        /// Expanded, each card clears the full height of every card in front of
+        /// it plus one gap per step.
+        func expandedOffset(for depth: Int, precedingHeight: CGFloat) -> CGFloat {
+            stackDirection * (precedingHeight + (CGFloat(depth) * Self.gap))
+        }
+
+        func transitionOffset(cardHeight: CGFloat) -> CGFloat {
+            let travel = max(cardHeight, Self.estimatedCardHeight) * Self.transitionTravelRatio
+            return -stackDirection * travel
+        }
+
+        /// Cards slide in from beyond the anchored edge and leave the same way,
+        /// fading only on the way out.
+        func transition(cardHeight: CGFloat) -> AnyTransition {
+            let offset = transitionOffset(cardHeight: cardHeight)
+
+            return .asymmetric(
+                insertion: .offset(y: offset),
+                removal: .offset(y: offset).combined(with: .opacity)
             )
         }
 
-        func verticalOffset(for depth: Int, expanded: Bool) -> CGFloat {
-            let base = expanded ? CGFloat(depth) * 72 : CGFloat(depth) * 12
-
-            switch edge {
-            case .top:
-                return base
-            case .bottom:
-                return -base
-            }
-        }
-
         private var isWide: Bool {
-            size.width >= 700
+            size.width >= Self.wideViewportBreakpoint
         }
 
-        func shouldDismiss(for translation: CGSize, threshold: CGFloat = 96) -> Bool {
+        func shouldDismiss(
+            for translation: CGSize,
+            threshold: CGFloat = Layout.swipeDismissThreshold
+        ) -> Bool {
             if abs(translation.width) > threshold {
                 return true
             }
@@ -204,93 +289,60 @@ extension ZenToastHost {
     }
 }
 
+private struct ZenToastCardHeightPreferenceKey: PreferenceKey {
+    static var defaultValue: [ZenToastID: CGFloat] { [:] }
+
+    static func reduce(value: inout [ZenToastID: CGFloat], nextValue: () -> [ZenToastID: CGFloat]) {
+        value.merge(nextValue()) { _, latest in latest }
+    }
+}
+
 private struct ZenToastCard: View {
-    @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
     let toast: ZenToastItem
     let edge: ZenToastHostEdge
-    let depth: Int
+    let isFrontmost: Bool
     let isExpanded: Bool
-    let onAction: () -> Void
+    let displayHeight: CGFloat?
+    let isInteractive: Bool
+    let onAction: (ZenToastAction) -> Void
     let onDismiss: () -> Void
 
     @State private var dragOffset: CGSize = .zero
     @State private var previousTone: ZenToastTone?
     @State private var completionPulse = false
 
+    private static let cornerRadiusFallback: CGFloat = 12
+    private static let padding: CGFloat = 16
+    private static let iconSize: CGFloat = 16
+    private static let closeButtonSize: CGFloat = 20
+    private static let closeIconSize: CGFloat = 12
+    private static let closeButtonInset: CGFloat = 8
+
     var body: some View {
-        let theme = ZenTheme.current
-        let cardCornerRadius = theme.resolvedCornerRadius(for: .nestedContainer, parentRadius: parentCornerRadius)
+        let cornerRadius = ZenTheme.current.resolvedCornerRadius(for: .container)
+        let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
 
-        VStack(alignment: .leading, spacing: ZenSpacing.small) {
-            HStack(alignment: .center, spacing: ZenSpacing.small) {
-                iconView
-
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(toast.title)
-                        .font(.zen(.body2, weight: .medium))
-                        .foregroundStyle(Color.zenTextPrimary)
-
-                    if let message = toast.message {
-                        Text(message)
-                            .font(.zenGroup)
-                            .foregroundStyle(Color.zenTextMuted)
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .animation(.easeInOut(duration: 0.2), value: toast.title)
-                .animation(.easeInOut(duration: 0.2), value: toast.message)
-
-                Button {
-                    onDismiss()
-                } label: {
-                    ZenIcon(systemName: "xmark", size: 10)
-                        .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(Color.zenTextMuted)
-                        .frame(width: 24, height: 24)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityIdentifier(ZenAccessibilityID.Toast.closeButton)
-            }
-
-            if let action = toast.action {
-                Button(action: onAction) {
-                    Text(action.label)
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundStyle(tintColor)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityIdentifier(ZenAccessibilityID.Toast.actionButton)
-            }
-
-            if let progress = toast.progress {
-                ZenToastProgressBar(
-                    progress: progress,
-                    tintColor: tintColor,
-                    subtleColor: subtleColor
-                )
-                    .padding(.top, 2)
-            }
+        ZStack(alignment: contentAlignment) {
+            cardContent
+                .background(heightReader)
+                // Pinned to its natural height so squashing the card below it
+                // never feeds back into the measurement.
+                .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(.vertical, 12)
-        .padding(.horizontal, 14)
-        .background(Color.zenSurface)
-        .overlay(
-            RoundedRectangle(cornerRadius: cardCornerRadius)
-                .strokeBorder(borderColor, lineWidth: 1)
-        )
-        .clipShape(RoundedRectangle(cornerRadius: cardCornerRadius))
-        .zenContainerCornerRadius(cardCornerRadius)
-        .shadow(color: Color.black.opacity(depth == 0 ? 0.14 : 0.08), radius: 16, x: 0, y: 8)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(height: displayHeight, alignment: contentAlignment)
+        .background(cardBackground)
+        .clipShape(shape)
+        .overlay(shape.strokeBorder(borderColor, lineWidth: borderWidth))
+        .zenContainerCornerRadius(cornerRadius)
+        .shadow(color: Color.black.opacity(0.10), radius: 12, x: 0, y: 8)
+        .shadow(color: Color.black.opacity(0.06), radius: 4, x: 0, y: 2)
         .scaleEffect(completionPulse ? 1.02 : 1)
         .offset(dragOffset)
-        .gesture(dismissGesture)
+        .gesture(dismissGesture, including: isInteractive ? .all : .none)
         .animation(.spring(response: 0.24, dampingFraction: 0.82), value: dragOffset)
-        .animation(.easeInOut(duration: 0.22), value: toast.progress)
+        .animation(ZenToastHost.Layout.heightAnimation, value: displayHeight)
         .animation(.easeInOut(duration: 0.22), value: toast.tone)
-        .animation(.easeInOut(duration: 0.22), value: isExpanded)
         .onAppear {
             previousTone = toast.tone
         }
@@ -302,6 +354,109 @@ private struct ZenToastCard: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(ZenAccessibilityID.Toast.card)
+    }
+
+    /// Only the frontmost card shows its contents while the stack is collapsed;
+    /// the ones behind read as blank tinted slivers.
+    private var contentOpacity: Double {
+        (isExpanded || isFrontmost) ? 1 : 0
+    }
+
+    private var contentAlignment: Alignment {
+        switch edge {
+        case .top:
+            return .top
+        case .bottom:
+            return .bottom
+        }
+    }
+
+    private var cardContent: some View {
+        VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
+            HStack(alignment: .top, spacing: ZenSpacing.small) {
+                iconView
+
+                VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
+                    Text(toast.title)
+                        .font(.zen(.body, weight: .medium))
+                        .foregroundStyle(titleColor)
+                        .accessibilityIdentifier(ZenAccessibilityID.Toast.title)
+
+                    if let message = toast.message {
+                        Text(message)
+                            .font(.zenBody)
+                            .foregroundStyle(Color.zenTextPrimary.opacity(0.7))
+                    }
+
+                    if !toast.actions.isEmpty {
+                        actionsRow
+                    }
+
+                    if let progress = toast.progress {
+                        ZenToastProgressBar(
+                            progress: progress,
+                            tintColor: tintColor,
+                            subtleColor: subtleColor
+                        )
+                            .padding(.top, ZenSpacing.xSmall)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .animation(.easeInOut(duration: 0.2), value: toast.title)
+                .animation(.easeInOut(duration: 0.2), value: toast.message)
+                .animation(.easeInOut(duration: 0.22), value: toast.progress)
+            }
+            // Keeps the title clear of the close control pinned to the corner.
+            .padding(.trailing, Self.closeButtonSize)
+        }
+        .padding(Self.padding)
+        .overlay(closeButton, alignment: .topTrailing)
+        .opacity(contentOpacity)
+        .allowsHitTesting(contentOpacity == 1)
+        .animation(ZenToastHost.Layout.contentFadeAnimation, value: contentOpacity)
+    }
+
+    private var actionsRow: some View {
+        HStack(spacing: ZenSpacing.small) {
+            ForEach(toast.actions) { action in
+                ZenButton(variant: action.variant, size: .sm) {
+                    onAction(action)
+                } label: {
+                    Text(action.label)
+                }
+                .accessibilityIdentifier(ZenAccessibilityID.Toast.actionButton)
+            }
+        }
+        .padding(.top, ZenSpacing.xSmall)
+    }
+
+    private var closeButton: some View {
+        Button {
+            onDismiss()
+        } label: {
+            ZenIcon(systemName: "xmark", size: Self.closeIconSize)
+                .font(.system(size: Self.closeIconSize, weight: .bold))
+                .foregroundStyle(closeIconColor)
+        }
+        .buttonStyle(
+            ZenToastCloseButtonStyle(
+                tint: closeIconColor,
+                size: Self.closeButtonSize
+            )
+        )
+        .padding(Self.closeButtonInset)
+        .accessibilityLabel("Close")
+        .accessibilityIdentifier(ZenAccessibilityID.Toast.closeButton)
+    }
+
+    private var heightReader: some View {
+        GeometryReader { proxy in
+            Color.clear
+                .preference(
+                    key: ZenToastCardHeightPreferenceKey.self,
+                    value: [toast.id: proxy.size.height]
+                )
+        }
     }
 
     private var dismissGesture: some Gesture {
@@ -324,15 +479,20 @@ private struct ZenToastCard: View {
 
     @ViewBuilder
     private var iconView: some View {
-        if toast.tone == .loading {
-            ZenSpinner(size: .medium, tint: tintColor, showsTrack: false)
-                .frame(width: 18, height: 18)
+        switch toast.tone {
+        case .loading:
+            ZenSpinner(size: .custom(diameter: Self.iconSize), tint: tintColor, showsTrack: false)
+                .padding(.top, 2)
                 .transition(.scale(scale: 0.88).combined(with: .opacity))
-        } else {
-            ZenIcon(systemName: iconSystemName, size: 18)
-                .font(.system(size: 18, weight: .semibold))
+        case .default:
+            // The default tone carries no icon, so the text starts at the edge.
+            EmptyView()
+        case .success, .error, .warning, .info:
+            ZenIcon(systemName: iconSystemName, size: Self.iconSize)
+                .font(.system(size: Self.iconSize, weight: .semibold))
                 .foregroundStyle(tintColor)
-                .frame(width: 18, height: 18)
+                .frame(width: Self.iconSize, height: Self.iconSize)
+                .padding(.top, 2)
                 .transition(.scale(scale: 0.88).combined(with: .opacity))
         }
     }
@@ -344,7 +504,11 @@ private struct ZenToastCard: View {
         case .success:
             return "checkmark.circle.fill"
         case .error:
-            return "xmark.octagon.fill"
+            return "exclamationmark.octagon.fill"
+        case .warning:
+            return "exclamationmark.triangle.fill"
+        case .info:
+            return "info.circle.fill"
         case .loading:
             return "arrow.triangle.2.circlepath"
         }
@@ -352,12 +516,69 @@ private struct ZenToastCard: View {
 
     private var tintColor: Color {
         switch toast.tone {
-        case .default, .loading:
+        case .default, .loading, .info:
             return .zenPrimary
         case .success:
             return .zenSuccess
+        case .warning:
+            return .zenWarning
         case .error:
             return .zenCritical
+        }
+    }
+
+    /// Tone-carrying toasts colour the title too; the neutral ones stay plain.
+    private var titleColor: Color {
+        switch toast.tone {
+        case .default, .loading:
+            return .zenTextPrimary
+        case .success, .error, .warning, .info:
+            return tintColor
+        }
+    }
+
+    private var closeIconColor: Color {
+        switch toast.tone {
+        case .default, .loading:
+            return .zenTextMuted
+        case .success, .error, .warning, .info:
+            return tintColor
+        }
+    }
+
+    private var cardBackground: some View {
+        ZStack {
+            Color.zenSurface
+            toneTint
+        }
+    }
+
+    /// A wash of the tone over the surface, keyed to the reference's tint
+    /// strengths — success sits back further than the rest.
+    @ViewBuilder
+    private var toneTint: some View {
+        switch toast.tone {
+        case .default, .loading:
+            EmptyView()
+        case .success:
+            Color.zenSuccessTint.opacity(0.2)
+        case .error:
+            Color.zenCriticalTint.opacity(0.5)
+        case .warning:
+            Color.zenWarningTint.opacity(0.5)
+        case .info:
+            Color.zenInfoTint.opacity(0.5)
+        }
+    }
+
+    /// Neutral toasts get a full hairline; tone-carrying ones get the reference's
+    /// sub-pixel ring, which reads as a faint tinted edge.
+    private var borderWidth: CGFloat {
+        switch toast.tone {
+        case .default, .loading:
+            return 1
+        case .success, .error, .warning, .info:
+            return 0.5
         }
     }
 
@@ -366,11 +587,15 @@ private struct ZenToastCard: View {
 
         switch toast.tone {
         case .default, .loading:
-            return colors.focusRing.color
+            return colors.borderSubtle.color
         case .success:
-            return colors.successBorder.color
+            return colors.success.color
+        case .warning:
+            return colors.warning.color
         case .error:
-            return colors.criticalBorder.color
+            return colors.critical.color
+        case .info:
+            return colors.primary.color
         }
     }
 
@@ -378,10 +603,12 @@ private struct ZenToastCard: View {
         let colors = ZenTheme.current.resolvedColors
 
         switch toast.tone {
-        case .default, .loading:
+        case .default, .loading, .info:
             return colors.primarySubtle.color
         case .success:
             return colors.successSubtle.color
+        case .warning:
+            return colors.warningSubtle.color
         case .error:
             return colors.criticalSubtle.color
         }
@@ -399,6 +626,43 @@ private struct ZenToastCard: View {
                 completionPulse = false
             }
         }
+    }
+}
+
+/// Square ghost control carrying the reference's tinted hover/press wash. Touch
+/// platforms have no hover, so a press stands in for it there.
+private struct ZenToastCloseButtonStyle: ButtonStyle {
+    let tint: Color
+    let size: CGFloat
+
+    func makeBody(configuration: Configuration) -> some View {
+        ZenToastCloseButtonBody(configuration: configuration, tint: tint, size: size)
+    }
+}
+
+private struct ZenToastCloseButtonBody: View {
+    let configuration: ZenToastCloseButtonStyle.Configuration
+    let tint: Color
+    let size: CGFloat
+
+    @State private var isPointerOver = false
+
+    var body: some View {
+        configuration.label
+            .frame(width: size, height: size)
+            .background(
+                RoundedRectangle(cornerRadius: 4, style: .continuous)
+                    .fill(tint.opacity(isHighlighted ? 0.15 : 0))
+            )
+            .contentShape(Rectangle())
+            .onHover { isInside in
+                isPointerOver = isInside
+            }
+            .animation(.easeOut(duration: 0.12), value: isHighlighted)
+    }
+
+    private var isHighlighted: Bool {
+        configuration.isPressed || isPointerOver
     }
 }
 
@@ -441,17 +705,22 @@ private func zenToastHostPreviewCenter() -> ZenToastCenter {
     let center = ZenToastCenter(maxVisibleToasts: 3)
     _ = center.show(
         "Invite sent",
-        message: "Maya can join the workspace from her inbox."
+        message: "Maya can join the workspace from her inbox.",
+        duration: nil
     )
-    _ = center.loading(
-        "Processing images",
-        message: "Generating optimized previews",
-        progress: 0.42,
-        action: ZenToastAction("Open uploads", handler: {})
+    _ = center.warning(
+        "Rate limit warning",
+        message: "You're approaching your API quota.",
+        duration: nil
     )
-    _ = center.error(
-        "Publish failed",
-        message: "There was a problem reaching the server."
+    _ = center.success(
+        "Deployed successfully",
+        message: "Your Worker is now live.",
+        duration: nil,
+        actions: [
+            ZenToastAction("Support", handler: {}),
+            ZenToastAction("Ask AI", variant: .default, handler: {}),
+        ]
     )
     return center
 }
@@ -461,6 +730,6 @@ private func zenToastHostPreviewCenter() -> ZenToastCenter {
         Color.zenBackground
             .ignoresSafeArea()
 
-        ZenToastHost(center: zenToastHostPreviewCenter())
+        ZenToastHost(center: zenToastHostPreviewCenter(), edge: .top)
     }
 }

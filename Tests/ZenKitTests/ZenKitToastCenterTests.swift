@@ -27,6 +27,60 @@ struct ZenKitToastCenterTests {
     }
 
     @Test
+    func toneShorthandsCoverTheFullVariantSet() {
+        let center = ZenToastCenter(maxVisibleToasts: 5)
+
+        center.show("Neutral")
+        center.success("Deployed")
+        center.error("Failed")
+        center.warning("Rate limited")
+        center.info("Update available")
+
+        #expect(center.visibleToasts.map(\.tone) == [.default, .success, .error, .warning, .info])
+    }
+
+    @Test
+    func toastsDefaultToTheReferenceTimeout() {
+        let center = ZenToastCenter(maxVisibleToasts: 3)
+
+        center.show("Saved")
+        center.warning("Rate limited")
+
+        #expect(center.visibleToasts.allSatisfy { $0.duration == 5 })
+        #expect(ZenToastItem.defaultDuration == 5)
+    }
+
+    @Test
+    func actionsFlowThroughAsAnOrderedList() {
+        let center = ZenToastCenter(maxVisibleToasts: 3)
+
+        center.show(
+            "Need help?",
+            actions: [
+                ZenToastAction("Support", handler: {}),
+                ZenToastAction("Ask AI", variant: .default, handler: {}),
+            ]
+        )
+
+        #expect(center.visibleToasts.first?.actions.map(\.label) == ["Support", "Ask AI"])
+        #expect(center.visibleToasts.first?.actions.first?.variant == .secondary)
+        #expect(center.visibleToasts.first?.actions.first?.dismissesToast == true)
+    }
+
+    @Test
+    func updateReplacesActionsOnlyWhenProvided() {
+        let center = ZenToastCenter(maxVisibleToasts: 3)
+
+        let id = center.show("Need help?", duration: nil, actions: [ZenToastAction("Support", handler: {})])
+
+        center.update(id, message: "Get assistance with your deployment.")
+        #expect(center.visibleToasts.first?.actions.map(\.label) == ["Support"])
+
+        center.update(id, actions: [ZenToastAction("Ask AI", handler: {})])
+        #expect(center.visibleToasts.first?.actions.map(\.label) == ["Ask AI"])
+    }
+
+    @Test
     func showAddsToastToVisibleStack() {
         let center = ZenToastCenter(maxVisibleToasts: 3)
 
