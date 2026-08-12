@@ -58,7 +58,7 @@ Each recipe follows the schema:
 ## Sheet And Filter Flow
 
 - `problem`: bottom sheet or popover flow for filters, review-and-apply choices, or secondary actions
-- `recommended_components`: `ZenSheetContainer`, `ZenMultiSelect`, `ZenMenu`, `ZenPickerRow`, `ZenButton`, `ZenConfirmationDialog`
+- `recommended_components`: `ZenSheetContainer`, `ZenMultiSelect`, `ZenMenu`, `ZenPickerRow`, `ZenButton`, SwiftUI `confirmationDialog`
 - `state_shape`: presentation flag, selection state, optional draft/apply flow
 - `example_composition`: trigger -> sheet container -> fields or selectors -> footer actions
 - `common_mistakes`: using `ZenMenu` for long-form editing flows, using `ZenMultiSelect` for search-heavy datasets, skipping apply semantics when deferred state matters

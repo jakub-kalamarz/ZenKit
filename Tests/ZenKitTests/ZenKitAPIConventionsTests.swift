@@ -62,7 +62,6 @@ struct ZenKitAPIConventionsTests {
             "Components/Surfaces/ZenshiCard.swift",
             "Components/Surfaces/ZenshiCardSection.swift",
             "Components/Layout/ZenshiScreenConfiguration.swift",
-            "Components/Feedback/ZenshiConfirmationDialog.swift",
             "Components/Feedback/ZenshiStatusBanner.swift",
             "Components/Feedback/ZenshiCallout.swift",
             "Components/Feedback/ZenshiLoadingStateView.swift",

@@ -8,11 +8,4 @@ public enum ZenAccessibilityID {
         public static let actionButton = "toast.action"
         public static let closeButton = "toast.close"
     }
-
-    public enum ConfirmationDialog {
-        public static let container = "confirmation-dialog.container"
-        public static let title = "confirmation-dialog.title"
-        public static let cancelButton = "confirmation-dialog.cancel"
-        public static let confirmButton = "confirmation-dialog.confirm"
-    }
 }

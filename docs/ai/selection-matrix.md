@@ -54,7 +54,7 @@ Use this matrix to narrow choices before opening the full component catalog.
 - Inline status tone: `ZenStatusBanner`
 - Empty state with media and CTA: `ZenEmpty`
 - Blocking decision alert: `ZenAlert`
-- Confirmation with multiple actions: `ZenConfirmationDialog`
+- Confirmation with multiple actions: SwiftUI `confirmationDialog`
 
 ## Data Display
 

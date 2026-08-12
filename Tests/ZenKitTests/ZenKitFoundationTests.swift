@@ -22,7 +22,6 @@ struct ZenKitFoundationTests {
     func genericAccessibilityIdentifiersRemainStable() {
         #expect(ZenAccessibilityID.Toast.host == "toast.host")
         #expect(ZenAccessibilityID.Toast.closeButton == "toast.close")
-        #expect(ZenAccessibilityID.ConfirmationDialog.confirmButton == "confirmation-dialog.confirm")
     }
 
     @Test

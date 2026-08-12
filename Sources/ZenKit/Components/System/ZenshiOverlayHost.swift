@@ -1,56 +1,14 @@
 import SwiftUI
 
-enum ZenOverlayPresentationStyle {
-    case centeredOverlay
-    case edgeStack
-}
-
-struct ZenOverlayScrim {
-    let material: Material?
-    let transition: AnyTransition
-
-    static let none = ZenOverlayScrim(material: nil, transition: .identity)
-}
-
 struct ZenOverlayHostConfiguration {
-    let presentationStyle: ZenOverlayPresentationStyle
     let alignment: Alignment
     let contentAlignment: Alignment
     let horizontalPadding: CGFloat
     let verticalPadding: CGFloat
     let allowsHitTesting: Bool
-    let scrim: ZenOverlayScrim
     let overlayTransition: AnyTransition
-    let scrimPresentAnimation: Animation
-    let scrimDismissAnimation: Animation
     let presentAnimation: Animation
     let dismissAnimation: Animation
-
-    static func centeredModal(
-        horizontalPadding: CGFloat = ZenSpacing.large,
-        verticalPadding: CGFloat = ZenSpacing.large,
-        scrimTransition: AnyTransition = .opacity,
-        overlayTransition: AnyTransition,
-        scrimPresentAnimation: Animation,
-        scrimDismissAnimation: Animation,
-        presentAnimation: Animation,
-        dismissAnimation: Animation
-    ) -> ZenOverlayHostConfiguration {
-        ZenOverlayHostConfiguration(
-            presentationStyle: .centeredOverlay,
-            alignment: .center,
-            contentAlignment: .center,
-            horizontalPadding: horizontalPadding,
-            verticalPadding: verticalPadding,
-            allowsHitTesting: true,
-            scrim: ZenOverlayScrim(material: .ultraThinMaterial, transition: scrimTransition),
-            overlayTransition: overlayTransition,
-            scrimPresentAnimation: scrimPresentAnimation,
-            scrimDismissAnimation: scrimDismissAnimation,
-            presentAnimation: presentAnimation,
-            dismissAnimation: dismissAnimation
-        )
-    }
 
     static func edgeStack(
         alignment: Alignment,
@@ -61,16 +19,12 @@ struct ZenOverlayHostConfiguration {
         animation: Animation
     ) -> ZenOverlayHostConfiguration {
         ZenOverlayHostConfiguration(
-            presentationStyle: .edgeStack,
             alignment: alignment,
             contentAlignment: alignment,
             horizontalPadding: horizontalPadding,
             verticalPadding: verticalPadding,
             allowsHitTesting: allowsHitTesting,
-            scrim: .none,
             overlayTransition: overlayTransition,
-            scrimPresentAnimation: animation,
-            scrimDismissAnimation: animation,
             presentAnimation: animation,
             dismissAnimation: animation
         )
@@ -111,22 +65,6 @@ struct ZenOverlayHost<Content: View, Overlay: View>: View {
     @ViewBuilder
     private var overlayLayer: some View {
         ZStack(alignment: configuration.contentAlignment) {
-            if isOverlayMounted, configuration.scrim.material != nil {
-                ZStack {
-                    if let material = configuration.scrim.material {
-                        Rectangle()
-                            .fill(material)
-                            .opacity(isOverlayVisible ? ZenConfirmationDialogMotion.backdropOpacity : 0)
-                    }
-                }
-                .ignoresSafeArea()
-                .transition(configuration.scrim.transition)
-                .animation(
-                    isOverlayVisible ? configuration.scrimPresentAnimation : configuration.scrimDismissAnimation,
-                    value: isOverlayVisible
-                )
-            }
-
             if isOverlayMounted {
                 overlay
                     .padding(.horizontal, configuration.horizontalPadding)

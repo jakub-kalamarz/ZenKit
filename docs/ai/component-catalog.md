@@ -252,24 +252,6 @@ Each entry uses the same schema:
 - `example_paths`: `Sources/ZenKit/Components/Feedback/ZenAlert.swift`
 - `notes`: action model, not a rendered control on its own
 
-### `ZenConfirmationDialog`
-- `category`: Feedback
-- `use_when`: confirming decisions with multiple actions while keeping the trigger in-context
-- `avoid_when`: inline menus or simple single-button alerts
-- `pairs_with`: `ZenConfirmationDialogAction`, `ZenButton`
-- `required_state`: title, message, presentation binding, action array, trigger/content
-- `example_paths`: `Sources/ZenKit/Components/Feedback/ZenshiConfirmationDialog.swift`, `Tests/ZenKitTests/ZenKitPublicSurfaceSmokeTests.swift`
-- `notes`: use when confirmation is secondary to the surrounding screen
-
-### `ZenConfirmationDialogAction`
-- `category`: Feedback
-- `use_when`: configuring one action inside a `ZenConfirmationDialog`
-- `avoid_when`: standalone view composition
-- `pairs_with`: `ZenConfirmationDialog`
-- `required_state`: label, role, action closure
-- `example_paths`: `Sources/ZenKit/Components/Feedback/ZenshiConfirmationDialog.swift`
-- `notes`: action descriptor only
-
 ### `ZenEmpty`
 - `category`: Feedback
 - `use_when`: empty or first-run states with optional media and CTA
@@ -764,15 +746,6 @@ Each entry uses the same schema:
 - `example_paths`: `Sources/ZenKit/Components/System/ZenshiInlineAction.swift`, `Tests/ZenKitTests/ZenKitPublicSurfaceSmokeTests.swift`
 - `notes`: supplementary action, not the main button on a screen
 
-### `ZenOverlayRoot`
-- `category`: System
-- `use_when`: hosting overlays such as toasts above app content
-- `avoid_when`: standard page composition without overlay infrastructure
-- `pairs_with`: `ZenToastHost`
-- `required_state`: wrapped app content
-- `example_paths`: `Sources/ZenKit/Components/System/ZenshiOverlayRoot.swift`
-- `notes`: infrastructure component for overlay-enabled roots
-
 ### `ZenToastAction`
 - `category`: System
 - `use_when`: defining an action that appears inside a toast
@@ -813,7 +786,7 @@ Each entry uses the same schema:
 - `category`: System
 - `use_when`: rendering queued toasts at the edge of the screen
 - `avoid_when`: inline status messaging
-- `pairs_with`: `ZenToastItem`, `ZenToastHostEdge`, `ZenOverlayRoot`
+- `pairs_with`: `ZenToastItem`, `ZenToastHostEdge`
 - `required_state`: toast collection/center and edge configuration
 - `example_paths`: `Sources/ZenKit/Components/System/ZenshiToastHost.swift`
 - `notes`: infrastructure view for transient toast presentation
