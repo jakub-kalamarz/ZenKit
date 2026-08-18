@@ -54,7 +54,6 @@ struct ZenKitButtonTests {
 
     @Test
     func badgeVisualMetricsSupportCompactRemoveAffordance() {
-        #expect(ZenBadgeStyleMetrics.removeDividerVerticalInset == 5)
         #expect(ZenBadgeStyleMetrics.removeIconSize == 10)
     }
 
@@ -80,13 +79,6 @@ struct ZenKitButtonTests {
         let theme = ZenTheme(density: .compact)
         let metrics = theme.resolvedMetrics
 
-        let xsSpec = ZenButtonSize.xs.textFontSpec(theme: theme)
-        #expect(ZenButtonSize.xs.minHeight(metrics: metrics) == 32)
-        #expect(ZenButtonSize.xs.horizontalPadding == 12)
-        #expect(ZenButtonSize.xs.iconSpacing == 6)
-        #expect(xsSpec.size == 12)
-        #expect(xsSpec.weight == .medium)
-
         let smSpec = ZenButtonSize.sm.textFontSpec(theme: theme)
         #expect(ZenButtonSize.sm.minHeight(metrics: metrics) == 36)
         #expect(ZenButtonSize.sm.horizontalPadding == 14)
@@ -105,19 +97,17 @@ struct ZenKitButtonTests {
     @Test
     func textButtonSizesResolveDecorativeIconMetrics() {
         #expect(ZenButtonSize.default.iconSize == 16)
-        #expect(ZenButtonSize.xs.iconSize == 14)
         #expect(ZenButtonSize.sm.iconSize == 14)
         #expect(ZenButtonSize.lg.iconSize == 18)
         #expect(ZenButtonSize.default.supportsDecorativeIcons)
         #expect(ZenButtonSize.sm.supportsDecorativeIcons)
         #expect(ZenButtonSize.icon.supportsDecorativeIcons == false)
-        #expect(ZenButtonSize.iconSm.supportsDecorativeIcons == false)
     }
 
     @Test
     func buttonFramesKeepIconOnlySizesSquareAndTextSizesIntrinsic() {
         let metrics = ZenTheme(density: .compact).resolvedMetrics
-        let iconFrame = ZenButtonSize.iconSm.resolvedFrame(metrics: metrics, fullWidth: true)
+        let iconFrame = ZenButtonSize.icon.resolvedFrame(metrics: metrics, fullWidth: true)
         let textFrame = ZenButtonSize.sm.resolvedFrame(metrics: metrics, fullWidth: false)
         let fullWidthTextFrame = ZenButtonSize.sm.resolvedFrame(metrics: metrics, fullWidth: true)
 

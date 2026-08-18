@@ -23,7 +23,6 @@ struct ButtonLabelShowcaseScreen: View {
                     ZenButtonLabel("Large", size: .lg)
                     ZenButtonLabel("Default", size: .default)
                     ZenButtonLabel("Small", size: .sm)
-                    ZenButtonLabel("Extra Small", size: .xs)
                 }
             }
 
