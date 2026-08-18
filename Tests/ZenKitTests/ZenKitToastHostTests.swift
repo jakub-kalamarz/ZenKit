@@ -21,8 +21,8 @@ struct ZenKitToastHostTests {
 
         #expect(layout.hostAlignment == .bottom)
         #expect(layout.stackAlignment == .bottom)
-        #expect(layout.cardAlignment == .trailing)
-        #expect(layout.cardAnchor == .bottomTrailing)
+        #expect(layout.cardAlignment == .center)
+        #expect(layout.cardAnchor == .bottom)
         #expect(layout.stackDirection == -1)
     }
 
@@ -32,35 +32,35 @@ struct ZenKitToastHostTests {
 
         #expect(layout.hostAlignment == .top)
         #expect(layout.stackAlignment == .top)
-        #expect(layout.cardAlignment == .trailing)
-        #expect(layout.cardAnchor == .topTrailing)
+        #expect(layout.cardAlignment == .center)
+        #expect(layout.cardAnchor == .top)
         #expect(layout.stackDirection == 1)
     }
 
     @Test
-    func wideLayoutsStayTrailingAlignedForEitherEdge() {
+    func wideLayoutsStayEdgeCentredForEitherEdge() {
         let bottom = ZenToastHost.Layout(edge: .bottom, size: CGSize(width: 900, height: 700))
         let top = ZenToastHost.Layout(edge: .top, size: CGSize(width: 900, height: 700))
 
-        #expect(bottom.hostAlignment == .bottomTrailing)
-        #expect(bottom.stackAlignment == .bottomTrailing)
-        #expect(top.hostAlignment == .topTrailing)
-        #expect(top.stackAlignment == .topTrailing)
+        #expect(bottom.hostAlignment == .bottom)
+        #expect(bottom.stackAlignment == .bottom)
+        #expect(top.hostAlignment == .top)
+        #expect(top.stackAlignment == .top)
     }
 
     @Test
-    func wideViewportPinsCardWidthAndUsesWiderInset() {
+    func wideViewportCapsCardWidthAndUsesWiderInset() {
         let layout = ZenToastHost.Layout(edge: .bottom, size: CGSize(width: 900, height: 700))
 
-        #expect(layout.cardWidth == 340)
+        #expect(layout.cardMaxWidth == ZenToastHost.Layout.maxCardWidth)
         #expect(layout.viewportInset == 32)
     }
 
     @Test
-    func compactViewportFillsAvailableWidthMinusInsets() {
+    func compactViewportCapsCardWidthAtAvailableWidthMinusInsets() {
         let layout = ZenToastHost.Layout(edge: .bottom, size: CGSize(width: 390, height: 844))
 
-        #expect(layout.cardWidth == 358)
+        #expect(layout.cardMaxWidth == 358)
         #expect(layout.viewportInset == 16)
     }
 

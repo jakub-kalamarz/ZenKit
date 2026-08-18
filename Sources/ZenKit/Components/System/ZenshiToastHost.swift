@@ -11,7 +11,7 @@ public struct ZenToastHost: View {
 
     @GestureState private var isPressingStack = false
     @State private var isPointerOverStack = false
-    @State private var naturalHeights: [ZenToastID: CGFloat] = [:]
+    @State private var naturalSizes: [ZenToastID: CGSize] = [:]
 
     public init(center: ZenToastCenter, edge: ZenToastHostEdge = .bottom) {
         self.center = center
@@ -54,12 +54,12 @@ public struct ZenToastHost: View {
         // stack's height, exactly like the reference viewport.
         let displayedToasts = Array(center.visibleToasts.reversed())
         let isExpanded = isStackExpanded
-        let stackHeight = displayedToasts.first.flatMap { naturalHeights[$0.id] } ?? Layout.estimatedCardHeight
+        let stackSize = displayedToasts.first.flatMap { naturalSizes[$0.id] } ?? Layout.estimatedCardSize
 
         ZStack(alignment: layout.stackAlignment) {
             ForEach(Array(displayedToasts.enumerated()), id: \.element.id) { depth, toast in
-                let measuredHeight = naturalHeights[toast.id]
-                let cardHeight = measuredHeight ?? stackHeight
+                let measuredSize = naturalSizes[toast.id]
+                let cardHeight = measuredSize?.height ?? stackSize.height
 
                 ZenToastCard(
                     toast: toast,
@@ -69,12 +69,16 @@ public struct ZenToastHost: View {
                     // Collapsed, every card is squashed to the frontmost card's
                     // height so the peeking slivers line up. Left unconstrained
                     // until it has been measured, so nothing snaps on insertion.
-                    displayHeight: measuredHeight.map { isExpanded ? $0 : stackHeight },
+                    // Cards hug their own content, except behind a collapsed
+                    // stack, where they borrow the frontmost card's width so the
+                    // peeking slivers line up instead of reading as ragged edges.
+                    displayWidth: (isExpanded || depth == 0) ? nil : stackSize.width,
+                    displayHeight: measuredSize.map { isExpanded ? $0.height : stackSize.height },
                     isInteractive: isExpanded || depth == 0,
                     onAction: { handleAction($0, on: toast) },
                     onDismiss: { dismissToast(toast) }
                 )
-                .frame(maxWidth: layout.cardWidth, alignment: layout.cardAlignment)
+                .frame(maxWidth: layout.cardMaxWidth, alignment: layout.cardAlignment)
                 .zenToastHitRegion(id: toast.id)
                 // Scale first, then offset: the offset must not be scaled down
                 // for cards deeper in the stack.
@@ -85,7 +89,7 @@ public struct ZenToastHost: View {
                             for: depth,
                             precedingHeight: precedingHeight(before: depth, in: displayedToasts)
                         )
-                        : layout.collapsedOffset(for: depth, stackHeight: stackHeight)
+                        : layout.collapsedOffset(for: depth, stackHeight: stackSize.height)
                 )
                 .zIndex(Double(Layout.baseZIndex - depth))
                 .transition(layout.transition(cardHeight: cardHeight))
@@ -93,8 +97,8 @@ public struct ZenToastHost: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: layout.hostAlignment)
-        .onPreferenceChange(ZenToastCardHeightPreferenceKey.self) { heights in
-            naturalHeights = heights
+        .onPreferenceChange(ZenToastCardSizePreferenceKey.self) { sizes in
+            naturalSizes = sizes
         }
         .simultaneousGesture(stackReviewGesture)
         .onHover { isInside in
@@ -138,7 +142,7 @@ public struct ZenToastHost: View {
 
     private func precedingHeight(before depth: Int, in toasts: [ZenToastItem]) -> CGFloat {
         toasts.prefix(depth).reduce(into: CGFloat.zero) { total, toast in
-            total += naturalHeights[toast.id] ?? Layout.estimatedCardHeight
+            total += naturalSizes[toast.id]?.height ?? Layout.estimatedCardHeight
         }
     }
 
@@ -167,8 +171,10 @@ extension ZenToastHost {
         static let scaleStep: CGFloat = 0.1
         /// Stand-in height used before a card has reported its measured size.
         static let estimatedCardHeight: CGFloat = 88
-        /// Width the viewport pins to once there is room for it.
-        static let wideViewportWidth: CGFloat = 340
+        /// Stand-in width used before a card has reported its measured size.
+        static let estimatedCardWidth: CGFloat = 320
+        /// Ceiling on a card's self-sized width; past this, text wraps instead.
+        static let maxCardWidth: CGFloat = 420
         static let wideViewportBreakpoint: CGFloat = 640
         static let compactViewportInset: CGFloat = 16
         static let wideViewportInset: CGFloat = 32
@@ -176,6 +182,10 @@ extension ZenToastHost {
         static let baseZIndex = 1000
         /// Enter/exit travel as a multiple of the card's own height.
         static let transitionTravelRatio: CGFloat = 1.5
+
+        static var estimatedCardSize: CGSize {
+            CGSize(width: estimatedCardWidth, height: estimatedCardHeight)
+        }
 
         static let transformAnimation: Animation = .timingCurve(0.22, 1, 0.36, 1, duration: 0.5)
         static let heightAnimation: Animation = .easeOut(duration: 0.15)
@@ -188,15 +198,13 @@ extension ZenToastHost {
             max(0, 1 - (CGFloat(depth) * scaleStep))
         }
 
+        /// Toasts stay centred on their edge at every width; only the inset
+        /// changes once the viewport is wide.
         var hostAlignment: Alignment {
-            switch (edge, isWide) {
-            case (.top, true):
-                return .topTrailing
-            case (.top, false):
+            switch edge {
+            case .top:
                 return .top
-            case (.bottom, true):
-                return .bottomTrailing
-            case (.bottom, false):
+            case .bottom:
                 return .bottom
             }
         }
@@ -206,20 +214,21 @@ extension ZenToastHost {
         }
 
         var cardAlignment: Alignment {
-            .trailing
+            .center
         }
 
         var cardAnchor: UnitPoint {
             switch edge {
             case .top:
-                return .topTrailing
+                return .top
             case .bottom:
-                return .bottomTrailing
+                return .bottom
             }
         }
 
-        var cardWidth: CGFloat {
-            isWide ? Self.wideViewportWidth : max(0, size.width - (Self.compactViewportInset * 2))
+        /// Cards size to their content, so this is only the ceiling they wrap at.
+        var cardMaxWidth: CGFloat {
+            min(Self.maxCardWidth, max(0, size.width - (viewportInset * 2)))
         }
 
         var viewportInset: CGFloat {
@@ -289,10 +298,10 @@ extension ZenToastHost {
     }
 }
 
-private struct ZenToastCardHeightPreferenceKey: PreferenceKey {
-    static var defaultValue: [ZenToastID: CGFloat] { [:] }
+private struct ZenToastCardSizePreferenceKey: PreferenceKey {
+    static var defaultValue: [ZenToastID: CGSize] { [:] }
 
-    static func reduce(value: inout [ZenToastID: CGFloat], nextValue: () -> [ZenToastID: CGFloat]) {
+    static func reduce(value: inout [ZenToastID: CGSize], nextValue: () -> [ZenToastID: CGSize]) {
         value.merge(nextValue()) { _, latest in latest }
     }
 }
@@ -302,6 +311,7 @@ private struct ZenToastCard: View {
     let edge: ZenToastHostEdge
     let isFrontmost: Bool
     let isExpanded: Bool
+    let displayWidth: CGFloat?
     let displayHeight: CGFloat?
     let isInteractive: Bool
     let onAction: (ZenToastAction) -> Void
@@ -314,9 +324,6 @@ private struct ZenToastCard: View {
     private static let cornerRadiusFallback: CGFloat = 12
     private static let padding: CGFloat = 16
     private static let iconSize: CGFloat = 16
-    private static let closeButtonSize: CGFloat = 20
-    private static let closeIconSize: CGFloat = 12
-    private static let closeButtonInset: CGFloat = 8
 
     var body: some View {
         let cornerRadius = ZenTheme.current.resolvedCornerRadius(for: .container)
@@ -324,13 +331,12 @@ private struct ZenToastCard: View {
 
         ZStack(alignment: contentAlignment) {
             cardContent
-                .background(heightReader)
+                .background(sizeReader)
                 // Pinned to its natural height so squashing the card below it
                 // never feeds back into the measurement.
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .frame(height: displayHeight, alignment: contentAlignment)
+        .frame(width: displayWidth, height: displayHeight, alignment: contentAlignment)
         .background(cardBackground)
         .clipShape(shape)
         .overlay(shape.strokeBorder(borderColor, lineWidth: borderWidth))
@@ -341,6 +347,7 @@ private struct ZenToastCard: View {
         .offset(dragOffset)
         .gesture(dismissGesture, including: isInteractive ? .all : .none)
         .animation(.spring(response: 0.24, dampingFraction: 0.82), value: dragOffset)
+        .animation(ZenToastHost.Layout.heightAnimation, value: displayWidth)
         .animation(ZenToastHost.Layout.heightAnimation, value: displayHeight)
         .animation(.easeInOut(duration: 0.22), value: toast.tone)
         .onAppear {
@@ -401,60 +408,59 @@ private struct ZenToastCard: View {
                             .padding(.top, ZenSpacing.xSmall)
                     }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
                 .animation(.easeInOut(duration: 0.2), value: toast.title)
                 .animation(.easeInOut(duration: 0.2), value: toast.message)
                 .animation(.easeInOut(duration: 0.22), value: toast.progress)
             }
-            // Keeps the title clear of the close control pinned to the corner.
-            .padding(.trailing, Self.closeButtonSize)
         }
         .padding(Self.padding)
-        .overlay(closeButton, alignment: .topTrailing)
         .opacity(contentOpacity)
         .allowsHitTesting(contentOpacity == 1)
         .animation(ZenToastHost.Layout.contentFadeAnimation, value: contentOpacity)
     }
 
+    /// Actions read as text links rather than buttons: no chrome to compete
+    /// with the tone tint, separated by a dot when there is more than one.
     private var actionsRow: some View {
-        HStack(spacing: ZenSpacing.small) {
-            ForEach(toast.actions) { action in
-                ZenButton(variant: action.variant, size: .sm) {
-                    onAction(action)
-                } label: {
-                    Text(action.label)
+        HStack(spacing: ZenSpacing.xSmall) {
+            ForEach(Array(toast.actions.enumerated()), id: \.element.id) { index, action in
+                if index > 0 {
+                    Text(verbatim: "·")
+                        .font(.zenBody)
+                        .foregroundStyle(Color.zenTextMuted)
+                        .accessibilityHidden(true)
                 }
-                .accessibilityIdentifier(ZenAccessibilityID.Toast.actionButton)
+
+                ZenToastActionLink(
+                    label: action.label,
+                    tint: actionColor(for: action.variant)
+                ) {
+                    onAction(action)
+                }
             }
         }
         .padding(.top, ZenSpacing.xSmall)
     }
 
-    private var closeButton: some View {
-        Button {
-            onDismiss()
-        } label: {
-            ZenIcon(systemName: "xmark", size: Self.closeIconSize)
-                .font(.system(size: Self.closeIconSize, weight: .bold))
-                .foregroundStyle(closeIconColor)
+    /// The emphasised variants keep the tone tint; the quiet ones step back to
+    /// muted text so a secondary action never outweighs the primary one.
+    private func actionColor(for variant: ZenButtonVariant) -> Color {
+        switch variant {
+        case .default, .glassProminent:
+            return tintColor
+        case .destructive:
+            return .zenCritical
+        case .plain, .glass, .outline, .secondary, .ghost, .link:
+            return .zenTextMuted
         }
-        .buttonStyle(
-            ZenToastCloseButtonStyle(
-                tint: closeIconColor,
-                size: Self.closeButtonSize
-            )
-        )
-        .padding(Self.closeButtonInset)
-        .accessibilityLabel("Close")
-        .accessibilityIdentifier(ZenAccessibilityID.Toast.closeButton)
     }
 
-    private var heightReader: some View {
+    private var sizeReader: some View {
         GeometryReader { proxy in
             Color.clear
                 .preference(
-                    key: ZenToastCardHeightPreferenceKey.self,
-                    value: [toast.id: proxy.size.height]
+                    key: ZenToastCardSizePreferenceKey.self,
+                    value: [toast.id: proxy.size]
                 )
         }
     }
@@ -532,15 +538,6 @@ private struct ZenToastCard: View {
         switch toast.tone {
         case .default, .loading:
             return .zenTextPrimary
-        case .success, .error, .warning, .info:
-            return tintColor
-        }
-    }
-
-    private var closeIconColor: Color {
-        switch toast.tone {
-        case .default, .loading:
-            return .zenTextMuted
         case .success, .error, .warning, .info:
             return tintColor
         }
@@ -631,38 +628,34 @@ private struct ZenToastCard: View {
 
 /// Square ghost control carrying the reference's tinted hover/press wash. Touch
 /// platforms have no hover, so a press stands in for it there.
-private struct ZenToastCloseButtonStyle: ButtonStyle {
+private struct ZenToastActionLink: View {
+    let label: String
     let tint: Color
-    let size: CGFloat
-
-    func makeBody(configuration: Configuration) -> some View {
-        ZenToastCloseButtonBody(configuration: configuration, tint: tint, size: size)
-    }
-}
-
-private struct ZenToastCloseButtonBody: View {
-    let configuration: ZenToastCloseButtonStyle.Configuration
-    let tint: Color
-    let size: CGFloat
+    let action: () -> Void
 
     @State private var isPointerOver = false
 
     var body: some View {
-        configuration.label
-            .frame(width: size, height: size)
-            .background(
-                RoundedRectangle(cornerRadius: 4, style: .continuous)
-                    .fill(tint.opacity(isHighlighted ? 0.15 : 0))
-            )
-            .contentShape(Rectangle())
-            .onHover { isInside in
-                isPointerOver = isInside
-            }
-            .animation(.easeOut(duration: 0.12), value: isHighlighted)
+        Button(action: action) {
+            Text(label)
+                .font(.zen(.body, weight: .medium))
+                .underline(isPointerOver)
+                .foregroundStyle(tint)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(ZenToastActionLinkStyle())
+        .onHover { isInside in
+            isPointerOver = isInside
+        }
+        .accessibilityIdentifier(ZenAccessibilityID.Toast.actionButton)
     }
+}
 
-    private var isHighlighted: Bool {
-        configuration.isPressed || isPointerOver
+private struct ZenToastActionLinkStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .opacity(configuration.isPressed ? 0.6 : 1)
+            .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
     }
 }
 
@@ -701,35 +694,215 @@ private struct ToastAnimationSignature: Equatable {
 }
 
 @MainActor
-private func zenToastHostPreviewCenter() -> ZenToastCenter {
-    let center = ZenToastCenter(maxVisibleToasts: 3)
-    _ = center.show(
-        "Invite sent",
-        message: "Maya can join the workspace from her inbox.",
-        duration: nil
-    )
-    _ = center.warning(
-        "Rate limit warning",
-        message: "You're approaching your API quota.",
-        duration: nil
-    )
-    _ = center.success(
-        "Deployed successfully",
-        message: "Your Worker is now live.",
-        duration: nil,
-        actions: [
-            ZenToastAction("Support", handler: {}),
-            ZenToastAction("Ask AI", variant: .default, handler: {}),
-        ]
-    )
+private func zenToastPreviewCenter(
+    maxVisibleToasts: Int = 3,
+    _ seed: (ZenToastCenter) -> Void
+) -> ZenToastCenter {
+    let center = ZenToastCenter(maxVisibleToasts: maxVisibleToasts)
+    seed(center)
     return center
 }
 
-#Preview {
-    ZStack {
-        Color.zenBackground
-            .ignoresSafeArea()
+private struct ZenToastPreviewStage<Content: View>: View {
+    let title: String
+    let subtitle: String
+    @ViewBuilder let content: () -> Content
 
-        ZenToastHost(center: zenToastHostPreviewCenter(), edge: .top)
+    var body: some View {
+        ZStack {
+            Color.zenBackground
+                .ignoresSafeArea()
+
+            VStack(alignment: .leading, spacing: ZenSpacing.small) {
+                Text(title)
+                    .font(.zenTitle)
+                    .foregroundStyle(Color.zenTextPrimary)
+
+                Text(subtitle)
+                    .font(.zenGroup)
+                    .foregroundStyle(Color.zenTextMuted)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .padding(ZenSpacing.large)
+
+            content()
+        }
     }
+}
+
+#Preview("Tones") {
+    ZenToastPreviewStage(
+        title: "Tones",
+        subtitle: "Every tone side by side, expanded so each card renders its own icon and colors."
+    ) {
+        ZenToastHost(
+            center: zenToastPreviewCenter(maxVisibleToasts: 6) { center in
+                _ = center.show("Invite sent", message: "Maya can join from her inbox.", duration: nil)
+                _ = center.info("New release available", message: "Version 2.4 is ready to install.", duration: nil)
+                _ = center.success("Deployed successfully", message: "Your Worker is now live.", duration: nil)
+                _ = center.warning("Rate limit warning", message: "You're approaching your API quota.", duration: nil)
+                _ = center.error("Sync failed", message: "Check your connection and try again.", duration: nil)
+                _ = center.loading("Exporting previews", message: "Compressing assets")
+            },
+            edge: .top
+        )
+    }
+}
+
+#Preview("Title only") {
+    ZenToastPreviewStage(
+        title: "Title only",
+        subtitle: "No message body — the card collapses to a single line."
+    ) {
+        ZenToastHost(
+            center: zenToastPreviewCenter { center in
+                _ = center.success("Copied to clipboard", duration: nil)
+                _ = center.show("Draft saved", duration: nil)
+            },
+            edge: .top
+        )
+    }
+}
+
+#Preview("Actions") {
+    ZenToastPreviewStage(
+        title: "Actions",
+        subtitle: "Emphasised and quiet action links, a dot-separated pair, and a non-dismissing action."
+    ) {
+        ZenToastHost(
+            center: zenToastPreviewCenter { center in
+                _ = center.error(
+                    "Upload failed",
+                    message: "The file exceeded the 25 MB limit.",
+                    duration: nil,
+                    actions: [ZenToastAction("Retry", handler: {})]
+                )
+                _ = center.success(
+                    "Deployed successfully",
+                    message: "Your Worker is now live.",
+                    duration: nil,
+                    actions: [
+                        ZenToastAction("Support", handler: {}),
+                        ZenToastAction("Ask AI", variant: .default, handler: {}),
+                    ]
+                )
+                _ = center.info(
+                    "Background job running",
+                    message: "Keep this open to follow along.",
+                    duration: nil,
+                    actions: [ZenToastAction("View log", dismissesToast: false, handler: {})]
+                )
+            },
+            edge: .top
+        )
+    }
+}
+
+#Preview("Progress") {
+    ZenToastPreviewStage(
+        title: "Progress",
+        subtitle: "Determinate progress at the start, middle, and end of a run."
+    ) {
+        ZenToastHost(
+            center: zenToastPreviewCenter { center in
+                _ = center.loading("Uploading assets", message: "1 of 12 files", progress: 0.08)
+                _ = center.loading(
+                    "Exporting previews",
+                    message: "Compressing assets",
+                    progress: 0.58,
+                    actions: [ZenToastAction("View queue", handler: {})]
+                )
+                _ = center.success("Export complete", message: "12 files written.", duration: nil, progress: 1)
+            },
+            edge: .top
+        )
+    }
+}
+
+#Preview("Loading") {
+    ZenToastPreviewStage(
+        title: "Loading",
+        subtitle: "Indeterminate spinner with no timeout — the toast lives until the work resolves."
+    ) {
+        ZenToastHost(
+            center: zenToastPreviewCenter { center in
+                _ = center.loading("Connecting to workspace")
+                _ = center.loading("Rebuilding index", message: "This can take a minute.")
+            },
+            edge: .top
+        )
+    }
+}
+
+#Preview("Long content") {
+    ZenToastPreviewStage(
+        title: "Long content",
+        subtitle: "Wrapping title and multi-line message next to the close button."
+    ) {
+        ZenToastHost(
+            center: zenToastPreviewCenter { center in
+                _ = center.error(
+                    "Deployment rolled back after a failed health check",
+                    message: """
+                    Three of five instances failed readiness probes within the grace period, so the                     previous revision was restored automatically. No traffic was served by the new build.
+                    """,
+                    duration: nil,
+                    actions: [ZenToastAction("View logs", handler: {})]
+                )
+            },
+            edge: .top
+        )
+    }
+}
+
+#Preview("Stack – bottom") {
+    ZenToastPreviewStage(
+        title: "Collapsed stack",
+        subtitle: "Bottom edge. Hover or press the stack to expand it."
+    ) {
+        ZenToastHost(
+            center: zenToastPreviewCenter { center in
+                _ = center.show("Invite sent", message: "Maya can join from her inbox.", duration: nil)
+                _ = center.warning("Rate limit warning", message: "You're approaching your API quota.", duration: nil)
+                _ = center.success("Deployed successfully", message: "Your Worker is now live.", duration: nil)
+            },
+            edge: .bottom
+        )
+    }
+}
+
+#Preview("Queue overflow") {
+    ZenToastPreviewStage(
+        title: "Queue overflow",
+        subtitle: "Two visible slots with three more waiting; each dismissal promotes the next."
+    ) {
+        ZenToastHost(
+            center: zenToastPreviewCenter(maxVisibleToasts: 2) { center in
+                _ = center.info("Queued 1", message: "Waiting its turn.", duration: nil)
+                _ = center.info("Queued 2", message: "Waiting its turn.", duration: nil)
+                _ = center.info("Queued 3", message: "Waiting its turn.", duration: nil)
+                _ = center.info("Queued 4", message: "Waiting its turn.", duration: nil)
+                _ = center.info("Queued 5", message: "Waiting its turn.", duration: nil)
+            },
+            edge: .top
+        )
+    }
+}
+
+#Preview("Dark") {
+    ZenToastPreviewStage(
+        title: "Dark",
+        subtitle: "The same tone set rendered in the dark color scheme."
+    ) {
+        ZenToastHost(
+            center: zenToastPreviewCenter(maxVisibleToasts: 4) { center in
+                _ = center.success("Deployed successfully", message: "Your Worker is now live.", duration: nil)
+                _ = center.warning("Rate limit warning", message: "You're approaching your API quota.", duration: nil)
+                _ = center.error("Sync failed", message: "Check your connection and try again.", duration: nil)
+                _ = center.loading("Exporting previews", message: "Compressing assets", progress: 0.42)
+            },
+            edge: .top
+        )
+    }
+    .preferredColorScheme(.dark)
 }

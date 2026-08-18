@@ -489,7 +489,7 @@ private func zenToastPreviewCenter() -> ZenToastCenter {
     return center
 }
 
-#Preview {
+#Preview("Toast center – seeded") {
     ZStack {
         Color.zenBackground
             .ignoresSafeArea()
@@ -507,5 +507,35 @@ private func zenToastPreviewCenter() -> ZenToastCenter {
         .padding(ZenSpacing.large)
 
         ZenToastHost(center: zenToastPreviewCenter())
+    }
+}
+
+@MainActor
+private func zenToastAutoDismissPreviewCenter() -> ZenToastCenter {
+    let center = ZenToastCenter(maxVisibleToasts: 3)
+    _ = center.info("Dismisses in 2s", message: "Short-lived confirmation.", duration: 2)
+    _ = center.show("Dismisses in 5s", message: "The default timeout.")
+    _ = center.loading("Never dismisses", message: "Loading toasts own their lifetime.")
+    return center
+}
+
+#Preview("Toast center – auto dismiss") {
+    ZStack {
+        Color.zenBackground
+            .ignoresSafeArea()
+
+        VStack(alignment: .leading, spacing: ZenSpacing.small) {
+            Text("Auto-dismiss timing")
+                .font(.zenTitle)
+                .foregroundStyle(Color.zenTextPrimary)
+
+            Text("Three lifetimes running live: 2s, the 5s default, and an indefinite loading toast.")
+                .font(.zenGroup)
+                .foregroundStyle(Color.zenTextMuted)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .padding(ZenSpacing.large)
+
+        ZenToastHost(center: zenToastAutoDismissPreviewCenter())
     }
 }
