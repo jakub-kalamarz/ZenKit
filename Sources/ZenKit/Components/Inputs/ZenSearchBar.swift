@@ -48,13 +48,13 @@ public struct ZenSearchBar: View {
         .frame(maxWidth: .infinity)
         .frame(minHeight: theme.resolvedMetrics.controlHeight)
         .background(controlStyle.backgroundColor)
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: cornerRadius)
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                 .strokeBorder(borderColor(theme: theme, controlStyle: controlStyle), lineWidth: borderWidth(controlStyle: controlStyle))
         )
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .zenControlSurfaceShadow()
-        .contentShape(RoundedRectangle(cornerRadius: cornerRadius))
+        .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         .onTapGesture {
             isFocused = true
         }

@@ -120,7 +120,7 @@ public struct ZenSwipeRow<Content: View>: View {
                     }
                 }
         }
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
     }
 }
 
@@ -160,7 +160,7 @@ public struct ZenSwipeRow<Content: View>: View {
             .padding(.horizontal, ZenSpacing.medium)
             .background(Color.zenSurface)
             .overlay(
-                RoundedRectangle(cornerRadius: 10)
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .strokeBorder(Color.zenBorder, lineWidth: 1)
             )
         }
@@ -193,7 +193,7 @@ public struct ZenSwipeRow<Content: View>: View {
             .padding(.horizontal, ZenSpacing.medium)
             .background(Color.zenSurface)
             .overlay(
-                RoundedRectangle(cornerRadius: 10)
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .strokeBorder(Color.zenBorder, lineWidth: 1)
             )
         }

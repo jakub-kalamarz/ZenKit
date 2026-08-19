@@ -152,7 +152,7 @@ public struct ZenMultiSelect<Option, OptionLabel: View, SummaryLabel: View>: Vie
             .padding(.horizontal, ZenSpacing.medium)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color.zenSurfaceMuted)
-            .clipShape(RoundedRectangle(cornerRadius: ZenTheme.current.resolvedCornerRadius(for: .nestedControl)))
+            .clipShape(RoundedRectangle(cornerRadius: ZenTheme.current.resolvedCornerRadius(for: .nestedControl), style: .continuous))
         }
         .buttonStyle(.plain)
     }

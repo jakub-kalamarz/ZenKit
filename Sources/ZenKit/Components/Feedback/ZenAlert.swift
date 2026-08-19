@@ -82,11 +82,11 @@ public struct ZenAlert: View {
         .padding(.vertical, 10)
         .padding(.horizontal, 12)
         .background(backgroundColor)
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: cornerRadius)
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                 .strokeBorder(borderColor, lineWidth: 1)
         )
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
     }
 
     private var iconSystemName: String {

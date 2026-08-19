@@ -37,11 +37,11 @@ public struct ZenToggle: View {
         .padding(.vertical, 12)
         .padding(.horizontal, ZenSpacing.medium)
         .background(Color.zenSurface)
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: cornerRadius)
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                 .strokeBorder(Color.zenBorder, lineWidth: 1)
         )
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .zenControlSurfaceShadow()
     }
 

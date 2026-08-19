@@ -55,7 +55,7 @@ public struct ZenCollectionCard<Content: View>: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Color.zenBackground)
                 .clipShape(
-                    RoundedRectangle(cornerRadius: ZenTheme.current.resolvedCornerRadius(for: 8))
+                    RoundedRectangle(cornerRadius: ZenTheme.current.resolvedCornerRadius(for: 8), style: .continuous)
                 )
         }
     }

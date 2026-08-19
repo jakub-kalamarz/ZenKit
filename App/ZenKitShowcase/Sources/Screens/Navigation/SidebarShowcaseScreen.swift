@@ -56,7 +56,7 @@ struct SidebarShowcaseScreen: View {
                     .background(Color.zenBackground)
                 }
                 .frame(height: 300)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
             }
 
             ZenCard(title: "Groups + Header/Footer", subtitle: "Sidebar with labeled groups, header, and footer") {
@@ -99,7 +99,7 @@ struct SidebarShowcaseScreen: View {
                     .background(Color.zenBackground)
                 }
                 .frame(height: 400)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
             }
         }
     }

@@ -58,11 +58,11 @@ public struct ZenInlineStepper: View {
         }
         .padding(ZenSpacing.xSmall)
         .background(Color.zenSurface)
+        .clipShape(RoundedRectangle(cornerRadius: containerRadius, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: containerRadius, style: .continuous)
                 .strokeBorder(Color.zenBorder, lineWidth: 1)
         )
-        .clipShape(RoundedRectangle(cornerRadius: containerRadius, style: .continuous))
         .zenControlSurfaceShadow()
     }
 

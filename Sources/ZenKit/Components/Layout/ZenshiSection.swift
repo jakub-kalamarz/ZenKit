@@ -32,11 +32,11 @@ public struct ZenSection<Content: View, Header: View, Footer: View>: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.zenSurfaceMuted)
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: cornerRadius)
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                 .strokeBorder(Color.zenBorder, lineWidth: 1)
         )
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .listRowInsets(
             EdgeInsets(
                 top: ZenSpacing.xSmall,
@@ -118,11 +118,11 @@ private struct ZenSectionBody<Content: View>: View {
         .padding(.horizontal, ZenSpacing.xSmall)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.zenSurface)
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: cornerRadius)
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                 .strokeBorder(Color.zenBorder, lineWidth: 1)
         )
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .padding(.horizontal, ZenSpacing.xSmall)
         .zenContainerCornerRadius(cornerRadius)
     }

@@ -36,11 +36,11 @@ public struct ZenDatePicker: View {
         .padding(.horizontal, ZenSpacing.medium)
         .frame(maxWidth: .infinity, minHeight: theme.resolvedMetrics.controlHeight, alignment: .leading)
         .background(controlStyle.backgroundColor)
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: cornerRadius)
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                 .strokeBorder(controlStyle.borderColor, lineWidth: controlStyle.borderWidth)
         )
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .zenControlSurfaceShadow()
     }
 }

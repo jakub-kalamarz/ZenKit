@@ -52,7 +52,7 @@ struct CardShowcaseScreen: View {
                                 .padding(.vertical, 8)
                                 .padding(.horizontal, 12)
                                 .background(Color.zenBackground)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                         }
                     }
                 }

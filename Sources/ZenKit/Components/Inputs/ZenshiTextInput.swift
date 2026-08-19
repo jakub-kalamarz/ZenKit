@@ -107,13 +107,13 @@ public struct ZenTextInput: View {
                 alignment: .leading
             )
             .background(controlStyle.backgroundColor)
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
             .overlay(
-                RoundedRectangle(cornerRadius: cornerRadius)
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .strokeBorder(borderColor(controlStyle: controlStyle), lineWidth: controlStyle.borderWidth)
             )
-            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
             .zenControlSurfaceShadow()
-            .contentShape(RoundedRectangle(cornerRadius: cornerRadius))
+            .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
             .onTapGesture {
                 if state != .disabled {
                     isFocused = true

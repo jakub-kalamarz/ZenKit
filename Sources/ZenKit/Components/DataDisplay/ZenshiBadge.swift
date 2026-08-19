@@ -161,10 +161,10 @@ public struct ZenBadge: View {
             }
         }
         .background(backgroundColor)
+        .clipShape(shape)
         .overlay(
             shape.strokeBorder(variant == .filled ? .clear : borderColor, lineWidth: 1)
         )
-        .clipShape(shape)
         .contentShape(shape)
         .fixedSize(horizontal: true, vertical: false)
     }

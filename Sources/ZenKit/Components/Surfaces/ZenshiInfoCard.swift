@@ -33,11 +33,11 @@ public struct ZenInfoCard: View {
                 .padding(.vertical, 10)
                 .padding(.horizontal, 12)
                 .background(Color.zenSurfaceMuted)
+                .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                 .overlay(
-                    RoundedRectangle(cornerRadius: cornerRadius)
+                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                         .strokeBorder(Color.zenBorder, lineWidth: 1)
                 )
-                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         }
     }
 }

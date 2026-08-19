@@ -91,11 +91,11 @@ public struct ZenRatingRow: View {
         .padding(.horizontal, ZenSpacing.medium)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.zenSurface)
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: cornerRadius)
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                 .strokeBorder(Color.zenBorder, lineWidth: 1)
         )
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
     }
 }
 

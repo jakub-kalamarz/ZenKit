@@ -62,11 +62,11 @@ public struct ZenClipboardText: View {
             alignment: .leading
         )
         .background(controlStyle.backgroundColor)
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: cornerRadius)
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                 .strokeBorder(controlStyle.borderColor, lineWidth: controlStyle.borderWidth)
         )
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .zenControlSurfaceShadow()
     }
 

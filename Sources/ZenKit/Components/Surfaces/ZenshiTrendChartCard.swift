@@ -206,7 +206,7 @@ public struct ZenTrendChartCard: View {
             }
         }
         .padding(theme.resolvedMetrics.cardPadding)
-        .clipShape(RoundedRectangle(cornerRadius: theme.resolvedCornerRadius(for: ZenRadius.medium)))
+        .clipShape(RoundedRectangle(cornerRadius: theme.resolvedCornerRadius(for: ZenRadius.medium), style: .continuous))
     }
 
     var xAxisStride: Int {

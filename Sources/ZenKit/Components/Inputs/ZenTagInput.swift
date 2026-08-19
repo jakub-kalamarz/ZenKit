@@ -52,11 +52,11 @@ public struct ZenTagInput: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .frame(minHeight: theme.resolvedMetrics.controlHeight)
         .background(controlStyle.backgroundColor)
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: cornerRadius)
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                 .strokeBorder(borderColor, lineWidth: controlStyle.borderWidth)
         )
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .zenControlSurfaceShadow()
         .contentShape(Rectangle())
         .onTapGesture {

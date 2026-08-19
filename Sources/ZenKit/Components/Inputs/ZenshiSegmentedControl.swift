@@ -197,11 +197,11 @@ public struct ZenSegmentedControl<Value: Hashable, Label: View>: View {
         }
         .padding(4)
         .background(Color.zenSurfaceMuted)
+        .clipShape(RoundedRectangle(cornerRadius: controlCornerRadius, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: controlCornerRadius, style: .continuous)
                 .strokeBorder(Color.zenBorder, lineWidth: 1)
         )
-        .clipShape(RoundedRectangle(cornerRadius: controlCornerRadius, style: .continuous))
         .zenControlSurfaceShadow()
         .zenContainerCornerRadius(controlCornerRadius)
     }

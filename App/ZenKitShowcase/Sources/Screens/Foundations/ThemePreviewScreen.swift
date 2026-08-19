@@ -65,11 +65,11 @@ struct ThemePreviewScreen: View {
 
     private func tokenSwatch(title: String, color: Color) -> some View {
         VStack(alignment: .leading, spacing: ZenSpacing.small) {
-            RoundedRectangle(cornerRadius: ZenRadius.small)
+            RoundedRectangle(cornerRadius: ZenRadius.small, style: .continuous)
                 .fill(color)
                 .frame(height: 56)
                 .overlay(
-                    RoundedRectangle(cornerRadius: ZenRadius.small)
+                    RoundedRectangle(cornerRadius: ZenRadius.small, style: .continuous)
                         .stroke(Color.zenBorder, lineWidth: 1)
                 )
 

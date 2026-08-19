@@ -117,11 +117,11 @@ public struct ZenCard<Content: View, Footer: View, Background: ShapeStyle>: View
         .padding(contentPadding ?? theme.resolvedMetrics.cardPadding)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(background)
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: cornerRadius)
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                 .strokeBorder(Color.zenBorderSubtle, lineWidth: 1)
         )
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .zenContainerCornerRadius(cornerRadius)
     }
 }
