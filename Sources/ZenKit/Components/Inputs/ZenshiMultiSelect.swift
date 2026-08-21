@@ -144,7 +144,7 @@ public struct ZenMultiSelect<Option, OptionLabel: View, SummaryLabel: View>: Vie
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                 if isSelected {
-                    ZenIcon(systemName: "checkmark", size: 12)
+                    ZenIcon(systemName: "checkmark.square", size: 14)
                         .foregroundStyle(Color.zenPrimary)
                 }
             }
