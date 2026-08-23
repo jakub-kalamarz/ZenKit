@@ -137,8 +137,10 @@ public struct ZenTable<Row: Identifiable>: View {
                 selection = Set(rows.map(\.id))
             }
         } label: {
-            Image(systemName: allSelected ? "checkmark.square.fill" : (selection.isEmpty ? "square" : "minus.square.fill"))
-                .font(.zenBody)
+            ZenIcon(
+                systemName: allSelected ? "checkmark.square.fill" : (selection.isEmpty ? "square" : "minus.square.fill"),
+                size: 16
+            )
                 .foregroundStyle(allSelected || !selection.isEmpty ? Color.zenPrimary : Color.zenTextMuted)
         }
         .buttonStyle(.plain)
@@ -148,8 +150,10 @@ public struct ZenTable<Row: Identifiable>: View {
         Button {
             toggleSelection(row.id)
         } label: {
-            Image(systemName: selection.contains(row.id) ? "checkmark.square.fill" : "square")
-                .font(.zenBody)
+            ZenIcon(
+                systemName: selection.contains(row.id) ? "checkmark.square.fill" : "square",
+                size: 16
+            )
                 .foregroundStyle(selection.contains(row.id) ? Color.zenPrimary : Color.zenTextMuted)
         }
         .buttonStyle(.plain)

@@ -43,8 +43,8 @@ public struct ZenSearchBar: View {
                 .buttonStyle(.plain)
             }
         }
-        .padding(.vertical, 10)
-        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .padding(.horizontal, 14)
         .frame(maxWidth: .infinity)
         .frame(minHeight: theme.resolvedMetrics.controlHeight)
         .background(controlStyle.backgroundColor)
