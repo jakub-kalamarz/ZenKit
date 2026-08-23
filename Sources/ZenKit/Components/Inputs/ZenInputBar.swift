@@ -23,6 +23,9 @@ public struct ZenInputBar: View {
     private let onSubmit: () -> Void
     private let externalFocus: FocusState<Bool>.Binding?
 
+    /// Reported by the layout, which is the only place the field's measured height is known.
+    @State private var isExpanded = false
+
     #if canImport(UIKit)
     /// First-responder state for the UIKit-backed field. A SwiftUI `@FocusState`
     /// only keeps a value while a SwiftUI view claims focus, so writing the
@@ -57,13 +60,37 @@ public struct ZenInputBar: View {
         self.onSubmit = onSubmit
     }
 
-    private let shape = Capsule(style: .continuous)
+    private static let submitDiameter: CGFloat = 44
+    private static let expandedCornerRadius: CGFloat = ZenRadius.large + ZenSpacing.small
+
+    /// A capsule reads as a capsule only while the bar is one line tall. Past that its side
+    /// arcs swell into a lozenge, so the surface squares off into a rounded rectangle instead.
+    private var shape: AnyShape {
+        isExpanded
+            ? AnyShape(RoundedRectangle(cornerRadius: Self.expandedCornerRadius, style: .continuous))
+            : AnyShape(Capsule(style: .continuous))
+    }
 
     public var body: some View {
-        let inputContent = HStack(alignment: .center, spacing: ZenSpacing.xSmall) {
+        let inputContent = ZenInputBarLayout(
+            isExpanded: isExpanded,
+            spacing: ZenSpacing.xSmall,
+            maximumLines: lineLimit.upperBound,
+            // A single-line field cannot wrap; it scrolls its own text instead.
+            allowsExpansion: !submitsOnReturn,
+            onExpansionChange: { expanded in
+                guard expanded != isExpanded else { return }
+                isExpanded = expanded
+            }
+        ) {
             textField
-                .frame(minHeight: 34)
             submitButton
+
+            // Wrap probes. A `TextField` reports the same height whatever width it is offered,
+            // so it cannot say whether it wrapped; `Text` honours the proposal, so the layout
+            // measures these two instead — the live text, and one line of it as the baseline.
+            Text(text).font(.zenBody).hidden()
+            Text(verbatim: "A").font(.zenBody).hidden()
         }
         .padding(.leading, ZenSpacing.medium)
         .padding(.trailing, ZenSpacing.xSmall)
@@ -76,9 +103,7 @@ public struct ZenInputBar: View {
             } else {
                 inputContent
                     .background(shape.fill(Color.zenSurface))
-                    .overlay {
-                        shape.strokeBorder(borderColor, lineWidth: isFieldFocused ? 1.5 : 1)
-                    }
+                    .overlay { border }
                     .zenControlSurfaceShadow()
             }
         }
@@ -92,6 +117,21 @@ public struct ZenInputBar: View {
         }
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.18), value: isFieldFocused)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.18), value: canSubmit)
+        .animation(reduceMotion ? nil : .snappy(duration: 0.24), value: isExpanded)
+    }
+
+    /// `strokeBorder` insets the stroke so it stays inside the surface, and it is only available
+    /// on a concrete shape — hence the branch here rather than reusing the erased `shape`.
+    @ViewBuilder
+    private var border: some View {
+        let width = isFieldFocused ? 1.5 : 1
+        if isExpanded {
+            RoundedRectangle(cornerRadius: Self.expandedCornerRadius, style: .continuous)
+                .strokeBorder(borderColor, lineWidth: width)
+        } else {
+            Capsule(style: .continuous)
+                .strokeBorder(borderColor, lineWidth: width)
+        }
     }
 
     @ViewBuilder
@@ -331,6 +371,118 @@ private struct ZenReturnSubmitTextField: UIViewRepresentable {
     }
 }
 #endif
+
+/// Reflows the bar between its one-line and expanded shapes without replacing the text field.
+///
+/// A `if isExpanded { VStack } else { HStack }` would build a new field on each side of the
+/// branch, and SwiftUI tears the old one down — taking first responder with it, so the keyboard
+/// dips out the moment the text wraps. One `Layout` moving the same two subviews keeps the field
+/// in the same place in the hierarchy.
+///
+/// Subviews, in order: the field, then the submit button.
+private struct ZenInputBarLayout: Layout {
+    let isExpanded: Bool
+    let spacing: CGFloat
+    let maximumLines: Int
+    let allowsExpansion: Bool
+    let onExpansionChange: (Bool) -> Void
+
+    /// The 44pt submit button carries ~5pt of tap slack above its 34pt circle, so the accessory
+    /// row can ride up into the text's bottom margin without the two ever touching.
+    private static let accessoryOverlap = ZenSpacing.xSmall
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        guard subviews.count >= 4 else { return .zero }
+
+        let width = proposal.width ?? subviews.map { $0.sizeThatFits(.unspecified).width }.reduce(0, +)
+        let submit = subviews[1].sizeThatFits(.unspecified)
+        let field = fieldSize(subviews: subviews, in: width, submit: submit)
+
+        report(wraps: field.wraps)
+
+        return CGSize(
+            width: width,
+            height: isExpanded
+                ? field.size.height + submit.height - Self.accessoryOverlap
+                : max(field.size.height, submit.height)
+        )
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        guard subviews.count >= 4 else { return }
+
+        // The probes never draw; give them no room.
+        for index in 2..<subviews.count {
+            subviews[index].place(at: bounds.origin, anchor: .topLeading, proposal: .zero)
+        }
+
+        let submit = subviews[1].sizeThatFits(.unspecified)
+        let submitProposal = ProposedViewSize(width: submit.width, height: submit.height)
+        let field = fieldSize(subviews: subviews, in: bounds.width, submit: submit)
+
+        report(wraps: field.wraps)
+
+        if isExpanded {
+            subviews[0].place(
+                at: CGPoint(x: bounds.minX, y: bounds.minY),
+                anchor: .topLeading,
+                proposal: .init(width: field.size.width, height: field.size.height)
+            )
+            subviews[1].place(
+                at: CGPoint(
+                    x: bounds.maxX - submit.width,
+                    y: bounds.minY + field.size.height - Self.accessoryOverlap
+                ),
+                anchor: .topLeading,
+                proposal: submitProposal
+            )
+            return
+        }
+
+        subviews[0].place(
+            at: CGPoint(x: bounds.minX, y: bounds.midY - field.size.height / 2),
+            anchor: .topLeading,
+            proposal: .init(width: field.size.width, height: field.size.height)
+        )
+        subviews[1].place(
+            at: CGPoint(x: bounds.maxX - submit.width, y: bounds.midY - submit.height / 2),
+            anchor: .topLeading,
+            proposal: submitProposal
+        )
+    }
+
+    /// Expansion is always judged at the *collapsed* width — the width the text has while it
+    /// still shares its row with the button. Judging it at the expanded width instead would let
+    /// the very wrap that caused the expansion disappear, collapsing the bar and re-wrapping the
+    /// text: a layout that never settles.
+    private func fieldSize(
+        subviews: Subviews,
+        in total: CGFloat,
+        submit: CGSize
+    ) -> (size: CGSize, wraps: Bool) {
+        // One line of the same font is the baseline — measured rather than assumed, so the
+        // comparison holds at any Dynamic Type size.
+        let lineHeight = subviews[3].sizeThatFits(.unspecified).height
+        let collapsedWidth = max(0, total - submit.width - spacing)
+        let wraps = subviews[2].sizeThatFits(.init(width: collapsedWidth, height: nil)).height
+            > lineHeight + 1
+
+        let width = isExpanded ? total : collapsedWidth
+        let textHeight = subviews[2].sizeThatFits(.init(width: width, height: nil)).height
+        // One line is the floor, not the bar's 44pt control height: forcing the taller frame
+        // makes the field top-align its text instead of centring it, and the 44pt submit button
+        // already holds the collapsed bar open.
+        let height = max(lineHeight, min(textHeight, lineHeight * CGFloat(maximumLines)))
+        return (CGSize(width: width, height: height), wraps)
+    }
+
+    /// Layout runs inside the view update, so the state change has to wait for the next turn.
+    private func report(wraps: Bool) {
+        let expanded = allowsExpansion && wraps
+        guard expanded != isExpanded else { return }
+        Task { @MainActor in onExpansionChange(expanded) }
+    }
+}
 
 private struct ZenInputBarPreview: View {
     @State private var text = ""
