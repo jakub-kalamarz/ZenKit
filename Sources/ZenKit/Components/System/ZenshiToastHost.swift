@@ -9,6 +9,8 @@ public struct ZenToastHost: View {
     @ObservedObject private var center: ZenToastCenter
     private let edge: ZenToastHostEdge
 
+    @Environment(\.displayScale) private var displayScale
+
     @GestureState private var isPressingStack = false
     @State private var isPointerOverStack = false
     @State private var naturalSizes: [ZenToastID: CGSize] = [:]
@@ -78,8 +80,12 @@ public struct ZenToastHost: View {
                     onAction: { handleAction($0, on: toast) },
                     onDismiss: { dismissToast(toast) }
                 )
-                .frame(maxWidth: layout.cardMaxWidth, alignment: layout.cardAlignment)
+                // Registered on the card itself, *before* the max-width frame:
+                // cards hug their content, so measuring the frame instead would
+                // publish the full-width row it centres them in and swallow every
+                // touch alongside the toast.
                 .zenToastHitRegion(id: toast.id)
+                .frame(maxWidth: layout.cardMaxWidth, alignment: layout.cardAlignment)
                 // Scale first, then offset: the offset must not be scaled down
                 // for cards deeper in the stack.
                 .scaleEffect(isExpanded ? 1 : Layout.scale(for: depth), anchor: layout.cardAnchor)
@@ -98,7 +104,13 @@ public struct ZenToastHost: View {
         }
         .frame(maxWidth: .infinity, alignment: layout.hostAlignment)
         .onPreferenceChange(ZenToastCardSizePreferenceKey.self) { sizes in
-            naturalSizes = sizes
+            // Snap to whole device pixels before the size is fed back into
+            // `.frame(width:height:)`. A raw measured size is nearly always
+            // fractional (61.666…), which lands the card's bottom/trailing
+            // hairline midway across a pixel: that edge antialiases to a
+            // fraction of the colour the pixel-aligned top/leading edges get,
+            // and the border reads as uneven.
+            naturalSizes = sizes.mapValues { snappedToPixelGrid($0) }
         }
         .simultaneousGesture(stackReviewGesture)
         .onHover { isInside in
@@ -113,6 +125,15 @@ public struct ZenToastHost: View {
         }
         .animation(Layout.transformAnimation, value: stackAnimationSignature)
         .animation(Layout.transformAnimation, value: isExpanded)
+    }
+
+    /// Rounds a measured size up to the next whole device pixel.
+    private func snappedToPixelGrid(_ size: CGSize) -> CGSize {
+        let scale = displayScale > 0 ? displayScale : 1
+        return CGSize(
+            width: (size.width * scale).rounded(.up) / scale,
+            height: (size.height * scale).rounded(.up) / scale
+        )
     }
 
     /// The stack fans out on hover, matching the reference. Touch platforms have
@@ -316,6 +337,8 @@ private struct ZenToastCard: View {
     let isInteractive: Bool
     let onAction: (ZenToastAction) -> Void
     let onDismiss: () -> Void
+
+    @Environment(\.displayScale) private var displayScale
 
     @State private var dragOffset: CGSize = .zero
     @State private var previousTone: ZenToastTone?
@@ -570,13 +593,21 @@ private struct ZenToastCard: View {
 
     /// Neutral toasts get a full hairline; tone-carrying ones get the reference's
     /// sub-pixel ring, which reads as a faint tinted edge.
+    ///
+    /// Both are rounded to a whole number of device pixels. A literal 0.5pt line
+    /// is 1.5px at @3x, so the renderer has to split it across two pixel rows —
+    /// unevenly along the straight edges, and differently again around the corner
+    /// arcs, which is what made the ring look ragged rather than faint.
     private var borderWidth: CGFloat {
+        let scale = displayScale > 0 ? displayScale : 1
+        let requested: CGFloat
         switch toast.tone {
         case .default, .loading:
-            return 1
+            requested = 1
         case .success, .error, .warning, .info:
-            return 0.5
+            requested = 0.5
         }
+        return max(1, (requested * scale).rounded()) / scale
     }
 
     private var borderColor: Color {
