@@ -92,9 +92,24 @@ public struct ZenFieldGroup<Content: View>: View {
     public var body: some View {
         #if DEBUG
         #endif
+        // A group of fields is a card: a `surface` block with one soft shadow on the sheet's
+        // `background`, so a form reads as a stack of cards rather than as one long scroll
+        // of controls. The shadow is `ZenShadow.sm`, the only shadow a card carries.
         VStack(alignment: .leading, spacing: ZenSpacing.medium) {
             content()
         }
+        .padding(ZenSpacing.medium)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: ZenRadius.large, style: .continuous)
+                .fill(Color.zenSurface)
+                .shadow(
+                    color: ZenShadow.sm.color,
+                    radius: ZenShadow.sm.radius,
+                    x: ZenShadow.sm.x,
+                    y: ZenShadow.sm.y
+                )
+        )
     }
 }
 

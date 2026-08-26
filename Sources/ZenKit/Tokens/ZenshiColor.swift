@@ -33,6 +33,7 @@ public extension Color {
     static var zenTextMuted: Color { ZenTheme.current.resolvedColors.textMuted.color }
     static var zenTextPlaceholder: Color { ZenTheme.current.resolvedColors.textPlaceholder.color }
     static var zenPrimary: Color { ZenTheme.current.resolvedColors.primary.color }
+    static var zenPrimarySubtle: Color { ZenTheme.current.resolvedColors.primarySubtle.color }
     static var zenAccent: Color { ZenTheme.current.resolvedColors.accent.color }
     static var zenPrimaryForeground: Color { ZenTheme.current.resolvedColors.primaryForeground.color }
     static var zenSuccess: Color { ZenTheme.current.resolvedColors.success.color }

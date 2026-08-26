@@ -65,10 +65,13 @@ public struct ZenEmptyMedia<Content: View>: View {
             case .default:
                 content()
             case .icon:
+                // The glyph sits in a tinted disc rather than floating grey in space: an
+                // empty screen is still a screen, and the disc gives it one warm anchor.
                 content()
                     .font(.system(size: 24, weight: .semibold))
-                    .foregroundStyle(Color.zenTextMuted)
-                    .frame(width: 56, height: 56)
+                    .foregroundStyle(Color.zenPrimary)
+                    .frame(width: 64, height: 64)
+                    .background(Circle().fill(Color.zenPrimarySubtle))
             }
         }
     }
@@ -85,7 +88,7 @@ public struct ZenEmptyTitle<Content: View>: View {
         #if DEBUG
         #endif
         content()
-            .font(.zenTitle)
+            .font(.zen(.title, weight: .bold))
             .foregroundStyle(Color.zenTextPrimary)
             .multilineTextAlignment(.center)
     }
