@@ -64,8 +64,6 @@ public struct ZenAgentChat<Attachment: View>: View {
                 transcript(proxy: proxy)
                     .safeAreaBar(edge: .bottom) {
                         composer
-                            .padding(.top, 6)
-                            .padding(.bottom, 10)
                     }
             }
         } else {
@@ -147,7 +145,7 @@ public struct ZenAgentChat<Attachment: View>: View {
             onSubmit: onSubmit
         )
             .padding(.horizontal, 21)
-            .padding(.vertical, ZenSpacing.small)
+            .padding(.bottom, ZenSpacing.small)
     }
 
     private func approvalSelection(for messageID: String) -> Binding<String?> {
