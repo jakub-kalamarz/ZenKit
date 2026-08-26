@@ -1,5 +1,14 @@
 # ZenKit Component Catalog
 
+## AI
+
+### `ZenAgentChat`
+
+- `use_when`: presenting a provider-neutral agent transcript with a composer, streaming status, context, tool activity, recommendations, and approval steps
+- `required_state`: `[ZenAgentMessage]`, draft `Binding<String>`, optional approval selections, streaming state, and submission/action callbacks
+- `pairs_with`: `ZenInputBar`, `ZenAgentTaskRow`, `ZenAgentContextCard`, `ZenAgentRecommendationCard`, `ZenAgentApprovalCard`
+- `notes`: domain cards can be supplied with the `attachment` view builder; keep backend, tool execution, and business state in the host app
+
 This catalog covers the public component surface under `Sources/ZenKit/Components/**`.
 
 Each entry uses the same schema:

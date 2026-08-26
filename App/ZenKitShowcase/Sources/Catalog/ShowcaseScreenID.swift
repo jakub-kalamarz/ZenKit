@@ -1,4 +1,6 @@
 enum ShowcaseScreenID: String, Equatable {
+    // AI
+    case agentWorkspace
     // Foundations
     case theme
     // Inputs

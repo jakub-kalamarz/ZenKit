@@ -425,12 +425,14 @@ struct ZenNativeThemeTokens {
     // tint: neutral-100 / neutral-800
     private static let surfaceTintLight = ZenColorComponents(hex: "F5F5F5")!
     private static let surfaceTintDark = ZenColorComponents(hex: "262626")!
-    // line: neutral-200 solid approx / oklch(32%)
-    private static let borderLight = ZenColorComponents(hex: "E5E5E5")!
-    private static let borderDark = ZenColorComponents(hex: "333333")!
-    // hairline: oklch(93.5%) / neutral-800
-    private static let borderSubtleLight = ZenColorComponents(hex: "E9E9E9")!
-    private static let borderSubtleDark = ZenColorComponents(hex: "262626")!
+    // Strong control edge: a cool neutral rather than an opaque gray. It gives
+    // fields and buttons a crisp outline while staying quieter than text.
+    private static let borderLight = ZenColorComponents(hex: "E3E4E8")!
+    private static let borderDark = ZenColorComponents(hex: "33343A")!
+    // Hairline: the default edge for cards and separators. The slight coolness
+    // keeps white-on-near-white surfaces legible without making them boxy.
+    private static let borderSubtleLight = ZenColorComponents(hex: "ECEDEF")!
+    private static let borderSubtleDark = ZenColorComponents(hex: "2B2C30")!
     // text-default: neutral-900 / neutral-100
     private static let labelLight = ZenColorComponents(hex: "18181B")!
     private static let labelDark = ZenColorComponents(hex: "F5F5F5")!

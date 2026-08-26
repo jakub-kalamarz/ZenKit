@@ -138,6 +138,8 @@ struct ShowcaseDestination: View {
 
     var body: some View {
         switch screenID {
+        case .agentWorkspace:
+            AgentWorkspaceShowcaseScreen()
         case .theme:
             ThemePreviewScreen()
         case .buttons:

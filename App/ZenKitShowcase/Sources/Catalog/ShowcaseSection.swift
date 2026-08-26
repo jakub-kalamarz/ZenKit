@@ -5,6 +5,13 @@ struct ShowcaseSection: Identifiable, Equatable {
 
     static let defaultSections: [ShowcaseSection] = [
         .init(
+            id: "ai",
+            title: "AI",
+            entries: [
+                .init(id: "agent-workspace", title: "Agent Workspace", screenID: .agentWorkspace)
+            ]
+        ),
+        .init(
             id: "foundations",
             title: "Foundations",
             entries: [

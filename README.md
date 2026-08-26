@@ -78,6 +78,20 @@ let theme = ZenTheme(
 
 ## Using ZenKit with AI
 
+- **Agent Workspace**: `ZenAgentChat` provides a provider-neutral transcript, streaming state, prompt bar, task status, context, recommendations, and approvals. Supply your own models/backend through bindings and callbacks; ZenKit never imports an AI SDK.
+
+```swift
+ZenAgentChat(
+    messages: messages,
+    draft: $draft,
+    approvalSelections: $approvalSelections,
+    isStreaming: isStreaming,
+    onSubmit: send,
+    onAction: handleAgentAction
+)
+```
+
+- Use `ZenInputBar`, `ZenAgentTaskRow`, `ZenAgentToolChip`, `ZenAgentApprovalCard`, `ZenAgentRecommendationCard`, and `ZenAgentContextCard` independently when composing a custom agent experience.
 - Start with [LLM.md](LLM.md). It is the main entry point for models and agents working with ZenKit.
 - For component selection, use `LLM.md` together with `docs/ai/selection-matrix.md` and `docs/ai/component-catalog.md`.
 - For ready-made screen compositions, see `docs/ai/composition-recipes.md`.
