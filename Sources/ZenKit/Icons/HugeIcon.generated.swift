@@ -19,7 +19,6 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
     public static let fontFamily = "hugeicons-stroke-rounded"
 
     public static let alarmFill = HugeIcon(name: "alarm-clock", scalar: 0xF157B)
-    public static let appleLogo = HugeIcon(name: "apple", scalar: 0xF15D9)
     public static let arrowClockwise = HugeIcon(name: "arrow-reload-horizontal", scalar: 0xF1621)
     public static let arrowCounterclockwise = HugeIcon(name: "undo-02", scalar: 0xF28E6)
     public static let arrowDown = HugeIcon(name: "arrow-down-01", scalar: 0xF15FC)
@@ -82,6 +81,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
     public static let docOnClipboard = HugeIcon(name: "clipboard", scalar: 0xF19E2)
     public static let docOnDoc = HugeIcon(name: "copy-01", scalar: 0xF1A75)
     public static let docText = HugeIcon(name: "document-attachment", scalar: 0xF1BA1)
+    public static let docTextMagnifyingglass = HugeIcon(name: "file-search", scalar: 0xF1CA3)
     public static let dollarsignCircle = HugeIcon(name: "dollar-circle", scalar: 0xF1BA6)
     public static let ellipsis = HugeIcon(name: "more-horizontal", scalar: 0xF218F)
     public static let ellipsisCircle = HugeIcon(name: "menu-circle", scalar: 0xF20E4)
@@ -176,7 +176,6 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
 
     public static let allCases: [HugeIcon] = [
         .alarmFill,
-        .appleLogo,
         .arrowClockwise,
         .arrowCounterclockwise,
         .arrowDown,
@@ -239,6 +238,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         .docOnClipboard,
         .docOnDoc,
         .docText,
+        .docTextMagnifyingglass,
         .dollarsignCircle,
         .ellipsis,
         .ellipsisCircle,
@@ -335,7 +335,6 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
     static func legacy(_ name: String) -> HugeIcon? {
         switch name {
         case "alarm.fill": .alarmFill
-        case "apple.logo": .appleLogo
         case "arrow.clockwise": .arrowClockwise
         case "arrow.counterclockwise": .arrowCounterclockwise
         case "arrow.down": .arrowDown
@@ -398,6 +397,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         case "doc.on.clipboard": .docOnClipboard
         case "doc.on.doc": .docOnDoc
         case "doc.text": .docText
+        case "doc.text.magnifyingglass": .docTextMagnifyingglass
         case "dollarsign.circle": .dollarsignCircle
         case "ellipsis": .ellipsis
         case "ellipsis.circle": .ellipsisCircle

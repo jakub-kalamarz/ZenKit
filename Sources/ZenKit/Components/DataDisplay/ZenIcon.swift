@@ -3,6 +3,7 @@ import SwiftUI
 public enum ZenIconSource: Hashable, Sendable {
     case asset(String, renderingMode: ZenIconRenderingMode)
     case hugeIcon(HugeIcon)
+    case sfSymbol(String)
     case system(String)
 }
 
@@ -23,6 +24,8 @@ extension ZenIconSource {
             return name
         case .hugeIcon(let icon):
             return String(describing: icon)
+        case .sfSymbol(let name):
+            return name
         case .system(let name):
             return name
         }
@@ -66,10 +69,7 @@ public struct ZenIcon: View {
 
     @available(*, deprecated, message: "Use init(icon:size:) with HugeIcon")
     public init(systemName: String, size: CGFloat = 16, weight: Font.Weight? = nil) {
-        guard let icon = HugeIcon.legacy(systemName) else {
-            preconditionFailure("Missing HugeIcons migration mapping for \(systemName)")
-        }
-        self.init(icon: icon, size: size, weight: weight)
+        self.init(source: .system(systemName), size: size, weight: weight)
     }
 
     public var body: some View {
@@ -114,6 +114,11 @@ public struct ZenIcon: View {
                         .stroke(lineWidth: max(1, size * 0.08))
                         .accessibilityHidden(true)
                 }
+            case .sfSymbol(let name):
+                Image(systemName: name)
+                    .renderingMode(.template)
+                    .resizable()
+                    .scaledToFit()
             case .system(let name):
                 if let icon = HugeIcon.legacy(name), HugeIconFont.isAvailable {
                     Text(icon.character)
@@ -160,6 +165,9 @@ public struct ZenMenuIcon: View {
             Text(icon.character)
                 .font(.custom(HugeIcon.fontFamily, fixedSize: 16))
                 .accessibilityHidden(true)
+        case .sfSymbol(let name):
+            Image(systemName: name)
+                .renderingMode(.template)
         case .system(let name):
             if let icon = HugeIcon.legacy(name) {
                 Text(icon.character)

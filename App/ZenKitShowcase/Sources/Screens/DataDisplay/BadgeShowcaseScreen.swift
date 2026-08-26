@@ -47,7 +47,7 @@ struct BadgeShowcaseScreen: View {
             ZenCard(title: "Icons & Colors", subtitle: "Custom icons and tints") {
                 VStack(alignment: .leading, spacing: ZenSpacing.small) {
                     HStack(spacing: ZenSpacing.small) {
-                        ZenBadge("Apple", iconSource: .hugeIcon(.appleLogo))
+                        ZenBadge("Apple", iconSource: .sfSymbol("apple.logo"))
                         ZenBadge("Swift", iconSource: .hugeIcon(.swift), tint: .orange)
                         ZenBadge("GitHub", iconSource: .hugeIcon(.terminal), tint: .purple)
                     }

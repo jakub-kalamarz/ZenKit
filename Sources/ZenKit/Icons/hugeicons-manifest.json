@@ -8,7 +8,6 @@
   },
   "icons": {
     "alarm.fill": "alarm-clock",
-    "apple.logo": "apple",
     "arrow.clockwise": "arrow-reload-horizontal",
     "arrow.counterclockwise": "undo-02",
     "arrow.down": "arrow-down-01",
@@ -71,6 +70,7 @@
     "doc.on.clipboard": "clipboard",
     "doc.on.doc": "copy-01",
     "doc.text": "document-attachment",
+    "doc.text.magnifyingglass": "file-search",
     "dollarsign.circle": "dollar-circle",
     "ellipsis": "more-horizontal",
     "ellipsis.circle": "menu-circle",

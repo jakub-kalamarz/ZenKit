@@ -10,8 +10,8 @@ struct LoginShowcaseScreen: View {
     }
 
     @State private var loginMethod: LoginMethod = .emailPassword
-    @State private var email = "debug@example.com"
-    @State private var password = "debug123"
+    @State private var email = ""
+    @State private var password = ""
     @State private var didSubmit = false
 
     var body: some View {
@@ -32,10 +32,7 @@ struct LoginShowcaseScreen: View {
                         }
 
                         if loginMethod == .emailPassword {
-                            ZenField(
-                                label: "Email",
-                                message: "Prefilled for the debug account."
-                            ) {
+                            ZenField(label: "Email") {
                                 ZenTextInput(
                                     text: $email,
                                     prompt: "Email",
@@ -43,10 +40,7 @@ struct LoginShowcaseScreen: View {
                                 )
                             }
 
-                            ZenField(
-                                label: "Password",
-                                message: "Prefilled debug password."
-                            ) {
+                            ZenField(label: "Password") {
                                 ZenTextInput(
                                     text: $password,
                                     prompt: "Password",
@@ -59,10 +53,7 @@ struct LoginShowcaseScreen: View {
                                 didSubmit = true
                             }
                         } else {
-                            ZenStatusBanner(
-                                tone: .warning,
-                                message: "Switch to Email + Password to use the debug login: debug@example.com / debug123."
-                            )
+                            ZenStatusBanner(tone: .warning, message: "Switch to Email + Password to sign in with a password.")
 
                             ZenButton("Send Magic Link", variant: .secondary, fullWidth: true) {
                                 didSubmit = false
@@ -75,7 +66,7 @@ struct LoginShowcaseScreen: View {
             if didSubmit, loginMethod == .emailPassword {
                 ZenStatusBanner(
                     tone: .success,
-                    message: "Ready to sign in as debug@example.com."
+                    message: "Ready to sign in."
                 )
             }
         }
