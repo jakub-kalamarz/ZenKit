@@ -17,6 +17,8 @@ public struct ZenAgentChat<Attachment: View>: View {
     private let onMessageAction: (String, ZenAgentMessageAction) -> Void
     private let attachment: (ZenAgentMessage) -> Attachment
     @State private var isAtBottom = true
+    @State private var isKeyboardVisible = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     public init(
         messages: [ZenAgentMessage],
@@ -144,8 +146,15 @@ public struct ZenAgentChat<Attachment: View>: View {
             appearance: .glass,
             onSubmit: onSubmit
         )
-            .padding(.horizontal, 21)
+            // The capsule swells toward the screen edges while the keyboard is up,
+            // matching the app's other input bars.
+            .padding(.horizontal, isKeyboardVisible ? ZenSpacing.small : 21)
             .padding(.bottom, ZenSpacing.small)
+            .animation(
+                reduceMotion ? nil : .spring(response: 0.4, dampingFraction: 0.7),
+                value: isKeyboardVisible
+            )
+            .observeKeyboardVisibility($isKeyboardVisible)
     }
 
     private func approvalSelection(for messageID: String) -> Binding<String?> {
@@ -280,5 +289,22 @@ private struct ZenAgentStreamingStatus: View {
 
     var body: some View {
         ZenThinkingIndicator(label: text ?? "Thinking…")
+    }
+}
+
+private extension View {
+    @ViewBuilder
+    func observeKeyboardVisibility(_ isVisible: Binding<Bool>) -> some View {
+        #if canImport(UIKit) && !os(watchOS) && !os(tvOS)
+        self
+            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
+                isVisible.wrappedValue = true
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
+                isVisible.wrappedValue = false
+            }
+        #else
+        self
+        #endif
     }
 }
