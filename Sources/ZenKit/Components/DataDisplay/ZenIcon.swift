@@ -67,7 +67,7 @@ public struct ZenIcon: View {
         self.init(source: .hugeIcon(icon), size: size, weight: weight)
     }
 
-    @available(*, deprecated, message: "Use init(icon:size:) with HugeIcon")
+    /// SF Symbol entry point. HugeIcons have their own initialiser, `init(icon:)`.
     public init(systemName: String, size: CGFloat = 16, weight: Font.Weight? = nil) {
         self.init(source: .system(systemName), size: size, weight: weight)
     }
@@ -120,15 +120,13 @@ public struct ZenIcon: View {
                     .resizable()
                     .scaledToFit()
             case .system(let name):
-                if let icon = HugeIcon.legacy(name), HugeIconFont.isAvailable {
-                    Text(icon.character)
-                        .font(.custom(HugeIcon.fontFamily, fixedSize: size))
-                        .accessibilityHidden(true)
-                } else {
-                    RoundedRectangle(cornerRadius: size * 0.18)
-                        .stroke(lineWidth: max(1, size * 0.08))
-                        .accessibilityHidden(true)
-                }
+                // `.system` is an SF Symbol, rendered as-is. It is deliberately not
+                // routed through HugeIcon.legacy: that table covers 153 names, so
+                // mapping would silently swap some icons and blank the rest.
+                Image(systemName: name)
+                    .renderingMode(.template)
+                    .resizable()
+                    .scaledToFit()
             }
         }
         .frame(width: size, height: size)
@@ -169,11 +167,8 @@ public struct ZenMenuIcon: View {
             Image(systemName: name)
                 .renderingMode(.template)
         case .system(let name):
-            if let icon = HugeIcon.legacy(name) {
-                Text(icon.character)
-                    .font(.custom(HugeIcon.fontFamily, fixedSize: 16))
-                    .accessibilityHidden(true)
-            }
+            Image(systemName: name)
+                .renderingMode(.template)
         }
     }
 }
