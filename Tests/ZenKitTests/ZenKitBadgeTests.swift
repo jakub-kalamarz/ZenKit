@@ -24,7 +24,7 @@ struct ZenKitBadgeTests {
     
     @Test
     func badgeHandlesIconSource() {
-        let badge = ZenBadge("Icon", iconSource: .sfSymbol("apple.logo"))
+        let badge = ZenBadge("Icon", iconSource: .system("apple.logo"))
         // We can't easily inspect private properties of a View in Swift Testing without reflection
         // but we verify it compiles and initializes.
         _ = badge

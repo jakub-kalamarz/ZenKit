@@ -364,8 +364,6 @@ private struct ZenSegmentIcon: View {
                 .frame(width: 16, height: 16)
         case .hugeIcon(let icon):
             ZenIcon(icon: icon, size: 16)
-        case .sfSymbol(let name):
-            ZenIcon(source: .sfSymbol(name), size: 16)
         case .system(let name):
             ZenIcon(systemName: name, size: 16)
         }

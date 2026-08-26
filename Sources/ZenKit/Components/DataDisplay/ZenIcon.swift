@@ -3,7 +3,6 @@ import SwiftUI
 public enum ZenIconSource: Hashable, Sendable {
     case asset(String, renderingMode: ZenIconRenderingMode)
     case hugeIcon(HugeIcon)
-    case sfSymbol(String)
     case system(String)
 }
 
@@ -24,8 +23,6 @@ extension ZenIconSource {
             return name
         case .hugeIcon(let icon):
             return String(describing: icon)
-        case .sfSymbol(let name):
-            return name
         case .system(let name):
             return name
         }
@@ -114,11 +111,6 @@ public struct ZenIcon: View {
                         .stroke(lineWidth: max(1, size * 0.08))
                         .accessibilityHidden(true)
                 }
-            case .sfSymbol(let name):
-                Image(systemName: name)
-                    .renderingMode(.template)
-                    .resizable()
-                    .scaledToFit()
             case .system(let name):
                 // `.system` is an SF Symbol, rendered as-is. It is deliberately not
                 // routed through HugeIcon.legacy: that table covers 153 names, so
@@ -163,9 +155,6 @@ public struct ZenMenuIcon: View {
             Text(icon.character)
                 .font(.custom(HugeIcon.fontFamily, fixedSize: 16))
                 .accessibilityHidden(true)
-        case .sfSymbol(let name):
-            Image(systemName: name)
-                .renderingMode(.template)
         case .system(let name):
             Image(systemName: name)
                 .renderingMode(.template)
