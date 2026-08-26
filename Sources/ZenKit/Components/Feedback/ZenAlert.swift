@@ -72,7 +72,7 @@ public struct ZenAlert: View {
                 Button {
                     onDismiss()
                 } label: {
-                    ZenIcon(systemName: "xmark", size: 11)
+                    ZenIcon(icon: .xmark, size: 11)
                         .font(.system(size: 11, weight: .bold))
                         .foregroundStyle(tintColor.opacity(0.7))
                 }

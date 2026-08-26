@@ -77,7 +77,7 @@ struct SidebarShowcaseScreen: View {
                         }
                     } footer: {
                         HStack {
-                            Image(systemName: "person.circle.fill")
+                            ZenIcon(icon: .personCircleFill)
                                 .font(.zenDisplayS)
                                 .foregroundStyle(Color.zenTextMuted)
                             if !groupCollapsed {

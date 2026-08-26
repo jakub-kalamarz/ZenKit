@@ -48,11 +48,11 @@ public struct ZenRating: View {
     @ViewBuilder
     private func starIcon(for i: Int) -> some View {
         if i <= value {
-            ZenIcon(systemName: "star.fill", size: 20)
+            ZenIcon(icon: .starFill, size: 20)
                 .font(.system(size: 20))
                 .foregroundStyle(Color.zenWarning)
         } else {
-            ZenIcon(systemName: "star", size: 20)
+            ZenIcon(icon: .star, size: 20)
                 .font(.system(size: 20))
                 .foregroundStyle(Color.zenBorder)
         }

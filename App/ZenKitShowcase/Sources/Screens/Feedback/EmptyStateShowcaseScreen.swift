@@ -8,7 +8,7 @@ struct EmptyStateShowcaseScreen: View {
                 ZenEmpty {
                     ZenEmptyHeader {
                         ZenEmptyMedia(variant: .icon) {
-                            ZenIcon(systemName: "magnifyingglass", size: 24)
+                            ZenIcon(icon: .magnifyingglass, size: 24)
                         }
                         ZenEmptyTitle {
                             Text("No results found")
@@ -28,7 +28,7 @@ struct EmptyStateShowcaseScreen: View {
                 ZenEmpty {
                     ZenEmptyHeader {
                         ZenEmptyMedia(variant: .icon) {
-                            ZenIcon(systemName: "exclamationmark.triangle.fill", size: 24)
+                            ZenIcon(icon: .exclamationmarkTriangleFill, size: 24)
                         }
                         ZenEmptyTitle {
                             Text("Something went wrong")
@@ -48,7 +48,7 @@ struct EmptyStateShowcaseScreen: View {
                 ZenEmpty {
                     ZenEmptyHeader {
                         ZenEmptyMedia(variant: .icon) {
-                            ZenIcon(systemName: "plus.circle", size: 24)
+                            ZenIcon(icon: .plusCircle, size: 24)
                         }
                         ZenEmptyTitle {
                             Text("No projects yet")

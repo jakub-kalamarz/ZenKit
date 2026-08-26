@@ -131,7 +131,7 @@ private struct ZenRadioRow<Value: Hashable>: View {
                         .resizable()
                         .scaledToFill()
                 default:
-                    ZenIcon(systemName: "photo", size: 16)
+                    ZenIcon(icon: .photo, size: 16)
                         .foregroundStyle(Color.zenTextMuted)
                 }
             }

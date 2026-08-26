@@ -47,14 +47,14 @@ struct BadgeShowcaseScreen: View {
             ZenCard(title: "Icons & Colors", subtitle: "Custom icons and tints") {
                 VStack(alignment: .leading, spacing: ZenSpacing.small) {
                     HStack(spacing: ZenSpacing.small) {
-                        ZenBadge("Apple", iconSource: .system("apple.logo"))
-                        ZenBadge("Swift", iconSource: .system("swift"), tint: .orange)
-                        ZenBadge("GitHub", iconSource: .system("terminal"), tint: .purple)
+                        ZenBadge("Apple", iconSource: .hugeIcon(.appleLogo))
+                        ZenBadge("Swift", iconSource: .hugeIcon(.swift), tint: .orange)
+                        ZenBadge("GitHub", iconSource: .hugeIcon(.terminal), tint: .purple)
                     }
                     
                     HStack(spacing: ZenSpacing.small) {
-                        ZenBadge("Locked", iconSource: .system("lock.fill"), tint: .zenTextMuted)
-                        ZenBadge("Featured", iconSource: .system("star.fill"), tint: .yellow)
+                        ZenBadge("Locked", iconSource: .hugeIcon(.lockFill), tint: .zenTextMuted)
+                        ZenBadge("Featured", iconSource: .hugeIcon(.starFill), tint: .yellow)
                         ZenBadge("Custom", tint: .indigo)
                     }
                 }

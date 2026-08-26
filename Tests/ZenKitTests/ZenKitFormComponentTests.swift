@@ -21,7 +21,7 @@ struct ZenKitFormComponentTests {
         let view = ZenTextInput(
             text: .constant("alex@example.com"),
             prompt: "Email",
-            trailingIcon: .system("checkmark.circle.fill"),
+            trailingIcon: .hugeIcon(.checkmarkCircleFill),
             submitLabel: .next
         )
 

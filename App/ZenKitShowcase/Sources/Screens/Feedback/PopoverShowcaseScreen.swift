@@ -23,7 +23,7 @@ struct PopoverShowcaseScreen: View {
 
             ZenCard(title: "Icon Trigger", subtitle: "Info icon popover") {
                 ZenPopover {
-                    Image(systemName: "info.circle")
+                    ZenIcon(icon: .infoCircle)
                         .font(.system(size: 20))
                         .foregroundStyle(Color.zenPrimary)
                 } content: {

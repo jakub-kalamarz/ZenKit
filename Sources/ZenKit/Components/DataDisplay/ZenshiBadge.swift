@@ -147,7 +147,7 @@ public struct ZenBadge: View {
 
             if let onRemove {
                 Button(action: onRemove) {
-                    ZenIcon(source: .system("xmark"), size: ZenBadgeStyleMetrics.removeIconSize)
+                    ZenIcon(source: .hugeIcon(.xmark), size: ZenBadgeStyleMetrics.removeIconSize)
                         .font(.system(size: ZenBadgeStyleMetrics.removeIconSize, weight: .semibold))
                         .frame(
                             width: ZenBadgeStyleMetrics.removeButtonWidth,
@@ -264,7 +264,7 @@ public struct ZenBadge: View {
                 ZenIcon(source: iconSource, size: iconSz)
                     .font(.system(size: iconSz, weight: .bold))
             } else if isSelected {
-                ZenIcon(source: .system("checkmark"), size: iconSz)
+                ZenIcon(source: .hugeIcon(.checkmark), size: iconSz)
                     .font(.system(size: iconSz, weight: .bold))
             }
 

@@ -99,7 +99,7 @@ public struct ZenCommandPalette: View {
 
     private var searchField: some View {
         HStack(spacing: ZenSpacing.small) {
-            Image(systemName: "magnifyingglass")
+            ZenIcon(icon: .magnifyingglass)
                 .font(.system(size: 16, weight: .medium))
                 .foregroundStyle(Color.zenTextMuted)
 
@@ -115,7 +115,7 @@ public struct ZenCommandPalette: View {
                 Button {
                     query = ""
                 } label: {
-                    Image(systemName: "xmark.circle.fill")
+                    ZenIcon(icon: .xmarkCircleFill)
                         .font(.zenBody2)
                         .foregroundStyle(Color.zenTextMuted)
                 }

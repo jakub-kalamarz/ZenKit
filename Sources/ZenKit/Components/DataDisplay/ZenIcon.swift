@@ -2,6 +2,7 @@ import SwiftUI
 
 public enum ZenIconSource: Hashable, Sendable {
     case asset(String, renderingMode: ZenIconRenderingMode)
+    case hugeIcon(HugeIcon)
     case system(String)
 }
 
@@ -24,24 +25,26 @@ public struct ZenIcon: View {
 
     public let source: ZenIconSource
     public let size: CGFloat
-    /// When set, an SF Symbol is rendered at `.system(size:weight:)` instead of
-    /// being scaled to fit the box. `.resizable()` discards a symbol's stroke
-    /// weight, so weighted icons have to take the font path — `size` is then the
-    /// font size rather than the bounding box.
-    public let weight: Font.Weight?
 
-    public init(source: ZenIconSource, size: CGFloat = 16, weight: Font.Weight? = nil) {
+    public init(source: ZenIconSource, size: CGFloat = 16) {
         self.source = source
         self.size = size
-        self.weight = weight
     }
 
     public init(assetName: String, size: CGFloat = 16, renderingMode: ZenIconRenderingMode) {
         self.init(source: .asset(assetName, renderingMode: renderingMode), size: size)
     }
 
+    public init(icon: HugeIcon, size: CGFloat = 16) {
+        self.init(source: .hugeIcon(icon), size: size)
+    }
+
+    @available(*, deprecated, message: "Use init(icon:size:) with HugeIcon")
     public init(systemName: String, size: CGFloat = 16, weight: Font.Weight? = nil) {
-        self.init(source: .system(systemName), size: size, weight: weight)
+        guard let icon = HugeIcon.legacy(systemName) else {
+            preconditionFailure("Missing HugeIcons migration mapping for \(systemName)")
+        }
+        self.init(icon: icon, size: size)
     }
 
     public var body: some View {
@@ -55,12 +58,7 @@ public struct ZenIcon: View {
 
     @ViewBuilder
     private var icon: some View {
-        if case .system(let systemName) = source, let weight {
-            Image(systemName: systemName)
-                .font(.system(size: size, weight: weight))
-        } else {
-            scaledIcon
-        }
+        scaledIcon
     }
 
     private var iconTransition: AnyTransition {
@@ -81,14 +79,29 @@ public struct ZenIcon: View {
                     .renderingMode(renderingMode.imageRenderingMode)
                     .resizable()
                     .scaledToFit()
-            case .system(let systemName):
-                Image(systemName: systemName)
-                    .renderingMode(.template)
-                    .resizable()
-                    .scaledToFit()
+            case .hugeIcon(let icon):
+                if HugeIconFont.isAvailable {
+                    Text(icon.character)
+                        .font(.custom(HugeIcon.fontFamily, fixedSize: size))
+                        .accessibilityHidden(true)
+                } else {
+                    RoundedRectangle(cornerRadius: size * 0.18)
+                        .stroke(lineWidth: max(1, size * 0.08))
+                        .accessibilityHidden(true)
+                }
+            case .system(let name):
+                if let icon = HugeIcon.legacy(name), HugeIconFont.isAvailable {
+                    Text(icon.character)
+                        .font(.custom(HugeIcon.fontFamily, fixedSize: size))
+                        .accessibilityHidden(true)
+                } else {
+                    RoundedRectangle(cornerRadius: size * 0.18)
+                        .stroke(lineWidth: max(1, size * 0.08))
+                        .accessibilityHidden(true)
+                }
             }
         }
-        .frame(maxWidth: size, maxHeight: size)
+        .frame(width: size, height: size)
     }
 }
 
@@ -103,7 +116,11 @@ public struct ZenMenuIcon: View {
         self.init(source: .asset(assetName, renderingMode: renderingMode))
     }
 
-    public init(systemName: String) {
+    public init(icon: HugeIcon) {
+        self.init(source: .hugeIcon(icon))
+    }
+
+    init(systemName: String) {
         self.init(source: .system(systemName))
     }
 
@@ -114,15 +131,22 @@ public struct ZenMenuIcon: View {
         case .asset(let assetName, let renderingMode):
             Image(assetName)
                 .renderingMode(renderingMode.imageRenderingMode)
-        case .system(let systemName):
-            Image(systemName: systemName)
-                .renderingMode(.template)
+        case .hugeIcon(let icon):
+            Text(icon.character)
+                .font(.custom(HugeIcon.fontFamily, fixedSize: 16))
+                .accessibilityHidden(true)
+        case .system(let name):
+            if let icon = HugeIcon.legacy(name) {
+                Text(icon.character)
+                    .font(.custom(HugeIcon.fontFamily, fixedSize: 16))
+                    .accessibilityHidden(true)
+            }
         }
     }
 }
 
 #Preview {
-    ZenIcon(systemName: "envelope")
+    ZenIcon(icon: .envelope)
         .foregroundStyle(Color.zenPrimary)
         .padding()
 }

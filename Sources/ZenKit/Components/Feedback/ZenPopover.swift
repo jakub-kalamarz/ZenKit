@@ -34,7 +34,7 @@ public struct ZenPopover<Trigger: View, Content: View>: View {
 
 #Preview("ZenPopover") {
     ZenPopover {
-        Image(systemName: "info.circle")
+        ZenIcon(icon: .infoCircle)
             .foregroundStyle(Color.zenPrimary)
     } content: {
         VStack(alignment: .leading, spacing: ZenSpacing.small) {

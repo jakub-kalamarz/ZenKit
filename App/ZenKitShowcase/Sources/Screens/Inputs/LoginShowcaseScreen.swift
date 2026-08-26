@@ -39,7 +39,7 @@ struct LoginShowcaseScreen: View {
                                 ZenTextInput(
                                     text: $email,
                                     prompt: "Email",
-                                    leadingIcon: .system("envelope")
+                                    leadingIcon: .hugeIcon(.envelope)
                                 )
                             }
 
@@ -50,7 +50,7 @@ struct LoginShowcaseScreen: View {
                                 ZenTextInput(
                                     text: $password,
                                     prompt: "Password",
-                                    leadingIcon: .system("lock"),
+                                    leadingIcon: .hugeIcon(.lock),
                                     kind: .secure
                                 )
                             }

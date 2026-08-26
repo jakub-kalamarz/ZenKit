@@ -53,7 +53,7 @@ private struct ZenLabelTooltip: View {
         Button {
             isShowing.toggle()
         } label: {
-            Image(systemName: "info.circle")
+            ZenIcon(icon: .infoCircle)
                 .font(.zenBody2)
                 .foregroundStyle(Color.zenTextMuted)
         }

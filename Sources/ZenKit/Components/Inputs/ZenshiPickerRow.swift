@@ -48,7 +48,7 @@ public struct ZenPickerRow<Option: Hashable & Sendable, OptionLabel: View>: View
             ) {
                 HStack(spacing: ZenSpacing.xSmall) {
                     optionLabel(selection)
-                    ZenIcon(systemName: "chevron.up.chevron.down", size: 11)
+                    ZenIcon(icon: .chevronUpChevronDown, size: 11)
                 }
             }
         }
@@ -65,7 +65,7 @@ public struct ZenPickerRow<Option: Hashable & Sendable, OptionLabel: View>: View
                 ZenPickerRow(
                     title: "Language",
                     subtitle: "Used for notifications",
-                    leadingIcon: .system("globe"),
+                    leadingIcon: .hugeIcon(.globe),
                     selection: $language,
                     options: options
                 ) { option in

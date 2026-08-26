@@ -211,7 +211,7 @@ public struct ZenInputBar: View {
                         .tint(Color.zenPrimaryForeground)
                         .controlSize(.small)
                 } else {
-                    Image(systemName: "arrow.up")
+                    ZenIcon(icon: .arrowUp)
                         .font(.zen(.body2, weight: .bold))
                         .foregroundStyle(isSubmitControlActive ? Color.zenPrimaryForeground : Color.zenTextPlaceholder)
                 }

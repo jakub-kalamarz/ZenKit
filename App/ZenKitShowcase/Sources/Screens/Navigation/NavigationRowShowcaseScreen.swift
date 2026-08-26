@@ -9,19 +9,19 @@ struct NavigationRowShowcaseScreen: View {
                     ZenNavigationRow(
                         title: "Account",
                         subtitle: "Profile, email, and devices",
-                        leadingIcon: .system("person.circle")
+                        leadingIcon: .hugeIcon(.personCircle)
                     )
                     Divider().padding(.leading, ZenSpacing.medium)
                     ZenNavigationRow(
                         title: "Notifications",
                         subtitle: "Alerts and mentions",
-                        leadingIcon: .system("bell")
+                        leadingIcon: .hugeIcon(.bell)
                     )
                     Divider().padding(.leading, ZenSpacing.medium)
                     ZenNavigationRow(
                         title: "Security",
                         subtitle: "Password and two-factor",
-                        leadingIcon: .system("shield")
+                        leadingIcon: .hugeIcon(.shield)
                     )
                 }
             }
@@ -31,7 +31,7 @@ struct NavigationRowShowcaseScreen: View {
                     ZenNavigationRow(
                         title: "Account",
                         subtitle: "Profile, email, and devices",
-                        leadingIcon: .system("person.circle.fill"),
+                        leadingIcon: .hugeIcon(.personCircleFill),
                         iconColor: .blue,
                         iconStyle: .badge
                     )
@@ -39,7 +39,7 @@ struct NavigationRowShowcaseScreen: View {
                     ZenNavigationRow(
                         title: "Notifications",
                         subtitle: "Alerts and mentions",
-                        leadingIcon: .system("bell.fill"),
+                        leadingIcon: .hugeIcon(.bellFill),
                         iconColor: .red,
                         iconStyle: .badge
                     )
@@ -47,7 +47,7 @@ struct NavigationRowShowcaseScreen: View {
                     ZenNavigationRow(
                         title: "Security",
                         subtitle: "Password and two-factor",
-                        leadingIcon: .system("shield.fill"),
+                        leadingIcon: .hugeIcon(.shieldFill),
                         iconColor: .green,
                         iconStyle: .badge
                     )
@@ -58,21 +58,21 @@ struct NavigationRowShowcaseScreen: View {
                 VStack(spacing: 0) {
                     ZenNavigationRow(
                         title: "Language",
-                        leadingIcon: .system("globe")
+                        leadingIcon: .hugeIcon(.globe)
                     ) {
                         Text("English")
                     }
                     Divider().padding(.leading, ZenSpacing.medium)
                     ZenNavigationRow(
                         title: "Theme",
-                        leadingIcon: .system("paintpalette")
+                        leadingIcon: .hugeIcon(.paintpalette)
                     ) {
                         Text("System")
                     }
                     Divider().padding(.leading, ZenSpacing.medium)
                     ZenNavigationRow(
                         title: "Storage",
-                        leadingIcon: .system("internaldrive")
+                        leadingIcon: .hugeIcon(.internaldrive)
                     ) {
                         Text("4.2 GB")
                     }
@@ -94,7 +94,7 @@ struct NavigationRowShowcaseScreen: View {
                     ZenNavigationRow(
                         title: "Billing",
                         subtitle: "Managed by workspace owner",
-                        leadingIcon: .system("creditcard"),
+                        leadingIcon: .hugeIcon(.creditcard),
                         iconColor: .orange
                     )
                     .disabled(true)
@@ -102,7 +102,7 @@ struct NavigationRowShowcaseScreen: View {
                     ZenNavigationRow(
                         title: "Workspace Transfer",
                         subtitle: "Unavailable on trial plan",
-                        leadingIcon: .system("arrow.left.arrow.right")
+                        leadingIcon: .hugeIcon(.arrowLeftArrowRight)
                     )
                     .disabled(true)
                 }

@@ -37,7 +37,7 @@ public struct ZenTooltip<Trigger: View>: View {
 
 #Preview("ZenTooltip") {
     ZenTooltip("This is a helpful tooltip") {
-        Image(systemName: "questionmark.circle")
+        ZenIcon(icon: .questionmarkCircle)
             .foregroundStyle(Color.zenTextMuted)
     }
     .padding()

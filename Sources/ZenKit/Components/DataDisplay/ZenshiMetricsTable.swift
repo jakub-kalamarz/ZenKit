@@ -156,7 +156,7 @@ public struct ZenMetricsTable<ID: Hashable & Sendable, Content: View>: View {
                                 if let icon {
                                     ZenIcon(source: icon, size: 24)
                                 } else {
-                                    ZenIcon(systemName: "info.circle", size: 24)
+                                    ZenIcon(icon: .infoCircle, size: 24)
                                 }
                             }
                             ZenEmptyDescription {

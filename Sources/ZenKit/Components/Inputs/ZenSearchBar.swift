@@ -22,7 +22,7 @@ public struct ZenSearchBar: View {
         let controlStyle = ZenControlSurfaceStyle.searchField(theme: theme)
 
         HStack(spacing: ZenSpacing.small) {
-            ZenIcon(systemName: "magnifyingglass", size: 15)
+            ZenIcon(icon: .magnifyingglass, size: 15)
                 .font(.system(size: 15, weight: .medium))
                 .foregroundStyle(Color.zenTextMuted)
 
@@ -37,7 +37,7 @@ public struct ZenSearchBar: View {
                 Button {
                     text = ""
                 } label: {
-                    ZenIcon(systemName: "xmark.circle.fill", size: 15)
+                    ZenIcon(icon: .xmarkCircleFill, size: 15)
                         .foregroundStyle(Color.zenTextMuted)
                 }
                 .buttonStyle(.plain)

@@ -21,6 +21,12 @@ let package = Package(
             name: "ZenKit",
             dependencies: [
                 .product(name: "ZenAvatar", package: "ZenAvatar")
+            ],
+            exclude: [
+                "Icons/hugeicons-manifest.json"
+            ],
+            resources: [
+                .process("Icons/Resources")
             ]
         ),
         .testTarget(

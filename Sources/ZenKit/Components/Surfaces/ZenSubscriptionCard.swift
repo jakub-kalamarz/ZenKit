@@ -43,7 +43,7 @@ public struct ZenSubscriptionCard: View {
         subtitle: String,
         statusText: LocalizedStringKey,
         statusTone: ZenSemanticTone = .neutral,
-        leadingIcon: ZenIconSource? = .system("sparkles"),
+        leadingIcon: ZenIconSource? = .hugeIcon(.sparkles),
         iconTint: Color = .zenAccent,
         details: [ZenSubscriptionCardDetail] = [],
         primaryActionTitle: LocalizedStringKey,
@@ -198,16 +198,16 @@ public struct ZenSubscriptionCard: View {
             details: [
                 ZenSubscriptionCardDetail(
                     id: "access",
-                    icon: .system("checkmark.seal.fill"),
+                    icon: .hugeIcon(.checkmarkSealFill),
                     title: "Access",
                     value: "Unlimited sites and widgets"
                 ),
             ],
             primaryActionTitle: "Manage subscription",
-            primaryActionIcon: .system("arrow.up.forward.app"),
+            primaryActionIcon: .hugeIcon(.arrowUpForwardApp),
             primaryAction: {},
             secondaryActionTitle: "Refresh",
-            secondaryActionIcon: .system("arrow.clockwise"),
+            secondaryActionIcon: .hugeIcon(.arrowClockwise),
             secondaryAction: {}
         )
 
@@ -218,16 +218,16 @@ public struct ZenSubscriptionCard: View {
             details: [
                 ZenSubscriptionCardDetail(
                     id: "access",
-                    icon: .system("chart.bar"),
+                    icon: .hugeIcon(.chartBar),
                     title: "Included",
                     value: "1 site and 1 widget"
                 ),
             ],
             primaryActionTitle: "Upgrade",
-            primaryActionIcon: .system("sparkles"),
+            primaryActionIcon: .hugeIcon(.sparkles),
             primaryAction: {},
             secondaryActionTitle: "Refresh",
-            secondaryActionIcon: .system("arrow.clockwise"),
+            secondaryActionIcon: .hugeIcon(.arrowClockwise),
             secondaryAction: {}
         )
     }

@@ -97,7 +97,7 @@ private struct ShowcaseListLayout: View {
                                                 .font(.zenBody)
                                                 .foregroundStyle(Color.zenTextPrimary)
                                             Spacer()
-                                            Image(systemName: "chevron.right")
+                                            ZenIcon(icon: .chevronRight)
                                                 .font(.zen(.group, weight: .semibold))
                                                 .foregroundStyle(Color.zenTextMuted)
                                         }

@@ -172,7 +172,7 @@ private struct ZenNumpadKeyView: View {
                 .font(.system(size: 26, weight: .bold, design: .rounded))
                 .foregroundStyle(Color.zenTextPrimary)
         case .delete:
-            Image(systemName: "delete.backward")
+            ZenIcon(icon: .deleteBackward)
                 .font(.system(size: 18, weight: .medium))
                 .foregroundStyle(Color.zenTextPrimary)
         }
@@ -255,7 +255,7 @@ private struct ZenStepperNumpadSheet: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button { dismiss() } label: {
-                        Image(systemName: "xmark")
+                        ZenIcon(icon: .xmark)
                             .foregroundStyle(Color.zenTextMuted)
                     }
                 }
@@ -264,7 +264,7 @@ private struct ZenStepperNumpadSheet: View {
                         model.commit(to: $value, haptics: hapticsOverride)
                         dismiss()
                     } label: {
-                        Image(systemName: "checkmark")
+                        ZenIcon(icon: .checkmark)
                             .fontWeight(.semibold)
                     }
                     .disabled(!model.isValid)

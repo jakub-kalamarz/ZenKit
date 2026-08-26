@@ -36,9 +36,9 @@ public struct ZenAgentTaskRow: View {
     @ViewBuilder private var statusIcon: some View {
         switch task.state {
         case .running: ZenSpinner(size: .small)
-        case .queued: ZenIcon(systemName: "clock", size: 14).foregroundStyle(Color.zenTextMuted)
-        case .completed: ZenIcon(systemName: "checkmark.circle.fill", size: 14).foregroundStyle(Color.zenSuccess)
-        case .failed: ZenIcon(systemName: "exclamationmark.triangle.fill", size: 14).foregroundStyle(Color.zenCritical)
+        case .queued: ZenIcon(icon: .clock, size: 14).foregroundStyle(Color.zenTextMuted)
+        case .completed: ZenIcon(icon: .checkmarkCircleFill, size: 14).foregroundStyle(Color.zenSuccess)
+        case .failed: ZenIcon(icon: .exclamationmarkTriangleFill, size: 14).foregroundStyle(Color.zenCritical)
         }
     }
 
@@ -83,11 +83,11 @@ public struct ZenAgentToolChip: View {
         case .running:
             ZenSpinner(size: .small)
         case .queued:
-            ZenIcon(systemName: "clock", size: 11).foregroundStyle(Color.zenTextMuted)
+            ZenIcon(icon: .clock, size: 11).foregroundStyle(Color.zenTextMuted)
         case .completed:
-            ZenIcon(systemName: "checkmark", size: 11).foregroundStyle(Color.zenSuccess)
+            ZenIcon(icon: .checkmark, size: 11).foregroundStyle(Color.zenSuccess)
         case .failed:
-            ZenIcon(systemName: "exclamationmark", size: 11).foregroundStyle(Color.zenCritical)
+            ZenIcon(icon: .exclamationmark, size: 11).foregroundStyle(Color.zenCritical)
         }
     }
 }

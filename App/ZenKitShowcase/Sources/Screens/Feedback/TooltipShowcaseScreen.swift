@@ -7,19 +7,19 @@ struct TooltipShowcaseScreen: View {
             ZenCard(title: "Basic", subtitle: "Long-press to show tooltip") {
                 HStack(spacing: ZenSpacing.large) {
                     ZenTooltip("This is a save button") {
-                        Image(systemName: "square.and.arrow.down")
+                        ZenIcon(icon: .squareAndArrowDown)
                             .font(.system(size: 20))
                             .foregroundStyle(Color.zenTextMuted)
                     }
 
                     ZenTooltip("Share this item") {
-                        Image(systemName: "square.and.arrow.up")
+                        ZenIcon(icon: .squareAndArrowUp)
                             .font(.system(size: 20))
                             .foregroundStyle(Color.zenTextMuted)
                     }
 
                     ZenTooltip("Delete permanently") {
-                        Image(systemName: "trash")
+                        ZenIcon(icon: .trash)
                             .font(.system(size: 20))
                             .foregroundStyle(Color.zenCritical)
                     }

@@ -68,7 +68,7 @@ public struct ZenTimelineItem: View {
     ZenTimeline {
         ZenTimelineItem {
             ZenTimelineIndicator {
-                ZenIcon(systemName: "plus.circle.fill", size: 12)
+                ZenIcon(icon: .plusCircleFill, size: 12)
                     .font(.system(size: 12, weight: .medium))
             }
         } header: {
@@ -110,7 +110,7 @@ public struct ZenTimelineItem: View {
 
         ZenTimelineItem(showsSeparator: false) {
             ZenTimelineIndicator {
-                ZenIcon(systemName: "person.badge.plus", size: 12)
+                ZenIcon(icon: .personBadgePlus, size: 12)
                     .font(.system(size: 12, weight: .medium))
             }
         } header: {

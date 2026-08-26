@@ -422,10 +422,10 @@ public extension ZenButton where Label == ZenButtonTextLabel {
 
         HStack(spacing: ZenSpacing.small) {
             ZenButton(variant: .default, size: .icon) {} label: {
-                ZenIcon(systemName: "plus")
+                ZenIcon(icon: .plus)
             }
             ZenButton(variant: .secondary, size: .icon, isLoading: true) {} label: {
-                ZenIcon(systemName: "arrow.clockwise")
+                ZenIcon(icon: .arrowClockwise)
             }
             ZenButton("Large", size: .lg) {}
         }

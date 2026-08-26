@@ -58,7 +58,7 @@ public struct ZenDisclosure<Content: View>: View {
 
                     Spacer(minLength: ZenSpacing.small)
 
-                    ZenIcon(systemName: "chevron.right", size: 12)
+                    ZenIcon(icon: .chevronRight, size: 12)
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(Color.zenTextMuted)
                         .rotationEffect(.degrees(isExpanded ? 90 : 0))
@@ -91,7 +91,7 @@ public struct ZenDisclosure<Content: View>: View {
 
 #Preview {
     VStack(spacing: ZenSpacing.small) {
-        ZenDisclosure("Advanced Settings", leadingIcon: .system("gearshape")) {
+        ZenDisclosure("Advanced Settings", leadingIcon: .hugeIcon(.gearshape)) {
             VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
                 Text("Configure advanced options below.")
                     .font(.zenGroup)
@@ -99,7 +99,7 @@ public struct ZenDisclosure<Content: View>: View {
             }
         }
 
-        ZenDisclosure("Notifications", subtitle: "Email and push", leadingIcon: .system("bell"), isExpanded: true) {
+        ZenDisclosure("Notifications", subtitle: "Email and push", leadingIcon: .hugeIcon(.bell), isExpanded: true) {
             VStack(spacing: ZenSpacing.xSmall) {
                 Text("Push notifications are enabled.")
                     .font(.zenGroup)

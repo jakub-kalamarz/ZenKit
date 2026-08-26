@@ -82,13 +82,13 @@ struct ZenKitDashboardComponentTests {
     func metricStripSupportsPerMetricIcons() {
         let values = [
             ZenMetricValue(label: "Clicks", value: "694", tint: .zenAccent, iconSource: .asset("CursorClick", renderingMode: .template)),
-            ZenMetricValue(label: "CTR", value: "4%", iconSource: .system("percent")),
+            ZenMetricValue(label: "CTR", value: "4%", iconSource: .hugeIcon(.percent)),
         ]
 
         let view = ZenMetricStrip(values: values)
 
         #expect(values[0].iconSource == .asset("CursorClick", renderingMode: .template))
-        #expect(values[1].iconSource == .system("percent"))
+        #expect(values[1].iconSource == .hugeIcon(.percent))
         _ = view
     }
 
@@ -114,7 +114,7 @@ struct ZenKitDashboardComponentTests {
         )
         let compactRowStrip = ZenMetricStrip(
             values: [
-                ZenMetricValue(label: "CTR", value: "4%", iconSource: .system("percent"))
+                ZenMetricValue(label: "CTR", value: "4%", iconSource: .hugeIcon(.percent))
             ],
             style: .compact,
             layout: .row

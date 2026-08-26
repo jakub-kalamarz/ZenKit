@@ -362,10 +362,10 @@ private struct ZenSegmentIcon: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 16, height: 16)
+        case .hugeIcon(let icon):
+            ZenIcon(icon: icon, size: 16)
         case .system(let name):
-            Image(systemName: name)
-                .renderingMode(.template)
-                .frame(width: 16, height: 16)
+            ZenIcon(systemName: name, size: 16)
         }
     }
 }
@@ -452,7 +452,7 @@ private struct ZenSegmentedControlGlassPreview: View {
         ZStack {
             Color.black.ignoresSafeArea()
 
-            Image(systemName: "photo.artframe")
+            ZenIcon(icon: .photoArtframe)
                 .font(.system(size: 120))
                 .foregroundStyle(.white.opacity(0.15))
 

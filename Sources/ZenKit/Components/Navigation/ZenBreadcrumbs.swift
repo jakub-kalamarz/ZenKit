@@ -27,7 +27,7 @@ public struct ZenBreadcrumbs: View {
         HStack(spacing: ZenSpacing.xSmall) {
             ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
                 if index > 0 {
-                    Image(systemName: "chevron.right")
+                    ZenIcon(icon: .chevronRight)
                         .font(.system(size: 10, weight: .semibold))
                         .foregroundStyle(Color.zenTextMuted)
                 }

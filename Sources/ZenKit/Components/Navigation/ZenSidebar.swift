@@ -176,7 +176,7 @@ public struct ZenSidebar<Header: View, Footer: View>: View {
                     }
 
                     if hasChildren {
-                        Image(systemName: "chevron.right")
+                        ZenIcon(icon: .chevronRight)
                             .font(.zen(.tab, weight: .semibold))
                             .foregroundStyle(Color.zenTextMuted)
                             .rotationEffect(.degrees(isExpanded ? 90 : 0))
@@ -287,7 +287,7 @@ public struct ZenSidebarToggle: View {
                 isCollapsed.toggle()
             }
         } label: {
-            Image(systemName: "sidebar.left")
+            ZenIcon(icon: .sidebarLeft)
                 .font(.zen(.body2, weight: .medium))
                 .foregroundStyle(Color.zenTextMuted)
                 .frame(width: 32, height: 32)
@@ -337,7 +337,7 @@ public struct ZenSidebarToggle: View {
                     }
                 } footer: {
                     HStack {
-                        Image(systemName: "person.circle.fill")
+                        ZenIcon(icon: .personCircleFill)
                             .font(.zenDisplayS)
                             .foregroundStyle(Color.zenTextMuted)
                         if !collapsed {

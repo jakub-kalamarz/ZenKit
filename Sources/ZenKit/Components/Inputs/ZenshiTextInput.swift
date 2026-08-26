@@ -247,10 +247,10 @@ private extension View {
 
         var body: some View {
             VStack(spacing: ZenSpacing.medium) {
-                ZenTextInput(text: .constant("alex@example.com"), prompt: "Email", leadingIcon: .system("envelope"))
-                ZenTextInput(text: .constant(""), prompt: "name@email.com", leadingIcon: .system("envelope"), keyboardType: .emailAddress)
-                ZenTextInput(text: .constant(""), prompt: "Password", leadingIcon: .system("lock"), kind: .secure, state: .focused)
-                ZenTextInput(text: .constant(""), prompt: "Email", leadingIcon: .system("envelope"), state: .invalid, message: "Enter a valid email.")
+                ZenTextInput(text: .constant("alex@example.com"), prompt: "Email", leadingIcon: .hugeIcon(.envelope))
+                ZenTextInput(text: .constant(""), prompt: "name@email.com", leadingIcon: .hugeIcon(.envelope), keyboardType: .emailAddress)
+                ZenTextInput(text: .constant(""), prompt: "Password", leadingIcon: .hugeIcon(.lock), kind: .secure, state: .focused)
+                ZenTextInput(text: .constant(""), prompt: "Email", leadingIcon: .hugeIcon(.envelope), state: .invalid, message: "Enter a valid email.")
                 ZenTextInput(text: $multilineText, prompt: "Type a message...", axis: .vertical(1...6))
             }
             .padding()

@@ -33,8 +33,8 @@ struct ZenKitFoundationTests {
 
     @Test
     func zenIconSupportsSystemSymbolRendering() {
-        let view = ZenIcon(systemName: "envelope", size: 18)
-        let menuIcon = ZenMenuIcon(systemName: "ellipsis")
+        let view = ZenIcon(icon: .envelope, size: 18)
+        let menuIcon = ZenMenuIcon(icon: .ellipsis)
 
         _ = view
         _ = menuIcon

@@ -54,7 +54,7 @@ public struct ZenStatRow: View {
                 }
             }
 
-            ZenIcon(systemName: "chevron.right", size: 12)
+            ZenIcon(icon: .chevronRight, size: 12)
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(Color.zenTextMuted)
         }

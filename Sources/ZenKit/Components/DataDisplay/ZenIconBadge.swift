@@ -20,8 +20,8 @@ public struct ZenIconBadge: View {
         self.labelForeground = nil
     }
 
-    public init(systemName: String, color: Color, size: CGFloat = defaultSize) {
-        self.init(source: .system(systemName), color: color, size: size)
+    public init(icon: HugeIcon, color: Color, size: CGFloat = defaultSize) {
+        self.init(source: .hugeIcon(icon), color: color, size: size)
     }
 
     public init(assetName: String, color: Color, size: CGFloat = defaultSize) {
@@ -89,11 +89,11 @@ public struct ZenIconBadge: View {
             VStack(alignment: .leading, spacing: ZenSpacing.small) {
                 Text("simple").font(.caption).foregroundStyle(.secondary)
                 HStack(spacing: ZenSpacing.small) {
-                    ZenIconBadge(systemName: "person.circle.fill", color: .blue, size: 48)
-                    ZenIconBadge(systemName: "bell.fill", color: .red)
-                    ZenIconBadge(systemName: "shield.fill", color: .green)
-                    ZenIconBadge(systemName: "globe", color: .cyan)
-                    ZenIconBadge(systemName: "paintpalette.fill", color: .purple)
+                    ZenIconBadge(icon: .personCircleFill, color: .blue, size: 48)
+                    ZenIconBadge(icon: .bellFill, color: .red)
+                    ZenIconBadge(icon: .shieldFill, color: .green)
+                    ZenIconBadge(icon: .globe, color: .cyan)
+                    ZenIconBadge(icon: .paintpaletteFill, color: .purple)
                 }
             }
         }
@@ -102,11 +102,11 @@ public struct ZenIconBadge: View {
             VStack(alignment: .leading, spacing: ZenSpacing.small) {
                 Text("gradient").font(.caption).foregroundStyle(.secondary)
                 HStack(spacing: ZenSpacing.small) {
-                    ZenIconBadge(systemName: "person.circle.fill", color: .blue)
-                    ZenIconBadge(systemName: "bell.fill", color: .red)
-                    ZenIconBadge(systemName: "shield.fill", color: .green)
-                    ZenIconBadge(systemName: "globe", color: .cyan)
-                    ZenIconBadge(systemName: "paintpalette.fill", color: .purple)
+                    ZenIconBadge(icon: .personCircleFill, color: .blue)
+                    ZenIconBadge(icon: .bellFill, color: .red)
+                    ZenIconBadge(icon: .shieldFill, color: .green)
+                    ZenIconBadge(icon: .globe, color: .cyan)
+                    ZenIconBadge(icon: .paintpaletteFill, color: .purple)
                 }
             }
         }
@@ -115,11 +115,11 @@ public struct ZenIconBadge: View {
             VStack(alignment: .leading, spacing: ZenSpacing.small) {
                 Text("single").font(.caption).foregroundStyle(.secondary)
                 HStack(spacing: ZenSpacing.small) {
-                    ZenIconBadge(systemName: "person.circle.fill", color: .blue)
-                    ZenIconBadge(systemName: "bell.fill", color: .red)
-                    ZenIconBadge(systemName: "shield.fill", color: .green)
-                    ZenIconBadge(systemName: "globe", color: .cyan)
-                    ZenIconBadge(systemName: "paintpalette.fill", color: .purple)
+                    ZenIconBadge(icon: .personCircleFill, color: .blue)
+                    ZenIconBadge(icon: .bellFill, color: .red)
+                    ZenIconBadge(icon: .shieldFill, color: .green)
+                    ZenIconBadge(icon: .globe, color: .cyan)
+                    ZenIconBadge(icon: .paintpaletteFill, color: .purple)
                 }
             }
         }

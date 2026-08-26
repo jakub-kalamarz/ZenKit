@@ -143,7 +143,7 @@ public struct ZenSwipeRow<Content: View>: View {
             ]
         ) {
             HStack(spacing: ZenSpacing.small) {
-                ZenIconBadge(systemName: "envelope.fill", color: .blue)
+                ZenIconBadge(icon: .envelopeFill, color: .blue)
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Team Update")
@@ -176,7 +176,7 @@ public struct ZenSwipeRow<Content: View>: View {
             ]
         ) {
             HStack(spacing: ZenSpacing.small) {
-                ZenIconBadge(systemName: "bell.fill", color: .red)
+                ZenIconBadge(icon: .bellFill, color: .red)
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Reminder")

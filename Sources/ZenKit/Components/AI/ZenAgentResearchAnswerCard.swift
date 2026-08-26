@@ -23,7 +23,7 @@ public struct ZenAgentResearchAnswerCard: View {
                         .foregroundStyle(Color.zenTextMuted)
                     ForEach(answer.sources) { source in
                         HStack(spacing: ZenSpacing.xSmall) {
-                            ZenIcon(systemName: "link", size: 11)
+                            ZenIcon(icon: .link, size: 11)
                                 .foregroundStyle(Color.zenTextMuted)
                             Text(source.title)
                                 .font(.zenGroup)

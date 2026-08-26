@@ -130,7 +130,7 @@ public struct ZenEmptyContent<Content: View>: View {
     ZenEmpty {
         ZenEmptyHeader {
             ZenEmptyMedia(variant: .icon) {
-                ZenIcon(systemName: "exclamationmark.triangle.fill", size: 24)
+                ZenIcon(icon: .exclamationmarkTriangleFill, size: 24)
             }
             ZenEmptyTitle {
                 Text("No results found")

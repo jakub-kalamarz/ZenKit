@@ -68,7 +68,7 @@ public struct ZenNavigationRow<Trailing: View>: View {
                 .foregroundStyle(Color.zenTextMuted)
 
             if accessory == .chevron {
-                ZenIcon(systemName: "chevron.right", size: 12)
+                ZenIcon(icon: .chevronRight, size: 12)
                     .foregroundStyle(Color.zenTextMuted)
             }
         }
@@ -167,31 +167,31 @@ public extension ZenNavigationRow where Trailing == EmptyView {
         ZenNavigationRow(
             title: "Account",
             subtitle: "Profile, email, and devices",
-            leadingIcon: .system("person.circle.fill"),
+            leadingIcon: .hugeIcon(.personCircleFill),
             iconColor: .blue
         )
         ZenNavigationRow(
             title: "Notifications",
-            leadingIcon: .system("bell.fill"),
+            leadingIcon: .hugeIcon(.bellFill),
             iconColor: .red,
             accessory: .none
         )
         ZenNavigationRow(
             title: "Security",
             subtitle: "Password and two-factor",
-            leadingIcon: .system("shield.fill"),
+            leadingIcon: .hugeIcon(.shieldFill),
             iconColor: .green
         )
         ZenNavigationRow(
             title: "Language",
-            leadingIcon: .system("globe")
+            leadingIcon: .hugeIcon(.globe)
         ) {
             Text("English")
         }
         ZenNavigationRow(
             title: "Billing",
             subtitle: "Managed by workspace owner",
-            leadingIcon: .system("creditcard.fill"),
+            leadingIcon: .hugeIcon(.creditcardFill),
             iconColor: .orange
         )
         .disabled(true)

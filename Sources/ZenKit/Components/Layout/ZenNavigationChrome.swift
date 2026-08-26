@@ -52,7 +52,7 @@ struct ZenNavigationBackButtonView: View {
     var body: some View {
         Button(action: backButton.action ?? {}) {
             HStack(spacing: ZenSpacing.xSmall) {
-                Image(systemName: "chevron.left")
+                ZenIcon(icon: .chevronLeft)
                     .font(.system(size: 14, weight: .semibold))
 
                 if let text = backButton.text {

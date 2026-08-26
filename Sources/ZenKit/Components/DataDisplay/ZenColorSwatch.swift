@@ -40,7 +40,7 @@ public struct ZenColorSwatch: View {
                                 .strokeBorder(Color.zenBorder, lineWidth: 2)
                                 .frame(width: 40, height: 40)
 
-                            ZenIcon(systemName: "checkmark", size: 12)
+                            ZenIcon(icon: .checkmark, size: 12)
                                 .font(.system(size: 12, weight: .semibold))
                                 .foregroundStyle(Color.white)
                         }

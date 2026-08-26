@@ -100,14 +100,14 @@ public extension ZenNavigationButtonRow where Trailing == EmptyView {
         ZenNavigationButtonRow(
             title: "Account",
             subtitle: "Profile, email, and devices",
-            leadingIcon: .system("person.circle.fill"),
+            leadingIcon: .hugeIcon(.personCircleFill),
             iconColor: .blue,
             action: {}
         )
 
         ZenNavigationButtonRow(
             title: "Language",
-            leadingIcon: .system("globe"),
+            leadingIcon: .hugeIcon(.globe),
             action: {}
         ) {
             Text("English")

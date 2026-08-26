@@ -135,7 +135,7 @@ struct ZenKitButtonTests {
         #expect(leading.source == .asset("GoogleLogo", renderingMode: .original))
         #expect(leading.assetName == "GoogleLogo")
         #expect(leading.placement == .leading)
-        #expect(trailing.source == .system("arrow.right"))
+        #expect(trailing.source == .hugeIcon(.arrowRight))
         #expect(trailing.assetName == nil)
         #expect(trailing.placement == .trailing)
     }
@@ -241,7 +241,7 @@ struct ZenKitButtonTests {
         _ = ZenButtonLabel("Test", variant: .outline)
         _ = ZenButtonLabel("Test", size: .sm)
         _ = ZenButtonLabel("Test", fullWidth: true)
-        _ = ZenButtonLabel("Test", leadingIcon: .asset("Plus", renderingMode: .template), trailingIcon: .system("arrow.right"))
+        _ = ZenButtonLabel("Test", leadingIcon: .asset("Plus", renderingMode: .template), trailingIcon: .hugeIcon(.arrowRight))
         _ = ZenButtonLabel(
             "Test",
             leadingIcon: .init(assetName: "Plus", renderingMode: .template),

@@ -8,7 +8,7 @@ struct CardShowcaseScreen: View {
                 ZenCardHeader(
                     title: "Notifications",
                     subtitle: "Manage delivery settings",
-                    leadingIcon: .system("bell.badge.fill"),
+                    leadingIcon: .hugeIcon(.bellBadgeFill),
                     iconColor: .red
                 )
             }
@@ -17,7 +17,7 @@ struct CardShowcaseScreen: View {
                 ZenCardHeader(
                     title: "Security",
                     subtitle: "Password and two-factor auth",
-                    leadingIcon: .system("shield.fill"),
+                    leadingIcon: .hugeIcon(.shieldFill),
                     iconColor: .green
                 )
             }

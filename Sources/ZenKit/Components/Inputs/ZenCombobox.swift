@@ -113,7 +113,7 @@ public struct ZenCombobox: View {
                         }
                     }
                 } label: {
-                    Image(systemName: "chevron.down")
+                    ZenIcon(icon: .chevronDown)
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(Color.zenTextMuted)
                         .rotationEffect(.degrees(isExpanded ? 180 : 0))

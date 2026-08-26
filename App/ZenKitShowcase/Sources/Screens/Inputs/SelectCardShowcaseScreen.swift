@@ -172,7 +172,7 @@ struct SelectCardShowcaseScreen: View {
 
                     ZenSelectCard(
                         title: "Add new payment method",
-                        leadingIconSource: .system("plus"),
+                        leadingIconSource: .hugeIcon(.plus),
                         variant: .inline,
                         isSelected: false
                     ) {}

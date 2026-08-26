@@ -40,7 +40,7 @@ public struct ZenStatTile: View {
                     Spacer(minLength: ZenSpacing.xSmall)
                     if let onMenu {
                         Button(action: onMenu) {
-                            Image(systemName: "ellipsis")
+                            ZenIcon(icon: .ellipsis)
                                 .font(.system(size: 13, weight: .semibold))
                                 .foregroundStyle(Color.zenTextMuted)
                         }

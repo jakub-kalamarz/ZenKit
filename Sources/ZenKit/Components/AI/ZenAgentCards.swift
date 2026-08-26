@@ -90,7 +90,7 @@ public struct ZenAgentContextCard: View {
                 HStack {
                     Text(item.title).font(.zen(.group, weight: .semibold)).foregroundStyle(Color.zenTextPrimary)
                     Spacer(minLength: 0)
-                    ZenIcon(systemName: "arrow.up.right", size: 12).foregroundStyle(Color.zenTextMuted)
+                    ZenIcon(icon: .arrowUpRight, size: 12).foregroundStyle(Color.zenTextMuted)
                 }
                 Text(item.excerpt).font(.zenGroup).foregroundStyle(Color.zenTextMuted).lineLimit(3)
                 Text([item.sourceLabel, item.metadata].compactMap { $0 }.joined(separator: " · "))

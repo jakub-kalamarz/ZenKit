@@ -40,7 +40,7 @@ struct ButtonLabelShowcaseScreen: View {
                         variant: .secondary,
                         size: .icon
                     ) {
-                        ZenIcon(systemName: "plus")
+                        ZenIcon(icon: .plus)
                     }
                 }
             }

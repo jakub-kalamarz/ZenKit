@@ -6,10 +6,10 @@ struct MetricsShowcaseScreen: View {
         ShowcaseScreen(title: "Metrics") {
             ZenCard(title: "Metric Strip", subtitle: "2-column grid of key metrics") {
                 ZenMetricStrip(values: [
-                    ZenMetricValue(label: "Clicks", value: "694", tint: .zenAccent, iconSource: .system("cursorarrow.click.2")),
-                    ZenMetricValue(label: "Impressions", value: "17.8K", tint: .zenSuccess, iconSource: .system("chart.bar")),
-                    ZenMetricValue(label: "CTR", value: "4%", iconSource: .system("percent")),
-                    ZenMetricValue(label: "Position", value: "16", tint: .zenWarning, iconSource: .system("arrow.up.right"))
+                    ZenMetricValue(label: "Clicks", value: "694", tint: .zenAccent, iconSource: .hugeIcon(.cursorarrowClick2)),
+                    ZenMetricValue(label: "Impressions", value: "17.8K", tint: .zenSuccess, iconSource: .hugeIcon(.chartBar)),
+                    ZenMetricValue(label: "CTR", value: "4%", iconSource: .hugeIcon(.percent)),
+                    ZenMetricValue(label: "Position", value: "16", tint: .zenWarning, iconSource: .hugeIcon(.arrowUpRight))
                 ])
             }
 
@@ -19,7 +19,7 @@ struct MetricsShowcaseScreen: View {
                         label: "Revenue",
                         value: "$12.4K",
                         tint: .zenAccent,
-                        iconSource: .system("dollarsign.circle"),
+                        iconSource: .hugeIcon(.dollarsignCircle),
                         comparisonValue: "+12%",
                         trend: .up
                     ),
@@ -27,7 +27,7 @@ struct MetricsShowcaseScreen: View {
                         label: "Churn Rate",
                         value: "2.1%",
                         tint: .zenCritical,
-                        iconSource: .system("person.badge.minus"),
+                        iconSource: .hugeIcon(.personBadgeMinus),
                         comparisonValue: "+0.4%",
                         trend: .up,
                         comparisonLogic: .lessIsBetter
@@ -36,7 +36,7 @@ struct MetricsShowcaseScreen: View {
                         label: "NPS",
                         value: "72",
                         tint: .zenSuccess,
-                        iconSource: .system("heart"),
+                        iconSource: .hugeIcon(.heart),
                         comparisonValue: "+4",
                         trend: .up
                     ),
@@ -44,7 +44,7 @@ struct MetricsShowcaseScreen: View {
                         label: "Latency",
                         value: "42ms",
                         tint: .zenWarning,
-                        iconSource: .system("bolt"),
+                        iconSource: .hugeIcon(.bolt),
                         comparisonValue: "-12ms",
                         trend: .down,
                         comparisonLogic: .lessIsBetter
@@ -55,10 +55,10 @@ struct MetricsShowcaseScreen: View {
             ZenCard(title: "Compact Metric Grid", subtitle: "2x2 icon and value tiles") {
                 ZenMetricStrip(
                     values: [
-                        ZenMetricValue(label: "Clicks", value: "694", tint: .zenAccent, iconSource: .system("cursorarrow.click.2")),
-                        ZenMetricValue(label: "Impressions", value: "17.8K", tint: .zenSuccess, iconSource: .system("chart.bar")),
-                        ZenMetricValue(label: "CTR", value: "4%", iconSource: .system("percent")),
-                        ZenMetricValue(label: "Position", value: "16", tint: .zenWarning, iconSource: .system("arrow.up.right"))
+                        ZenMetricValue(label: "Clicks", value: "694", tint: .zenAccent, iconSource: .hugeIcon(.cursorarrowClick2)),
+                        ZenMetricValue(label: "Impressions", value: "17.8K", tint: .zenSuccess, iconSource: .hugeIcon(.chartBar)),
+                        ZenMetricValue(label: "CTR", value: "4%", iconSource: .hugeIcon(.percent)),
+                        ZenMetricValue(label: "Position", value: "16", tint: .zenWarning, iconSource: .hugeIcon(.arrowUpRight))
                     ],
                     style: .compact,
                     layout: .grid(columns: 2)
@@ -68,10 +68,10 @@ struct MetricsShowcaseScreen: View {
             ZenCard(title: "Compact Metric Row", subtitle: "1x4 icon and value strip") {
                 ZenMetricStrip(
                     values: [
-                        ZenMetricValue(label: "Clicks", value: "694", tint: .zenAccent, iconSource: .system("cursorarrow.click.2")),
-                        ZenMetricValue(label: "Impressions", value: "17.8K", tint: .zenSuccess, iconSource: .system("chart.bar")),
-                        ZenMetricValue(label: "CTR", value: "4%", iconSource: .system("percent")),
-                        ZenMetricValue(label: "Position", value: "16", tint: .zenWarning, iconSource: .system("arrow.up.right"))
+                        ZenMetricValue(label: "Clicks", value: "694", tint: .zenAccent, iconSource: .hugeIcon(.cursorarrowClick2)),
+                        ZenMetricValue(label: "Impressions", value: "17.8K", tint: .zenSuccess, iconSource: .hugeIcon(.chartBar)),
+                        ZenMetricValue(label: "CTR", value: "4%", iconSource: .hugeIcon(.percent)),
+                        ZenMetricValue(label: "Position", value: "16", tint: .zenWarning, iconSource: .hugeIcon(.arrowUpRight))
                     ],
                     style: .compact,
                     layout: .row

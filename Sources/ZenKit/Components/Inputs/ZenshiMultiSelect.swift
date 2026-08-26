@@ -73,7 +73,7 @@ public struct ZenMultiSelect<Option, OptionLabel: View, SummaryLabel: View>: Vie
             ZenSettingRow(title: title) {
                 HStack(spacing: ZenSpacing.xSmall) {
                     summaryContent
-                    ZenIcon(systemName: "chevron.up.chevron.down", size: 11)
+                    ZenIcon(icon: .chevronUpChevronDown, size: 11)
                         .foregroundStyle(Color.zenTextMuted)
                 }
             }
@@ -144,7 +144,7 @@ public struct ZenMultiSelect<Option, OptionLabel: View, SummaryLabel: View>: Vie
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                 if isSelected {
-                    ZenIcon(systemName: "checkmark.square", size: 14)
+                    ZenIcon(icon: .checkmarkSquare, size: 14)
                         .foregroundStyle(Color.zenPrimary)
                 }
             }

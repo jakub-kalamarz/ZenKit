@@ -315,17 +315,17 @@ private extension View {
             }
         ) {
             VStack(spacing: ZenSpacing.medium) {
-                ZenTextInput(text: .constant(""), prompt: "Email", leadingIcon: .system("envelope"))
+                ZenTextInput(text: .constant(""), prompt: "Email", leadingIcon: .hugeIcon(.envelope))
                 ZenButton("Continue") {}
             }
             .padding(.horizontal, ZenSpacing.small)
         }
         .toolbar {
             ToolbarItem(placement: ZenNavigationChrome.leadingToolbarPlacement) {
-                ZenIcon(systemName: "sidebar.left")
+                ZenIcon(icon: .sidebarLeft)
             }
             ToolbarItem(placement: ZenNavigationChrome.trailingToolbarPlacement) {
-                ZenIcon(systemName: "person.circle")
+                ZenIcon(icon: .personCircle)
             }
         }
     }
