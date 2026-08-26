@@ -41,7 +41,7 @@ public struct ZenInlineStepper: View {
         let buttonRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: containerRadius)
 
         return HStack(spacing: ZenSpacing.xSmall) {
-            stepButton(systemName: "minus", disabled: value <= range.lowerBound, cornerRadius: buttonRadius) {
+            stepButton(icon: .minus, disabled: value <= range.lowerBound, cornerRadius: buttonRadius) {
                 decrement()
             }
 
@@ -52,7 +52,7 @@ public struct ZenInlineStepper: View {
                 .contentTransition(.numericText())
                 .animation(.snappy(duration: 0.25), value: value)
 
-            stepButton(systemName: "plus", disabled: value >= range.upperBound, cornerRadius: buttonRadius) {
+            stepButton(icon: .plus, disabled: value >= range.upperBound, cornerRadius: buttonRadius) {
                 increment()
             }
         }
@@ -66,10 +66,9 @@ public struct ZenInlineStepper: View {
         .zenControlSurfaceShadow()
     }
 
-    private func stepButton(systemName: String, disabled: Bool, cornerRadius: CGFloat, action: @escaping () -> Void) -> some View {
+    private func stepButton(icon: HugeIcon, disabled: Bool, cornerRadius: CGFloat, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            Image(systemName: systemName)
-                .font(.system(size: 12, weight: .semibold))
+            ZenIcon(icon: icon, size: 12)
                 .foregroundStyle(disabled ? Color.zenBorder : Color.zenTextPrimary)
                 .frame(width: 28, height: 28)
                 

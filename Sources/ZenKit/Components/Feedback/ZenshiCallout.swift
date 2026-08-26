@@ -10,11 +10,11 @@ public enum ZenCalloutTone {
 public struct ZenCallout: View {
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
 
-    private let icon: String?
+    private let icon: ZenIconSource?
     private let message: LocalizedStringKey
     private let tone: ZenCalloutTone
 
-    public init(icon: String? = nil, message: LocalizedStringKey, tone: ZenCalloutTone = .info) {
+    public init(icon: ZenIconSource? = nil, message: LocalizedStringKey, tone: ZenCalloutTone = .info) {
         self.icon = icon
         self.message = message
         self.tone = tone
@@ -28,7 +28,7 @@ public struct ZenCallout: View {
 
         HStack(alignment: .center, spacing: ZenSpacing.small) {
             if let icon {
-                ZenIcon(systemName: icon, size: 14)
+                ZenIcon(source: icon, size: 14)
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(tintColor)
                     .padding(.top, 1)

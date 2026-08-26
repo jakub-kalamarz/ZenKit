@@ -40,8 +40,7 @@ public struct ZenSensitiveInput: View {
                 Button {
                     isRevealed.toggle()
                 } label: {
-                    Image(systemName: isRevealed ? "eye.slash" : "eye")
-                        .font(.zenBody)
+                    ZenIcon(icon: isRevealed ? .eyeSlash : .eye, size: 16)
                         .foregroundStyle(Color.zenTextMuted)
                         .frame(width: 32, height: 32)
                 }

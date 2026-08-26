@@ -248,7 +248,7 @@ public struct ZenMetricStrip: View {
         if let comparisonValue = value.comparisonValue {
             HStack(spacing: Self.comparisonSpacing) {
                 if let trend = value.trend {
-                    ZenIcon(systemName: comparisonIconSystemName(for: trend), size: Self.comparisonIconSize)
+                    ZenIcon(icon: comparisonIcon(for: trend), size: Self.comparisonIconSize)
                         .foregroundStyle(comparisonColor(for: value))
                 }
 
@@ -284,14 +284,14 @@ public struct ZenMetricStrip: View {
         }
     }
 
-    private func comparisonIconSystemName(for trend: ZenMetricTrend) -> String {
+    private func comparisonIcon(for trend: ZenMetricTrend) -> HugeIcon {
         switch trend {
         case .up:
-            return "chevron.up"
+            return .arrowUp
         case .down:
-            return "chevron.down"
+            return .arrowDown
         case .neutral:
-            return "minus"
+            return .minus
         }
     }
 

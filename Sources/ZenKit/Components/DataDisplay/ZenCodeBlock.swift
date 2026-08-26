@@ -63,7 +63,7 @@ public struct ZenCodeBlock: View {
                 copyToClipboard()
             } label: {
                 HStack(spacing: 4) {
-                    Image(systemName: copied ? "checkmark" : "doc.on.doc")
+                    ZenIcon(icon: copied ? .checkmark : .docOnDoc, size: 16)
                         .font(.system(size: 11, weight: .medium))
                         .frame(width: 16, height: 16)
                     Text(copied ? "Copied" : "Copy")

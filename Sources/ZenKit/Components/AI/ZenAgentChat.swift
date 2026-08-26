@@ -84,7 +84,11 @@ public struct ZenAgentChat<Attachment: View>: View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: ZenSpacing.medium) {
                 if messages.isEmpty && !isStreaming {
-                    ContentUnavailableView(emptyTitle, systemImage: "sparkles", description: Text(emptyDescription))
+                    ContentUnavailableView {
+                        Label { Text(emptyTitle) } icon: { ZenIcon(icon: .sparkles, size: 24) }
+                    } description: {
+                        Text(emptyDescription)
+                    }
                         .foregroundStyle(Color.zenTextMuted)
                         .frame(maxWidth: .infinity, minHeight: 260)
                 }
@@ -121,8 +125,7 @@ public struct ZenAgentChat<Attachment: View>: View {
         .scrollIndicators(.hidden)
         .overlay(alignment: .bottomTrailing) {
             if !isAtBottom {
-                Button("Jump to latest", systemImage: "arrow.down", action: { scrollToBottom(proxy) })
-                    .labelStyle(.iconOnly)
+                Button(action: { scrollToBottom(proxy) }) { ZenIcon(icon: .arrowDown, size: 16) }
                     .frame(width: 44, height: 44)
                     .background(.ultraThinMaterial, in: Circle())
                     .overlay { Circle().strokeBorder(Color.zenBorder, lineWidth: 1) }

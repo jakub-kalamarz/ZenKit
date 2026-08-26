@@ -24,6 +24,11 @@ public struct ZenIconBadge: View {
         self.init(source: .hugeIcon(icon), color: color, size: size)
     }
 
+    /// SF Symbol badge. Kept alongside `init(icon:)` so both icon systems work.
+    public init(systemName: String, color: Color, size: CGFloat = defaultSize) {
+        self.init(source: .system(systemName), color: color, size: size)
+    }
+
     public init(assetName: String, color: Color, size: CGFloat = defaultSize) {
         self.init(source: .asset(assetName, renderingMode: .template), color: color, size: size)
     }

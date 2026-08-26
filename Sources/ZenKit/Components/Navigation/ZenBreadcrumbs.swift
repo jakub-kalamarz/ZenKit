@@ -3,10 +3,10 @@ import SwiftUI
 public struct ZenBreadcrumbItem: Identifiable {
     public let id: String
     public let label: String
-    public let icon: String?
+    public let icon: ZenIconSource?
     public let action: (() -> Void)?
 
-    public init(id: String = UUID().uuidString, label: String, icon: String? = nil, action: (() -> Void)? = nil) {
+    public init(id: String = UUID().uuidString, label: String, icon: ZenIconSource? = nil, action: (() -> Void)? = nil) {
         self.id = id
         self.label = label
         self.icon = icon
@@ -47,7 +47,7 @@ public struct ZenBreadcrumbs: View {
     private func breadcrumbLabel(item: ZenBreadcrumbItem, isCurrent: Bool) -> some View {
         HStack(spacing: 4) {
             if let icon = item.icon {
-                Image(systemName: icon)
+                ZenIcon(source: icon, size: 14)
                     .font(.zenGroup)
             }
             Text(item.label)

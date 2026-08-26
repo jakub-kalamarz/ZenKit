@@ -90,6 +90,8 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
     public static let exclamationmark = HugeIcon(name: "alert-02", scalar: 0xF1583)
     public static let exclamationmarkBubble = HugeIcon(name: "bubble-chat-notification", scalar: 0xF17D5)
     public static let exclamationmarkTriangleFill = HugeIcon(name: "alert-02", scalar: 0xF1583)
+    public static let eye = HugeIcon(name: "eye", scalar: 0xF1C4A)
+    public static let eyeSlash = HugeIcon(name: "view-off-slash", scalar: 0xF296D)
     public static let flame = HugeIcon(name: "fire", scalar: 0xF1CD5)
     public static let flameFill = HugeIcon(name: "fire", scalar: 0xF1CD5)
     public static let flashlightOffFill = HugeIcon(name: "flash-off", scalar: 0xF1CE7)
@@ -245,6 +247,8 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         .exclamationmark,
         .exclamationmarkBubble,
         .exclamationmarkTriangleFill,
+        .eye,
+        .eyeSlash,
         .flame,
         .flameFill,
         .flashlightOffFill,
@@ -402,6 +406,8 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         case "exclamationmark": .exclamationmark
         case "exclamationmark.bubble": .exclamationmarkBubble
         case "exclamationmark.triangle.fill": .exclamationmarkTriangleFill
+        case "eye": .eye
+        case "eye.slash": .eyeSlash
         case "flame": .flame
         case "flame.fill": .flameFill
         case "flashlight.off.fill": .flashlightOffFill

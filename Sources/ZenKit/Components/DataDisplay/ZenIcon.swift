@@ -6,6 +6,29 @@ public enum ZenIconSource: Hashable, Sendable {
     case system(String)
 }
 
+extension ZenIconSource: ExpressibleByStringLiteral {
+    /// A bare string literal is an SF Symbol name, so `icon: "house"` keeps working
+    /// while callers can still pass `.hugeIcon(_:)` or `.asset(_:renderingMode:)`.
+    public init(stringLiteral value: String) {
+        self = .system(value)
+    }
+}
+
+extension ZenIconSource {
+    /// Best-effort human-readable name. Components use it as an accessibility
+    /// fallback when the caller gave an icon but no label.
+    public var fallbackLabel: String {
+        switch self {
+        case .asset(let name, _):
+            return name
+        case .hugeIcon(let icon):
+            return String(describing: icon)
+        case .system(let name):
+            return name
+        }
+    }
+}
+
 public enum ZenIconRenderingMode: Hashable, Sendable {
     case original
     case template
@@ -25,18 +48,20 @@ public struct ZenIcon: View {
 
     public let source: ZenIconSource
     public let size: CGFloat
+    public let weight: Font.Weight?
 
-    public init(source: ZenIconSource, size: CGFloat = 16) {
+    public init(source: ZenIconSource, size: CGFloat = 16, weight: Font.Weight? = nil) {
         self.source = source
         self.size = size
+        self.weight = weight
     }
 
     public init(assetName: String, size: CGFloat = 16, renderingMode: ZenIconRenderingMode) {
         self.init(source: .asset(assetName, renderingMode: renderingMode), size: size)
     }
 
-    public init(icon: HugeIcon, size: CGFloat = 16) {
-        self.init(source: .hugeIcon(icon), size: size)
+    public init(icon: HugeIcon, size: CGFloat = 16, weight: Font.Weight? = nil) {
+        self.init(source: .hugeIcon(icon), size: size, weight: weight)
     }
 
     @available(*, deprecated, message: "Use init(icon:size:) with HugeIcon")
@@ -44,7 +69,7 @@ public struct ZenIcon: View {
         guard let icon = HugeIcon.legacy(systemName) else {
             preconditionFailure("Missing HugeIcons migration mapping for \(systemName)")
         }
-        self.init(icon: icon, size: size)
+        self.init(icon: icon, size: size, weight: weight)
     }
 
     public var body: some View {
@@ -120,7 +145,7 @@ public struct ZenMenuIcon: View {
         self.init(source: .hugeIcon(icon))
     }
 
-    init(systemName: String) {
+    public init(systemName: String) {
         self.init(source: .system(systemName))
     }
 

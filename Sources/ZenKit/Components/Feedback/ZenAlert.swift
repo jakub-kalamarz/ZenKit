@@ -40,7 +40,7 @@ public struct ZenAlert: View {
         let cornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
 
         HStack(alignment: .top, spacing: ZenSpacing.small) {
-            ZenIcon(systemName: iconSystemName, size: 15)
+            ZenIcon(icon: icon, size: 15)
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(tintColor)
                 .padding(.top, 1)
@@ -89,11 +89,11 @@ public struct ZenAlert: View {
         )
     }
 
-    private var iconSystemName: String {
+    private var icon: HugeIcon {
         switch tone {
-        case .critical: return "exclamationmark.triangle.fill"
-        case .warning: return "info.circle.fill"
-        case .success: return "checkmark.circle.fill"
+        case .critical: return .exclamationmarkTriangleFill
+        case .warning: return .infoCircleFill
+        case .success: return .checkmarkCircleFill
         }
     }
 

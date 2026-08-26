@@ -19,7 +19,7 @@ public struct ZenAgentApprovalCard: View {
             ForEach(approval.options) { option in
                 Button(action: { selectedOptionID = option.id }) {
                     HStack(spacing: ZenSpacing.small) {
-                        Image(systemName: selectedOptionID == option.id ? "largecircle.fill.circle" : "circle")
+                        ZenIcon(icon: selectedOptionID == option.id ? .checkmarkCircleFill : .circle, size: 16)
                             .foregroundStyle(selectedOptionID == option.id ? Color.zenPrimary : Color.zenTextMuted)
                         VStack(alignment: .leading, spacing: 2) {
                             Text(option.title).font(.zen(.group, weight: .semibold))

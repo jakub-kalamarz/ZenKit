@@ -2,11 +2,11 @@ import SwiftUI
 
 public struct ZenMenubarItem: Identifiable {
     public let id: String
-    public let icon: String
+    public let icon: ZenIconSource
     public let label: String?
     public let action: () -> Void
 
-    public init(id: String = UUID().uuidString, icon: String, label: String? = nil, action: @escaping () -> Void) {
+    public init(id: String = UUID().uuidString, icon: ZenIconSource, label: String? = nil, action: @escaping () -> Void) {
         self.id = id
         self.icon = icon
         self.label = label
@@ -30,7 +30,7 @@ public struct ZenMenubar: View {
             ForEach(items) { item in
                 Button(action: item.action) {
                     VStack(spacing: 2) {
-                        Image(systemName: item.icon)
+                        ZenIcon(source: item.icon, size: 16)
                             .font(.system(size: 16, weight: .medium))
 
                         if let label = item.label {
@@ -49,7 +49,7 @@ public struct ZenMenubar: View {
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel(item.label ?? item.icon)
+                .accessibilityLabel(item.label ?? item.icon.fallbackLabel)
             }
         }
         .padding(4)

@@ -82,7 +82,7 @@ public struct ZenClipboardText: View {
         Button {
             copyToClipboard()
         } label: {
-            Image(systemName: copied ? "checkmark" : "doc.on.doc")
+            ZenIcon(icon: copied ? .checkmark : .docOnDoc, size: 16)
                 .font(.zen(.group, weight: .medium))
                 .foregroundStyle(copied ? Color.zenSuccess : Color.zenTextMuted)
         }

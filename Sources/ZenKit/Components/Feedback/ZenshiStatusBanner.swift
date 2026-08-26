@@ -29,7 +29,7 @@ public struct ZenStatusBanner: View {
         let cornerRadius = theme.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
 
         HStack(alignment: .center, spacing: ZenSpacing.small) {
-            ZenIcon(systemName: iconSystemName, size: 15)
+            ZenIcon(icon: icon, size: 15)
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(tintColor)
                 .padding(.top, 1)
@@ -49,14 +49,14 @@ public struct ZenStatusBanner: View {
         )
     }
 
-    private var iconSystemName: String {
+    private var icon: HugeIcon {
         switch tone {
         case .critical:
-            return "exclamationmark.triangle.fill"
+            return .exclamationmarkTriangleFill
         case .warning:
-            return "info.circle.fill"
+            return .infoCircleFill
         case .success:
-            return "checkmark.circle.fill"
+            return .checkmarkCircleFill
         }
     }
 

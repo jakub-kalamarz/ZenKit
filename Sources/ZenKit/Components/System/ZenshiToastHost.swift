@@ -517,7 +517,7 @@ private struct ZenToastCard: View {
             // The default tone carries no icon, so the text starts at the edge.
             EmptyView()
         case .success, .error, .warning, .info:
-            ZenIcon(systemName: iconSystemName, size: Self.iconSize)
+            ZenIcon(icon: icon, size: Self.iconSize)
                 .font(.system(size: Self.iconSize, weight: .semibold))
                 .foregroundStyle(tintColor)
                 .frame(width: Self.iconSize, height: Self.iconSize)
@@ -526,20 +526,20 @@ private struct ZenToastCard: View {
         }
     }
 
-    private var iconSystemName: String {
+    private var icon: HugeIcon {
         switch toast.tone {
         case .default:
-            return "bell.fill"
+            return .bellFill
         case .success:
-            return "checkmark.circle.fill"
+            return .checkmarkCircleFill
         case .error:
-            return "exclamationmark.octagon.fill"
+            return .exclamationmarkTriangleFill
         case .warning:
-            return "exclamationmark.triangle.fill"
+            return .exclamationmarkTriangleFill
         case .info:
-            return "info.circle.fill"
+            return .infoCircleFill
         case .loading:
-            return "arrow.triangle.2.circlepath"
+            return .arrowTriangle2Circlepath
         }
     }
 

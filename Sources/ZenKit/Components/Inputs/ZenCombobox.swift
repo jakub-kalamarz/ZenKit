@@ -3,9 +3,9 @@ import SwiftUI
 public struct ZenComboboxOption: Identifiable, Sendable, Hashable {
     public let id: String
     public let label: String
-    public let icon: String?
+    public let icon: ZenIconSource?
 
-    public init(id: String, label: String, icon: String? = nil) {
+    public init(id: String, label: String, icon: ZenIconSource? = nil) {
         self.id = id
         self.label = label
         self.icon = icon
@@ -149,7 +149,7 @@ public struct ZenCombobox: View {
                                 .foregroundStyle(selection.contains(option.id) ? Color.zenPrimary : Color.zenTextMuted)
 
                                 if let icon = option.icon {
-                                    Image(systemName: icon)
+                                    ZenIcon(source: icon, size: 14)
                                         .font(.zenBody2)
                                         .foregroundStyle(Color.zenTextMuted)
                                 }

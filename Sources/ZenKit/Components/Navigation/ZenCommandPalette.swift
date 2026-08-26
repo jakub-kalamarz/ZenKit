@@ -3,7 +3,7 @@ import SwiftUI
 public struct ZenCommandItem: Identifiable {
     public let id: String
     public let label: String
-    public let icon: String?
+    public let icon: ZenIconSource?
     public let group: String?
     public let shortcut: String?
     public let action: () -> Void
@@ -11,7 +11,7 @@ public struct ZenCommandItem: Identifiable {
     public init(
         id: String = UUID().uuidString,
         label: String,
-        icon: String? = nil,
+        icon: ZenIconSource? = nil,
         group: String? = nil,
         shortcut: String? = nil,
         action: @escaping () -> Void
@@ -164,7 +164,7 @@ public struct ZenCommandPalette: View {
         } label: {
             HStack(spacing: ZenSpacing.small) {
                 if let icon = item.icon {
-                    Image(systemName: icon)
+                    ZenIcon(source: icon, size: 14)
                         .font(.system(size: 14, weight: .medium))
                         .foregroundStyle(Color.zenTextMuted)
                         .frame(width: 20)

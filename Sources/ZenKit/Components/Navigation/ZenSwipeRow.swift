@@ -2,9 +2,22 @@ import SwiftUI
 
 public struct ZenSwipeAction {
     public let label: String
-    public let systemIconName: String
+    public let icon: ZenIconSource
     public let tint: Color
     public let action: () -> Void
+
+    /// SF Symbol, asset or HugeIcon — a bare string literal is treated as an SF Symbol.
+    public init(
+        label: String,
+        icon: ZenIconSource,
+        tint: Color = Color.zenTextMuted,
+        action: @escaping () -> Void
+    ) {
+        self.label = label
+        self.icon = icon
+        self.tint = tint
+        self.action = action
+    }
 
     public init(
         label: String,
@@ -12,10 +25,7 @@ public struct ZenSwipeAction {
         tint: Color = Color.zenTextMuted,
         action: @escaping () -> Void
     ) {
-        self.label = label
-        self.systemIconName = systemIconName
-        self.tint = tint
-        self.action = action
+        self.init(label: label, icon: .system(systemIconName), tint: tint, action: action)
     }
 }
 
@@ -59,7 +69,7 @@ public struct ZenSwipeRow<Content: View>: View {
                             }
                         } label: {
                             VStack(spacing: 4) {
-                                ZenIcon(systemName: action.systemIconName, size: 16)
+                                ZenIcon(source: action.icon, size: 16)
                                     .font(.system(size: 16, weight: .medium))
                                 Text(action.label)
                                     .font(.zenGroup)

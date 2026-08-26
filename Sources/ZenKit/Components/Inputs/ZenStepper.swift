@@ -340,7 +340,7 @@ public struct ZenStepper: View {
             Spacer(minLength: ZenSpacing.small)
 
             HStack(spacing: ZenSpacing.xSmall) {
-                stepButton(systemName: "minus", action: decrement, disabled: value <= range.lowerBound, cornerRadius: buttonRadius)
+                stepButton(icon: .minus, action: decrement, disabled: value <= range.lowerBound, cornerRadius: buttonRadius)
 
                 Button {
                     ZenHapticEngine.perform(.buttonPress, haptics: hapticsOverride)
@@ -356,7 +356,7 @@ public struct ZenStepper: View {
                 }
                 .buttonStyle(.plain)
 
-                stepButton(systemName: "plus", action: increment, disabled: value >= range.upperBound, cornerRadius: buttonRadius)
+                stepButton(icon: .plus, action: increment, disabled: value >= range.upperBound, cornerRadius: buttonRadius)
             }
         }
         .padding(.vertical, 12)
@@ -381,9 +381,9 @@ public struct ZenStepper: View {
     }
 
     @ViewBuilder
-    private func stepButton(systemName: String, action: @escaping () -> Void, disabled: Bool, cornerRadius: CGFloat) -> some View {
+    private func stepButton(icon: HugeIcon, action: @escaping () -> Void, disabled: Bool, cornerRadius: CGFloat) -> some View {
         Button(action: action) {
-            ZenIcon(systemName: systemName, size: 12)
+            ZenIcon(icon: icon, size: 12)
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(disabled ? Color.zenBorder : Color.zenTextPrimary)
                 .frame(width: 28, height: 28)

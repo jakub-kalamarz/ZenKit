@@ -39,7 +39,7 @@ public struct ZenDelta: View {
         let up = percent >= 0
         let good = up == increaseIsGood
         HStack(spacing: size.spacing) {
-            Image(systemName: up ? "arrow.up" : "arrow.down")
+            ZenIcon(icon: up ? .arrowUp : .arrowDown, size: 12)
                 .font(.system(size: size.arrowSize, weight: .bold))
             Text(magnitude)
                 .font(textFont)

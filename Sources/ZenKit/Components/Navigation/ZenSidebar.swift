@@ -5,14 +5,14 @@ import SwiftUI
 public struct ZenSidebarItem: Identifiable {
     public let id: String
     public let label: String
-    public let icon: String?
+    public let icon: ZenIconSource?
     public let badge: String?
     public let children: [ZenSidebarItem]
 
     public init(
         id: String,
         label: String,
-        icon: String? = nil,
+        icon: ZenIconSource? = nil,
         badge: String? = nil,
         children: [ZenSidebarItem] = []
     ) {
@@ -151,7 +151,7 @@ public struct ZenSidebar<Header: View, Footer: View>: View {
         } label: {
             HStack(spacing: ZenSpacing.small) {
                 if let icon = item.icon {
-                    Image(systemName: icon)
+                    ZenIcon(source: icon, size: 16)
                         .font(.zen(.body2, weight: .medium))
                         .foregroundStyle(isSelected ? Color.zenPrimary : Color.zenTextMuted)
                         .frame(width: 22, height: 22)

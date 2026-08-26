@@ -29,7 +29,7 @@ public struct ZenPagination: View {
         #if DEBUG
         #endif
         HStack(spacing: ZenSpacing.small) {
-            navButton(systemName: "chevron.left", enabled: currentPage > 1) {
+            navButton(icon: .chevronLeft, enabled: currentPage > 1) {
                 setPage(currentPage - 1)
             }
 
@@ -42,7 +42,7 @@ public struct ZenPagination: View {
                     .contentTransition(.numericText())
             }
 
-            navButton(systemName: "chevron.right", enabled: currentPage < totalPages) {
+            navButton(icon: .chevronRight, enabled: currentPage < totalPages) {
                 setPage(currentPage + 1)
             }
         }
@@ -80,10 +80,9 @@ public struct ZenPagination: View {
         }
     }
 
-    private func navButton(systemName: String, enabled: Bool, action: @escaping () -> Void) -> some View {
+    private func navButton(icon: HugeIcon, enabled: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            Image(systemName: systemName)
-                .font(.zen(.group, weight: .semibold))
+            ZenIcon(icon: icon, size: 12)
                 .foregroundStyle(enabled ? Color.zenTextPrimary : Color.zenTextMuted.opacity(0.5))
                 .frame(width: 32, height: 32)
                 .background(Color.zenSurface)

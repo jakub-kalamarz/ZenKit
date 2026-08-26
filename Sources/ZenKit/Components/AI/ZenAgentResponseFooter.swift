@@ -36,16 +36,16 @@ public struct ZenAgentResponseFooter: View {
     private var actionBar: some View {
         HStack(spacing: 2) {
             if metadata.allowsCopy {
-                actionButton("Copy response", systemImage: "doc.on.doc") {
+                actionButton("Copy response", icon: .docOnDoc) {
                     onAction(.copy)
                 }
             }
 
             if metadata.allowsFeedback {
-                actionButton("Helpful", systemImage: feedback == .positive ? "hand.thumbsup.fill" : "hand.thumbsup") {
+                actionButton("Helpful", icon: feedback == .positive ? .heartFill : .heart) {
                     setFeedback(feedback == .positive ? nil : .positive)
                 }
-                actionButton("Not helpful", systemImage: feedback == .negative ? "hand.thumbsdown.fill" : "hand.thumbsdown") {
+                actionButton("Not helpful", icon: feedback == .negative ? .xmarkCircleFill : .xmarkCircle) {
                     setFeedback(feedback == .negative ? nil : .negative)
                 }
             }
@@ -61,7 +61,7 @@ public struct ZenAgentResponseFooter: View {
                     }
                 } label: {
                     HStack(spacing: ZenSpacing.xSmall) {
-                        ZenIcon(systemName: "books.vertical", size: 12)
+                        ZenIcon(icon: .booksVertical, size: 12)
                         Text("\(metadata.sources.count) source\(metadata.sources.count == 1 ? "" : "s")")
                             .font(.zenGroup)
                     }
@@ -99,7 +99,7 @@ public struct ZenAgentResponseFooter: View {
     @ViewBuilder
     private func sourceRow(_ source: ZenAgentSource) -> some View {
         let content = HStack(spacing: ZenSpacing.small) {
-            ZenIcon(systemName: "doc.text", size: 13)
+            ZenIcon(icon: .docText, size: 13)
                 .foregroundStyle(Color.zenTextMuted)
                 .frame(width: 20)
 
@@ -126,7 +126,7 @@ public struct ZenAgentResponseFooter: View {
             }
 
             if source.isInteractive {
-                ZenIcon(systemName: "chevron.right", size: 10, weight: .semibold)
+                ZenIcon(icon: .chevronRight, size: 10, weight: .semibold)
                     .foregroundStyle(Color.zenTextMuted)
             }
         }
@@ -153,7 +153,7 @@ public struct ZenAgentResponseFooter: View {
             ForEach(metadata.followUps, id: \.self) { followUp in
                 Button(action: { onAction(.followUp(followUp)) }) {
                     HStack(spacing: ZenSpacing.small) {
-                        ZenIcon(systemName: "arrow.turn.down.right", size: 11)
+                        ZenIcon(icon: .arrowTurnDownRight, size: 11)
                             .foregroundStyle(Color.zenTextMuted)
                         Text(followUp)
                             .font(.zenBody)
@@ -171,11 +171,11 @@ public struct ZenAgentResponseFooter: View {
 
     private func actionButton(
         _ title: LocalizedStringKey,
-        systemImage: String,
+        icon: HugeIcon,
         action: @escaping () -> Void
     ) -> some View {
         Button(action: action) {
-            Label(title, systemImage: systemImage)
+            Label { Text(title) } icon: { ZenIcon(icon: icon, size: 14) }
                 .labelStyle(.iconOnly)
                 .foregroundStyle(Color.zenTextMuted)
                 .frame(width: 32, height: 32)
