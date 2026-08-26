@@ -45,4 +45,22 @@ struct ZenAgentComponentTests {
         _ = chat
         _ = task
     }
+
+    @Test
+    func responseMetadataRetainsSourcesAndActions() {
+        let metadata = ZenAgentResponseMetadata(
+            sources: [.init(id: "source", title: "Source", label: "Workspace", isInteractive: false)],
+            followUps: ["What next?"]
+        )
+        let message = ZenAgentMessage(
+            id: "assistant",
+            role: .assistant,
+            blocks: [.text("Answer")],
+            responseMetadata: metadata
+        )
+
+        #expect(message.responseMetadata?.sources.first?.isInteractive == false)
+        #expect(message.responseMetadata?.followUps == ["What next?"])
+        #expect(ZenAgentMessageAction.feedback(.positive) == .feedback(.positive))
+    }
 }

@@ -4,6 +4,7 @@ public struct ZenAgentChat<Attachment: View>: View {
     private let messages: [ZenAgentMessage]
     @Binding private var draft: String
     @Binding private var approvalSelections: [String: String]
+    @Binding private var feedbackSelections: [String: ZenAgentFeedback]
     private let prompt: LocalizedStringKey
     private let isStreaming: Bool
     private let streamingStatus: String?
@@ -13,6 +14,7 @@ public struct ZenAgentChat<Attachment: View>: View {
     private let onSubmit: () -> Void
     private let onAction: (String) -> Void
     private let onContextOpen: (String) -> Void
+    private let onMessageAction: (String, ZenAgentMessageAction) -> Void
     private let attachment: (ZenAgentMessage) -> Attachment
     @State private var isAtBottom = true
 
@@ -20,6 +22,7 @@ public struct ZenAgentChat<Attachment: View>: View {
         messages: [ZenAgentMessage],
         draft: Binding<String>,
         approvalSelections: Binding<[String: String]> = .constant([:]),
+        feedbackSelections: Binding<[String: ZenAgentFeedback]> = .constant([:]),
         prompt: LocalizedStringKey = "Message",
         isStreaming: Bool = false,
         streamingStatus: String? = nil,
@@ -29,11 +32,13 @@ public struct ZenAgentChat<Attachment: View>: View {
         onSubmit: @escaping () -> Void,
         onAction: @escaping (String) -> Void = { _ in },
         onContextOpen: @escaping (String) -> Void = { _ in },
+        onMessageAction: @escaping (String, ZenAgentMessageAction) -> Void = { _, _ in },
         @ViewBuilder attachment: @escaping (ZenAgentMessage) -> Attachment
     ) {
         self.messages = messages
         _draft = draft
         _approvalSelections = approvalSelections
+        _feedbackSelections = feedbackSelections
         self.prompt = prompt
         self.isStreaming = isStreaming
         self.streamingStatus = streamingStatus
@@ -43,6 +48,7 @@ public struct ZenAgentChat<Attachment: View>: View {
         self.onSubmit = onSubmit
         self.onAction = onAction
         self.onContextOpen = onContextOpen
+        self.onMessageAction = onMessageAction
         self.attachment = attachment
     }
 
@@ -87,8 +93,10 @@ public struct ZenAgentChat<Attachment: View>: View {
                     ZenAgentMessageView(
                         message: message,
                         approvalSelection: approvalSelection(for: message.id),
+                        feedbackSelection: feedbackSelection(for: message.id),
                         onAction: onAction,
                         onContextOpen: onContextOpen,
+                        onMessageAction: onMessageAction,
                         attachment: attachment
                     )
                     .id(message.id)
@@ -149,6 +157,13 @@ public struct ZenAgentChat<Attachment: View>: View {
         )
     }
 
+    private func feedbackSelection(for messageID: String) -> Binding<ZenAgentFeedback?> {
+        Binding(
+            get: { feedbackSelections[messageID] },
+            set: { selection in feedbackSelections[messageID] = selection }
+        )
+    }
+
     private func scrollToBottom(_ proxy: ScrollViewProxy, animated: Bool = true) {
         if animated {
             withAnimation(.easeOut(duration: 0.2)) { proxy.scrollTo("zen-agent-chat-bottom", anchor: .bottom) }
@@ -163,6 +178,7 @@ public extension ZenAgentChat where Attachment == EmptyView {
         messages: [ZenAgentMessage],
         draft: Binding<String>,
         approvalSelections: Binding<[String: String]> = .constant([:]),
+        feedbackSelections: Binding<[String: ZenAgentFeedback]> = .constant([:]),
         prompt: LocalizedStringKey = "Message",
         isStreaming: Bool = false,
         streamingStatus: String? = nil,
@@ -171,12 +187,14 @@ public extension ZenAgentChat where Attachment == EmptyView {
         errorMessage: String? = nil,
         onSubmit: @escaping () -> Void,
         onAction: @escaping (String) -> Void = { _ in },
-        onContextOpen: @escaping (String) -> Void = { _ in }
+        onContextOpen: @escaping (String) -> Void = { _ in },
+        onMessageAction: @escaping (String, ZenAgentMessageAction) -> Void = { _, _ in }
     ) {
         self.init(
             messages: messages,
             draft: draft,
             approvalSelections: approvalSelections,
+            feedbackSelections: feedbackSelections,
             prompt: prompt,
             isStreaming: isStreaming,
             streamingStatus: streamingStatus,
@@ -185,7 +203,8 @@ public extension ZenAgentChat where Attachment == EmptyView {
             errorMessage: errorMessage,
             onSubmit: onSubmit,
             onAction: onAction,
-            onContextOpen: onContextOpen
+            onContextOpen: onContextOpen,
+            onMessageAction: onMessageAction
         ) { _ in
             EmptyView()
         }
@@ -195,8 +214,10 @@ public extension ZenAgentChat where Attachment == EmptyView {
 private struct ZenAgentMessageView<Attachment: View>: View {
     let message: ZenAgentMessage
     @Binding var approvalSelection: String?
+    @Binding var feedbackSelection: ZenAgentFeedback?
     let onAction: (String) -> Void
     let onContextOpen: (String) -> Void
+    let onMessageAction: (String, ZenAgentMessageAction) -> Void
     let attachment: (ZenAgentMessage) -> Attachment
 
     var body: some View {
@@ -207,8 +228,14 @@ private struct ZenAgentMessageView<Attachment: View>: View {
                     blockView(block)
                 }
                 attachment(message)
+                if let metadata = message.responseMetadata {
+                    ZenAgentResponseFooter(
+                        metadata: metadata,
+                        feedback: $feedbackSelection,
+                        onAction: { onMessageAction(message.id, $0) }
+                    )
+                }
             }
-            if message.role == .assistant { Spacer(minLength: 48) }
         }
         .frame(maxWidth: .infinity, alignment: message.role == .user ? .trailing : .leading)
     }
@@ -216,13 +243,20 @@ private struct ZenAgentMessageView<Attachment: View>: View {
     @ViewBuilder private func blockView(_ block: ZenAgentMessageBlock) -> some View {
         switch block {
         case .text(let text):
-            Text(text)
-                .font(.zenBody)
-                .foregroundStyle(Color.zenTextPrimary)
-                .textSelection(.enabled)
-                .padding(message.role == .user ? ZenSpacing.small : 0)
-                .background(message.role == .user ? Color.zenSurfaceMuted : .clear)
-                .clipShape(.rect(cornerRadius: ZenRadius.medium))
+            if message.role == .user {
+                Text(text)
+                    .font(.zenBody)
+                    .foregroundStyle(Color.zenTextPrimary)
+                    .textSelection(.enabled)
+                    .padding(.horizontal, ZenSpacing.small + 2)
+                    .padding(.vertical, ZenSpacing.xSmall + 2)
+                    .background(Color.zenSurfaceMuted, in: RoundedRectangle(cornerRadius: ZenRadius.large, style: .continuous))
+            } else {
+                // Assistant replies are Markdown and sit directly on the canvas —
+                // no bubble, and no clip shape that would shave the glyph edges.
+                ZenMarkdownText(text)
+                    .textSelection(.enabled)
+            }
         case .research(let answer):
             ZenAgentResearchAnswerCard(answer: answer, onFollowUp: onAction)
         case .reasoning(let summary, let detail):

@@ -5,6 +5,59 @@ public enum ZenAgentMessageRole: String, Sendable, Equatable {
     case assistant
 }
 
+public enum ZenAgentFeedback: String, Sendable, Equatable {
+    case positive
+    case negative
+}
+
+public struct ZenAgentSource: Identifiable, Sendable, Equatable {
+    public let id: String
+    public let title: String
+    public let detail: String?
+    public let label: String?
+    public let isInteractive: Bool
+
+    public init(
+        id: String,
+        title: String,
+        detail: String? = nil,
+        label: String? = nil,
+        isInteractive: Bool = true
+    ) {
+        self.id = id
+        self.title = title
+        self.detail = detail
+        self.label = label
+        self.isInteractive = isInteractive
+    }
+}
+
+public struct ZenAgentResponseMetadata: Sendable, Equatable {
+    public let sources: [ZenAgentSource]
+    public let followUps: [String]
+    public let allowsCopy: Bool
+    public let allowsFeedback: Bool
+
+    public init(
+        sources: [ZenAgentSource] = [],
+        followUps: [String] = [],
+        allowsCopy: Bool = true,
+        allowsFeedback: Bool = true
+    ) {
+        self.sources = sources
+        self.followUps = followUps
+        self.allowsCopy = allowsCopy
+        self.allowsFeedback = allowsFeedback
+    }
+}
+
+public enum ZenAgentMessageAction: Sendable, Equatable {
+    case copy
+    case feedback(ZenAgentFeedback?)
+    case openSource(String)
+    case followUp(String)
+}
+
 public enum ZenAgentTaskState: String, Sendable, Equatable {
     case queued
     case running
@@ -158,10 +211,17 @@ public struct ZenAgentMessage: Identifiable, Sendable, Equatable {
     public let id: String
     public let role: ZenAgentMessageRole
     public let blocks: [ZenAgentMessageBlock]
+    public let responseMetadata: ZenAgentResponseMetadata?
 
-    public init(id: String, role: ZenAgentMessageRole, blocks: [ZenAgentMessageBlock]) {
+    public init(
+        id: String,
+        role: ZenAgentMessageRole,
+        blocks: [ZenAgentMessageBlock],
+        responseMetadata: ZenAgentResponseMetadata? = nil
+    ) {
         self.id = id
         self.role = role
         self.blocks = blocks
+        self.responseMetadata = responseMetadata
     }
 }

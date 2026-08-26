@@ -4,10 +4,17 @@
 
 ### `ZenAgentChat`
 
-- `use_when`: presenting a provider-neutral agent transcript with a composer, streaming status, context, tool activity, recommendations, and approval steps
-- `required_state`: `[ZenAgentMessage]`, draft `Binding<String>`, optional approval selections, streaming state, and submission/action callbacks
-- `pairs_with`: `ZenInputBar`, `ZenAgentTaskRow`, `ZenAgentContextCard`, `ZenAgentRecommendationCard`, `ZenAgentApprovalCard`
-- `notes`: domain cards can be supplied with the `attachment` view builder; keep backend, tool execution, and business state in the host app
+- `use_when`: presenting a provider-neutral agent transcript with a composer, streaming status, tool activity, response sources, copy/feedback actions, follow-up prompts, recommendations, and approval steps
+- `required_state`: `[ZenAgentMessage]`, draft `Binding<String>`, optional approval and feedback selections, streaming state, and submission/message-action callbacks
+- `pairs_with`: `ZenInputBar`, `ZenAgentTaskRow`, `ZenAgentResponseFooter`, `ZenAgentContextCard`, `ZenAgentRecommendationCard`, `ZenAgentApprovalCard`
+- `notes`: add `ZenAgentResponseMetadata` to assistant messages to expose sources and follow-ups; domain cards can be supplied with the `attachment` view builder; keep backend, tool execution, feedback persistence, and business state in the host app
+
+### `ZenAgentResponseFooter`
+
+- `use_when`: adding compact copy, feedback, expandable source, and suggested follow-up controls below an assistant response
+- `required_state`: `ZenAgentResponseMetadata`, an optional `ZenAgentFeedback` binding, and a `ZenAgentMessageAction` callback
+- `pairs_with`: `ZenAgentChat`, `ZenAgentMessage`, `ZenAgentTaskRow`
+- `notes`: non-interactive sources remain readable without presenting false navigation affordances; interactive source routing belongs to the host app
 
 This catalog covers the public component surface under `Sources/ZenKit/Components/**`.
 

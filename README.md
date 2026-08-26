@@ -78,16 +78,17 @@ let theme = ZenTheme(
 
 ## Using ZenKit with AI
 
-- **Agent Workspace**: `ZenAgentChat` provides a provider-neutral transcript, streaming state, prompt bar, task status, context, recommendations, and approvals. Supply your own models/backend through bindings and callbacks; ZenKit never imports an AI SDK.
+- **Agent Workspace**: `ZenAgentChat` provides a provider-neutral transcript, streaming state, prompt bar, tool status, response sources, copy/feedback actions, follow-up prompts, recommendations, and approvals. Supply your own models/backend through bindings and callbacks; ZenKit never imports an AI SDK.
 
 ```swift
 ZenAgentChat(
     messages: messages,
     draft: $draft,
     approvalSelections: $approvalSelections,
+    feedbackSelections: $feedbackSelections,
     isStreaming: isStreaming,
     onSubmit: send,
-    onAction: handleAgentAction
+    onMessageAction: handleAgentMessageAction
 )
 ```
 
