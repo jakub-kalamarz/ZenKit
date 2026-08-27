@@ -8,6 +8,7 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
     private let content: () -> Content
     private let footer: () -> Footer
     private let showsFooter: Bool
+    private var scrollsContent = true
 
     public init(
         title: LocalizedStringKey,
@@ -168,23 +169,41 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
             .zenBackground()
     }
 
-    private var scrollableContent: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: ZenSpacing.medium) {
-                if let subtitle {
-                    subtitle
-                        .font(.zen(.eyebrow, weight: .bold))
-                        .foregroundStyle(Color.zenPrimary)
-                        .textCase(.uppercase)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
+    /// Content that manages its own scrolling (a web view, a list, a map) collapses to
+    /// zero height inside the default `ScrollView`; this opts the sheet out of it.
+    public func scrollsContent(_ scrolls: Bool) -> Self {
+        var copy = self
+        copy.scrollsContent = scrolls
+        return copy
+    }
 
-                content()
+    @ViewBuilder
+    private var scrollableContent: some View {
+        if scrollsContent {
+            ScrollView {
+                innerContent
             }
-            .padding(.horizontal, ZenSpacing.medium)
-            .padding(.top, ZenSpacing.small)
-            .padding(.bottom, ZenSpacing.small)
+        } else {
+            innerContent
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
+    }
+
+    private var innerContent: some View {
+        VStack(alignment: .leading, spacing: ZenSpacing.medium) {
+            if let subtitle {
+                subtitle
+                    .font(.zen(.eyebrow, weight: .bold))
+                    .foregroundStyle(Color.zenPrimary)
+                    .textCase(.uppercase)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+
+            content()
+        }
+        .padding(.horizontal, ZenSpacing.medium)
+        .padding(.top, ZenSpacing.small)
+        .padding(.bottom, ZenSpacing.small)
     }
 
     private var footerBlock: some View {
