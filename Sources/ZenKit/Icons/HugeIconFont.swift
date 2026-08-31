@@ -27,3 +27,15 @@ enum HugeIconFont {
         return Set(names)
     }
 }
+
+extension HugeIcon {
+    /// Registers the bundled HugeIcons font with the process if it isn't yet, and
+    /// reports whether the family is usable. Call this before building a `UIFont`
+    /// or `NSAttributedString` with `HugeIcon.fontFamily` outside of `ZenIcon`
+    /// (e.g. rasterising a glyph for the UIKit tab bar), since registration would
+    /// otherwise only happen on the first `ZenIcon` render.
+    @discardableResult
+    public static func registerFontIfNeeded() -> Bool {
+        HugeIconFont.isAvailable
+    }
+}
