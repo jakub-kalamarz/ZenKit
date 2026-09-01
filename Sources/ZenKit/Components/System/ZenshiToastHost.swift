@@ -348,6 +348,7 @@ private struct ZenToastCard: View {
     private static let padding: CGFloat = 16
     private static let iconSize: CGFloat = 16
     private static let avatarSize: CGFloat = 28
+    private static let badgeSize: CGFloat = 16
 
     var body: some View {
         let cornerRadius = ZenTheme.current.resolvedCornerRadius(for: .container)
@@ -402,15 +403,28 @@ private struct ZenToastCard: View {
         }
     }
 
+    /// An attributed toast with nothing but a title is a single line: the row
+    /// centres on the avatar instead of hanging text off its top edge.
+    private var isSingleLine: Bool {
+        toast.avatar != nil
+            && toast.message == nil
+            && toast.actions.isEmpty
+            && toast.progress == nil
+    }
+
     private var cardContent: some View {
         VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
-            HStack(alignment: .top, spacing: ZenSpacing.small) {
+            HStack(alignment: isSingleLine ? .center : .top, spacing: ZenSpacing.small) {
                 iconView
 
                 VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
                     Text(toast.title)
                         .font(.zen(.body, weight: .medium))
                         .foregroundStyle(titleColor)
+                        // A one-line toast stays one line: a long name plus a
+                        // long item would otherwise wrap and undo the layout.
+                        .lineLimit(isSingleLine ? 1 : nil)
+                        .truncationMode(.tail)
                         .accessibilityIdentifier(ZenAccessibilityID.Toast.title)
 
                     if let message = toast.message {
@@ -513,6 +527,12 @@ private struct ZenToastCard: View {
             // An attributed toast leads with the person, not the tone: the
             // avatar answers "who did this" before the text says what changed.
             ZenAvatar(name: avatar.name, imageURL: avatar.imageURL, size: Self.avatarSize)
+                .overlay(alignment: .bottomTrailing) {
+                    if let badge = avatar.badge {
+                        ZenToastAvatarBadgeView(badge: badge, diameter: Self.badgeSize)
+                            .offset(x: 3, y: 3)
+                    }
+                }
                 .transition(.scale(scale: 0.88).combined(with: .opacity))
         } else {
             toneIconView
@@ -793,6 +813,55 @@ private struct ZenToastPreviewStage<Content: View>: View {
     }
 }
 
+/// The action glyph on an attributed toast's avatar. A checkbox badge appears
+/// in the state the item was in *before* the change and flips a beat later, so
+/// the reader watches the toggle happen instead of being told about it.
+private struct ZenToastAvatarBadgeView: View {
+    let badge: ZenToastAvatarBadge
+    let diameter: CGFloat
+
+    @State private var hasSettled = false
+
+    private var icon: HugeIcon {
+        switch badge {
+        case .checkbox(let isChecked):
+            let settledState = hasSettled ? isChecked : !isChecked
+            return settledState ? .checkmarkSquareFill : .square
+        case .icon(let icon):
+            return icon
+        }
+    }
+
+    private var tint: Color {
+        switch badge.tone {
+        case .success: ZenTheme.current.resolvedColors.success.color
+        default: Color.zenTextMuted
+        }
+    }
+
+    var body: some View {
+        ZenIcon(icon: icon, size: diameter * 0.72)
+            .font(.system(size: diameter * 0.72, weight: .bold))
+            .foregroundStyle(isSettledCheckbox ? tint : Color.zenTextMuted)
+            .frame(width: diameter, height: diameter)
+            .background(Color.zenSurface, in: Circle())
+            .overlay(Circle().strokeBorder(Color.zenBorder, lineWidth: 1))
+            .scaleEffect(isSettledCheckbox ? 1 : 0.86)
+            .animation(.spring(response: 0.34, dampingFraction: 0.6), value: hasSettled)
+            .task {
+                guard case .checkbox = badge else { return }
+                try? await Task.sleep(for: .milliseconds(180))
+                hasSettled = true
+            }
+            .accessibilityHidden(true)
+    }
+
+    private var isSettledCheckbox: Bool {
+        if case .checkbox = badge { return hasSettled }
+        return true
+    }
+}
+
 #Preview("Attributed") {
     ZenToastPreviewStage(
         title: "Attributed",
@@ -801,15 +870,18 @@ private struct ZenToastPreviewStage<Content: View>: View {
         ZenToastHost(
             center: zenToastPreviewCenter(maxVisibleToasts: 3) { center in
                 _ = center.activity(
-                    "Diana",
-                    message: "Checked off 3 items",
-                    avatar: ZenToastAvatar(name: "Diana"),
+                    "Diana · Checked off 3 items",
+                    avatar: ZenToastAvatar(name: "Diana", badge: .checkbox(isChecked: true)),
                     duration: nil
                 )
                 _ = center.activity(
-                    "Marek",
-                    message: "Added milk · Removed 2 items",
-                    avatar: ZenToastAvatar(name: "Marek"),
+                    "Marek · Added milk",
+                    avatar: ZenToastAvatar(name: "Marek", badge: .icon(.plus)),
+                    duration: nil
+                )
+                _ = center.activity(
+                    "Kasia · Unchecked bread",
+                    avatar: ZenToastAvatar(name: "Kasia", badge: .checkbox(isChecked: false)),
                     duration: nil
                 )
             },

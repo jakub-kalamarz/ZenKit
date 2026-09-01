@@ -42,10 +42,29 @@ public struct ZenToastAction: Identifiable {
 public struct ZenToastAvatar: Equatable, Sendable {
     public let name: String
     public let imageURL: URL?
+    /// Small glyph pinned to the avatar's corner, saying what the person did
+    /// without spending a second line of the card on it.
+    public let badge: ZenToastAvatarBadge?
 
-    public init(name: String, imageURL: URL? = nil) {
+    public init(name: String, imageURL: URL? = nil, badge: ZenToastAvatarBadge? = nil) {
         self.name = name
         self.imageURL = imageURL
+        self.badge = badge
+    }
+}
+
+public enum ZenToastAvatarBadge: Equatable, Sendable {
+    /// Animates on appear: the box starts in the opposite state and flips to
+    /// `isChecked`, so the toast shows the action happening rather than
+    /// reporting that it happened.
+    case checkbox(isChecked: Bool)
+    case icon(HugeIcon)
+
+    public var tone: ZenToastTone {
+        switch self {
+        case .checkbox(let isChecked): isChecked ? .success : .default
+        case .icon: .default
+        }
     }
 }
 
