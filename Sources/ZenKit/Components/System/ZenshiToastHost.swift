@@ -347,6 +347,7 @@ private struct ZenToastCard: View {
     private static let cornerRadiusFallback: CGFloat = 12
     private static let padding: CGFloat = 16
     private static let iconSize: CGFloat = 16
+    private static let avatarSize: CGFloat = 28
 
     var body: some View {
         let cornerRadius = ZenTheme.current.resolvedCornerRadius(for: .container)
@@ -508,6 +509,18 @@ private struct ZenToastCard: View {
 
     @ViewBuilder
     private var iconView: some View {
+        if let avatar = toast.avatar {
+            // An attributed toast leads with the person, not the tone: the
+            // avatar answers "who did this" before the text says what changed.
+            ZenAvatar(name: avatar.name, imageURL: avatar.imageURL, size: Self.avatarSize)
+                .transition(.scale(scale: 0.88).combined(with: .opacity))
+        } else {
+            toneIconView
+        }
+    }
+
+    @ViewBuilder
+    private var toneIconView: some View {
         switch toast.tone {
         case .loading:
             ZenSpinner(size: .custom(diameter: Self.iconSize), tint: tintColor, showsTrack: false)
@@ -774,6 +787,31 @@ private struct ZenToastPreviewStage<Content: View>: View {
                 _ = center.warning("Rate limit warning", message: "You're approaching your API quota.", duration: nil)
                 _ = center.error("Sync failed", message: "Check your connection and try again.", duration: nil)
                 _ = center.loading("Exporting previews", message: "Compressing assets")
+            },
+            edge: .top
+        )
+    }
+}
+
+#Preview("Attributed") {
+    ZenToastPreviewStage(
+        title: "Attributed",
+        subtitle: "Toasts raised on someone else's behalf lead with their avatar instead of a tone icon."
+    ) {
+        ZenToastHost(
+            center: zenToastPreviewCenter(maxVisibleToasts: 3) { center in
+                _ = center.activity(
+                    "Diana",
+                    message: "Checked off 3 items",
+                    avatar: ZenToastAvatar(name: "Diana"),
+                    duration: nil
+                )
+                _ = center.activity(
+                    "Marek",
+                    message: "Added milk · Removed 2 items",
+                    avatar: ZenToastAvatar(name: "Marek"),
+                    duration: nil
+                )
             },
             edge: .top
         )

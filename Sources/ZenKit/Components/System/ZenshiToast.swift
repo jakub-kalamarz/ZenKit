@@ -36,6 +36,19 @@ public struct ZenToastAction: Identifiable {
     }
 }
 
+/// Identity for a toast raised on someone else's behalf — a household member
+/// checking items off a shared list, say. Rendered as the card's leading
+/// element in place of the tone icon, so the reader sees *who* before *what*.
+public struct ZenToastAvatar: Equatable, Sendable {
+    public let name: String
+    public let imageURL: URL?
+
+    public init(name: String, imageURL: URL? = nil) {
+        self.name = name
+        self.imageURL = imageURL
+    }
+}
+
 public struct ZenToastItem: Identifiable {
     /// Matches the reference toast's 5s timeout.
     public static let defaultDuration: TimeInterval = 5
@@ -47,6 +60,7 @@ public struct ZenToastItem: Identifiable {
     public var duration: TimeInterval?
     public var progress: Double?
     public var actions: [ZenToastAction]
+    public var avatar: ZenToastAvatar?
     public let createdAt: Date
 
     public init(
@@ -57,6 +71,7 @@ public struct ZenToastItem: Identifiable {
         duration: TimeInterval? = ZenToastItem.defaultDuration,
         progress: Double? = nil,
         actions: [ZenToastAction] = [],
+        avatar: ZenToastAvatar? = nil,
         createdAt: Date = .now
     ) {
         self.id = id
@@ -66,6 +81,7 @@ public struct ZenToastItem: Identifiable {
         self.duration = duration
         self.progress = progress.map(Self.clampedProgressValue)
         self.actions = actions
+        self.avatar = avatar
         self.createdAt = createdAt
     }
 
@@ -100,7 +116,8 @@ public final class ZenToastCenter: ObservableObject {
         tone: ZenToastTone = .default,
         duration: TimeInterval? = ZenToastItem.defaultDuration,
         progress: Double? = nil,
-        actions: [ZenToastAction] = []
+        actions: [ZenToastAction] = [],
+        avatar: ZenToastAvatar? = nil
     ) -> ZenToastID {
         let toast = ZenToastItem(
             title: title,
@@ -108,10 +125,24 @@ public final class ZenToastCenter: ObservableObject {
             tone: tone,
             duration: tone == .loading ? nil : duration,
             progress: progress,
-            actions: actions
+            actions: actions,
+            avatar: avatar
         )
         append(toast)
         return toast.id
+    }
+
+    /// A toast attributed to a person: neutral tone, their avatar where the tone
+    /// icon would go.
+    @discardableResult
+    public func activity(
+        _ title: String,
+        message: String? = nil,
+        avatar: ZenToastAvatar,
+        duration: TimeInterval? = ZenToastItem.defaultDuration,
+        actions: [ZenToastAction] = []
+    ) -> ZenToastID {
+        show(title, message: message, tone: .default, duration: duration, actions: actions, avatar: avatar)
     }
 
     @discardableResult
