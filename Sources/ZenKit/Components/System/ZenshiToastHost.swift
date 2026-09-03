@@ -826,7 +826,7 @@ private struct ZenToastAvatarBadgeView: View {
         switch badge {
         case .checkbox(let isChecked):
             let settledState = hasSettled ? isChecked : !isChecked
-            return settledState ? .checkmarkSquareFill : .square
+            return settledState ? .checkmarkCircleFill : .circle
         case .icon(let icon):
             return icon
         }

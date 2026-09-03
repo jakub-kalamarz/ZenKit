@@ -122,6 +122,7 @@ public struct ZenAgentChat<Attachment: View>: View {
             }
             .padding(ZenSpacing.medium)
         }
+        .defaultScrollAnchor(messages.isEmpty && !isStreaming ? .center : .bottom)
         .scrollIndicators(.hidden)
         .overlay(alignment: .bottomTrailing) {
             if !isAtBottom {
