@@ -62,7 +62,7 @@ public struct ZenAgentResponseFooter: View {
                 } label: {
                     HStack(spacing: ZenSpacing.xSmall) {
                         ZenIcon(icon: .booksVertical, size: 12)
-                        Text("\(metadata.sources.count) source\(metadata.sources.count == 1 ? "" : "s")")
+                        Text("\(metadata.sources.count) sources", bundle: .module)
                             .font(.zenGroup)
                     }
                     .foregroundStyle(Color.zenTextMuted)
@@ -71,7 +71,7 @@ public struct ZenAgentResponseFooter: View {
                     .contentShape(.rect)
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel(showsSources ? "Hide sources" : "Show sources")
+                .accessibilityLabel(Text(showsSources ? "Hide sources" : "Show sources", bundle: .module))
                 .accessibilityValue("\(metadata.sources.count)")
             }
         }
@@ -146,7 +146,7 @@ public struct ZenAgentResponseFooter: View {
 
     private var followUps: some View {
         VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
-            Text("Follow-ups")
+            Text("Follow-ups", bundle: .module)
                 .font(.zen(.group, weight: .semibold))
                 .foregroundStyle(Color.zenTextMuted)
 
@@ -175,14 +175,14 @@ public struct ZenAgentResponseFooter: View {
         action: @escaping () -> Void
     ) -> some View {
         Button(action: action) {
-            Label { Text(title) } icon: { ZenIcon(icon: icon, size: 14) }
+            Label { Text(title, bundle: .module) } icon: { ZenIcon(icon: icon, size: 14) }
                 .labelStyle(.iconOnly)
                 .foregroundStyle(Color.zenTextMuted)
                 .frame(width: 32, height: 32)
                 .contentShape(.rect)
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(Text(title))
+        .accessibilityLabel(Text(title, bundle: .module))
     }
 
     private func setFeedback(_ selection: ZenAgentFeedback?) {

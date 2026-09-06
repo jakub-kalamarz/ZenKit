@@ -58,11 +58,11 @@ public struct ZenAgentRecommendationCard: View {
             Text(recommendation.title).font(.zen(.body, weight: .semibold)).foregroundStyle(Color.zenTextPrimary)
             Text(recommendation.detail).font(.zenBody).foregroundStyle(Color.zenTextPrimary)
             ZenProgressBar(progress: min(max(recommendation.confidence, 0), 1))
-            Text("\(Int(recommendation.confidence * 100))% confidence")
+            Text("\(Int(recommendation.confidence * 100))% confidence", bundle: .module)
                 .font(.zenGroup).foregroundStyle(Color.zenTextMuted)
             if !recommendation.alternatives.isEmpty {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Other options").font(.zen(.group, weight: .semibold))
+                    Text("Other options", bundle: .module).font(.zen(.group, weight: .semibold))
                     ForEach(recommendation.alternatives, id: \.self) { Text($0).font(.zenGroup).foregroundStyle(Color.zenTextMuted) }
                 }
             }

@@ -18,7 +18,7 @@ public struct ZenAgentResearchAnswerCard: View {
 
             if !answer.sources.isEmpty {
                 VStack(alignment: .leading, spacing: ZenSpacing.xSmall) {
-                    Text("Sources")
+                    Text("Sources", bundle: .module)
                         .font(.zen(.group, weight: .semibold))
                         .foregroundStyle(Color.zenTextMuted)
                     ForEach(answer.sources) { source in

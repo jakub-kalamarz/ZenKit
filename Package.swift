@@ -3,6 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "ZenKit",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v17),
         .macOS(.v14),
@@ -26,7 +27,8 @@ let package = Package(
                 "Icons/hugeicons-manifest.json"
             ],
             resources: [
-                .process("Icons/Resources")
+                .process("Icons/Resources"),
+                .process("Resources"),
             ]
         ),
         .testTarget(

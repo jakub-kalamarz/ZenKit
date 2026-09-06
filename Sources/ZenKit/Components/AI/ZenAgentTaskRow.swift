@@ -43,7 +43,12 @@ public struct ZenAgentTaskRow: View {
     }
 
     private var statusTitle: String {
-        switch task.state { case .queued: "Queued"; case .running: "Running"; case .completed: "Completed"; case .failed: "Failed" }
+        switch task.state {
+        case .queued: String(localized: "Queued", bundle: .module)
+        case .running: String(localized: "Running", bundle: .module)
+        case .completed: String(localized: "Completed", bundle: .module)
+        case .failed: String(localized: "Failed", bundle: .module)
+        }
     }
 
     private var statusColor: Color {

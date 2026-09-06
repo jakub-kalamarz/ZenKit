@@ -131,7 +131,7 @@ public struct ZenAgentChat<Attachment: View>: View {
                     .background(.ultraThinMaterial, in: Circle())
                     .overlay { Circle().strokeBorder(Color.zenBorder, lineWidth: 1) }
                     .padding(ZenSpacing.medium)
-                    .accessibilityLabel("Jump to latest message")
+                    .accessibilityLabel(Text("Jump to latest message", bundle: .module))
             }
         }
         .onChange(of: messages.last?.id) { _, _ in scrollToBottom(proxy) }
@@ -292,7 +292,7 @@ private struct ZenAgentStreamingStatus: View {
     let text: String?
 
     var body: some View {
-        ZenThinkingIndicator(label: text ?? "Thinking…")
+        ZenThinkingIndicator(label: text ?? String(localized: "Thinking…", bundle: .module))
     }
 }
 
