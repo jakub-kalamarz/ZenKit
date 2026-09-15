@@ -10,6 +10,24 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
     private let showsFooter: Bool
     private var scrollsContent = true
 
+    init(
+        storedTitle: Text,
+        storedSubtitle: Text?,
+        @ViewBuilder toolbarLeading: @escaping () -> ToolbarLeading,
+        @ViewBuilder toolbarTrailing: @escaping () -> ToolbarTrailing,
+        @ViewBuilder content: @escaping () -> Content,
+        @ViewBuilder footer: @escaping () -> Footer,
+        showsFooter: Bool
+    ) {
+        self.title = storedTitle
+        self.subtitle = storedSubtitle
+        self.toolbarLeading = toolbarLeading
+        self.toolbarTrailing = toolbarTrailing
+        self.content = content
+        self.footer = footer
+        self.showsFooter = showsFooter
+    }
+
     public init(
         title: LocalizedStringKey,
         subtitle: LocalizedStringKey? = nil,
@@ -258,6 +276,73 @@ private struct ZenSheetContainerPreview: View {
                 }
             }
         }
+    }
+}
+
+// MARK: - Text titles
+
+/// The container already stores its title as a `Text`; these hand one in directly, so a
+/// sheet titled with the host's own content — a record's name — can use `Text(verbatim:)`
+/// and skip the catalog. Every `LocalizedStringKey` and `String` initializer above wraps
+/// its argument in a key, which looks the text up: a record named the same as one of the
+/// host's strings came back translated.
+public extension ZenSheetContainer {
+    init(
+        titleText: Text,
+        subtitleText: Text? = nil,
+        @ViewBuilder toolbarLeading: @escaping () -> ToolbarLeading,
+        @ViewBuilder toolbarTrailing: @escaping () -> ToolbarTrailing,
+        @ViewBuilder content: @escaping () -> Content,
+        @ViewBuilder footer: @escaping () -> Footer
+    ) {
+        self.init(
+            storedTitle: titleText,
+            storedSubtitle: subtitleText,
+            toolbarLeading: toolbarLeading,
+            toolbarTrailing: toolbarTrailing,
+            content: content,
+            footer: footer,
+            showsFooter: true
+        )
+    }
+}
+
+public extension ZenSheetContainer where Footer == EmptyView {
+    init(
+        titleText: Text,
+        subtitleText: Text? = nil,
+        @ViewBuilder toolbarLeading: @escaping () -> ToolbarLeading,
+        @ViewBuilder toolbarTrailing: @escaping () -> ToolbarTrailing,
+        @ViewBuilder content: @escaping () -> Content
+    ) {
+        self.init(
+            storedTitle: titleText,
+            storedSubtitle: subtitleText,
+            toolbarLeading: toolbarLeading,
+            toolbarTrailing: toolbarTrailing,
+            content: content,
+            footer: { EmptyView() },
+            showsFooter: false
+        )
+    }
+}
+
+public extension ZenSheetContainer
+where ToolbarLeading == EmptyView, ToolbarTrailing == EmptyView, Footer == EmptyView {
+    init(
+        titleText: Text,
+        subtitleText: Text? = nil,
+        @ViewBuilder content: @escaping () -> Content
+    ) {
+        self.init(
+            storedTitle: titleText,
+            storedSubtitle: subtitleText,
+            toolbarLeading: { EmptyView() },
+            toolbarTrailing: { EmptyView() },
+            content: content,
+            footer: { EmptyView() },
+            showsFooter: false
+        )
     }
 }
 

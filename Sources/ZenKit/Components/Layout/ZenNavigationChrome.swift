@@ -95,12 +95,12 @@ private extension View {
         if let subheadline = title.subheadline {
             #if os(iOS)
             if #available(iOS 26.0, *) {
-                navigationSubtitle(Text(subheadline))
+                navigationSubtitle(subheadline)
             } else {
                 self
             }
             #elseif os(macOS)
-            navigationSubtitle(Text(subheadline))
+            navigationSubtitle(subheadline)
             #else
             self
             #endif

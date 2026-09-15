@@ -7,8 +7,12 @@ public enum ZenNavigationBarTitleDisplayMode {
 }
 
 public struct ZenScreenTitle: Equatable {
-    public let text: LocalizedStringKey
-    public let subheadline: LocalizedStringKey?
+    /// `Text`, not `LocalizedStringKey`, so a screen titled with the host's own content —
+    /// a board's name, a document's name — can be passed verbatim. Wrapped in a key, such
+    /// a name is looked up in the host's catalog, and one that happens to match a key is
+    /// replaced by that key's translation.
+    public let text: Text
+    public let subheadline: Text?
     public let leadingIcon: ZenIconSource?
     public let trailingIcon: ZenIconSource?
     private let comparisonText: String
@@ -32,8 +36,8 @@ public struct ZenScreenTitle: Equatable {
         leadingIconAsset: String? = nil,
         trailingIconAsset: String? = nil
     ) {
-        self.text = text
-        self.subheadline = subheadline
+        self.text = Text(text)
+        self.subheadline = subheadline.map { Text($0) }
         self.comparisonText = String(describing: text)
         self.comparisonSubheadline = subheadline.map { String(describing: $0) }
         self.leadingIcon = leadingIcon ?? leadingIconAsset.map { .asset($0, renderingMode: .template) }
@@ -48,12 +52,27 @@ public struct ZenScreenTitle: Equatable {
         leadingIconAsset: String? = nil,
         trailingIconAsset: String? = nil
     ) {
-        self.text = LocalizedStringKey(text)
-        self.subheadline = subheadline.map { LocalizedStringKey($0) }
+        self.text = Text(LocalizedStringKey(text))
+        self.subheadline = subheadline.map { Text(LocalizedStringKey($0)) }
         self.comparisonText = text
         self.comparisonSubheadline = subheadline
         self.leadingIcon = leadingIcon ?? leadingIconAsset.map { .asset($0, renderingMode: .template) }
         self.trailingIcon = trailingIcon ?? trailingIconAsset.map { .asset($0, renderingMode: .template) }
+    }
+
+    /// A screen whose title is content rather than copy — a record's own name.
+    public init(
+        verbatim text: String,
+        subheadlineVerbatim subheadline: String? = nil,
+        leadingIcon: ZenIconSource? = nil,
+        trailingIcon: ZenIconSource? = nil
+    ) {
+        self.text = Text(verbatim: text)
+        self.subheadline = subheadline.map { Text(verbatim: $0) }
+        self.comparisonText = text
+        self.comparisonSubheadline = subheadline
+        self.leadingIcon = leadingIcon
+        self.trailingIcon = trailingIcon
     }
 
     public static func == (lhs: ZenScreenTitle, rhs: ZenScreenTitle) -> Bool {
