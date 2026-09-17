@@ -78,6 +78,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
     public static let chevronDown = HugeIcon(name: "arrow-down-01", scalar: 0xF15FC)
     public static let chevronLeft = HugeIcon(name: "arrow-left-01", scalar: 0xF1612)
     public static let chevronRight = HugeIcon(name: "arrow-right-01", scalar: 0xF1623)
+    public static let chevronUp = HugeIcon(name: "arrow-up-01", scalar: 0xF1632)
     public static let chevronUpChevronDown = HugeIcon(name: "arrow-up-down", scalar: 0xF1639)
     public static let circle = HugeIcon(name: "circle", scalar: 0xF19D1)
     public static let circleDashed = HugeIcon(name: "dashed-line-circle", scalar: 0xF1B1E)
@@ -86,6 +87,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
     public static let creditcard = HugeIcon(name: "credit-card", scalar: 0xF1AA2)
     public static let creditcardFill = HugeIcon(name: "credit-card", scalar: 0xF1AA2)
     public static let cursorarrowClick2 = HugeIcon(name: "cursor-pointer-02", scalar: 0xF1ACF)
+    public static let dashboardSpeed = HugeIcon(name: "dashboard-speed-01", scalar: 0xF1B13)
     public static let deleteBackward = HugeIcon(name: "delete-put-back", scalar: 0xF1B39)
     public static let dialMedium = HugeIcon(name: "dashboard-speed-01", scalar: 0xF1B13)
     public static let docOnClipboard = HugeIcon(name: "clipboard", scalar: 0xF19E2)
@@ -117,6 +119,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
     public static let folderBadgePlus = HugeIcon(name: "folder-add", scalar: 0xF1D04)
     public static let folderFill = HugeIcon(name: "folder-01", scalar: 0xF1D01)
     public static let forkKnife = HugeIcon(name: "spoon-and-fork", scalar: 0xF2678)
+    public static let gauge = HugeIcon(name: "dashboard-speed-01", scalar: 0xF1B13)
     public static let gaugeWithDotsNeedle67percent = HugeIcon(name: "dashboard-speed-01", scalar: 0xF1B13)
     public static let gear = HugeIcon(name: "settings-01", scalar: 0xF257F)
     public static let gearshape = HugeIcon(name: "settings-01", scalar: 0xF257F)
@@ -277,6 +280,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         .chevronDown,
         .chevronLeft,
         .chevronRight,
+        .chevronUp,
         .chevronUpChevronDown,
         .circle,
         .circleDashed,
@@ -285,6 +289,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         .creditcard,
         .creditcardFill,
         .cursorarrowClick2,
+        .dashboardSpeed,
         .deleteBackward,
         .dialMedium,
         .docOnClipboard,
@@ -316,6 +321,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         .folderBadgePlus,
         .folderFill,
         .forkKnife,
+        .gauge,
         .gaugeWithDotsNeedle67percent,
         .gear,
         .gearshape,
@@ -478,6 +484,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         case "chevron.down": .chevronDown
         case "chevron.left": .chevronLeft
         case "chevron.right": .chevronRight
+        case "chevron.up": .chevronUp
         case "chevron.up.chevron.down": .chevronUpChevronDown
         case "circle": .circle
         case "circle.dashed": .circleDashed
@@ -486,6 +493,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         case "creditcard": .creditcard
         case "creditcard.fill": .creditcardFill
         case "cursorarrow.click.2": .cursorarrowClick2
+        case "dashboard.speed": .dashboardSpeed
         case "delete.backward": .deleteBackward
         case "dial.medium": .dialMedium
         case "doc.on.clipboard": .docOnClipboard
@@ -517,6 +525,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         case "folder.badge.plus": .folderBadgePlus
         case "folder.fill": .folderFill
         case "fork.knife": .forkKnife
+        case "gauge": .gauge
         case "gauge.with.dots.needle.67percent": .gaugeWithDotsNeedle67percent
         case "gear": .gear
         case "gearshape": .gearshape
