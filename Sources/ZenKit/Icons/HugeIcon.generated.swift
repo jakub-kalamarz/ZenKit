@@ -19,26 +19,21 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
     public static let fontFamily = "hugeicons-stroke-rounded"
 
     public static let alarmFill = HugeIcon(name: "alarm-clock", scalar: 0xF157B)
-    public static let arrow2Squarepath = HugeIcon(name: "reload", scalar: 0xF2455)
     public static let arrowClockwise = HugeIcon(name: "arrow-reload-horizontal", scalar: 0xF1621)
     public static let arrowCounterclockwise = HugeIcon(name: "undo-02", scalar: 0xF28E6)
     public static let arrowDown = HugeIcon(name: "arrow-down-01", scalar: 0xF15FC)
     public static let arrowLeft = HugeIcon(name: "arrow-left-01", scalar: 0xF1612)
     public static let arrowLeftArrowRight = HugeIcon(name: "arrow-left-right", scalar: 0xF161A)
     public static let arrowRight = HugeIcon(name: "arrow-right-01", scalar: 0xF1623)
-    public static let arrowRightCircleFill = HugeIcon(name: "circle-arrow-right-01", scalar: 0xF19B2)
     public static let arrowTriangle2Circlepath = HugeIcon(name: "reload", scalar: 0xF2455)
-    public static let arrowTriangleSwap = HugeIcon(name: "exchange-01", scalar: 0xF1C3E)
     public static let arrowTurnDownRight = HugeIcon(name: "arrow-turn-down", scalar: 0xF162F)
     public static let arrowUp = HugeIcon(name: "arrow-up-01", scalar: 0xF1632)
     public static let arrowUpArrowDown = HugeIcon(name: "arrow-up-down", scalar: 0xF1639)
-    public static let arrowUpArrowDownCircle = HugeIcon(name: "circle-arrow-data-transfer-vertical", scalar: 0xF1998)
     public static let arrowUpForwardApp = HugeIcon(name: "share-08", scalar: 0xF259D)
     public static let arrowUpRight = HugeIcon(name: "arrow-up-right-01", scalar: 0xF1640)
     public static let barcode = HugeIcon(name: "bar-code-01", scalar: 0xF16BF)
     public static let barcodeViewfinder = HugeIcon(name: "barcode-scan", scalar: 0xF16C1)
     public static let bell = HugeIcon(name: "notification-02", scalar: 0xF2230)
-    public static let bellBadge = HugeIcon(name: "notification-02", scalar: 0xF2230)
     public static let bellBadgeFill = HugeIcon(name: "notification-03", scalar: 0xF2231)
     public static let bellFill = HugeIcon(name: "notification-02", scalar: 0xF2230)
     public static let bolt = HugeIcon(name: "flash", scalar: 0xF1CE8)
@@ -51,7 +46,6 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
     public static let booksVertical = HugeIcon(name: "books-01", scalar: 0xF1787)
     public static let cabinet = HugeIcon(name: "cabinet-02", scalar: 0xF1845)
     public static let calendar = HugeIcon(name: "calendar-03", scalar: 0xF1853)
-    public static let calendarBadgeExclamationmark = HugeIcon(name: "calendar-remove-01", scalar: 0xF186C)
     public static let calendarBadgeMinus = HugeIcon(name: "calendar-minus-01", scalar: 0xF1868)
     public static let calendarBadgePlus = HugeIcon(name: "calendar-add-01", scalar: 0xF1856)
     public static let camera = HugeIcon(name: "camera-01", scalar: 0xF18A4)
@@ -63,10 +57,6 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
     public static let cartFill = HugeIcon(name: "shopping-cart-01", scalar: 0xF25DB)
     public static let characterBubble = HugeIcon(name: "bubble-chat-translate", scalar: 0xF17DE)
     public static let chartBar = HugeIcon(name: "chart-column", scalar: 0xF191E)
-    public static let chartBarDocHorizontal = HugeIcon(name: "file-chart-column", scalar: 0xF1C78)
-    public static let chartBarFill = HugeIcon(name: "chart-column", scalar: 0xF191E)
-    public static let chartLineUptrendXyaxis = HugeIcon(name: "chart-line-data-01", scalar: 0xF1926)
-    public static let checklist = HugeIcon(name: "list-checks", scalar: 0xF3207)
     public static let checklistChecked = HugeIcon(name: "check-list", scalar: 0xF1967)
     public static let checklistUnchecked = HugeIcon(name: "check-list", scalar: 0xF1967)
     public static let checkmark = HugeIcon(name: "tick-01", scalar: 0xF282B)
@@ -93,28 +83,20 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
     public static let docText = HugeIcon(name: "document-attachment", scalar: 0xF1BA1)
     public static let docTextMagnifyingglass = HugeIcon(name: "file-search", scalar: 0xF1CA3)
     public static let dollarsignCircle = HugeIcon(name: "dollar-circle", scalar: 0xF1BA6)
-    public static let dumbbell = HugeIcon(name: "dumbbell-01", scalar: 0xF1BE5)
-    public static let dumbbellFill = HugeIcon(name: "dumbbell-01", scalar: 0xF1BE5)
     public static let ellipsis = HugeIcon(name: "more-horizontal", scalar: 0xF218F)
     public static let ellipsisCircle = HugeIcon(name: "menu-circle", scalar: 0xF20E4)
     public static let envelope = HugeIcon(name: "mail-01", scalar: 0xF205C)
     public static let envelopeFill = HugeIcon(name: "mail-01", scalar: 0xF205C)
-    public static let envelopeFrontFill = HugeIcon(name: "mail-01", scalar: 0xF205C)
     public static let exclamationmark = HugeIcon(name: "alert-02", scalar: 0xF1583)
     public static let exclamationmarkBubble = HugeIcon(name: "bubble-chat-notification", scalar: 0xF17D5)
     public static let exclamationmarkTriangleFill = HugeIcon(name: "alert-02", scalar: 0xF1583)
     public static let eye = HugeIcon(name: "eye", scalar: 0xF1C4A)
     public static let eyeSlash = HugeIcon(name: "view-off-slash", scalar: 0xF296D)
-    public static let figureRun = HugeIcon(name: "workout-run", scalar: 0xF2A2B)
-    public static let figureStrengthtrainingTraditional = HugeIcon(name: "equipment-gym-01", scalar: 0xF1C2A)
-    public static let figureWaveCircleFill = HugeIcon(name: "user-circle", scalar: 0xF291D)
     public static let flame = HugeIcon(name: "fire", scalar: 0xF1CD5)
     public static let flameFill = HugeIcon(name: "fire", scalar: 0xF1CD5)
     public static let flashlightOffFill = HugeIcon(name: "flash-off", scalar: 0xF1CE7)
     public static let flashlightOnFill = HugeIcon(name: "flashlight", scalar: 0xF1CE9)
-    public static let folder = HugeIcon(name: "folder-01", scalar: 0xF1D01)
     public static let folderBadgePlus = HugeIcon(name: "folder-add", scalar: 0xF1D04)
-    public static let folderFill = HugeIcon(name: "folder-01", scalar: 0xF1D01)
     public static let forkKnife = HugeIcon(name: "spoon-and-fork", scalar: 0xF2678)
     public static let gearshape = HugeIcon(name: "settings-01", scalar: 0xF257F)
     public static let gearshape2 = HugeIcon(name: "settings-02", scalar: 0xF2580)
@@ -126,25 +108,18 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
     public static let infoCircleFill = HugeIcon(name: "information-circle", scalar: 0xF1EB4)
     public static let internaldrive = HugeIcon(name: "hard-drive", scalar: 0xF1DF6)
     public static let key = HugeIcon(name: "key-01", scalar: 0xF1EFF)
-    public static let lightbulbFill = HugeIcon(name: "bulb", scalar: 0xF17F1)
     public static let line3Horizontal = HugeIcon(name: "menu-01", scalar: 0xF20D9)
     public static let line3HorizontalDecrease = HugeIcon(name: "filter-horizontal", scalar: 0xF1CBD)
     public static let line3HorizontalDecreaseCircle = HugeIcon(name: "filter-horizontal", scalar: 0xF1CBD)
     public static let link = HugeIcon(name: "link-01", scalar: 0xF1FA5)
     public static let listBullet = HugeIcon(name: "left-to-right-list-bullet", scalar: 0xF1F86)
-    public static let listBulletRectangle = HugeIcon(name: "left-to-right-list-bullet", scalar: 0xF1F86)
     public static let listNumber = HugeIcon(name: "left-to-right-list-number", scalar: 0xF1F88)
-    public static let location = HugeIcon(name: "location-01", scalar: 0xF1FCA)
     public static let lock = HugeIcon(name: "lock", scalar: 0xF1FEF)
     public static let lockFill = HugeIcon(name: "lock", scalar: 0xF1FEF)
     public static let magnifyingglass = HugeIcon(name: "search-01", scalar: 0xF2546)
     public static let mic = HugeIcon(name: "mic-01", scalar: 0xF211C)
     public static let micFill = HugeIcon(name: "mic-01", scalar: 0xF211C)
     public static let minus = HugeIcon(name: "minus-sign", scalar: 0xF2139)
-    public static let minusCircleFill = HugeIcon(name: "minus-sign-circle", scalar: 0xF2137)
-    public static let numberCircle = HugeIcon(name: "hash", scalar: 0xF31B3)
-    public static let numberCircleFill = HugeIcon(name: "hash", scalar: 0xF31B3)
-    public static let numberSquare = HugeIcon(name: "text-number-sign", scalar: 0xF27FE)
     public static let paintpalette = HugeIcon(name: "paint-board", scalar: 0xF22A4)
     public static let paintpaletteFill = HugeIcon(name: "paint-board", scalar: 0xF22A4)
     public static let paperplane = HugeIcon(name: "sent", scalar: 0xF256F)
@@ -169,12 +144,9 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
     public static let plusCircle = HugeIcon(name: "add-circle", scalar: 0xF150F)
     public static let plusCircleFill = HugeIcon(name: "add-circle", scalar: 0xF150F)
     public static let qrcode = HugeIcon(name: "qr-code", scalar: 0xF23DC)
-    public static let questionmark = HugeIcon(name: "circle-question-mark", scalar: 0xF30B1)
     public static let questionmarkCircle = HugeIcon(name: "help-circle", scalar: 0xF1E11)
     public static let rectanglePortraitAndArrowRight = HugeIcon(name: "logout-01", scalar: 0xF1FFB)
     public static let safari = HugeIcon(name: "compass", scalar: 0xF1A3C)
-    public static let scalemass = HugeIcon(name: "weight-scale-01", scalar: 0xF29E1)
-    public static let settings = HugeIcon(name: "settings-01", scalar: 0xF257F)
     public static let shield = HugeIcon(name: "security", scalar: 0xF2563)
     public static let shieldFill = HugeIcon(name: "security", scalar: 0xF2563)
     public static let sidebarLeft = HugeIcon(name: "sidebar-left", scalar: 0xF25F4)
@@ -192,14 +164,11 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
     public static let tag = HugeIcon(name: "tags", scalar: 0xF27A1)
     public static let takeoutbagAndCupAndStraw = HugeIcon(name: "chef", scalar: 0xF197C)
     public static let takeoutbagAndCupAndStrawFill = HugeIcon(name: "chef", scalar: 0xF197C)
-    public static let target = HugeIcon(name: "target-01", scalar: 0xF27B5)
     public static let terminal = HugeIcon(name: "computer-terminal-01", scalar: 0xF1A54)
     public static let textAlignleft = HugeIcon(name: "text-align-left", scalar: 0xF27E5)
     public static let textBubble = HugeIcon(name: "message-01", scalar: 0xF20E9)
-    public static let textQuote = HugeIcon(name: "quote", scalar: 0xF32E8)
     public static let timer = HugeIcon(name: "timer-01", scalar: 0xF284E)
     public static let trash = HugeIcon(name: "delete-02", scalar: 0xF1B35)
-    public static let trophyFill = HugeIcon(name: "trophy", scalar: 0xF33DE)
     public static let wandAndStars = HugeIcon(name: "ai-magic", scalar: 0xF154A)
     public static let xmark = HugeIcon(name: "cancel-01", scalar: 0xF18BC)
     public static let xmarkCircle = HugeIcon(name: "cancel-circle", scalar: 0xF18BF)
@@ -207,26 +176,21 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
 
     public static let allCases: [HugeIcon] = [
         .alarmFill,
-        .arrow2Squarepath,
         .arrowClockwise,
         .arrowCounterclockwise,
         .arrowDown,
         .arrowLeft,
         .arrowLeftArrowRight,
         .arrowRight,
-        .arrowRightCircleFill,
         .arrowTriangle2Circlepath,
-        .arrowTriangleSwap,
         .arrowTurnDownRight,
         .arrowUp,
         .arrowUpArrowDown,
-        .arrowUpArrowDownCircle,
         .arrowUpForwardApp,
         .arrowUpRight,
         .barcode,
         .barcodeViewfinder,
         .bell,
-        .bellBadge,
         .bellBadgeFill,
         .bellFill,
         .bolt,
@@ -239,7 +203,6 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         .booksVertical,
         .cabinet,
         .calendar,
-        .calendarBadgeExclamationmark,
         .calendarBadgeMinus,
         .calendarBadgePlus,
         .camera,
@@ -251,10 +214,6 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         .cartFill,
         .characterBubble,
         .chartBar,
-        .chartBarDocHorizontal,
-        .chartBarFill,
-        .chartLineUptrendXyaxis,
-        .checklist,
         .checklistChecked,
         .checklistUnchecked,
         .checkmark,
@@ -281,28 +240,20 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         .docText,
         .docTextMagnifyingglass,
         .dollarsignCircle,
-        .dumbbell,
-        .dumbbellFill,
         .ellipsis,
         .ellipsisCircle,
         .envelope,
         .envelopeFill,
-        .envelopeFrontFill,
         .exclamationmark,
         .exclamationmarkBubble,
         .exclamationmarkTriangleFill,
         .eye,
         .eyeSlash,
-        .figureRun,
-        .figureStrengthtrainingTraditional,
-        .figureWaveCircleFill,
         .flame,
         .flameFill,
         .flashlightOffFill,
         .flashlightOnFill,
-        .folder,
         .folderBadgePlus,
-        .folderFill,
         .forkKnife,
         .gearshape,
         .gearshape2,
@@ -314,25 +265,18 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         .infoCircleFill,
         .internaldrive,
         .key,
-        .lightbulbFill,
         .line3Horizontal,
         .line3HorizontalDecrease,
         .line3HorizontalDecreaseCircle,
         .link,
         .listBullet,
-        .listBulletRectangle,
         .listNumber,
-        .location,
         .lock,
         .lockFill,
         .magnifyingglass,
         .mic,
         .micFill,
         .minus,
-        .minusCircleFill,
-        .numberCircle,
-        .numberCircleFill,
-        .numberSquare,
         .paintpalette,
         .paintpaletteFill,
         .paperplane,
@@ -357,12 +301,9 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         .plusCircle,
         .plusCircleFill,
         .qrcode,
-        .questionmark,
         .questionmarkCircle,
         .rectanglePortraitAndArrowRight,
         .safari,
-        .scalemass,
-        .settings,
         .shield,
         .shieldFill,
         .sidebarLeft,
@@ -380,14 +321,11 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         .tag,
         .takeoutbagAndCupAndStraw,
         .takeoutbagAndCupAndStrawFill,
-        .target,
         .terminal,
         .textAlignleft,
         .textBubble,
-        .textQuote,
         .timer,
         .trash,
-        .trophyFill,
         .wandAndStars,
         .xmark,
         .xmarkCircle,
@@ -397,26 +335,21 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
     static func legacy(_ name: String) -> HugeIcon? {
         switch name {
         case "alarm.fill": .alarmFill
-        case "arrow.2.squarepath": .arrow2Squarepath
         case "arrow.clockwise": .arrowClockwise
         case "arrow.counterclockwise": .arrowCounterclockwise
         case "arrow.down": .arrowDown
         case "arrow.left": .arrowLeft
         case "arrow.left.arrow.right": .arrowLeftArrowRight
         case "arrow.right": .arrowRight
-        case "arrow.right.circle.fill": .arrowRightCircleFill
         case "arrow.triangle.2.circlepath": .arrowTriangle2Circlepath
-        case "arrow.triangle.swap": .arrowTriangleSwap
         case "arrow.turn.down.right": .arrowTurnDownRight
         case "arrow.up": .arrowUp
         case "arrow.up.arrow.down": .arrowUpArrowDown
-        case "arrow.up.arrow.down.circle": .arrowUpArrowDownCircle
         case "arrow.up.forward.app": .arrowUpForwardApp
         case "arrow.up.right": .arrowUpRight
         case "barcode": .barcode
         case "barcode.viewfinder": .barcodeViewfinder
         case "bell": .bell
-        case "bell.badge": .bellBadge
         case "bell.badge.fill": .bellBadgeFill
         case "bell.fill": .bellFill
         case "bolt": .bolt
@@ -429,7 +362,6 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         case "books.vertical": .booksVertical
         case "cabinet": .cabinet
         case "calendar": .calendar
-        case "calendar.badge.exclamationmark": .calendarBadgeExclamationmark
         case "calendar.badge.minus": .calendarBadgeMinus
         case "calendar.badge.plus": .calendarBadgePlus
         case "camera": .camera
@@ -441,10 +373,6 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         case "cart.fill": .cartFill
         case "character.bubble": .characterBubble
         case "chart.bar": .chartBar
-        case "chart.bar.doc.horizontal": .chartBarDocHorizontal
-        case "chart.bar.fill": .chartBarFill
-        case "chart.line.uptrend.xyaxis": .chartLineUptrendXyaxis
-        case "checklist": .checklist
         case "checklist.checked": .checklistChecked
         case "checklist.unchecked": .checklistUnchecked
         case "checkmark": .checkmark
@@ -471,28 +399,20 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         case "doc.text": .docText
         case "doc.text.magnifyingglass": .docTextMagnifyingglass
         case "dollarsign.circle": .dollarsignCircle
-        case "dumbbell": .dumbbell
-        case "dumbbell.fill": .dumbbellFill
         case "ellipsis": .ellipsis
         case "ellipsis.circle": .ellipsisCircle
         case "envelope": .envelope
         case "envelope.fill": .envelopeFill
-        case "envelope.front.fill": .envelopeFrontFill
         case "exclamationmark": .exclamationmark
         case "exclamationmark.bubble": .exclamationmarkBubble
         case "exclamationmark.triangle.fill": .exclamationmarkTriangleFill
         case "eye": .eye
         case "eye.slash": .eyeSlash
-        case "figure.run": .figureRun
-        case "figure.strengthtraining.traditional": .figureStrengthtrainingTraditional
-        case "figure.wave.circle.fill": .figureWaveCircleFill
         case "flame": .flame
         case "flame.fill": .flameFill
         case "flashlight.off.fill": .flashlightOffFill
         case "flashlight.on.fill": .flashlightOnFill
-        case "folder": .folder
         case "folder.badge.plus": .folderBadgePlus
-        case "folder.fill": .folderFill
         case "fork.knife": .forkKnife
         case "gearshape": .gearshape
         case "gearshape.2": .gearshape2
@@ -504,25 +424,18 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         case "info.circle.fill": .infoCircleFill
         case "internaldrive": .internaldrive
         case "key": .key
-        case "lightbulb.fill": .lightbulbFill
         case "line.3.horizontal": .line3Horizontal
         case "line.3.horizontal.decrease": .line3HorizontalDecrease
         case "line.3.horizontal.decrease.circle": .line3HorizontalDecreaseCircle
         case "link": .link
         case "list.bullet": .listBullet
-        case "list.bullet.rectangle": .listBulletRectangle
         case "list.number": .listNumber
-        case "location": .location
         case "lock": .lock
         case "lock.fill": .lockFill
         case "magnifyingglass": .magnifyingglass
         case "mic": .mic
         case "mic.fill": .micFill
         case "minus": .minus
-        case "minus.circle.fill": .minusCircleFill
-        case "number.circle": .numberCircle
-        case "number.circle.fill": .numberCircleFill
-        case "number.square": .numberSquare
         case "paintpalette": .paintpalette
         case "paintpalette.fill": .paintpaletteFill
         case "paperplane": .paperplane
@@ -547,12 +460,9 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         case "plus.circle": .plusCircle
         case "plus.circle.fill": .plusCircleFill
         case "qrcode": .qrcode
-        case "questionmark": .questionmark
         case "questionmark.circle": .questionmarkCircle
         case "rectangle.portrait.and.arrow.right": .rectanglePortraitAndArrowRight
         case "safari": .safari
-        case "scalemass": .scalemass
-        case "settings": .settings
         case "shield": .shield
         case "shield.fill": .shieldFill
         case "sidebar.left": .sidebarLeft
@@ -570,14 +480,11 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         case "tag": .tag
         case "takeoutbag.and.cup.and.straw": .takeoutbagAndCupAndStraw
         case "takeoutbag.and.cup.and.straw.fill": .takeoutbagAndCupAndStrawFill
-        case "target": .target
         case "terminal": .terminal
         case "text.alignleft": .textAlignleft
         case "text.bubble": .textBubble
-        case "text.quote": .textQuote
         case "timer": .timer
         case "trash": .trash
-        case "trophy.fill": .trophyFill
         case "wand.and.stars": .wandAndStars
         case "xmark": .xmark
         case "xmark.circle": .xmarkCircle
