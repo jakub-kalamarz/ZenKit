@@ -86,7 +86,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {{
 {chr(10).join(all_cases)}
     ]
 
-    static func legacy(_ name: String) -> HugeIcon? {{
+    public static func legacy(_ name: String) -> HugeIcon? {{
         switch name {{
 {chr(10).join(legacy_lookup)}
         default: nil

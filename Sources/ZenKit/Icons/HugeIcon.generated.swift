@@ -113,6 +113,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
     public static let flameFill = HugeIcon(name: "fire", scalar: 0xF1CD5)
     public static let flashlightOffFill = HugeIcon(name: "flash-off", scalar: 0xF1CE7)
     public static let flashlightOnFill = HugeIcon(name: "flashlight", scalar: 0xF1CE9)
+    public static let folder = HugeIcon(name: "folder-01", scalar: 0xF1D01)
     public static let folderBadgePlus = HugeIcon(name: "folder-add", scalar: 0xF1D04)
     public static let folderFill = HugeIcon(name: "folder-01", scalar: 0xF1D01)
     public static let forkKnife = HugeIcon(name: "spoon-and-fork", scalar: 0xF2678)
@@ -311,6 +312,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         .flameFill,
         .flashlightOffFill,
         .flashlightOnFill,
+        .folder,
         .folderBadgePlus,
         .folderFill,
         .forkKnife,
@@ -414,7 +416,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         .xmarkCircleFill,
     ]
 
-    static func legacy(_ name: String) -> HugeIcon? {
+    public static func legacy(_ name: String) -> HugeIcon? {
         switch name {
         case "alarm.fill": .alarmFill
         case "arrow.2.squarepath": .arrow2Squarepath
@@ -511,6 +513,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         case "flame.fill": .flameFill
         case "flashlight.off.fill": .flashlightOffFill
         case "flashlight.on.fill": .flashlightOnFill
+        case "folder": .folder
         case "folder.badge.plus": .folderBadgePlus
         case "folder.fill": .folderFill
         case "fork.knife": .forkKnife
