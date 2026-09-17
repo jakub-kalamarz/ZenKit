@@ -22,9 +22,21 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+SWIFT_KEYWORDS = {
+    "associatedtype", "class", "deinit", "enum", "extension", "fileprivate", "func", "import",
+    "init", "inout", "internal", "let", "open", "operator", "private", "protocol", "public",
+    "rethrows", "static", "struct", "subscript", "typealias", "var", "break", "case",
+    "continue", "default", "defer", "do", "else", "fallthrough", "for", "guard", "if",
+    "in", "repeat", "return", "switch", "where", "while", "as", "catch", "dynamicType",
+    "false", "is", "nil", "super", "self", "Self", "throw", "throws", "true", "try"
+}
+
 def swift_name(sf_name: str) -> str:
     chunks = re.split(r"[^A-Za-z0-9]+", sf_name)
-    return chunks[0] + "".join(chunk[:1].upper() + chunk[1:] for chunk in chunks[1:])
+    name = chunks[0] + "".join(chunk[:1].upper() + chunk[1:] for chunk in chunks[1:])
+    if name in SWIFT_KEYWORDS:
+        return f"`{name}`"
+    return name
 
 
 def parse_css(css: str) -> dict[str, int]:

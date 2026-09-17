@@ -175,7 +175,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
     public static let questionmark = HugeIcon(name: "help-circle", scalar: 0xF1E11)
     public static let questionmarkCircle = HugeIcon(name: "help-circle", scalar: 0xF1E11)
     public static let rectanglePortraitAndArrowRight = HugeIcon(name: "logout-01", scalar: 0xF1FFB)
-    public static let repeat = HugeIcon(name: "repeat", scalar: 0xF2466)
+    public static let `repeat` = HugeIcon(name: "repeat", scalar: 0xF2466)
     public static let safari = HugeIcon(name: "compass", scalar: 0xF1A3C)
     public static let scalemass = HugeIcon(name: "weight-scale-01", scalar: 0xF29E1)
     public static let scope = HugeIcon(name: "target-01", scalar: 0xF27B5)
@@ -373,7 +373,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         .questionmark,
         .questionmarkCircle,
         .rectanglePortraitAndArrowRight,
-        .repeat,
+        .`repeat`,
         .safari,
         .scalemass,
         .scope,
@@ -573,7 +573,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         case "questionmark": .questionmark
         case "questionmark.circle": .questionmarkCircle
         case "rectangle.portrait.and.arrow.right": .rectanglePortraitAndArrowRight
-        case "repeat": .repeat
+        case "repeat": .`repeat`
         case "safari": .safari
         case "scalemass": .scalemass
         case "scope": .scope
