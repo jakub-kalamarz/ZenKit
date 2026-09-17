@@ -166,6 +166,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
     public static let personBadgePlus = HugeIcon(name: "user-add-01", scalar: 0xF2914)
     public static let personCircle = HugeIcon(name: "user-circle", scalar: 0xF291D)
     public static let personCircleFill = HugeIcon(name: "user-circle", scalar: 0xF291D)
+    public static let personCropCircle = HugeIcon(name: "user-circle", scalar: 0xF291D)
     public static let personCropCircleBadgePlus = HugeIcon(name: "user-add-01", scalar: 0xF2914)
     public static let personCropCircleFill = HugeIcon(name: "user-circle", scalar: 0xF291D)
     public static let personTextRectangle = HugeIcon(name: "contact-01", scalar: 0xF1A66)
@@ -370,6 +371,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         .personBadgePlus,
         .personCircle,
         .personCircleFill,
+        .personCropCircle,
         .personCropCircleBadgePlus,
         .personCropCircleFill,
         .personTextRectangle,
@@ -576,6 +578,7 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         case "person.badge.plus": .personBadgePlus
         case "person.circle": .personCircle
         case "person.circle.fill": .personCircleFill
+        case "person.crop.circle": .personCropCircle
         case "person.crop.circle.badge.plus": .personCropCircleBadgePlus
         case "person.crop.circle.fill": .personCropCircleFill
         case "person.text.rectangle": .personTextRectangle
