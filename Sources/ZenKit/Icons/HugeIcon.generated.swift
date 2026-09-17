@@ -144,6 +144,8 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
     public static let lock = HugeIcon(name: "lock", scalar: 0xF1FEF)
     public static let lockFill = HugeIcon(name: "lock", scalar: 0xF1FEF)
     public static let magnifyingglass = HugeIcon(name: "search-01", scalar: 0xF2546)
+    public static let medal = HugeIcon(name: "validation-approval", scalar: 0xF2954)
+    public static let medalFill = HugeIcon(name: "validation-approval", scalar: 0xF2954)
     public static let mic = HugeIcon(name: "mic-01", scalar: 0xF211C)
     public static let micFill = HugeIcon(name: "mic-01", scalar: 0xF211C)
     public static let minus = HugeIcon(name: "minus-sign", scalar: 0xF2139)
@@ -346,6 +348,8 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         .lock,
         .lockFill,
         .magnifyingglass,
+        .medal,
+        .medalFill,
         .mic,
         .micFill,
         .minus,
@@ -550,6 +554,8 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         case "lock": .lock
         case "lock.fill": .lockFill
         case "magnifyingglass": .magnifyingglass
+        case "medal": .medal
+        case "medal.fill": .medalFill
         case "mic": .mic
         case "mic.fill": .micFill
         case "minus": .minus

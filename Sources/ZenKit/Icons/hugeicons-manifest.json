@@ -133,6 +133,8 @@
     "lock": "lock",
     "lock.fill": "lock",
     "magnifyingglass": "search-01",
+    "medal": "validation-approval",
+    "medal.fill": "validation-approval",
     "mic": "mic-01",
     "mic.fill": "mic-01",
     "minus": "minus-sign",
