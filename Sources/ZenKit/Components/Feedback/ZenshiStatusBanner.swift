@@ -10,16 +10,24 @@ public struct ZenStatusBanner: View {
     @Environment(\.zenContainerCornerRadius) private var parentCornerRadius
 
     private let tone: ZenBannerTone
-    private let message: LocalizedStringKey
+    private let message: Text
 
     public init(tone: ZenBannerTone = .critical, message: LocalizedStringKey) {
         self.tone = tone
-        self.message = message
+        self.message = Text(message)
     }
 
     public init(tone: ZenBannerTone = .critical, message: String) {
         self.tone = tone
-        self.message = LocalizedStringKey(message)
+        self.message = Text(LocalizedStringKey(message))
+    }
+
+    /// A message that is already in the reader's language — an error the app localized itself, or
+    /// text from a server. Shown as given: wrapping it in a `LocalizedStringKey` would look it up in
+    /// the catalog a second time, which only ever matches by accident.
+    public init(tone: ZenBannerTone = .critical, verbatim message: String) {
+        self.tone = tone
+        self.message = Text(verbatim: message)
     }
 
     public var body: some View {
@@ -34,7 +42,7 @@ public struct ZenStatusBanner: View {
                 .foregroundStyle(tintColor)
                 .padding(.top, 1)
 
-            Text(message)
+            message
                 .font(.zenGroup)
                 .foregroundStyle(tintColor)
                 .frame(maxWidth: .infinity, alignment: .leading)

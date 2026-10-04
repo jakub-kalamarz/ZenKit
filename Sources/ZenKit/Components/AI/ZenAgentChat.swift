@@ -11,6 +11,8 @@ public struct ZenAgentChat<Attachment: View>: View {
     private let emptyTitle: LocalizedStringKey
     private let emptyDescription: LocalizedStringKey
     private let errorMessage: String?
+    /// Replaces the built-in empty state, so a host can draw its own illustration and copy.
+    private let emptyState: AnyView?
     private let onSubmit: () -> Void
     private let onAction: (String) -> Void
     private let onContextOpen: (String) -> Void
@@ -31,6 +33,7 @@ public struct ZenAgentChat<Attachment: View>: View {
         emptyTitle: LocalizedStringKey = "Start a conversation",
         emptyDescription: LocalizedStringKey = "Ask your agent to help with a task.",
         errorMessage: String? = nil,
+        emptyState: AnyView? = nil,
         onSubmit: @escaping () -> Void,
         onAction: @escaping (String) -> Void = { _ in },
         onContextOpen: @escaping (String) -> Void = { _ in },
@@ -47,6 +50,7 @@ public struct ZenAgentChat<Attachment: View>: View {
         self.emptyTitle = emptyTitle
         self.emptyDescription = emptyDescription
         self.errorMessage = errorMessage
+        self.emptyState = emptyState
         self.onSubmit = onSubmit
         self.onAction = onAction
         self.onContextOpen = onContextOpen
@@ -84,13 +88,18 @@ public struct ZenAgentChat<Attachment: View>: View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: ZenSpacing.medium) {
                 if messages.isEmpty && !isStreaming {
-                    ContentUnavailableView {
-                        Label { Text(emptyTitle) } icon: { ZenIcon(icon: .sparkles, size: 24) }
-                    } description: {
-                        Text(emptyDescription)
+                    if let emptyState {
+                        emptyState
+                            .frame(maxWidth: .infinity, minHeight: 260)
+                    } else {
+                        ContentUnavailableView {
+                            Label { Text(emptyTitle) } icon: { ZenIcon(icon: .sparkles, size: 24) }
+                        } description: {
+                            Text(emptyDescription)
+                        }
+                            .foregroundStyle(Color.zenTextMuted)
+                            .frame(maxWidth: .infinity, minHeight: 260)
                     }
-                        .foregroundStyle(Color.zenTextMuted)
-                        .frame(maxWidth: .infinity, minHeight: 260)
                 }
 
                 ForEach(messages) { message in
@@ -111,7 +120,8 @@ public struct ZenAgentChat<Attachment: View>: View {
                 }
 
                 if let errorMessage {
-                    ZenStatusBanner(tone: .critical, message: LocalizedStringKey(errorMessage))
+                    // Already in the reader's language: looked up again it only ever matches by accident.
+                    ZenStatusBanner(tone: .critical, verbatim: errorMessage)
                 }
 
                 Color.clear
@@ -196,6 +206,7 @@ public extension ZenAgentChat where Attachment == EmptyView {
         emptyTitle: LocalizedStringKey = "Start a conversation",
         emptyDescription: LocalizedStringKey = "Ask your agent to help with a task.",
         errorMessage: String? = nil,
+        emptyState: AnyView? = nil,
         onSubmit: @escaping () -> Void,
         onAction: @escaping (String) -> Void = { _ in },
         onContextOpen: @escaping (String) -> Void = { _ in },
@@ -212,6 +223,7 @@ public extension ZenAgentChat where Attachment == EmptyView {
             emptyTitle: emptyTitle,
             emptyDescription: emptyDescription,
             errorMessage: errorMessage,
+            emptyState: emptyState,
             onSubmit: onSubmit,
             onAction: onAction,
             onContextOpen: onContextOpen,
