@@ -86,7 +86,10 @@ public struct ZenAgentChat<Attachment: View>: View {
 
     private func transcript(proxy: ScrollViewProxy) -> some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: ZenSpacing.medium) {
+            // A plain VStack, not a lazy one: a lazy stack only estimates the rows below the
+            // viewport, so the bottom moved while a scroll towards it was still running and the
+            // transcript jumped. A conversation is short enough to lay out whole.
+            VStack(alignment: .leading, spacing: ZenSpacing.medium) {
                 if messages.isEmpty && !isStreaming {
                     if let emptyState {
                         emptyState
@@ -113,30 +116,41 @@ public struct ZenAgentChat<Attachment: View>: View {
                         attachment: attachment
                     )
                     .id(message.id)
+                    .transition(reduceMotion ? .identity : .opacity.combined(with: .offset(y: 10)))
                 }
 
                 if isStreaming {
                     ZenAgentStreamingStatus(text: streamingStatus)
+                        .transition(reduceMotion ? .identity : .opacity)
                 }
 
                 if let errorMessage {
                     // Already in the reader's language: looked up again it only ever matches by accident.
                     ZenStatusBanner(tone: .critical, verbatim: errorMessage)
+                        .transition(reduceMotion ? .identity : .opacity)
                 }
 
                 Color.clear
                     .frame(height: 1)
-                    .id("zen-agent-chat-bottom")
-                    .onAppear { isAtBottom = true }
-                    .onDisappear { isAtBottom = false }
+                    .id(Self.bottomID)
             }
             .padding(ZenSpacing.medium)
+            // The content animates in; the scroll below follows it frame by frame rather than
+            // starting a second animation towards a target that is still moving.
+            .animation(
+                reduceMotion ? nil : .smooth(duration: 0.3),
+                value: ContentShape(count: messages.count, isStreaming: isStreaming, hasError: errorMessage != nil)
+            )
         }
         .defaultScrollAnchor(messages.isEmpty && !isStreaming ? .center : .bottom)
         .scrollIndicators(.hidden)
+        .scrollDismissesKeyboard(.interactively)
+        .modifier(ZenChatBottomFollowing(isAtBottom: $isAtBottom) {
+            proxy.scrollTo(Self.bottomID, anchor: .bottom)
+        })
         .overlay(alignment: .bottomTrailing) {
             if !isAtBottom {
-                Button(action: { scrollToBottom(proxy) }) { ZenIcon(icon: .arrowDown, size: 16) }
+                Button(action: { jumpToBottom(proxy) }) { ZenIcon(icon: .arrowDown, size: 16) }
                     .frame(width: 44, height: 44)
                     .background(.ultraThinMaterial, in: Circle())
                     .overlay { Circle().strokeBorder(Color.zenBorder, lineWidth: 1) }
@@ -144,12 +158,21 @@ public struct ZenAgentChat<Attachment: View>: View {
                     .accessibilityLabel(Text("Jump to latest message", bundle: .module))
             }
         }
-        .onChange(of: messages.last?.id) { _, _ in scrollToBottom(proxy) }
-        .onChange(of: messages.last?.blocks) { _, _ in
-            guard isStreaming, isAtBottom else { return }
-            scrollToBottom(proxy, animated: false)
+        // Sending always brings you to your own message, even from further up the page.
+        .onChange(of: messages.last?.id) { _, _ in
+            guard messages.last?.role == .user else { return }
+            isAtBottom = true
+            proxy.scrollTo(Self.bottomID, anchor: .bottom)
         }
     }
+
+    private struct ContentShape: Equatable {
+        var count: Int
+        var isStreaming: Bool
+        var hasError: Bool
+    }
+
+    private static var bottomID: String { "zen-agent-chat-bottom" }
 
     private var composer: some View {
         ZenInputBar(
@@ -185,12 +208,11 @@ public struct ZenAgentChat<Attachment: View>: View {
         )
     }
 
-    private func scrollToBottom(_ proxy: ScrollViewProxy, animated: Bool = true) {
-        if animated {
-            withAnimation(.easeOut(duration: 0.2)) { proxy.scrollTo("zen-agent-chat-bottom", anchor: .bottom) }
-        } else {
-            proxy.scrollTo("zen-agent-chat-bottom", anchor: .bottom)
+    private func jumpToBottom(_ proxy: ScrollViewProxy) {
+        withAnimation(reduceMotion ? nil : .smooth(duration: 0.35)) {
+            proxy.scrollTo(Self.bottomID, anchor: .bottom)
         }
+        isAtBottom = true
     }
 }
 
@@ -322,5 +344,44 @@ private extension View {
         #else
         self
         #endif
+    }
+}
+
+/// Keeps a transcript pinned to its bottom while it grows, and only while the reader is there.
+///
+/// Growth is anything that changes the scrollable height or the space reserved under it: a new
+/// message, a reply getting longer, a card changing size, the thinking row, an error, the composer
+/// gaining a line or the keyboard coming up. Each is reported by the scroll view's own geometry,
+/// *after* layout, so the scroll never aims at a position that is about to move. Before iOS 18
+/// there is no such report: the transcript simply stays pinned.
+private struct ZenChatBottomFollowing: ViewModifier {
+    @Binding var isAtBottom: Bool
+    let follow: () -> Void
+
+    func body(content: Content) -> some View {
+        if #available(iOS 18, macOS 15, *) {
+            content.onScrollGeometryChange(for: Metrics.self) { geometry in
+                Metrics(
+                    contentHeight: geometry.contentSize.height,
+                    bottomInset: geometry.contentInsets.bottom,
+                    distanceFromBottom: geometry.contentSize.height + geometry.contentInsets.bottom
+                        - geometry.containerSize.height - geometry.contentOffset.y
+                )
+            } action: { old, new in
+                if old.contentHeight != new.contentHeight || old.bottomInset != new.bottomInset {
+                    if isAtBottom { follow() }
+                } else {
+                    isAtBottom = new.distanceFromBottom <= 32
+                }
+            }
+        } else {
+            content.onAppear { isAtBottom = true }
+        }
+    }
+
+    private struct Metrics: Equatable {
+        var contentHeight: CGFloat
+        var bottomInset: CGFloat
+        var distanceFromBottom: CGFloat
     }
 }
