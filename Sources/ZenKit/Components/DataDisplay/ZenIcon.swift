@@ -105,6 +105,10 @@ public struct ZenIcon: View {
                 if HugeIconFont.isAvailable {
                     Text(icon.character)
                         .font(.custom(HugeIcon.fontFamily, fixedSize: size))
+                        // A host's `.fontDesign(.rounded)` is applied to a custom font too, and
+                        // the resulting descriptor matches no face — the glyph falls back to a
+                        // missing-character box. `nil` specifically: `.default` is a design too.
+                        .fontDesign(nil)
                         .accessibilityHidden(true)
                 } else {
                     RoundedRectangle(cornerRadius: size * 0.18)
@@ -154,6 +158,7 @@ public struct ZenMenuIcon: View {
         case .hugeIcon(let icon):
             Text(icon.character)
                 .font(.custom(HugeIcon.fontFamily, fixedSize: 16))
+                .fontDesign(nil)
                 .accessibilityHidden(true)
         case .system(let name):
             Image(systemName: name)
