@@ -94,7 +94,8 @@ public struct ZenInputBar: View {
         }
         .padding(.leading, ZenSpacing.medium)
         .padding(.trailing, ZenSpacing.xSmall)
-        .padding(.vertical, ZenSpacing.xSmall)
+        .padding(.top, isExpanded ? ZenSpacing.medium : ZenSpacing.xSmall)
+        .padding(.bottom, ZenSpacing.xSmall)
 
         Group {
             if #available(iOS 26, macOS 26, tvOS 26, watchOS 26, visionOS 26, *), appearance == .glass {

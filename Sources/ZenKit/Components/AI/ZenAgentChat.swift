@@ -150,12 +150,24 @@ public struct ZenAgentChat<Attachment: View>: View {
         })
         .overlay(alignment: .bottomTrailing) {
             if !isAtBottom {
-                Button(action: { jumpToBottom(proxy) }) { ZenIcon(icon: .arrowDown, size: 16) }
-                    .frame(width: 44, height: 44)
-                    .background(.ultraThinMaterial, in: Circle())
-                    .overlay { Circle().strokeBorder(Color.zenBorder, lineWidth: 1) }
-                    .padding(ZenSpacing.medium)
-                    .accessibilityLabel(Text("Jump to latest message", bundle: .module))
+                Button(action: { jumpToBottom(proxy) }) {
+                    ZenIcon(icon: .arrowDown, size: 16)
+                        .frame(width: 44, height: 44)
+                }
+                .buttonStyle(.plain)
+                .background {
+                    if #available(iOS 26, macOS 26, *) {
+                        Circle()
+                            .fill(Color.clear)
+                            .glassEffect(.regular.interactive(), in: Circle())
+                    } else {
+                        Circle()
+                            .fill(.ultraThinMaterial)
+                            .overlay { Circle().strokeBorder(Color.zenBorder, lineWidth: 1) }
+                    }
+                }
+                .padding(ZenSpacing.medium)
+                .accessibilityLabel(Text("Jump to latest message", bundle: .module))
             }
         }
         // Sending always brings you to your own message, even from further up the page.
