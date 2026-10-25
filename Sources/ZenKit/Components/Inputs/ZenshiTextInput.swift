@@ -40,6 +40,9 @@ public struct ZenTextInput: View {
     private let submitLabel: SubmitLabel
     private let keyboardType: ZenTextInputKeyboardType
     private let accessibilityIdentifier: String?
+    /// A host that has to move focus itself — a first-run screen that opens with the keyboard up —
+    /// passes its own binding; otherwise the field keeps its focus to itself.
+    private let externalFocus: FocusState<Bool>.Binding?
 
     public init(
         text: Binding<String>,
@@ -54,9 +57,11 @@ public struct ZenTextInput: View {
         message: LocalizedStringKey? = nil,
         submitLabel: SubmitLabel = .done,
         keyboardType: ZenTextInputKeyboardType = .default,
-        accessibilityIdentifier: String? = nil
+        accessibilityIdentifier: String? = nil,
+        isFocused: FocusState<Bool>.Binding? = nil
     ) {
         _text = text
+        self.externalFocus = isFocused
         self.prompt = prompt
         self.leadingIcon = leadingIcon ?? leadingIconAsset.map { .asset($0, renderingMode: .template) }
         self.trailingIcon = trailingIcon ?? trailingIconAsset.map { .asset($0, renderingMode: .template) }
@@ -90,7 +95,7 @@ public struct ZenTextInput: View {
                     .foregroundStyle(Color.zenTextPrimary)
                     .textFieldStyle(.plain)
                     .disabled(state == .disabled)
-                    .focused($isFocused)
+                    .modifier(ZenTextInputFocus(external: externalFocus, internal: $isFocused))
 
                 if let trailingIcon {
                     ZenIcon(source: trailingIcon, size: 15)
@@ -116,7 +121,11 @@ public struct ZenTextInput: View {
             .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
             .onTapGesture {
                 if state != .disabled {
-                    isFocused = true
+                    if let externalFocus {
+                        externalFocus.wrappedValue = true
+                    } else {
+                        isFocused = true
+                    }
                 }
             }
             .animation(.easeOut(duration: 0.2), value: text)
@@ -169,6 +178,8 @@ public struct ZenTextInput: View {
             .zenAccessibilityIdentifierIfPresent(accessibilityIdentifier)
     }
 
+    private var hasFocus: Bool { externalFocus?.wrappedValue ?? isFocused }
+
     private func minControlHeight(theme: ZenTheme) -> CGFloat {
         theme.resolvedMetrics.controlHeight
     }
@@ -193,7 +204,7 @@ public struct ZenTextInput: View {
             return .zenBorder
         }
 
-        if isFocused || state == .focused {
+        if hasFocus || state == .focused {
             return colors.focusRing.color
         }
 
@@ -206,6 +217,20 @@ public struct ZenTextInput: View {
             return colors.criticalBorder.color
         case .disabled:
             return controlStyle.borderColor
+        }
+    }
+}
+
+/// One `.focused` per field: two bindings on one `TextField` fight over it.
+private struct ZenTextInputFocus: ViewModifier {
+    let external: FocusState<Bool>.Binding?
+    let `internal`: FocusState<Bool>.Binding
+
+    func body(content: Content) -> some View {
+        if let external {
+            content.focused(external)
+        } else {
+            content.focused(`internal`)
         }
     }
 }
