@@ -4,8 +4,8 @@ import Charts
 /// A compact inline line chart (sparkline) sized for stat tiles and cards.
 ///
 /// Animates between value sets when the series updates (the line morphs rather
-/// than snapping), draws itself in left-to-right the first time data appears,
-/// and replays that draw-in when tapped — so a tap re-animates the data.
+/// than snapping) and draws itself in left-to-right the first time data
+/// appears. It takes no taps, so a tile or link around it gets them.
 public struct ZenSparkline: View {
     private let points: [Double]
     private let color: Color
@@ -30,11 +30,13 @@ public struct ZenSparkline: View {
         chart
             .mask(alignment: .leading) {
                 GeometryReader { geo in
-                    Rectangle().frame(width: geo.size.width * revealProgress)
+                    // Taller than the chart so the stroke at the highest and
+                    // lowest points isn't shaved off.
+                    Rectangle()
+                        .frame(width: geo.size.width * revealProgress, height: geo.size.height + lineWidth * 4)
+                        .offset(y: -lineWidth * 2)
                 }
             }
-            .contentShape(Rectangle())
-            .onTapGesture { reveal() }
             .onAppear { if isDrawable { reveal() } }
             // Draw the line in once real data first arrives after a loading state.
             .onChange(of: isDrawable) { _, drawable in if drawable { reveal() } }
@@ -57,6 +59,8 @@ public struct ZenSparkline: View {
             }
             .chartXAxis(.hidden)
             .chartYAxis(.hidden)
+            // Keep the stroke inside the plot at the extremes.
+            .chartYScale(range: .plotDimension(padding: lineWidth))
             // Mark identity is stable (keyed on index), so Charts morphs the y-values
             // between updates instead of snapping.
             .animation(.easeInOut(duration: 0.3), value: points)
@@ -78,9 +82,6 @@ public struct ZenSparkline: View {
                     points = (0..<12).map { _ in Double(Int.random(in: 2...30)) }
                 }
                 .font(.zenBody2)
-                Text("Tap the chart to replay the draw-in.")
-                    .font(.zenGroup)
-                    .foregroundStyle(Color.zenTextMuted)
             }
             .padding()
             .background(Color.zenBackground)
