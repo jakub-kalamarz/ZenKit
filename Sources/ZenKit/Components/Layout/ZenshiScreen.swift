@@ -61,6 +61,7 @@ public struct ZenScreen<Header: View, Content: View>: View {
         #endif
         screenContainer
             .zenBackground()
+            .zenScrollEdgeEffect()
             .zenRefreshable(onRefresh)
             .applyZenNavigationTitle(navigationTitle, displayMode: resolvedDisplayMode)
             .applyZenBackButton(resolvedCustomBackButton)

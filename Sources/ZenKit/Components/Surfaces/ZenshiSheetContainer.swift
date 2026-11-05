@@ -169,6 +169,7 @@ public struct ZenSheetContainer<ToolbarLeading: View, ToolbarTrailing: View, Con
                     }
             }
         }
+        .zenScrollEdgeEffect()
         .presentationDragIndicator(.visible)
     }
 
