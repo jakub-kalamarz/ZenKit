@@ -8,6 +8,9 @@ public enum ZenBadgeSize: Sendable {
 public enum ZenBadgeVariant: Sendable {
     case outlined
     case filled
+    /// Borderless muted chip: rounded rect, solid primary when selected, no
+    /// checkmark (selection never changes width), tabular digits.
+    case soft
 }
 
 enum ZenBadgeStyleMetrics {
@@ -28,6 +31,11 @@ enum ZenBadgeStyleMetrics {
 
     static let filledHorizontalPadding: CGFloat = 9
     static let filledVerticalPadding: CGFloat = 4
+
+    static let softHeight: CGFloat = 30
+    static let softSmallHeight: CGFloat = 22
+    static let softIconSize: CGFloat = 11
+    static let softSmallIconSize: CGFloat = 9
 }
 
 public struct ZenBadge: View {
@@ -129,7 +137,7 @@ public struct ZenBadge: View {
         switch variant {
         case .filled:
             return ZenTheme.current.resolvedCornerRadius(for: .nestedControl, parentRadius: parentCornerRadius)
-        case .outlined:
+        case .outlined, .soft:
             return size == .small ? ZenBadgeStyleMetrics.smallCornerRadius : ZenBadgeStyleMetrics.cornerRadius
         }
     }
@@ -163,7 +171,7 @@ public struct ZenBadge: View {
         .background(backgroundColor)
         .clipShape(shape)
         .overlay(
-            shape.strokeBorder(variant == .filled ? .clear : borderColor, lineWidth: 1)
+            shape.strokeBorder(variant == .outlined ? borderColor : .clear, lineWidth: 1)
         )
         .contentShape(shape)
         .fixedSize(horizontal: true, vertical: false)
@@ -201,7 +209,7 @@ public struct ZenBadge: View {
 
         switch tone {
         case .neutral:
-            return .zenSurfaceTint
+            return variant == .soft ? .zenSurfaceMuted : .zenSurfaceTint
         case .success:
             return .zenSuccessTint
         case .warning:
@@ -240,7 +248,7 @@ public struct ZenBadge: View {
             Button(action: action) {
                 badgeLabel
             }
-            .buttonStyle(.plain)
+            .buttonStyle(ZenBadgePressStyle(isEnabled: variant == .soft))
             .accessibilityAddTraits(isSelected ? [.isSelected] : [])
         } else {
             badgeLabel
@@ -249,12 +257,19 @@ public struct ZenBadge: View {
     
     private var badgeLabel: some View {
         let isFilled = variant == .filled
+        let isSoft = variant == .soft
         let isSmall = size == .small
-        let iconSz = isSmall ? ZenBadgeStyleMetrics.smallIconSize : ZenBadgeStyleMetrics.iconSize
+        let iconSz = isSoft
+            ? (isSmall ? ZenBadgeStyleMetrics.softSmallIconSize : ZenBadgeStyleMetrics.softIconSize)
+            : (isSmall ? ZenBadgeStyleMetrics.smallIconSize : ZenBadgeStyleMetrics.iconSize)
         let hPad = isFilled ? ZenBadgeStyleMetrics.filledHorizontalPadding : (isSmall ? ZenBadgeStyleMetrics.smallHorizontalPadding : ZenBadgeStyleMetrics.horizontalPadding)
-        let vPad = isFilled ? ZenBadgeStyleMetrics.filledVerticalPadding : (isSmall ? ZenBadgeStyleMetrics.smallVerticalPadding : ZenBadgeStyleMetrics.verticalPadding)
-        let minH = isSmall ? ZenBadgeStyleMetrics.smallHeight : ZenBadgeStyleMetrics.height
-        let font: Font = isFilled ? .zen(.body2, weight: .semibold) : (isSmall ? .caption2.weight(.medium) : .zen(.group, weight: .semibold))
+        let vPad = isFilled ? ZenBadgeStyleMetrics.filledVerticalPadding : (isSmall ? (isSoft ? 3 : ZenBadgeStyleMetrics.smallVerticalPadding) : ZenBadgeStyleMetrics.verticalPadding)
+        let minH = isSoft
+            ? (isSmall ? ZenBadgeStyleMetrics.softSmallHeight : ZenBadgeStyleMetrics.softHeight)
+            : (isSmall ? ZenBadgeStyleMetrics.smallHeight : ZenBadgeStyleMetrics.height)
+        let font: Font = isFilled ? .zen(.body2, weight: .semibold)
+            : isSoft ? (isSmall ? .zen(.eyebrow, weight: .semibold) : .zen(.group, weight: .semibold))
+            : (isSmall ? .caption2.weight(.medium) : .zen(.group, weight: .semibold))
 
         return HStack(spacing: ZenBadgeStyleMetrics.labelSpacing) {
             // An explicit icon always wins: a selected badge that already carries a
@@ -263,13 +278,14 @@ public struct ZenBadge: View {
             if let iconSource {
                 ZenIcon(source: iconSource, size: iconSz)
                     .font(.system(size: iconSz, weight: .bold))
-            } else if isSelected {
+            } else if isSelected && !isSoft {
                 ZenIcon(source: .hugeIcon(.checkmark), size: iconSz)
                     .font(.system(size: iconSz, weight: .bold))
             }
 
             Text(title)
                 .lineLimit(1)
+                .monospacedDigit()
         }
         .font(font)
         .foregroundStyle(foregroundColor)
@@ -279,6 +295,17 @@ public struct ZenBadge: View {
         .frame(minHeight: isFilled ? 0 : minH)
     }
     
+}
+
+/// Light press feedback for tappable soft badges; other variants keep `.plain`.
+private struct ZenBadgePressStyle: ButtonStyle {
+    let isEnabled: Bool
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .opacity(isEnabled && configuration.isPressed ? 0.7 : 1)
+            .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
+    }
 }
 
 #Preview {
@@ -294,6 +321,13 @@ public struct ZenBadge: View {
             ZenBadge("Selected", isSelected: true) {}
             ZenBadge("Swift", onRemove: {})
             ZenBadge("Design", tone: .warning, isSelected: true, action: {}, onRemove: {})
+        }
+
+        HStack(spacing: ZenSpacing.small) {
+            ZenBadge("Easy", variant: .soft, isSelected: false) {}
+            ZenBadge("Medium", variant: .soft, isSelected: true) {}
+            ZenBadge("Italian", variant: .soft, onRemove: {})
+            ZenBadge("optional", size: .small, variant: .soft)
         }
 
         HStack(spacing: ZenSpacing.small) {

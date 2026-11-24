@@ -43,4 +43,11 @@ struct ZenKitBadgeTests {
         #expect(ZenBadgeStyleMetrics.smallHeight == 20)
         #expect(ZenBadgeStyleMetrics.removeIconSize == 10)
     }
+
+    @Test
+    func softBadgeMetrics() {
+        _ = ZenBadge("Soft", variant: .soft, isSelected: true) {}
+        #expect(ZenBadgeStyleMetrics.softHeight == 30)
+        #expect(ZenBadgeStyleMetrics.softSmallHeight == 22)
+    }
 }
