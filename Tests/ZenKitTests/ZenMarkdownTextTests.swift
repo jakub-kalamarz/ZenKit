@@ -31,6 +31,15 @@ import Testing
         #expect(code == "let x = 1")
     }
 
+    @Test func closesMarkupCutOffMidStream() {
+        #expect(ZenMarkdownText.closingUnterminated("Try **bo") == "Try **bo**")
+        #expect(ZenMarkdownText.closingUnterminated("Use `pan") == "Use `pan`")
+        #expect(ZenMarkdownText.closingUnterminated("```\nlet x") == "```\nlet x\n```")
+        #expect(ZenMarkdownText.closingUnterminated("**done** and `ok`") == "**done** and `ok`")
+        // An unclosed marker in a finished paragraph is left alone.
+        #expect(ZenMarkdownText.closingUnterminated("a ** b\n\nnext") == "a ** b\n\nnext")
+    }
+
     @Test func plainTextIsOneParagraph() {
         #expect(ZenMarkdownText.parse("Just a sentence.").count == 1)
     }

@@ -311,7 +311,7 @@ private struct ZenAgentMessageView<Attachment: View>: View {
             } else {
                 // Assistant replies are Markdown and sit directly on the canvas —
                 // no bubble, and no clip shape that would shave the glyph edges.
-                ZenMarkdownText(text)
+                ZenRevealingMarkdownText(text: text)
                     .textSelection(.enabled)
             }
         case .research(let answer):
@@ -330,6 +330,39 @@ private struct ZenAgentMessageView<Attachment: View>: View {
             ZenAgentRecommendationCard(recommendation: recommendation, onAction: onAction)
         case .approval(let approval):
             ZenAgentApprovalCard(approval: approval, selectedOptionID: $approvalSelection, onAction: onAction)
+        }
+    }
+}
+
+/// Streamed text lands in bursts; this reveals the backlog a few characters per frame so it
+/// reads as a steady flow (the approach assistant-ui's `useSmooth` takes). Text already present
+/// when the row appears, like a loaded transcript, shows at once.
+private struct ZenRevealingMarkdownText: View {
+    let text: String
+    @State private var shownCount: Int?
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// Any backlog drains in about this long, however large the burst was.
+    private static let drain: Duration = .milliseconds(250)
+    private static let frame: Duration = .milliseconds(33)
+
+    var body: some View {
+        ZenMarkdownText(shownCount.map { String(text.prefix($0)) } ?? text)
+            .task(id: text) { await reveal() }
+    }
+
+    private func reveal() async {
+        let target = text.count
+        guard let shown = shownCount, shown < target, !reduceMotion else {
+            shownCount = target
+            return
+        }
+        let steps = max(Int(Self.drain / Self.frame), 1)
+        let perFrame = max((target - shown + steps - 1) / steps, 1)
+        while let shown = shownCount, shown < target {
+            try? await Task.sleep(for: Self.frame)
+            if Task.isCancelled { return }
+            shownCount = min(shown + perFrame, target)
         }
     }
 }
@@ -374,6 +407,9 @@ private struct ZenChatBottomFollowing: ViewModifier {
     func body(content: Content) -> some View {
         if #available(iOS 18, macOS 15, *) {
             content
+            // Keeps the bottom pinned inside the same layout pass that grew the content, so there
+            // is no frame where the new line shows below the fold; `follow` below is the fallback.
+            .defaultScrollAnchor(isAtBottom ? .bottom : nil, for: .sizeChanges)
             // While streaming the height changes every frame, so without this a drag upwards
             // was never noticed and the next token yanked the reader back down.
             .onScrollPhaseChange { _, phase in

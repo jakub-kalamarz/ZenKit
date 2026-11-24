@@ -17,7 +17,7 @@ public struct ZenMarkdownText: View {
 
     public var body: some View {
         VStack(alignment: .leading, spacing: ZenSpacing.small) {
-            ForEach(Array(Self.parse(markdown).enumerated()), id: \.offset) { _, block in
+            ForEach(Array(Self.parse(Self.closingUnterminated(markdown)).enumerated()), id: \.offset) { _, block in
                 blockView(block)
             }
         }
@@ -78,6 +78,21 @@ public struct ZenMarkdownText: View {
         case codeBlock(String)
         case quote(AttributedString)
         case divider
+    }
+
+    /// A reply cut off mid-stream (`**bo`, an open code fence) would flash as raw markup until
+    /// its closing token arrives; closing it early renders it formatted from the first frame.
+    static func closingUnterminated(_ markdown: String) -> String {
+        let fences = markdown.components(separatedBy: "```").count - 1
+        if fences % 2 == 1 { return markdown + "\n```" }
+        // Inline markers never span paragraphs or code, so only the last paragraph counts.
+        let afterFence = markdown.components(separatedBy: "```").last ?? markdown
+        let paragraph = afterFence.components(separatedBy: "\n\n").last ?? afterFence
+        var closing = ""
+        let bold = paragraph.components(separatedBy: "**")
+        if (bold.count - 1) % 2 == 1 { closing += "**" }
+        if bold.joined().filter({ $0 == "`" }).count % 2 == 1 { closing = "`" + closing }
+        return markdown + closing
     }
 
     static func parse(_ markdown: String) -> [Block] {
