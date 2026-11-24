@@ -7,15 +7,17 @@ import SwiftUI
 /// lean heavily on headings, lists and code blocks, so this view parses the
 /// full syntax and lays each block out with the ZenKit type scale.
 public struct ZenMarkdownText: View {
-    private let blocks: [Block]
+    // Parsed in `body`, not `init`: SwiftUI skips `body` while the string is unchanged, so a
+    // streaming transcript re-parses only the reply that grew, not every message per token.
+    private let markdown: String
 
     public init(_ markdown: String) {
-        blocks = Self.parse(markdown)
+        self.markdown = markdown
     }
 
     public var body: some View {
         VStack(alignment: .leading, spacing: ZenSpacing.small) {
-            ForEach(Array(blocks.enumerated()), id: \.offset) { _, block in
+            ForEach(Array(Self.parse(markdown).enumerated()), id: \.offset) { _, block in
                 blockView(block)
             }
         }

@@ -369,10 +369,17 @@ private extension View {
 private struct ZenChatBottomFollowing: ViewModifier {
     @Binding var isAtBottom: Bool
     let follow: () -> Void
+    @State private var isUserScrolling = false
 
     func body(content: Content) -> some View {
         if #available(iOS 18, macOS 15, *) {
-            content.onScrollGeometryChange(for: Metrics.self) { geometry in
+            content
+            // While streaming the height changes every frame, so without this a drag upwards
+            // was never noticed and the next token yanked the reader back down.
+            .onScrollPhaseChange { _, phase in
+                isUserScrolling = phase == .interacting || phase == .decelerating
+            }
+            .onScrollGeometryChange(for: Metrics.self) { geometry in
                 Metrics(
                     contentHeight: geometry.contentSize.height,
                     bottomInset: geometry.contentInsets.bottom,
@@ -380,7 +387,9 @@ private struct ZenChatBottomFollowing: ViewModifier {
                         - geometry.containerSize.height - geometry.contentOffset.y
                 )
             } action: { old, new in
-                if old.contentHeight != new.contentHeight || old.bottomInset != new.bottomInset {
+                if isUserScrolling {
+                    isAtBottom = new.distanceFromBottom <= 32
+                } else if old.contentHeight != new.contentHeight || old.bottomInset != new.bottomInset {
                     if isAtBottom { follow() }
                 } else {
                     isAtBottom = new.distanceFromBottom <= 32
