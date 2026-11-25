@@ -27,6 +27,25 @@ struct ZenKitToastCenterTests {
     }
 
     @Test
+    func arrivalLeadDelaysTheFirstCountdown() async {
+        let center = ZenToastCenter(arrivalLead: 0.3)
+        let id = center.show("Saved", duration: 0.1)
+
+        // Past the 0.1s duration, still inside the arrival lead.
+        try? await Task.sleep(nanoseconds: 250_000_000)
+        #expect(center.visibleToasts.map(\.id) == [id])
+
+        try? await Task.sleep(nanoseconds: 350_000_000)
+        #expect(center.visibleToasts.isEmpty)
+    }
+
+    @Test
+    func sharedCenterLeavesRoomForTheArrivalAnimation() {
+        #expect(ZenToastCenter.shared.arrivalLead > 0)
+        #expect(ZenToastCenter().arrivalLead == 0)
+    }
+
+    @Test
     func toneShorthandsCoverTheFullVariantSet() {
         let center = ZenToastCenter(maxVisibleToasts: 5)
 

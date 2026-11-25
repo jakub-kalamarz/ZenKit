@@ -80,6 +80,8 @@ public struct ZenToastItem: Identifiable {
     public var progress: Double?
     public var actions: [ZenToastAction]
     public var avatar: ZenToastAvatar?
+    /// Replaces the tone glyph in the icon circle (e.g. a trash can on an undo toast).
+    public var icon: HugeIcon?
     public let createdAt: Date
 
     public init(
@@ -91,6 +93,7 @@ public struct ZenToastItem: Identifiable {
         progress: Double? = nil,
         actions: [ZenToastAction] = [],
         avatar: ZenToastAvatar? = nil,
+        icon: HugeIcon? = nil,
         createdAt: Date = .now
     ) {
         self.id = id
@@ -101,6 +104,7 @@ public struct ZenToastItem: Identifiable {
         self.progress = progress.map(Self.clampedProgressValue)
         self.actions = actions
         self.avatar = avatar
+        self.icon = icon
         self.createdAt = createdAt
     }
 
@@ -111,7 +115,9 @@ public struct ZenToastItem: Identifiable {
 
 @MainActor
 public final class ZenToastCenter: ObservableObject {
-    public static let shared = ZenToastCenter()
+    /// The shared center starts each countdown after the card's arrival animation, so a 5s
+    /// toast is readable for 5s (copy and buttons only show once the pill has opened).
+    public static let shared = ZenToastCenter(arrivalLead: 0.65)
 
     @Published public private(set) var visibleToasts: [ZenToastItem] = []
     @Published public private(set) var queuedToasts: [ZenToastItem] = []
@@ -124,8 +130,13 @@ public final class ZenToastCenter: ObservableObject {
     private var queuedPromotionTask: Task<Void, Never>?
     private var isAutoDismissPaused = false
 
-    public init(maxVisibleToasts: Int = 3) {
+    /// Seconds added to a timed toast's first countdown for the card's arrival animation.
+    /// Callers running their own timeout alongside a toast should add it too.
+    public let arrivalLead: TimeInterval
+
+    public init(maxVisibleToasts: Int = 3, arrivalLead: TimeInterval = 0) {
         self.maxVisibleToasts = maxVisibleToasts
+        self.arrivalLead = arrivalLead
     }
 
     @discardableResult
@@ -136,7 +147,8 @@ public final class ZenToastCenter: ObservableObject {
         duration: TimeInterval? = ZenToastItem.defaultDuration,
         progress: Double? = nil,
         actions: [ZenToastAction] = [],
-        avatar: ZenToastAvatar? = nil
+        avatar: ZenToastAvatar? = nil,
+        icon: HugeIcon? = nil
     ) -> ZenToastID {
         let toast = ZenToastItem(
             title: title,
@@ -145,7 +157,8 @@ public final class ZenToastCenter: ObservableObject {
             duration: tone == .loading ? nil : duration,
             progress: progress,
             actions: actions,
-            avatar: avatar
+            avatar: avatar,
+            icon: icon
         )
         append(toast)
         return toast.id
@@ -298,7 +311,7 @@ public final class ZenToastCenter: ObservableObject {
     private func append(_ toast: ZenToastItem) {
         if visibleToasts.count < maxVisibleToasts {
             visibleToasts.append(toast)
-            remainingDismissDurations[toast.id] = toast.duration
+            remainingDismissDurations[toast.id] = toast.duration.map { $0 + arrivalLead }
             scheduleDismissalIfNeeded(for: toast)
         } else {
             queuedToasts.append(toast)
@@ -337,7 +350,7 @@ public final class ZenToastCenter: ObservableObject {
 
         let next = queuedToasts.removeFirst()
         visibleToasts.append(next)
-        remainingDismissDurations[next.id] = next.duration
+        remainingDismissDurations[next.id] = next.duration.map { $0 + arrivalLead }
         scheduleDismissalIfNeeded(for: next)
         queuedPromotionTask = nil
     }
