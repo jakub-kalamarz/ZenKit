@@ -71,6 +71,8 @@ public struct ZenAgentChat<Attachment: View>: View {
                     .safeAreaBar(edge: .bottom) {
                         composer
                     }
+                    // The soft edge let the transcript read through the glass composer.
+                    .scrollEdgeEffectStyle(.hard, for: .bottom)
             }
         } else {
             ScrollViewReader { proxy in
@@ -148,7 +150,8 @@ public struct ZenAgentChat<Attachment: View>: View {
         .modifier(ZenChatBottomFollowing(isAtBottom: $isAtBottom) {
             proxy.scrollTo(Self.bottomID, anchor: .bottom)
         })
-        .overlay(alignment: .bottomTrailing) {
+        // Centred, where the transcript's text margin is widest; at the trailing edge it sat on line ends.
+        .overlay(alignment: .bottom) {
             if !isAtBottom {
                 Button(action: { jumpToBottom(proxy) }) {
                     ZenIcon(icon: .arrowDown, size: 16)

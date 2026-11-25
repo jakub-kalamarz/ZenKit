@@ -3,8 +3,8 @@
   "source": {
     "cssURL": "https://use.hugeicons.com/font/icons.css",
     "fontURL": "https://use.hugeicons.com/font/hgi-stroke-rounded.ttf?t=1778060577158",
-    "cssSHA256": "11c954c5cdb07676d462f9a2cda2dbb252fb9f4cf7372c0d0ee02611ff9049a8",
-    "fontSHA256": "5b6b2fcb68e07374e601e1389ecd294182cf15ea65903d66a8a2484125db060f"
+    "cssSHA256": "d61ccdde126df84ab97cb07970036fdcc0b8cb500df02899b46664d8201189cd",
+    "fontSHA256": "7816a86ec118eb4a32bbe9eeeb32c664a2f989dabc6fda7dc139ba41e9fc6ddc"
   },
   "icons": {
     "alarm.fill": "alarm-clock",
@@ -114,6 +114,8 @@
     "gearshape": "settings-01",
     "gearshape.2": "settings-02",
     "globe": "globe",
+    "hand.thumbsdown": "thumbs-down",
+    "hand.thumbsup": "thumbs-up",
     "heart": "favourite",
     "heart.fill": "favourite",
     "house": "home-03",

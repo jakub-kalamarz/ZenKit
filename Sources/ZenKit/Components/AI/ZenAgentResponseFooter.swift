@@ -42,10 +42,11 @@ public struct ZenAgentResponseFooter: View {
             }
 
             if metadata.allowsFeedback {
-                actionButton("Helpful", icon: feedback == .positive ? .heartFill : .heart) {
+                // The stroke font has no filled glyphs, so the chosen rating shows through its tint.
+                actionButton("Helpful", icon: .handThumbsup, isSelected: feedback == .positive) {
                     setFeedback(feedback == .positive ? nil : .positive)
                 }
-                actionButton("Not helpful", icon: feedback == .negative ? .xmarkCircleFill : .xmarkCircle) {
+                actionButton("Not helpful", icon: .handThumbsdown, isSelected: feedback == .negative) {
                     setFeedback(feedback == .negative ? nil : .negative)
                 }
             }
@@ -172,17 +173,19 @@ public struct ZenAgentResponseFooter: View {
     private func actionButton(
         _ title: LocalizedStringKey,
         icon: HugeIcon,
+        isSelected: Bool = false,
         action: @escaping () -> Void
     ) -> some View {
         Button(action: action) {
-            Label { Text(title, bundle: .module) } icon: { ZenIcon(icon: icon, size: 14) }
+            Label { Text(title, bundle: .module) } icon: { ZenIcon(icon: icon, size: 14, weight: isSelected ? .bold : nil) }
                 .labelStyle(.iconOnly)
-                .foregroundStyle(Color.zenTextMuted)
+                .foregroundStyle(isSelected ? Color.zenPrimary : Color.zenTextMuted)
                 .frame(width: 32, height: 32)
                 .contentShape(.rect)
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Text(title, bundle: .module))
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
     private func setFeedback(_ selection: ZenAgentFeedback?) {

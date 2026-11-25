@@ -125,6 +125,8 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
     public static let gearshape = HugeIcon(name: "settings-01", scalar: 0xF257F)
     public static let gearshape2 = HugeIcon(name: "settings-02", scalar: 0xF2580)
     public static let globe = HugeIcon(name: "globe", scalar: 0xF1D82)
+    public static let handThumbsdown = HugeIcon(name: "thumbs-down", scalar: 0xF2825)
+    public static let handThumbsup = HugeIcon(name: "thumbs-up", scalar: 0xF2829)
     public static let heart = HugeIcon(name: "favourite", scalar: 0xF1C60)
     public static let heartFill = HugeIcon(name: "favourite", scalar: 0xF1C60)
     public static let house = HugeIcon(name: "home-03", scalar: 0xF1E33)
@@ -330,6 +332,8 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         .gearshape,
         .gearshape2,
         .globe,
+        .handThumbsdown,
+        .handThumbsup,
         .heart,
         .heartFill,
         .house,
@@ -537,6 +541,8 @@ public struct HugeIcon: Hashable, Sendable, Identifiable {
         case "gearshape": .gearshape
         case "gearshape.2": .gearshape2
         case "globe": .globe
+        case "hand.thumbsdown": .handThumbsdown
+        case "hand.thumbsup": .handThumbsup
         case "heart": .heart
         case "heart.fill": .heartFill
         case "house": .house
