@@ -1,7 +1,53 @@
 {
   "sourceLanguage" : "en",
-  "version" : "1.0",
   "strings" : {
+    "." : {
+
+    },
+    "…" : {
+
+    },
+    "(optional)" : {
+
+    },
+    "*" : {
+
+    },
+    "%@" : {
+
+    },
+    "%@ (%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ (%2$@)"
+          }
+        }
+      }
+    },
+    "%@ / %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ / %2$@"
+          }
+        }
+      }
+    },
+    "%@ percent" : {
+
+    },
+    "%@ selected" : {
+
+    },
+    "%@ sources" : {
+
+    },
+    "%@%% confidence" : {
+
+    },
     "%lld sources" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -87,6 +133,9 @@
         }
       }
     },
+    "Display-only Rating" : {
+
+    },
     "Failed" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -155,6 +204,9 @@
         }
       }
     },
+    "Interactive Rating" : {
+
+    },
     "Jump to latest message" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -171,6 +223,15 @@
           }
         }
       }
+    },
+    "No data" : {
+
+    },
+    "No results" : {
+
+    },
+    "No results found" : {
+
     },
     "Not helpful" : {
       "extractionState" : "manual",
@@ -202,6 +263,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Inne opcje"
+          }
+        }
+      }
+    },
+    "Page %@" : {
+
+    },
+    "Page %@ of %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Page %1$@ of %2$@"
+          }
+        }
+      }
+    },
+    "Primary %@ / Accent %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Primary %1$@ / Accent %2$@"
           }
         }
       }
@@ -240,6 +324,12 @@
         }
       }
     },
+    "Searching for: %@" : {
+
+    },
+    "Selected color" : {
+
+    },
     "Show sources" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -274,6 +364,19 @@
         }
       }
     },
+    "Step %@ of %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Step %1$@ of %2$@"
+          }
+        }
+      }
+    },
+    "Tags" : {
+
+    },
     "Thinking…" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -290,6 +393,10 @@
           }
         }
       }
+    },
+    "Type a tag name and press Return to add. Tap × to remove." : {
+
     }
-  }
+  },
+  "version" : "1.0"
 }
